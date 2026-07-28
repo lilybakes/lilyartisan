@@ -3,7 +3,8 @@ import { useTable, useBomLines } from '../lib/data'
 import { UNITS } from '../lib/units'
 import { useSettings } from '../lib/settings.jsx'
 import { Icon } from '../lib/icons.jsx'
-import { costPerPortion, recipeCostTotal, lineCost, suggestedPrice, money, initials } from '../lib/costing'
+import Chip from '../components/Chip.jsx'
+import { costPerPortion, recipeCostTotal, lineCost, suggestedPrice, money } from '../lib/costing'
 import RecipePicker from '../components/RecipePicker'
 
 export default function Costing() {
@@ -41,10 +42,13 @@ export default function Costing() {
         </div>
       </div>
       <div className="panel">
-        <div className="panel-head">
-          <div>
-            <h3>Cost Breakdown</h3>
-            <p className="sub">{recipe.name} — suggested price <strong>{money(sp, settings.currency)}</strong> at {recipe.target_food_cost_pct}% target food cost</p>
+        <div className="panel-head" style={{alignItems:'center'}}>
+          <div style={{display:'flex', gap:14, alignItems:'center'}}>
+            <Chip item={recipe} size={56}/>
+            <div>
+              <h3>{recipe.name}</h3>
+              <p className="sub">Cost breakdown — suggested price <strong>{money(sp, settings.currency)}</strong> at {recipe.target_food_cost_pct}% target food cost</p>
+            </div>
           </div>
         </div>
         <table>
@@ -60,7 +64,7 @@ export default function Costing() {
                 : <span className="pill ok">exact</span>
               return (
                 <tr key={l.id}>
-                  <td><div className="row-name"><div className="row-chip" style={{background:ing.color || '#7367f0'}}>{initials(ing.name)}</div><strong>{ing.name}</strong></div></td>
+                  <td><div className="row-name"><Chip item={ing} size={32}/><strong>{ing.name}</strong></div></td>
                   <td className="num">{l.qty} {UNITS[l.unit]?.label}</td>
                   <td>{badge}</td>
                   <td className="num"><strong>{r.ok ? money(r.cost, settings.currency) : '—'}</strong></td>

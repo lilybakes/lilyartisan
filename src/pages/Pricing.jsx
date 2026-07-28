@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTable } from '../lib/data'
 import { supabase } from '../lib/supabase'
 import { useSettings } from '../lib/settings.jsx'
-import { costPerPortion, suggestedPrice, money, initials, CHIP_COLORS } from '../lib/costing'
+import Chip from '../components/Chip.jsx'
+import { costPerPortion, suggestedPrice, money, CHIP_COLORS } from '../lib/costing'
 
 export default function Pricing() {
   const { settings } = useSettings()
@@ -38,7 +39,7 @@ export default function Pricing() {
             const color = CHIP_COLORS[idx % CHIP_COLORS.length]
             return (
               <tr key={r.id}>
-                <td><div className="row-name"><div className="row-chip" style={{background:color}}>{initials(r.name)}</div><strong>{r.name}</strong></div></td>
+                <td><div className="row-name"><Chip item={r} size={40} color={color}/><strong>{r.name}</strong></div></td>
                 <td className="num">{money(cpp, settings.currency)}</td>
                 <td className="num">
                   <input type="number" step="1" defaultValue={r.target_food_cost_pct}
@@ -55,7 +56,7 @@ export default function Pricing() {
           })}
         </tbody>
       </table>
-      <p className="hint" style={{fontSize:11.5, color:'var(--muted)', marginTop:10}}>Editing the target and tabbing out saves it.</p>
+      <p className="hint" style={{marginTop:10}}>Editing the target and tabbing out saves it.</p>
     </div>
   )
 }

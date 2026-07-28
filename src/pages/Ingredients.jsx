@@ -2,15 +2,16 @@ import { useState } from 'react'
 import { useTable } from '../lib/data'
 import { UNITS, UNIT_KEYS } from '../lib/units'
 import { useSettings } from '../lib/settings.jsx'
-import { unitCostBase, money, initials, CHIP_COLORS } from '../lib/costing'
+import { unitCostBase, money, CHIP_COLORS } from '../lib/costing'
 import { Icon } from '../lib/icons.jsx'
+import Chip from '../components/Chip.jsx'
+import { uploadImage, deleteImage } from '../lib/upload'
 
 export default function Ingredients() {
   const { settings } = useSettings()
-  const { rows, loading, insert, update, remove } = useTable('ingredients', 'name')
+  const { rows, loading, insert, update, remove: baseRemove } = useTable('ingredients', 'name')
   const [f, setF] = useState({ name:'', purchase_unit:'g', purchase_qty:'', purchase_price:'', waste_pct:'0', density_g_ml:'' })
 
-  // Edit state
   const [editingId, setEditingId] = useState(null)
   const [draft, setDraft] = useState({})
 
@@ -39,6 +40,26 @@ export default function Ingredients() {
     setEditingId(null); setDraft({})
   }
 
+  async function remove(id) {
+    const row = rows.find(r => r.id === id)
+    if (row?.image_url) {
+      try { await deleteImage(row.image_url) } catch (e) { console.warn('image cleanup failed', e) }
+    }
+    await baseRemove(id)
+  }
+
+  async function handleImageUpload(row, file) {
+    try {
+      const newUrl = await uploadImage(file, 'ingredients', 256)
+      if (row.image_url) {
+        try { await deleteImage(row.image_url) } catch (e) { console.warn('old image cleanup failed', e) }
+      }
+      await update(row.id, { image_url: newUrl })
+    } catch (err) {
+      alert('Upload failed: ' + err.message)
+    }
+  }
+
   async function add() {
     if (!f.name || !f.purchase_qty || !f.purchase_price) { alert('Name, qty and price are required.'); return }
     const color = CHIP_COLORS[rows.length % CHIP_COLORS.length]
@@ -59,7 +80,7 @@ export default function Ingredients() {
       <div className="panel-head">
         <div>
           <h3>Ingredient Master</h3>
-          <p className="sub">Bulk purchase in → unit cost auto-calculated. Set density (g/ml) for cross-unit conversions.</p>
+          <p className="sub">Bulk purchase in → unit cost auto-calculated. Click the chip on any row to upload a photo.</p>
         </div>
       </div>
       <table>
@@ -80,7 +101,7 @@ export default function Ingredients() {
                 <tr key={i.id} style={{background:'#fafaff'}}>
                   <td>
                     <div className="row-name">
-                      <div className="row-chip" style={{background:i.color || '#7367f0'}}>{initials(draft.name || i.name)}</div>
+                      <Chip item={i} size={32} uploadable onUpload={(f) => handleImageUpload(i, f)}/>
                       <input value={draft.name} onChange={e => setDraft({...draft, name: e.target.value})} style={{width:180}}/>
                     </div>
                   </td>
@@ -106,7 +127,12 @@ export default function Ingredients() {
 
             return (
               <tr key={i.id}>
-                <td><div className="row-name"><div className="row-chip" style={{background:i.color || '#7367f0'}}>{initials(i.name)}</div><strong>{i.name}</strong></div></td>
+                <td>
+                  <div className="row-name">
+                    <Chip item={i} size={32} uploadable onUpload={(f) => handleImageUpload(i, f)}/>
+                    <strong>{i.name}</strong>
+                  </div>
+                </td>
                 <td>{UNITS[i.purchase_unit]?.label ?? i.purchase_unit}</td>
                 <td className="num">{i.purchase_qty}</td>
                 <td className="num">{Number(i.purchase_price).toFixed(2)}</td>
@@ -138,6 +164,8 @@ export default function Ingredients() {
         <div className="field"><label>Density g/ml</label><input type="number" step="0.01" value={f.density_g_ml} onChange={e=>setF({...f,density_g_ml:e.target.value})} style={{width:110}} placeholder="opt."/></div>
         <button className="primary" onClick={add}>+ Add Ingredient</button>
       </div>
+
+      <p className="hint" style={{marginTop:14}}>Tip: after adding, click the coloured square on any row to upload a photo of the ingredient.</p>
     </div>
   )
 }

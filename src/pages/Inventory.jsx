@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useTable, useInventory } from '../lib/data'
 import { UNITS } from '../lib/units'
-import { initials } from '../lib/costing'
+import Chip from '../components/Chip.jsx'
 
 export default function Inventory() {
   const { rows: ingredients } = useTable('ingredients', 'name')
@@ -25,7 +25,7 @@ export default function Inventory() {
             const low = stock < i.purchase_qty * 0.25
             return (
               <tr key={i.id}>
-                <td><div className="row-name"><div className="row-chip" style={{background:i.color || '#7367f0'}}>{initials(i.name)}</div><strong>{i.name}</strong></div></td>
+                <td><div className="row-name"><Chip item={i} size={32}/><strong>{i.name}</strong></div></td>
                 <td className="num">
                   <input type="number" step="0.01" defaultValue={stock} style={{width:100, textAlign:'right'}}
                     onBlur={e => {

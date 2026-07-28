@@ -4,9 +4,10 @@ import { useTable } from '../lib/data'
 import { useSettings } from '../lib/settings.jsx'
 import { supabase } from '../lib/supabase'
 import { Icon } from '../lib/icons.jsx'
+import Chip from '../components/Chip.jsx'
 import {
   costPerPortion, suggestedPrice, recipeCostTotal, lineCost,
-  money, initials, CHIP_COLORS,
+  money, CHIP_COLORS,
 } from '../lib/costing'
 
 export default function Dashboard() {
@@ -61,8 +62,12 @@ export default function Dashboard() {
             <button className="cta" onClick={() => nav('/recipes')}>Manage Recipes →</button>
           </div>
         </div>
-        <div className="hero-portrait">
-          <img src="/assets/lily-portrait.png" alt="Lily" loading="eager"/>
+        <div className="hero-art">
+          <div className="hero-halo" aria-hidden="true"/>
+          <div className="hero-confetti c1" aria-hidden="true"/>
+          <div className="hero-confetti c2" aria-hidden="true"/>
+          <div className="hero-confetti c3" aria-hidden="true"/>
+          <img className="hero-portrait-img" src="/assets/lily-portrait.png" alt="Lily" loading="eager"/>
         </div>
       </div>
 
@@ -178,7 +183,7 @@ export default function Dashboard() {
               const color = CHIP_COLORS[idx % CHIP_COLORS.length]
               return (
                 <tr key={r.id}>
-                  <td><div className="row-name"><div className="row-chip" style={{background:color}}>{initials(r.name)}</div><strong>{r.name}</strong></div></td>
+                  <td><div className="row-name"><Chip item={r} size={40} color={color}/><strong>{r.name}</strong></div></td>
                   <td><span className="pill bridge">{r.category || '—'}</span></td>
                   <td className="num">{money(cpp, cur)}</td>
                   <td className="num"><strong>{money(sp, cur)}</strong></td>

@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTable, useBomLines } from '../lib/data'
 import { UNITS, UNIT_KEYS } from '../lib/units'
 import { useSettings } from '../lib/settings.jsx'
-import { lineCost, money, initials } from '../lib/costing'
+import { lineCost, money } from '../lib/costing'
 import { Icon } from '../lib/icons.jsx'
+import Chip from '../components/Chip.jsx'
 import RecipePicker from '../components/RecipePicker'
 
 export default function Bom() {
@@ -100,7 +101,7 @@ export default function Bom() {
               : <span className="pill ok">direct</span>
             return (
               <div key={l.id} className="bom-line">
-                <div className="row-name"><div className="row-chip" style={{background:ing.color || '#7367f0', width:28, height:28, fontSize:11}}>{initials(ing.name)}</div><strong>{ing.name}</strong></div>
+                <div className="row-name"><Chip item={ing} size={28}/><strong>{ing.name}</strong></div>
                 <div className="num">{l.qty} {UNITS[l.unit]?.label}</div>
                 <div>{badge}</div>
                 <div className="num"><strong>{r.ok ? money(r.cost, settings.currency) : '—'}</strong></div>

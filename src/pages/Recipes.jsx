@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useTable } from '../lib/data'
 import { useSettings } from '../lib/settings.jsx'
-import { initials, CHIP_COLORS } from '../lib/costing'
+import { CHIP_COLORS } from '../lib/costing'
 import { Icon } from '../lib/icons.jsx'
+import Chip from '../components/Chip.jsx'
+import { uploadImage, deleteImage } from '../lib/upload'
 
 export default function Recipes() {
   const { settings } = useSettings()
-  const { rows, loading, insert, update, remove } = useTable('recipes', 'name')
+  const { rows, loading, insert, update, remove: baseRemove } = useTable('recipes', 'name')
   const [f, setF] = useState({ name:'', category:'', yield_portions:'', target_food_cost_pct:'' })
 
   const [editingId, setEditingId] = useState(null)
@@ -33,6 +35,26 @@ export default function Recipes() {
     setEditingId(null); setDraft({})
   }
 
+  async function remove(id) {
+    const row = rows.find(r => r.id === id)
+    if (row?.image_url) {
+      try { await deleteImage(row.image_url) } catch (e) { console.warn('image cleanup failed', e) }
+    }
+    await baseRemove(id)
+  }
+
+  async function handleImageUpload(row, file) {
+    try {
+      const newUrl = await uploadImage(file, 'recipes', 640)
+      if (row.image_url) {
+        try { await deleteImage(row.image_url) } catch (e) { console.warn('old image cleanup failed', e) }
+      }
+      await update(row.id, { image_url: newUrl })
+    } catch (err) {
+      alert('Upload failed: ' + err.message)
+    }
+  }
+
   async function add() {
     if (!f.name || !f.yield_portions) { alert('Name and yield required.'); return }
     await insert({
@@ -47,7 +69,10 @@ export default function Recipes() {
   return (
     <div className="panel">
       <div className="panel-head">
-        <div><h3>Recipe Master</h3><p className="sub">Cakes and bakes with yield (portions per batch) and target food-cost %.</p></div>
+        <div>
+          <h3>Recipe Master</h3>
+          <p className="sub">Cakes and bakes with yield and target food-cost %. Click the tile on any row to upload a photo of the finished product.</p>
+        </div>
       </div>
       <table>
         <thead><tr><th>Recipe</th><th>Category</th><th className="num">Yield</th><th className="num">Target FC%</th><th></th></tr></thead>
@@ -63,7 +88,7 @@ export default function Recipes() {
                 <tr key={r.id} style={{background:'#fafaff'}}>
                   <td>
                     <div className="row-name">
-                      <div className="row-chip" style={{background:color}}>{initials(draft.name || r.name)}</div>
+                      <Chip item={r} size={48} color={color} uploadable onUpload={(f) => handleImageUpload(r, f)}/>
                       <input value={draft.name} onChange={e => setDraft({...draft, name: e.target.value})} style={{width:240}}/>
                     </div>
                   </td>
@@ -82,7 +107,12 @@ export default function Recipes() {
 
             return (
               <tr key={r.id}>
-                <td><div className="row-name"><div className="row-chip" style={{background:color}}>{initials(r.name)}</div><strong>{r.name}</strong></div></td>
+                <td>
+                  <div className="row-name">
+                    <Chip item={r} size={48} color={color} uploadable onUpload={(f) => handleImageUpload(r, f)}/>
+                    <strong>{r.name}</strong>
+                  </div>
+                </td>
                 <td><span className="pill bridge">{r.category || '—'}</span></td>
                 <td className="num">{r.yield_portions}</td>
                 <td className="num">{r.target_food_cost_pct}%</td>
