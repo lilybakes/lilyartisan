@@ -1,69 +1,76 @@
-# Lily Artisan — BakerNomics facelift + Logo upload
+# Lily Artisan — Header Links + Inline Edit
 
-This is a **delta drop-in** on top of the existing `lilyartisan` repo. It swaps the sidebar brand and hero portrait for the BakerNomics design, and makes the logo actually uploadable via Settings.
+Delta drop-in on top of the existing `lilyartisan` repo. Three additions:
+
+1. **Explains the top icons** — the globe and grid slots become **configurable header links** set up in Settings.
+2. **Adds inline edit** to Ingredients, Recipes, and Recipe BOM lines.
+3. **Adds a Settings sub-navigation** (General / Header Links / Coming Soon) — foundation for a full nav module later.
 
 ## What's in this zip
 
 ```
-public/assets/
-  lily-mark-white.png       (the L stamp, white on transparent)
-  lily-portrait.png         (the Pixar-style portrait, transparent bg)
-
 src/
-  components/
-    Sidebar.jsx             (updated — new lockup)
-    Topbar.jsx              (updated — portrait avatar)
-  pages/
-    Dashboard.jsx           (updated — portrait hero panel)
-    Settings.jsx            (updated — app name + working logo upload)
   lib/
-    settings.jsx            (updated defaults)
-  styles.css                (updated — .brand, .hero, .avatar)
+    icons.jsx           (extended: ~30 icons + exports ICON_NAMES for picker)
+    data.js             (added updateLine to useBomLines)
+  components/
+    IconPicker.jsx      (NEW — visual grid picker with popover)
+    Topbar.jsx          (updated — reads header_links from DB)
+  pages/
+    Settings.jsx        (tabbed: General / Header Links / Coming Soon)
+    Ingredients.jsx     (inline edit)
+    Recipes.jsx         (inline edit)
+    Bom.jsx             (inline edit)
+  styles.css            (new styles: tabs, icon picker, edit buttons, header-link row)
 
 supabase/
-  schema-update.sql         (adds 2 columns to settings)
+  schema-update-v3.sql  (new `header_links` table + 2 seed rows)
 ```
 
 ## Apply in this order
 
-### 1. Run the schema patch in Supabase
+### 1. Supabase
+SQL Editor → paste `supabase/schema-update-v3.sql` → **Run**. Safe to re-run.
 
-SQL Editor → paste in `supabase/schema-update.sql` → **Run**.
-It adds `app_name` (default `Baker|Nomics`) and `logo_data_url` (nullable) to the `settings` row.
+Creates the `header_links` table with RLS + two seed rows (Language and Apps) so the header still shows two icons on first load.
 
-### 2. Upload the files to GitHub
+### 2. GitHub
+Overwrite these files at the same paths:
+- `src/lib/icons.jsx`
+- `src/lib/data.js`
+- `src/components/Topbar.jsx`
+- `src/pages/Settings.jsx`
+- `src/pages/Ingredients.jsx`
+- `src/pages/Recipes.jsx`
+- `src/pages/Bom.jsx`
+- `src/styles.css`
 
-On the `lilyartisan` repo:
+Add new file:
+- `src/components/IconPicker.jsx`
 
-- **Add file → Upload files** → drag in the `public` folder (creates `public/assets/lily-mark-white.png` and `public/assets/lily-portrait.png`).
-- Then upload each modified file to its correct path:
-  - `src/components/Sidebar.jsx` (overwrites)
-  - `src/components/Topbar.jsx` (overwrites)
-  - `src/pages/Dashboard.jsx` (overwrites)
-  - `src/pages/Settings.jsx` (overwrites)
-  - `src/lib/settings.jsx` (overwrites)
-  - `src/styles.css` (overwrites)
+### 3. Netlify auto-deploys
+Hard-refresh once the build finishes.
 
-You can also delete `src/components/CakeSVG.jsx` — no longer referenced.
+## What Lily sees after this
 
-### 3. Netlify redeploys automatically
+**Top-right icons** — same globe + grid + bell as before, but clicking globe or grid now takes her to Settings → Header Links (until she configures a URL). Once she puts a URL in, clicking opens it (external URLs in a new tab by default).
 
-Hard-refresh once it finishes (Ctrl/Cmd+Shift+R).
+**Settings page** — three tabs at the top:
+- **General**: brand & identity, logo upload (all same as before)
+- **Header Links**: list of the icon slots. For each: pick an icon from a visual grid (~30 to choose from), label (for tooltip), URL, and a "new tab" toggle. Add more slots with `+ Add Link`. Delete slots with the trash icon.
+- **Coming Soon**: placeholders
 
-## How it works
+**Editing data** — every row in Ingredients, Recipes, and Recipe BOM now has a pencil button next to the trash. Click pencil → the row's cells become inputs → Save or Cancel.
 
-**Sidebar lockup** — navy 42×42 circle stamp holding the mark image, wordmark to the right split on the `|` character (default `Baker|Nomics` → "Baker" navy, "Nomics" violet), and the business name in uppercase kicker beneath.
+Inventory and Pricing already had inline editing (stock qty and target FC%), so no change there.
 
-**Hero portrait** — the greeting card loses its right padding; a 250px-wide gradient panel (indigo→pink, 160°) bleeds to the card's right edge with `overflow: hidden`. The portrait sits absolutely-positioned at 500px tall inside — the clipping is what produces the head-and-shoulders crop.
+Yield & Cost and Reports are read-only aggregations — nothing to edit on those pages.
 
-**Top-bar avatar** — same portrait tightly cropped inside a 38px circle with the online-status ring.
+## Suggested first header links
 
-**Logo upload (Settings → Logo)** — user picks any image, it's resized to 256px on longest side via canvas, converted to a PNG data URL, and saved into `settings.logo_data_url`. The sidebar reads that first, falling back to `/assets/lily-mark-white.png`. "Remove" clears the field back to null and the default returns.
+For a bakery:
+- WhatsApp Business (icon: `phone` or `message`) → `https://wa.me/60xxxxxxxx`
+- Instagram (icon: `camera` or `image`) → `https://instagram.com/lilyartisan`
+- Storefront / order form (icon: `external` or `shield`) → your public URL
 
-**App name and business name** are edited on the Brand & Identity card in Settings. The pipe in "App Name" is the color split — `Sweet|Bake` would render "Sweet" navy, "Bake" violet.
-
-## Notes
-
-- The hero portrait itself isn't uploadable (yet). It's a bundled asset. There's a placeholder tile in Settings under "Coming Soon" for when you want that added.
-- The favicon set from the design zip is the same one already installed — no change needed there.
-- Auto-resize keeps uploaded logos small; typical output is under 30KB even for large source images.
+Or use them as internal shortcuts (`link` icon → `/costing`, etc.). It's just data.
