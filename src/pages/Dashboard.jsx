@@ -4,7 +4,6 @@ import { useTable } from '../lib/data'
 import { useSettings } from '../lib/settings.jsx'
 import { supabase } from '../lib/supabase'
 import { Icon } from '../lib/icons.jsx'
-import CakeSVG from '../components/CakeSVG.jsx'
 import {
   costPerPortion, suggestedPrice, recipeCostTotal, lineCost,
   money, initials, CHIP_COLORS,
@@ -39,7 +38,6 @@ export default function Dashboard() {
       }, 0) / recipes.length
     : 0
 
-  // primary recipe: first one
   const primary = recipes[0]
   const primaryLines = primary ? (bomByRecipe[primary.id] || []) : []
   const contributions = primaryLines.map(l => {
@@ -56,12 +54,16 @@ export default function Dashboard() {
   return (
     <>
       <div className="hero">
-        <div>
+        <div className="hero-text">
           <h2 className="greet">Welcome back, {settings.owner_name} <span>👋</span></h2>
           <p>Your bakery costing dashboard. Change any ingredient price and it ripples through every recipe and suggested selling price automatically.</p>
-          <button className="cta" onClick={() => nav('/recipes')}>Manage Recipes →</button>
+          <div style={{paddingTop:6}}>
+            <button className="cta" onClick={() => nav('/recipes')}>Manage Recipes →</button>
+          </div>
         </div>
-        <div className="hero-illus"><CakeSVG/></div>
+        <div className="hero-portrait">
+          <img src="/assets/lily-portrait.png" alt="Lily" loading="eager"/>
+        </div>
       </div>
 
       <div className="stat-row">

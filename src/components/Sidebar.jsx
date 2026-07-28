@@ -1,5 +1,6 @@
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { Icon } from '../lib/icons.jsx'
+import { useSettings } from '../lib/settings.jsx'
 
 const NAV = [
   { to:'/',            label:'Dashboard',    icon:'dash',        color:'accent' },
@@ -12,12 +13,32 @@ const NAV = [
 ]
 
 export default function Sidebar() {
+  const { settings } = useSettings()
+
+  // Wordmark: split on "|" — first part navy, second part violet.
+  // Falls back to whole-string single-color if no delimiter present.
+  const [markPart1, markPart2] = (settings.app_name || 'Baker|Nomics').split('|')
+
+  // Logo: user-uploaded logo overrides bundled Lily mark.
+  const logoSrc = settings.logo_data_url || '/assets/lily-mark-white.png'
+
+  const kicker = (settings.business_name || 'Lily Artisan').toUpperCase()
+
   return (
     <aside>
-      <div className="brand">
-        <div className="brand-logo">🎂</div>
-        <div className="brand-name">Lily<span>Artisan</span></div>
-      </div>
+      <Link to="/" className="brand" style={{textDecoration:'none', color:'inherit'}}>
+        <div className="brand-stamp">
+          <img src={logoSrc} alt="" />
+        </div>
+        <div className="brand-text">
+          <div className="brand-wordmark">
+            <span className="part1">{markPart1}</span>
+            {markPart2 && <span className="part2">{markPart2}</span>}
+          </div>
+          <div className="brand-kicker">{kicker}</div>
+        </div>
+      </Link>
+
       <div className="nav-section">Main</div>
       {NAV.map(n => (
         <NavLink

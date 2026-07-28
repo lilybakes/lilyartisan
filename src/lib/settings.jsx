@@ -5,6 +5,8 @@ const DEFAULTS = {
   id: 1,
   owner_name: 'Lily',
   business_name: 'Lily Artisan',
+  app_name: 'Baker|Nomics',
+  logo_data_url: null,
   currency: 'RM',
   default_target_food_cost_pct: 28,
 }
@@ -22,7 +24,6 @@ export function SettingsProvider({ children }) {
   const load = useCallback(async () => {
     const { data, error } = await supabase.from('settings').select('*').eq('id', 1).single()
     if (error) {
-      // If settings table missing or empty, fall back to defaults silently.
       console.warn('Settings load failed, using defaults:', error.message)
       setSettings(DEFAULTS)
     } else {
