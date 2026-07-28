@@ -1,17 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTable, useBomLines } from '../lib/data'
 import { UNITS, UNIT_KEYS } from '../lib/units'
-import { lineCost, money } from '../lib/costing'
+import { useSettings } from '../lib/settings.jsx'
+import { lineCost, money, initials } from '../lib/costing'
+import { Icon } from '../lib/icons.jsx'
 import RecipePicker from '../components/RecipePicker'
 
 export default function Bom() {
+  const { settings } = useSettings()
   const { rows: recipes } = useTable('recipes', 'name')
   const { rows: ingredients } = useTable('ingredients', 'name')
   const [recipeId, setRecipeId] = useState(null)
 
-  useEffect(() => {
-    if (!recipeId && recipes.length) setRecipeId(recipes[0].id)
-  }, [recipes, recipeId])
+  useEffect(() => { if (!recipeId && recipes.length) setRecipeId(recipes[0].id) }, [recipes, recipeId])
 
   const { lines, addLine, removeLine } = useBomLines(recipeId)
   const ingById = useMemo(() => Object.fromEntries(ingredients.map(i => [i.id, i])), [ingredients])
@@ -31,13 +32,17 @@ export default function Bom() {
 
   return (
     <>
-      <RecipePicker recipes={recipes} value={recipeId} onChange={setRecipeId} />
+      <RecipePicker recipes={recipes} value={recipeId} onChange={setRecipeId}/>
       <div className="panel">
-        <h2>Recipe BOM</h2>
-        <p className="sub">Use whatever unit the recipe is written in — the module converts it against the ingredient's purchase unit automatically.</p>
+        <div className="panel-head">
+          <div><h3>Recipe BOM</h3><p className="sub">Use whatever unit the recipe is written in — conversion happens against the ingredient's purchase unit.</p></div>
+        </div>
         <div className="conv-box">
-          <b>How conversion works:</b> g ↔ kg, oz ↔ lb, and ml ↔ L ↔ tsp/tbsp/cup convert exactly.
-          Crossing mass ↔ volume — e.g. <b>cups of butter</b> against a <b>kg</b> purchase — needs a density (g/ml) set on the ingredient. Missing density is flagged, not silently guessed.
+          <div className="conv-icon"><Icon name="arrows" size={16}/></div>
+          <div>
+            <b>Conversion rules:</b> g ↔ kg, oz ↔ lb, ml ↔ L ↔ tsp/tbsp/cup convert exactly.
+            Crossing mass ↔ volume (e.g. <b>cups of butter</b> against a <b>kg</b> purchase) uses each ingredient's density. Missing density is flagged, not silently guessed.
+          </div>
         </div>
 
         <div>
@@ -46,27 +51,27 @@ export default function Bom() {
             const ing = ingById[l.ingredient_id]
             if (!ing) return (
               <div key={l.id} className="bom-line">
-                <div>(deleted ingredient)</div><div></div><div></div><div></div>
+                <div>(deleted ingredient)</div><div/><div/><div/>
                 <button className="ghost" onClick={() => removeLine(l.id)}>Remove</button>
               </div>
             )
             const r = lineCost(ing, l.qty, l.unit)
             const badge = !r.ok ? <span className="pill err">no conversion</span>
-              : r.bridged ? <span className="pill bridge">density-bridged</span>
+              : r.bridged ? <span className="pill bridge">via density</span>
               : <span className="pill ok">direct</span>
             return (
               <div key={l.id} className="bom-line">
-                <div>{ing.name}</div>
+                <div className="row-name"><div className="row-chip" style={{background:ing.color || '#7367f0', width:28, height:28, fontSize:11}}>{initials(ing.name)}</div><strong>{ing.name}</strong></div>
                 <div className="num">{l.qty} {UNITS[l.unit]?.label}</div>
                 <div>{badge}</div>
-                <div className="num">{r.ok ? money(r.cost) : '—'}</div>
+                <div className="num"><strong>{r.ok ? money(r.cost, settings.currency) : '—'}</strong></div>
                 <button className="ghost" onClick={() => removeLine(l.id)}>Remove</button>
               </div>
             )
           })}
         </div>
 
-        <div className="bom-line" style={{marginTop:10}}>
+        <div className="bom-line" style={{marginTop:14, background:'#fafaff', borderStyle:'dashed'}}>
           <select value={f.ingredient_id} onChange={e=>setF({...f,ingredient_id:e.target.value})}>
             {ingredients.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
           </select>
@@ -74,7 +79,7 @@ export default function Bom() {
           <select value={f.unit} onChange={e=>setF({...f,unit:e.target.value})}>
             {UNIT_KEYS.map(u => <option key={u} value={u}>{UNITS[u].label}</option>)}
           </select>
-          <div></div>
+          <div/>
           <button className="primary" onClick={add}>+ Add</button>
         </div>
       </div>

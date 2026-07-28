@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useTable, useInventory } from '../lib/data'
 import { UNITS } from '../lib/units'
+import { initials } from '../lib/costing'
 
 export default function Inventory() {
   const { rows: ingredients } = useTable('ingredients', 'name')
@@ -9,8 +10,12 @@ export default function Inventory() {
 
   return (
     <div className="panel">
-      <h2>Inventory <span style={{fontWeight:400,color:'var(--muted)',fontSize:13}}>(optional module)</span></h2>
-      <p className="sub">Stock on hand in each ingredient's purchase unit. Flags "low" when under 25% of one purchase batch.</p>
+      <div className="panel-head">
+        <div>
+          <h3>Inventory <span style={{fontWeight:400, color:'var(--muted)', fontSize:13}}>(optional)</span></h3>
+          <p className="sub">Stock on hand per ingredient. Flags "low" under 25% of one purchase batch.</p>
+        </div>
+      </div>
       <table>
         <thead><tr><th>Ingredient</th><th className="num">Stock on hand</th><th>Status</th></tr></thead>
         <tbody>
@@ -20,9 +25,9 @@ export default function Inventory() {
             const low = stock < i.purchase_qty * 0.25
             return (
               <tr key={i.id}>
-                <td>{i.name}</td>
+                <td><div className="row-name"><div className="row-chip" style={{background:i.color || '#7367f0'}}>{initials(i.name)}</div><strong>{i.name}</strong></div></td>
                 <td className="num">
-                  <input type="number" step="0.01" defaultValue={stock} style={{width:90,textAlign:'right'}}
+                  <input type="number" step="0.01" defaultValue={stock} style={{width:100, textAlign:'right'}}
                     onBlur={e => {
                       const v = parseFloat(e.target.value) || 0
                       if (v !== stock) setStock(i.id, v)

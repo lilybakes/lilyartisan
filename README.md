@@ -1,60 +1,54 @@
-# Cake Costing & BOM
+# Lily Artisan — Cake Costing & BOM
 
 React + Vite frontend, Supabase Postgres backend, Netlify hosting.
 
 ## What's inside
 
-- `src/lib/units.js` — dimensional unit conversion (g/kg/oz/lb, ml/L/tsp/tbsp/cup, pcs) with density bridging for mass ↔ volume.
-- `src/lib/costing.js` — pure costing functions: unit cost, line cost, cost per portion, suggested price.
-- `src/lib/data.js` — Supabase CRUD hooks (`useTable`, `useBomLines`, `useInventory`).
-- `src/pages/*` — one page per module (Ingredients, Recipes, BOM, Costing, Pricing, Inventory, Reports).
-- `supabase/schema.sql` — tables, RLS, seed row.
+- **Dashboard** — greeting (uses your name from Settings), colored stat cards, ingredient cost bar chart, margin gauge, recipe overview table.
+- **Ingredient Master** — bulk purchase in → unit cost auto-calculated (with waste %), optional density (g/ml) for mass ↔ volume bridging.
+- **Recipe Master** — cakes/bakes with yield and target food-cost %.
+- **Recipe BOM** — link ingredients to a recipe in any unit; conversion handled automatically.
+- **Yield & Costing** — total batch cost, portions, cost per portion.
+- **Selling Price** — suggested price = cost per portion ÷ target FC%. Editable per-recipe.
+- **Inventory** — optional stock-on-hand tracking with low-stock flag.
+- **Settings** — owner name, business name, currency, default target food-cost %.
 
-## 1. Set up Supabase
+## Unit conversion
 
-1. Create a new project at supabase.com.
-2. Open the SQL editor and paste in `supabase/schema.sql`. Run it.
-3. In **Project Settings → API**, copy the **Project URL** and the **anon public** key.
+- Same-dimension: g ↔ kg ↔ oz ↔ lb, and ml ↔ L ↔ tsp ↔ tbsp ↔ cup are exact.
+- Mass ↔ volume (e.g. "1 cup butter" against a kg purchase) uses each ingredient's density in g/ml. Missing density is flagged in the UI, not silently guessed.
 
-RLS is on with a permissive policy since it's a single-user setup. When you add auth later, replace the `anon full access` policies with owner-scoped ones.
+## Setup — all online
 
-## 2. Local dev
+### 1. Supabase
 
-```bash
-cp .env.example .env.local
-# paste your Supabase URL + anon key into .env.local
-npm install
-npm run dev
-```
+Already provisioned at `https://zbciulldxdoegndvywgf.supabase.co` (project: `lilybakes BOM`).
 
-## 3. Push to GitHub
+Open **SQL Editor** → paste in `supabase/schema.sql` → **Run**. This creates:
+- `settings` (singleton row: owner_name, business_name, currency, default_target_food_cost_pct)
+- `ingredients`, `recipes`, `bom_lines`, `inventory`
+- RLS enabled with anon-key permissive policies (single-user, no login yet)
+- One seed recipe
 
-```bash
-git init
-git add .
-git commit -m "Initial cake costing app"
-git branch -M main
-git remote add origin https://github.com/<you>/cake-costing.git
-git push -u origin main
-```
+Safe to re-run — everything uses `IF NOT EXISTS`.
 
-`.env.local` is gitignored — never commit it.
+### 2. GitHub
 
-## 4. Deploy to Netlify
+Repo: `github.com/lilybakes/lilyartisan`. Upload contents of this folder to the repo root.
 
-1. On Netlify: **Add new site → Import from GitHub**, pick this repo.
-2. Build settings auto-detect from `netlify.toml`:
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-3. In **Site settings → Environment variables**, add:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
-4. Trigger a deploy. Every push to `main` redeploys.
+### 3. Netlify
 
-The `netlify.toml` also has an SPA redirect so React Router deep links work.
+- Site should already be connected to the repo.
+- Env vars under **Site settings → Environment variables**:
+  - `VITE_SUPABASE_URL` = `https://zbciulldxdoegndvywgf.supabase.co`
+  - `VITE_SUPABASE_ANON_KEY` = (from Supabase → Settings → API)
+- Build settings auto-read from `netlify.toml`: `npm run build`, publish `dist`.
 
-## Notes on units
+## Customization
 
-- Same-dimension conversions (g↔kg, ml↔L↔cup, oz↔lb) are exact.
-- Mass ↔ volume (e.g. "1 cup butter" costed against a kg purchase) uses each ingredient's `density_g_ml`. Without a density, that line is flagged in the UI instead of silently miscosted.
-- Typical densities: water 1.00, milk 1.03, butter 0.96, oil ~0.92, caster sugar ~0.85, cake flour ~0.53, cocoa powder ~0.5.
+Everything user-facing (name in greeting, currency symbol on prices, default food-cost %) lives in the **Settings** page — no code changes needed.
+
+## Notes
+
+- Placeholder branding "SweetCost" and "Anthony" from earlier drafts are gone; the app addresses whoever is set as Owner Name in Settings.
+- Typical densities to fill in when adding ingredients: water 1.00, milk 1.03, butter 0.96, oil ~0.92, caster sugar ~0.85, cake flour ~0.53, cocoa powder ~0.5.

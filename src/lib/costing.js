@@ -1,31 +1,22 @@
 import { UNITS, convert } from './units'
 
-// Cost per BASE unit of the ingredient's own purchase dimension
-// (per g if purchased by mass, per ml if by volume, per pcs if by count).
 export function unitCostBase(ing) {
   const u = UNITS[ing.purchase_unit]
   if (!u) return 0
-  const purchaseBaseQty = ing.purchase_qty * u.toBase * (1 - (ing.waste_pct || 0) / 100)
-  if (purchaseBaseQty <= 0) return 0
-  return ing.purchase_price / purchaseBaseQty
+  const q = ing.purchase_qty * u.toBase * (1 - (ing.waste_pct || 0) / 100)
+  return q > 0 ? ing.purchase_price / q : 0
 }
 
-// Cost of a single BOM line, converting the recipe's usage unit into
-// the ingredient's purchase dimension (density-bridging when needed).
 export function lineCost(ing, qty, unit) {
-  const purchaseU = UNITS[ing.purchase_unit]
-  const useU = UNITS[unit]
-  if (!purchaseU || !useU) return { ok: false, reason: 'unknown unit' }
+  const pu = UNITS[ing.purchase_unit], uu = UNITS[unit]
+  if (!pu || !uu) return { ok: false, reason: 'unknown unit' }
   const baseCost = unitCostBase(ing)
-
-  if (purchaseU.dim === useU.dim) {
-    const baseQty = qty * useU.toBase
-    return { ok: true, cost: baseQty * baseCost, bridged: false }
+  if (pu.dim === uu.dim) {
+    return { ok: true, cost: qty * uu.toBase * baseCost, bridged: false }
   }
-
-  const conv = convert(qty, unit, ing.purchase_unit, ing.density_g_ml)
-  if (!conv.ok) return { ok: false, reason: conv.reason }
-  return { ok: true, cost: conv.value * purchaseU.toBase * baseCost, bridged: conv.bridged }
+  const c = convert(qty, unit, ing.purchase_unit, ing.density_g_ml)
+  if (!c.ok) return { ok: false, reason: c.reason }
+  return { ok: true, cost: c.value * pu.toBase * baseCost, bridged: c.bridged }
 }
 
 export function recipeCostTotal(bomLines, ingredientsById) {
@@ -48,6 +39,13 @@ export function suggestedPrice(recipe, bomLines, ingredientsById) {
   return pct > 0 ? cpp / pct : 0
 }
 
-export function money(n) {
-  return 'RM ' + (isFinite(n) ? n : 0).toFixed(2)
+// Currency-aware money formatter. Default RM for backwards-compat.
+export function money(n, currency = 'RM') {
+  return `${currency} ${(isFinite(n) ? n : 0).toFixed(2)}`
 }
+
+export function initials(s) {
+  return s.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()
+}
+
+export const CHIP_COLORS = ['#7367f0', '#00cfe8', '#ff9f43', '#28c76f', '#ff6b9d', '#a855f7']

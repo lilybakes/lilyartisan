@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTable, useBomLines } from '../lib/data'
 import { UNITS } from '../lib/units'
-import { costPerPortion, recipeCostTotal, lineCost, money } from '../lib/costing'
+import { useSettings } from '../lib/settings.jsx'
+import { Icon } from '../lib/icons.jsx'
+import { costPerPortion, recipeCostTotal, lineCost, suggestedPrice, money, initials } from '../lib/costing'
 import RecipePicker from '../components/RecipePicker'
 
 export default function Costing() {
+  const { settings } = useSettings()
   const { rows: recipes } = useTable('recipes', 'name')
   const { rows: ingredients } = useTable('ingredients', 'name')
   const [recipeId, setRecipeId] = useState(null)
@@ -18,21 +21,36 @@ export default function Costing() {
 
   const total = recipeCostTotal(lines, ingById)
   const cpp = costPerPortion(recipe, lines, ingById)
+  const sp = suggestedPrice(recipe, lines, ingById)
 
   return (
     <>
       <RecipePicker recipes={recipes} value={recipeId} onChange={setRecipeId}/>
-      <div className="panel">
-        <h2>Yield &amp; Costing — {recipe.name}</h2>
-        <div className="statrow">
-          <div className="stat"><div className="v">{money(total)}</div><div className="l">Total batch cost</div></div>
-          <div className="stat"><div className="v">{recipe.yield_portions}</div><div className="l">Portions per batch</div></div>
-          <div className="stat"><div className="v">{money(cpp)}</div><div className="l">Cost per portion</div></div>
+      <div className="metric-row">
+        <div className="metric a">
+          <div className="m-icn"><Icon name="costing" size={24}/></div>
+          <div><div className="l">Total Batch Cost</div><div className="v">{money(total, settings.currency)}</div></div>
         </div>
-        <table style={{marginTop:10}}>
+        <div className="metric b">
+          <div className="m-icn"><Icon name="inventory" size={24}/></div>
+          <div><div className="l">Portions per Batch</div><div className="v">{recipe.yield_portions}</div></div>
+        </div>
+        <div className="metric c">
+          <div className="m-icn"><Icon name="pricing" size={24}/></div>
+          <div><div className="l">Cost per Portion</div><div className="v">{money(cpp, settings.currency)}</div></div>
+        </div>
+      </div>
+      <div className="panel">
+        <div className="panel-head">
+          <div>
+            <h3>Cost Breakdown</h3>
+            <p className="sub">{recipe.name} — suggested price <strong>{money(sp, settings.currency)}</strong> at {recipe.target_food_cost_pct}% target food cost</p>
+          </div>
+        </div>
+        <table>
           <thead><tr><th>Ingredient</th><th className="num">Qty used</th><th>Conversion</th><th className="num">Line cost</th></tr></thead>
           <tbody>
-            {lines.length === 0 && <tr><td colSpan="4" className="empty">No BOM lines — add ingredients in Recipe BOM.</td></tr>}
+            {lines.length === 0 && <tr><td colSpan="4" className="empty">No BOM lines yet.</td></tr>}
             {lines.map(l => {
               const ing = ingById[l.ingredient_id]
               if (!ing) return <tr key={l.id}><td>(deleted)</td><td className="num">{l.qty} {l.unit}</td><td>—</td><td className="num">—</td></tr>
@@ -42,10 +60,10 @@ export default function Costing() {
                 : <span className="pill ok">exact</span>
               return (
                 <tr key={l.id}>
-                  <td>{ing.name}</td>
+                  <td><div className="row-name"><div className="row-chip" style={{background:ing.color || '#7367f0'}}>{initials(ing.name)}</div><strong>{ing.name}</strong></div></td>
                   <td className="num">{l.qty} {UNITS[l.unit]?.label}</td>
                   <td>{badge}</td>
-                  <td className="num">{r.ok ? money(r.cost) : '—'}</td>
+                  <td className="num"><strong>{r.ok ? money(r.cost, settings.currency) : '—'}</strong></td>
                 </tr>
               )
             })}

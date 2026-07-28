@@ -1,17 +1,15 @@
 import { useEffect, useState, useCallback } from 'react'
 import { supabase } from './supabase'
 
-// Generic list hook — fetches all rows from a table, exposes CRUD.
 export function useTable(table, orderBy = 'created_at') {
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
   const refresh = useCallback(async () => {
     setLoading(true)
     const { data, error } = await supabase.from(table).select('*').order(orderBy, { ascending: true })
-    if (error) setError(error.message)
-    else setRows(data || [])
+    if (error) console.error(error)
+    setRows(data || [])
     setLoading(false)
   }, [table, orderBy])
 
@@ -37,10 +35,9 @@ export function useTable(table, orderBy = 'created_at') {
     setRows(r => r.filter(x => x.id !== id))
   }
 
-  return { rows, loading, error, refresh, insert, update, remove }
+  return { rows, loading, refresh, insert, update, remove }
 }
 
-// BOM lines for a specific recipe.
 export function useBomLines(recipeId) {
   const [lines, setLines] = useState([])
   const [loading, setLoading] = useState(true)
@@ -70,29 +67,24 @@ export function useBomLines(recipeId) {
   return { lines, loading, refresh, addLine, removeLine }
 }
 
-// Inventory: upsert on stock change.
 export function useInventory() {
   const [rows, setRows] = useState([])
-
   const refresh = useCallback(async () => {
     const { data } = await supabase.from('inventory').select('*')
     setRows(data || [])
   }, [])
-
   useEffect(() => { refresh() }, [refresh])
 
-  const setStock = async (ingredientId, qty) => {
-    const { data, error } = await supabase
-      .from('inventory')
-      .upsert({ ingredient_id: ingredientId, stock_qty: qty, updated_at: new Date().toISOString() })
+  const setStock = async (ingredient_id, qty) => {
+    const { data, error } = await supabase.from('inventory')
+      .upsert({ ingredient_id, stock_qty: qty, updated_at: new Date().toISOString() })
       .select().single()
     if (error) { alert(error.message); return }
     setRows(r => {
-      const idx = r.findIndex(x => x.ingredient_id === ingredientId)
+      const idx = r.findIndex(x => x.ingredient_id === ingredient_id)
       if (idx === -1) return [...r, data]
       const next = [...r]; next[idx] = data; return next
     })
   }
-
   return { rows, refresh, setStock }
 }
