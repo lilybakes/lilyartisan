@@ -3,11 +3,41 @@ import { useTable } from '../lib/data'
 import { UNITS, UNIT_KEYS } from '../lib/units'
 import { useSettings } from '../lib/settings.jsx'
 import { unitCostBase, money, initials, CHIP_COLORS } from '../lib/costing'
+import { Icon } from '../lib/icons.jsx'
 
 export default function Ingredients() {
   const { settings } = useSettings()
-  const { rows, loading, insert, remove } = useTable('ingredients', 'name')
+  const { rows, loading, insert, update, remove } = useTable('ingredients', 'name')
   const [f, setF] = useState({ name:'', purchase_unit:'g', purchase_qty:'', purchase_price:'', waste_pct:'0', density_g_ml:'' })
+
+  // Edit state
+  const [editingId, setEditingId] = useState(null)
+  const [draft, setDraft] = useState({})
+
+  function startEdit(i) {
+    setEditingId(i.id)
+    setDraft({
+      name: i.name,
+      purchase_unit: i.purchase_unit,
+      purchase_qty: String(i.purchase_qty),
+      purchase_price: String(i.purchase_price),
+      waste_pct: String(i.waste_pct ?? 0),
+      density_g_ml: i.density_g_ml === null || i.density_g_ml === undefined ? '' : String(i.density_g_ml),
+    })
+  }
+  function cancelEdit() { setEditingId(null); setDraft({}) }
+  async function saveEdit() {
+    if (!draft.name || !draft.purchase_qty || !draft.purchase_price) { alert('Name, qty and price are required.'); return }
+    await update(editingId, {
+      name: draft.name.trim(),
+      purchase_unit: draft.purchase_unit,
+      purchase_qty: parseFloat(draft.purchase_qty),
+      purchase_price: parseFloat(draft.purchase_price),
+      waste_pct: parseFloat(draft.waste_pct) || 0,
+      density_g_ml: draft.density_g_ml === '' ? null : parseFloat(draft.density_g_ml),
+    })
+    setEditingId(null); setDraft({})
+  }
 
   async function add() {
     if (!f.name || !f.purchase_qty || !f.purchase_price) { alert('Name, qty and price are required.'); return }
@@ -29,7 +59,7 @@ export default function Ingredients() {
       <div className="panel-head">
         <div>
           <h3>Ingredient Master</h3>
-          <p className="sub">Bulk purchase in → unit cost auto-calculated. Set density (g/ml) to enable cross-unit conversions.</p>
+          <p className="sub">Bulk purchase in → unit cost auto-calculated. Set density (g/ml) for cross-unit conversions.</p>
         </div>
       </div>
       <table>
@@ -43,6 +73,37 @@ export default function Ingredients() {
           {rows.map(i => {
             const dim = UNITS[i.purchase_unit]?.dim
             const baseLabel = dim === 'mass' ? 'g' : dim === 'volume' ? 'ml' : 'pcs'
+            const isEditing = editingId === i.id
+
+            if (isEditing) {
+              return (
+                <tr key={i.id} style={{background:'#fafaff'}}>
+                  <td>
+                    <div className="row-name">
+                      <div className="row-chip" style={{background:i.color || '#7367f0'}}>{initials(draft.name || i.name)}</div>
+                      <input value={draft.name} onChange={e => setDraft({...draft, name: e.target.value})} style={{width:180}}/>
+                    </div>
+                  </td>
+                  <td>
+                    <select value={draft.purchase_unit} onChange={e => setDraft({...draft, purchase_unit: e.target.value})} style={{width:80}}>
+                      {UNIT_KEYS.map(u => <option key={u} value={u}>{UNITS[u].label}</option>)}
+                    </select>
+                  </td>
+                  <td className="num"><input type="number" step="0.01" value={draft.purchase_qty} onChange={e => setDraft({...draft, purchase_qty: e.target.value})} style={{width:90, textAlign:'right'}}/></td>
+                  <td className="num"><input type="number" step="0.01" value={draft.purchase_price} onChange={e => setDraft({...draft, purchase_price: e.target.value})} style={{width:100, textAlign:'right'}}/></td>
+                  <td className="num"><input type="number" step="1" value={draft.waste_pct} onChange={e => setDraft({...draft, waste_pct: e.target.value})} style={{width:70, textAlign:'right'}}/></td>
+                  <td className="num"><input type="number" step="0.01" value={draft.density_g_ml} onChange={e => setDraft({...draft, density_g_ml: e.target.value})} placeholder="—" style={{width:80, textAlign:'right'}}/></td>
+                  <td className="num" style={{color:'var(--muted)', fontStyle:'italic'}}>recomputes on save</td>
+                  <td>
+                    <div className="action-cell">
+                      <button className="primary" onClick={saveEdit}>Save</button>
+                      <button className="ghost" onClick={cancelEdit}>Cancel</button>
+                    </div>
+                  </td>
+                </tr>
+              )
+            }
+
             return (
               <tr key={i.id}>
                 <td><div className="row-name"><div className="row-chip" style={{background:i.color || '#7367f0'}}>{initials(i.name)}</div><strong>{i.name}</strong></div></td>
@@ -52,7 +113,12 @@ export default function Ingredients() {
                 <td className="num">{i.waste_pct || 0}%</td>
                 <td className="num">{i.density_g_ml ?? '—'}</td>
                 <td className="num"><strong>{money(unitCostBase(i), settings.currency)}</strong>/{baseLabel}</td>
-                <td><button className="ghost" onClick={() => remove(i.id)}>Remove</button></td>
+                <td>
+                  <div className="action-cell">
+                    <button className="edit" onClick={() => startEdit(i)} title="Edit"><Icon name="edit" size={13}/></button>
+                    <button className="ghost" onClick={() => remove(i.id)} title="Remove"><Icon name="trash" size={13}/></button>
+                  </div>
+                </td>
               </tr>
             )
           })}

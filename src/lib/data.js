@@ -58,13 +58,19 @@ export function useBomLines(recipeId) {
     setLines(l => [...l, data])
   }
 
+  const updateLine = async (id, patch) => {
+    const { data, error } = await supabase.from('bom_lines').update(patch).eq('id', id).select().single()
+    if (error) { alert(error.message); return }
+    setLines(l => l.map(x => x.id === id ? data : x))
+  }
+
   const removeLine = async (id) => {
     const { error } = await supabase.from('bom_lines').delete().eq('id', id)
     if (error) { alert(error.message); return }
     setLines(l => l.filter(x => x.id !== id))
   }
 
-  return { lines, loading, refresh, addLine, removeLine }
+  return { lines, loading, refresh, addLine, updateLine, removeLine }
 }
 
 export function useInventory() {

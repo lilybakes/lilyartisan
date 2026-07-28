@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSettings } from '../lib/settings.jsx'
+import { useTable } from '../lib/data'
+import IconPicker from '../components/IconPicker.jsx'
+import { Icon } from '../lib/icons.jsx'
 
 const CURRENCIES = ['RM', 'USD', 'SGD', 'GBP', 'EUR', 'AUD', 'JPY', 'IDR', 'THB', 'PHP']
 
-// Resize an uploaded image to max 256px on longest side and return a compact PNG data URL.
-// Keeps the settings row lean even if user uploads a 4MB photo.
 function resizeToDataUrl(file, maxSize = 256) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -17,10 +18,8 @@ function resizeToDataUrl(file, maxSize = 256) {
         const w = Math.round(img.width * scale)
         const h = Math.round(img.height * scale)
         const canvas = document.createElement('canvas')
-        canvas.width = w
-        canvas.height = h
-        const ctx = canvas.getContext('2d')
-        ctx.drawImage(img, 0, 0, w, h)
+        canvas.width = w; canvas.height = h
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h)
         resolve(canvas.toDataURL('image/png'))
       }
       img.src = reader.result
@@ -29,7 +28,30 @@ function resizeToDataUrl(file, maxSize = 256) {
   })
 }
 
+const TABS = [
+  { id: 'general', label: 'General' },
+  { id: 'header',  label: 'Header Links' },
+  { id: 'soon',    label: 'Coming Soon' },
+]
+
 export default function Settings() {
+  const [tab, setTab] = useState('general')
+  return (
+    <>
+      <div className="settings-tabs">
+        {TABS.map(t => (
+          <button key={t.id} className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>{t.label}</button>
+        ))}
+      </div>
+      {tab === 'general' && <GeneralTab/>}
+      {tab === 'header'  && <HeaderLinksTab/>}
+      {tab === 'soon'    && <ComingSoonTab/>}
+    </>
+  )
+}
+
+/* ---------------- GENERAL TAB ---------------- */
+function GeneralTab() {
   const { settings, updateSettings, loading } = useSettings()
   const [form, setForm] = useState(settings)
   const [saved, setSaved] = useState(false)
@@ -37,7 +59,6 @@ export default function Settings() {
   const fileRef = useRef(null)
 
   useEffect(() => { setForm(settings) }, [settings])
-
   if (loading) return <div className="panel"><p className="loading">Loading settings…</p></div>
 
   async function save() {
@@ -60,12 +81,8 @@ export default function Settings() {
     try {
       const dataUrl = await resizeToDataUrl(file, 256)
       await updateSettings({ logo_data_url: dataUrl })
-    } catch (err) {
-      alert('Upload failed: ' + err.message)
-    } finally {
-      setUploading(false)
-      if (fileRef.current) fileRef.current.value = ''
-    }
+    } catch (err) { alert('Upload failed: ' + err.message) }
+    finally { setUploading(false); if (fileRef.current) fileRef.current.value = '' }
   }
 
   async function clearLogo() {
@@ -80,46 +97,36 @@ export default function Settings() {
     <>
       <div className="panel">
         <div className="panel-head">
-          <div>
-            <h3>Brand &amp; Identity</h3>
-            <p className="sub">Controls what appears in the sidebar lockup, greeting, and prices across the app.</p>
-          </div>
+          <div><h3>Brand &amp; Identity</h3><p className="sub">Controls the sidebar lockup, greeting, and prices across the app.</p></div>
         </div>
 
         <div className="settings-grid">
           <div className="field">
             <label>Owner Name</label>
             <input value={form.owner_name || ''} onChange={e => setForm({...form, owner_name: e.target.value})} placeholder="Lily"/>
-            <div style={{fontSize:11.5, color:'var(--muted)', marginTop:4}}>Shown in the dashboard greeting, e.g. "Welcome back, {form.owner_name || 'Lily'} 👋"</div>
+            <div className="hint">Shown in the dashboard greeting, e.g. "Welcome back, {form.owner_name || 'Lily'} 👋"</div>
           </div>
-
           <div className="field">
             <label>App Name (wordmark)</label>
             <input value={form.app_name || ''} onChange={e => setForm({...form, app_name: e.target.value})} placeholder="Baker|Nomics"/>
-            <div style={{fontSize:11.5, color:'var(--muted)', marginTop:4}}>
-              Use <code>|</code> to split into two colors: the part before <code>|</code> shows in navy, after in violet.
-              e.g. <code>Baker|Nomics</code>. No pipe = single color.
-            </div>
+            <div className="hint">Use <code>|</code> to split into two colors: navy before, violet after.</div>
           </div>
-
           <div className="field">
             <label>Business Name (kicker)</label>
             <input value={form.business_name || ''} onChange={e => setForm({...form, business_name: e.target.value})} placeholder="Lily Artisan"/>
-            <div style={{fontSize:11.5, color:'var(--muted)', marginTop:4}}>Small uppercase label under the wordmark, e.g. "LILY ARTISAN".</div>
+            <div className="hint">Small uppercase label under the wordmark.</div>
           </div>
-
           <div className="field">
             <label>Currency</label>
             <select value={form.currency || 'RM'} onChange={e => setForm({...form, currency: e.target.value})}>
               {CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
-            <div style={{fontSize:11.5, color:'var(--muted)', marginTop:4}}>Displayed as a prefix on prices and costs. Changing this doesn't convert values.</div>
+            <div className="hint">Prefix on all prices. Changing this doesn't convert values.</div>
           </div>
-
           <div className="field">
             <label>Default Target Food Cost %</label>
             <input type="number" step="1" min="1" max="100" value={form.default_target_food_cost_pct || 28} onChange={e => setForm({...form, default_target_food_cost_pct: e.target.value})}/>
-            <div style={{fontSize:11.5, color:'var(--muted)', marginTop:4}}>Used when creating a new recipe if you don't set one explicitly. Typical bakery range: 25–35%.</div>
+            <div className="hint">Used when creating a new recipe if you don't set one explicitly.</div>
           </div>
         </div>
 
@@ -131,75 +138,139 @@ export default function Settings() {
 
       <div className="panel">
         <div className="panel-head">
-          <div>
-            <h3>Logo</h3>
-            <p className="sub">Sits inside the navy circle in the sidebar. Uploaded logos replace the default mark. Auto-resized to 256px so they don't bloat the database.</p>
-          </div>
+          <div><h3>Logo</h3><p className="sub">Sits inside the navy circle in the sidebar. Auto-resized to 256px.</p></div>
         </div>
-
         <div style={{display:'flex', gap:20, alignItems:'center', flexWrap:'wrap'}}>
-          {/* Preview: the actual stamp as it appears in the sidebar */}
-          <div style={{
-            width:80, height:80, borderRadius:'50%', background:'#2F3349',
-            display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0
-          }}>
+          <div style={{width:80, height:80, borderRadius:'50%', background:'#2F3349', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0}}>
             <img src={currentLogo} alt="Logo preview" style={{height:48, width:'auto'}}/>
           </div>
-
           <div style={{flex:1, minWidth:240}}>
             <div style={{fontSize:13.5, fontWeight:600, marginBottom:4}}>
               {hasCustomLogo ? 'Custom logo (uploaded)' : 'Default: Lily Ong Artisan mark'}
             </div>
-            <div style={{fontSize:12, color:'var(--muted)', marginBottom:10}}>
-              Best result: a white or light shape on a transparent background, square-ish, at least 256×256.
-            </div>
+            <div className="hint" style={{marginBottom:10}}>Best result: a white or light shape on a transparent background, square-ish.</div>
             <div style={{display:'flex', gap:8, flexWrap:'wrap'}}>
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                onChange={onLogoPick}
-                style={{display:'none'}}
-              />
+              <input ref={fileRef} type="file" accept="image/*" onChange={onLogoPick} style={{display:'none'}}/>
               <button className="primary" onClick={() => fileRef.current?.click()} disabled={uploading}>
                 {uploading ? 'Uploading…' : (hasCustomLogo ? 'Replace Logo' : 'Upload Logo')}
               </button>
-              {hasCustomLogo && (
-                <button className="ghost" onClick={clearLogo} disabled={uploading}>
-                  Remove &amp; use default
-                </button>
-              )}
+              {hasCustomLogo && <button className="ghost" onClick={clearLogo} disabled={uploading}>Remove &amp; use default</button>}
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="panel">
-        <div className="panel-head">
-          <div>
-            <h3>Coming Soon</h3>
-            <p className="sub">Placeholders for future customization.</p>
-          </div>
-        </div>
-        <div className="settings-grid">
-          <div style={{padding:16, border:'1px dashed var(--line)', borderRadius:10, color:'var(--muted)'}}>
-            <strong style={{color:'var(--ink)'}}>Tax Rate</strong><br/>
-            Add a tax/GST percentage for invoicing.
-          </div>
-          <div style={{padding:16, border:'1px dashed var(--line)', borderRadius:10, color:'var(--muted)'}}>
-            <strong style={{color:'var(--ink)'}}>Multi-user Access</strong><br/>
-            Invite staff with role-based permissions.
-          </div>
-          <div style={{padding:16, border:'1px dashed var(--line)', borderRadius:10, color:'var(--muted)'}}>
-            <strong style={{color:'var(--ink)'}}>Export / Backup</strong><br/>
-            Download all recipes &amp; ingredients as CSV.
-          </div>
-          <div style={{padding:16, border:'1px dashed var(--line)', borderRadius:10, color:'var(--muted)'}}>
-            <strong style={{color:'var(--ink)'}}>Custom Portrait</strong><br/>
-            Replace the hero portrait &amp; top-bar avatar.
           </div>
         </div>
       </div>
     </>
+  )
+}
+
+/* ---------------- HEADER LINKS TAB ---------------- */
+function HeaderLinksTab() {
+  const { rows: links, loading, insert, update, remove } = useTable('header_links', 'position')
+  // Local drafts per row so edits don't hit Supabase on every keystroke.
+  const [drafts, setDrafts] = useState({})
+
+  useEffect(() => {
+    const d = {}
+    for (const l of links) d[l.id] = { label: l.label || '', url: l.url || '', icon_name: l.icon_name || 'link', open_in_new_tab: l.open_in_new_tab ?? true }
+    setDrafts(d)
+  }, [links])
+
+  const setDraft = (id, patch) => setDrafts(d => ({ ...d, [id]: { ...d[id], ...patch } }))
+
+  async function saveRow(id) {
+    const d = drafts[id]; if (!d) return
+    await update(id, { label: d.label.trim(), url: d.url.trim(), icon_name: d.icon_name, open_in_new_tab: !!d.open_in_new_tab })
+  }
+
+  async function addLink() {
+    const nextPosition = (links.at(-1)?.position || 0) + 1
+    await insert({ position: nextPosition, label: '', url: '', icon_name: 'link', open_in_new_tab: true })
+  }
+
+  async function del(id) {
+    if (!confirm('Remove this header link?')) return
+    await remove(id)
+  }
+
+  return (
+    <div className="panel">
+      <div className="panel-head">
+        <div><h3>Header Links</h3><p className="sub">Icons that appear in the top-right of every page, next to the notification bell. Great for quick links to your business email, storefront, WhatsApp, Instagram, or any internal page. This will grow into a full navigation module later.</p></div>
+        <button className="primary" onClick={addLink}>+ Add Link</button>
+      </div>
+
+      {loading && <p className="empty">Loading…</p>}
+      {!loading && links.length === 0 && <p className="empty">No header links yet.</p>}
+
+      <div style={{display:'flex', flexDirection:'column', gap:12}}>
+        {links.map(l => {
+          const d = drafts[l.id] || { label:'', url:'', icon_name:'link', open_in_new_tab:true }
+          const dirty =
+            d.label !== (l.label || '') ||
+            d.url !== (l.url || '') ||
+            d.icon_name !== (l.icon_name || 'link') ||
+            !!d.open_in_new_tab !== !!l.open_in_new_tab
+          return (
+            <div key={l.id} className="header-link-row">
+              <IconPicker value={d.icon_name} onChange={v => setDraft(l.id, { icon_name: v })}/>
+              <div className="field" style={{flex:'1 1 160px', minWidth:140}}>
+                <label>Label</label>
+                <input value={d.label} onChange={e => setDraft(l.id, { label: e.target.value })} placeholder="e.g. Instagram"/>
+              </div>
+              <div className="field" style={{flex:'2 1 260px', minWidth:200}}>
+                <label>URL</label>
+                <input value={d.url} onChange={e => setDraft(l.id, { url: e.target.value })} placeholder="https://…"/>
+              </div>
+              <label style={{display:'flex', alignItems:'center', gap:6, whiteSpace:'nowrap', fontSize:12, color:'var(--ink-soft)'}}>
+                <input type="checkbox" checked={!!d.open_in_new_tab} onChange={e => setDraft(l.id, { open_in_new_tab: e.target.checked })} style={{width:'auto'}}/>
+                New tab
+              </label>
+              <div style={{display:'flex', gap:6}}>
+                <button className="primary" onClick={() => saveRow(l.id)} disabled={!dirty}>Save</button>
+                <button className="ghost" onClick={() => del(l.id)} title="Remove link"><Icon name="trash" size={14}/></button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="conv-box" style={{marginTop:20}}>
+        <div className="conv-icon"><Icon name="help" size={16}/></div>
+        <div>
+          <b>Tip:</b> Leave the URL blank if you want a placeholder icon slot without a link (clicking it will bring the user back here to configure it). "New tab" is on by default so external links don't navigate away from the app.
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ---------------- COMING SOON TAB ---------------- */
+function ComingSoonTab() {
+  return (
+    <div className="panel">
+      <div className="panel-head">
+        <div><h3>Coming Soon</h3><p className="sub">Placeholders for future customization.</p></div>
+      </div>
+      <div className="settings-grid">
+        <div style={{padding:16, border:'1px dashed var(--line)', borderRadius:10, color:'var(--muted)'}}>
+          <strong style={{color:'var(--ink)'}}>Tax Rate</strong><br/>Add a tax/GST percentage for invoicing.
+        </div>
+        <div style={{padding:16, border:'1px dashed var(--line)', borderRadius:10, color:'var(--muted)'}}>
+          <strong style={{color:'var(--ink)'}}>Multi-user Access</strong><br/>Invite staff with role-based permissions.
+        </div>
+        <div style={{padding:16, border:'1px dashed var(--line)', borderRadius:10, color:'var(--muted)'}}>
+          <strong style={{color:'var(--ink)'}}>Export / Backup</strong><br/>Download all recipes &amp; ingredients as CSV.
+        </div>
+        <div style={{padding:16, border:'1px dashed var(--line)', borderRadius:10, color:'var(--muted)'}}>
+          <strong style={{color:'var(--ink)'}}>Custom Portrait</strong><br/>Replace the hero portrait &amp; top-bar avatar.
+        </div>
+        <div style={{padding:16, border:'1px dashed var(--line)', borderRadius:10, color:'var(--muted)'}}>
+          <strong style={{color:'var(--ink)'}}>Notification Center</strong><br/>Low-stock alerts, price change history, deploy notices.
+        </div>
+        <div style={{padding:16, border:'1px dashed var(--line)', borderRadius:10, color:'var(--muted)'}}>
+          <strong style={{color:'var(--ink)'}}>Full Navigation Module</strong><br/>Reorderable header links, nav groups, per-page shortcuts.
+        </div>
+      </div>
+    </div>
   )
 }

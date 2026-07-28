@@ -14,13 +14,31 @@ export default function Bom() {
 
   useEffect(() => { if (!recipeId && recipes.length) setRecipeId(recipes[0].id) }, [recipes, recipeId])
 
-  const { lines, addLine, removeLine } = useBomLines(recipeId)
+  const { lines, addLine, updateLine, removeLine } = useBomLines(recipeId)
   const ingById = useMemo(() => Object.fromEntries(ingredients.map(i => [i.id, i])), [ingredients])
 
   const [f, setF] = useState({ ingredient_id:'', qty:'', unit:'g' })
   useEffect(() => {
     if (!f.ingredient_id && ingredients.length) setF(s => ({ ...s, ingredient_id: ingredients[0].id }))
   }, [ingredients, f.ingredient_id])
+
+  const [editingId, setEditingId] = useState(null)
+  const [draft, setDraft] = useState({})
+
+  function startEdit(l) {
+    setEditingId(l.id)
+    setDraft({ ingredient_id: l.ingredient_id, qty: String(l.qty), unit: l.unit })
+  }
+  function cancelEdit() { setEditingId(null); setDraft({}) }
+  async function saveEdit() {
+    if (!draft.ingredient_id || !draft.qty) { alert('Pick ingredient and enter qty.'); return }
+    await updateLine(editingId, {
+      ingredient_id: draft.ingredient_id,
+      qty: parseFloat(draft.qty),
+      unit: draft.unit,
+    })
+    setEditingId(null); setDraft({})
+  }
 
   if (recipes.length === 0) return <div className="panel"><p className="empty">Add a recipe first in Recipe Master.</p></div>
 
@@ -49,6 +67,27 @@ export default function Bom() {
           {lines.length === 0 && <p className="empty">No ingredients linked yet.</p>}
           {lines.map(l => {
             const ing = ingById[l.ingredient_id]
+            const isEditing = editingId === l.id
+
+            if (isEditing) {
+              return (
+                <div key={l.id} className="bom-line" style={{background:'#fafaff', borderColor:'#dedafc'}}>
+                  <select value={draft.ingredient_id} onChange={e => setDraft({...draft, ingredient_id: e.target.value})}>
+                    {ingredients.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
+                  </select>
+                  <input type="number" step="0.01" value={draft.qty} onChange={e => setDraft({...draft, qty: e.target.value})}/>
+                  <select value={draft.unit} onChange={e => setDraft({...draft, unit: e.target.value})}>
+                    {UNIT_KEYS.map(u => <option key={u} value={u}>{UNITS[u].label}</option>)}
+                  </select>
+                  <div/>
+                  <div className="action-cell">
+                    <button className="primary" onClick={saveEdit}>Save</button>
+                    <button className="ghost" onClick={cancelEdit}>Cancel</button>
+                  </div>
+                </div>
+              )
+            }
+
             if (!ing) return (
               <div key={l.id} className="bom-line">
                 <div>(deleted ingredient)</div><div/><div/><div/>
@@ -65,7 +104,10 @@ export default function Bom() {
                 <div className="num">{l.qty} {UNITS[l.unit]?.label}</div>
                 <div>{badge}</div>
                 <div className="num"><strong>{r.ok ? money(r.cost, settings.currency) : '—'}</strong></div>
-                <button className="ghost" onClick={() => removeLine(l.id)}>Remove</button>
+                <div className="action-cell">
+                  <button className="edit" onClick={() => startEdit(l)} title="Edit"><Icon name="edit" size={13}/></button>
+                  <button className="ghost" onClick={() => removeLine(l.id)} title="Remove"><Icon name="trash" size={13}/></button>
+                </div>
               </div>
             )
           })}
