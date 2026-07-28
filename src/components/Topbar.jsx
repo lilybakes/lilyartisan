@@ -2,15 +2,25 @@ import { Link } from 'react-router-dom'
 import { Icon } from '../lib/icons.jsx'
 import { useTable } from '../lib/data'
 
-export default function Topbar() {
+export default function Topbar({ onMenuClick }) {
   const { rows: links } = useTable('header_links', 'position')
 
   return (
     <div className="topbar">
+      <button className="hamburger" onClick={onMenuClick} aria-label="Open menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             strokeWidth="2" strokeLinecap="round">
+          <line x1="3" y1="6"  x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+
       <div className="search">
         <Icon name="search" size={18}/>
         <input placeholder="Search recipes, ingredients…"/>
       </div>
+
       <div className="top-icons">
         {links.map(l => {
           const iconEl = <Icon name={l.icon_name || 'link'} size={18}/>
@@ -29,7 +39,6 @@ export default function Topbar() {
               </a>
             )
           }
-          // Not configured yet: link to settings so it's discoverable.
           return (
             <Link key={l.id} to="/settings" className="icn-btn" title={`${title} — click to configure`}>
               {iconEl}

@@ -47,7 +47,7 @@ body{ background:var(--bg); color:var(--ink); font-family:var(--font); font-size
 .app{ display:grid; grid-template-columns:260px 1fr; min-height:100vh; }
 
 /* ============================================================
-   SIDEBAR
+   SIDEBAR (desktop = sticky column; mobile = off-canvas drawer)
    ============================================================ */
 aside{ background:var(--panel); border-right:1px solid var(--line); padding:22px 14px; position:sticky; top:0; height:100vh; overflow-y:auto; }
 .brand{ display:flex; align-items:center; gap:11px; padding:4px 6px 14px; margin-bottom:12px; border-bottom:1px solid #EDEDF2; cursor:pointer; }
@@ -73,7 +73,6 @@ aside{ background:var(--panel); border-right:1px solid var(--line); padding:22px
   letter-spacing:0.7px; padding:16px 12px 8px;
 }
 
-/* Nav rows — unified violet family, no per-item colors */
 .nav-item{
   display:flex; align-items:center; gap:12px; padding:9px 12px; border-radius:8px;
   color:var(--nav-label); cursor:pointer; font-weight:400; font-size:14px;
@@ -88,7 +87,6 @@ aside{ background:var(--panel); border-right:1px solid var(--line); padding:22px
   box-shadow:var(--shadow-active);
 }
 
-/* Chip — 30×30 lavender square */
 .chip{
   width:30px; height:30px; border-radius:9px;
   background:var(--nav-chip-bg);
@@ -99,22 +97,44 @@ aside{ background:var(--panel); border-right:1px solid var(--line); padding:22px
 .chip svg{ width:18px; height:18px; }
 .nav-item.active .chip{ background:rgba(255,255,255,0.22); }
 
-/* Duotone glyph — colors driven from CSS, not inline attrs.
-   .s  = stroke shape.  .f = flood-filled key shape.  .fe = filled eyelet. */
+/* Duotone glyph */
 .nav-glyph .s   { fill:none;             stroke:var(--nav-stroke); }
 .nav-glyph .f   { fill:var(--nav-fill);  stroke:none; }
 .nav-glyph .fe  { fill:#FFFFFF;          stroke:var(--nav-stroke); stroke-width:1.6; }
-
-/* Active state — plain white stroke, no duotone fill. */
 .nav-item.active .nav-glyph .s  { stroke:#FFFFFF; }
 .nav-item.active .nav-glyph .f  { fill:transparent; }
 .nav-item.active .nav-glyph .fe { fill:transparent; stroke:#FFFFFF; }
+
+/* Nav backdrop — always in DOM, hidden on desktop */
+.nav-backdrop{
+  position:fixed; inset:0;
+  background:rgba(15, 17, 30, 0.55);
+  z-index:150;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.25s ease;
+  display:none;
+}
+
+/* Hamburger — hidden on desktop */
+.hamburger{
+  display:none;
+  align-items:center; justify-content:center;
+  width:36px; height:36px;
+  background:none; border:none;
+  border-radius:8px; cursor:pointer;
+  color:var(--ink-soft);
+  padding:0;
+  transition:background 0.15s, color 0.15s;
+}
+.hamburger:hover{ background:#f6f5fa; color:var(--ink); }
+.hamburger:active{ transform:scale(0.94); }
 
 /* ============================================================
    TOPBAR
    ============================================================ */
 .topbar{ background:var(--panel); border-radius:var(--radius-lg); margin:18px 28px 0; padding:10px 18px; display:flex; align-items:center; gap:14px; box-shadow:var(--shadow); }
-.search{ display:flex; align-items:center; gap:10px; flex:1; color:var(--muted); }
+.search{ display:flex; align-items:center; gap:10px; flex:1; color:var(--muted); min-width:0; }
 .search input{ border:none; outline:none; background:none; font-family:inherit; font-size:14px; color:var(--ink); width:100%; }
 .top-icons{ display:flex; align-items:center; gap:6px; }
 .icn-btn{ width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:8px; color:var(--ink-soft); cursor:pointer; position:relative; text-decoration:none; }
@@ -132,7 +152,7 @@ aside{ background:var(--panel); border-right:1px solid var(--line); padding:22px
 .content{ padding:22px 28px 60px; }
 
 /* ============================================================
-   HERO — halo + confetti + bottom-anchored portrait
+   HERO
    ============================================================ */
 .hero{
   background:var(--panel); border-radius:8px; padding:32px 36px;
@@ -161,7 +181,7 @@ aside{ background:var(--panel); border-right:1px solid var(--line); padding:22px
   .hero-confetti.c2{ right:146px; }
   .hero-confetti.c3{ right:126px; }
 }
-@media(max-width:768px){ .hero-art{ display:none; } .hero{ min-height:auto; } }
+@media(max-width:768px){ .hero-art{ display:none; } .hero{ min-height:auto; padding:24px; } }
 
 /* ============================================================
    STAT CARDS
@@ -205,10 +225,6 @@ tr:hover td{ background:#fafaff; }
 
 /* ============================================================
    ROW CHIP (Ingredient/Recipe identity tile — NOT the nav chip)
-   States:
-     .row-chip                → static, no click
-     .row-chip.clickable      → cursor + lift on hover (image or upload)
-     .row-chip.uploadable     → adds the empty-state camera overlay
    ============================================================ */
 .row-chip{
   border-radius:8px;
@@ -216,13 +232,8 @@ tr:hover td{ background:#fafaff; }
   font-weight:700; font-size:13px; color:#fff; flex-shrink:0;
   overflow:hidden; position:relative;
 }
-.row-chip.clickable{
-  transition:transform 0.15s, box-shadow 0.15s;
-}
-.row-chip.clickable:hover{
-  transform:scale(1.06);
-  box-shadow:0 3px 10px rgba(50,51,74,0.15);
-}
+.row-chip.clickable{ transition:transform 0.15s, box-shadow 0.15s; }
+.row-chip.clickable:hover{ transform:scale(1.06); box-shadow:0 3px 10px rgba(50,51,74,0.15); }
 .row-chip.uploadable .cam-overlay{
   position:absolute; inset:0;
   background:rgba(0,0,0,0.55);
@@ -241,7 +252,7 @@ tr:hover td{ background:#fafaff; }
   background:rgba(15, 17, 30, 0.85);
   backdrop-filter:blur(4px);
   -webkit-backdrop-filter:blur(4px);
-  z-index:100;
+  z-index:200;
   display:flex; align-items:center; justify-content:center;
   padding:40px;
   animation:lightboxFadeIn 0.15s ease;
@@ -373,7 +384,7 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
 /* ============================================================
    SETTINGS PAGE
    ============================================================ */
-.settings-tabs{ display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:20px; }
+.settings-tabs{ display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:20px; flex-wrap:wrap; }
 .settings-tabs button{ background:none; border:none; padding:12px 18px; font-family:inherit; font-size:13.5px; font-weight:500; color:var(--ink-soft); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; }
 .settings-tabs button:hover{ color:var(--ink); }
 .settings-tabs button.active{ color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
@@ -396,11 +407,52 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
 .loading{ color:var(--muted); text-align:center; padding:40px; }
 
 /* ============================================================
-   RESPONSIVE
+   RESPONSIVE — mobile / narrow view
    ============================================================ */
 @media(max-width:960px){
+  /* Layout: single column */
   .app{ grid-template-columns:1fr; }
-  aside{ display:none; }
-  .stat-row{ grid-template-columns:repeat(2,1fr); }
+
+  /* Aside becomes an off-canvas drawer */
+  aside{
+    position:fixed;
+    top:0; left:0; bottom:0;
+    width:280px;
+    z-index:180;
+    transform:translateX(-100%);
+    transition:transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+    box-shadow:6px 0 24px rgba(15,17,30,0.18);
+    border-right:none;
+  }
+  aside.open{ transform:translateX(0); }
+
+  /* Backdrop shows when drawer open */
+  .nav-backdrop{ display:block; }
+  .nav-backdrop.visible{ opacity:1; pointer-events:auto; }
+
+  /* Hamburger visible in the topbar */
+  .hamburger{ display:flex; }
+
+  /* Topbar and content — tighter horizontal margins */
+  .topbar{ margin:12px 14px 0; padding:8px 12px; gap:10px; }
+  .content{ padding:16px 14px 40px; }
+  .search input{ font-size:15px; }
+
+  /* Hide the search icon on very narrow to save room — leave the input */
+  .search svg{ display:none; }
+
+  /* Grid tightening */
+  .stat-row{ grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:14px; }
   .metric-row{ grid-template-columns:1fr; }
+
+  /* Panels are edge-to-edge on mobile */
+  .panel{ padding:18px 16px; }
+}
+
+@media(max-width:520px){
+  /* Very narrow — hide some topbar icons to save space, keep bell + avatar */
+  .top-icons > a.icn-btn, .top-icons > .icn-btn:not(:nth-last-child(-n+2)){
+    display:none;
+  }
+  .stat-row{ grid-template-columns:1fr; }
 }
