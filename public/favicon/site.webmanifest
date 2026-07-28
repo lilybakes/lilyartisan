@@ -1,7 +1,7 @@
 {
-  "name": "Lily Ang Artisan",
-  "short_name": "Lily Ang",
-  "theme_color": "#2F3349",
+  "name": "BakerNomics",
+  "short_name": "BakerNomics",
+  "theme_color": "#7367F0",
   "background_color": "#FFFFFF",
   "display": "standalone",
   "start_url": "/",
