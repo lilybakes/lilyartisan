@@ -7,13 +7,17 @@ import { Icon } from '../lib/icons.jsx'
 import Chip from '../components/Chip.jsx'
 import { uploadImage, deleteImage } from '../lib/upload'
 
+const EMPTY_FORM = { name:'', purchase_unit:'g', purchase_qty:'', purchase_price:'', waste_pct:'0', density_g_ml:'', image_url: null }
+
 export default function Ingredients() {
   const { settings } = useSettings()
   const { rows, loading, insert, update, remove: baseRemove } = useTable('ingredients', 'name')
-  const [f, setF] = useState({ name:'', purchase_unit:'g', purchase_qty:'', purchase_price:'', waste_pct:'0', density_g_ml:'' })
+  const [f, setF] = useState(EMPTY_FORM)
 
   const [editingId, setEditingId] = useState(null)
   const [draft, setDraft] = useState({})
+
+  const nextColor = CHIP_COLORS[rows.length % CHIP_COLORS.length]
 
   function startEdit(i) {
     setEditingId(i.id)
@@ -48,11 +52,11 @@ export default function Ingredients() {
     await baseRemove(id)
   }
 
-  async function handleImageUpload(row, file) {
+  async function handleRowImageUpload(row, file) {
     try {
-      const newUrl = await uploadImage(file, 'ingredients', 256)
+      const newUrl = await uploadImage(file, 'ingredients', 512)
       if (row.image_url) {
-        try { await deleteImage(row.image_url) } catch (e) { console.warn('old image cleanup failed', e) }
+        try { await deleteImage(row.image_url) } catch (e) { console.warn(e) }
       }
       await update(row.id, { image_url: newUrl })
     } catch (err) {
@@ -60,9 +64,35 @@ export default function Ingredients() {
     }
   }
 
+  async function handleRowImageRemove(row) {
+    if (row.image_url) {
+      try { await deleteImage(row.image_url) } catch (e) { console.warn(e) }
+    }
+    await update(row.id, { image_url: null })
+  }
+
+  // Add-form image handlers
+  async function handleAddImageUpload(file) {
+    try {
+      const newUrl = await uploadImage(file, 'ingredients', 512)
+      // If the user picks a different image before saving, clean up the previous upload
+      if (f.image_url) {
+        try { await deleteImage(f.image_url) } catch (e) { console.warn(e) }
+      }
+      setF(prev => ({ ...prev, image_url: newUrl }))
+    } catch (err) {
+      alert('Upload failed: ' + err.message)
+    }
+  }
+  async function handleAddImageRemove() {
+    if (f.image_url) {
+      try { await deleteImage(f.image_url) } catch (e) { console.warn(e) }
+    }
+    setF(prev => ({ ...prev, image_url: null }))
+  }
+
   async function add() {
     if (!f.name || !f.purchase_qty || !f.purchase_price) { alert('Name, qty and price are required.'); return }
-    const color = CHIP_COLORS[rows.length % CHIP_COLORS.length]
     await insert({
       name: f.name.trim(),
       purchase_unit: f.purchase_unit,
@@ -70,9 +100,11 @@ export default function Ingredients() {
       purchase_price: parseFloat(f.purchase_price),
       waste_pct: parseFloat(f.waste_pct) || 0,
       density_g_ml: f.density_g_ml === '' ? null : parseFloat(f.density_g_ml),
-      color,
+      color: nextColor,
+      image_url: f.image_url,
     })
-    setF({ name:'', purchase_unit:'g', purchase_qty:'', purchase_price:'', waste_pct:'0', density_g_ml:'' })
+    // Reset form WITHOUT deleting the image — it's now attached to the new row
+    setF(EMPTY_FORM)
   }
 
   return (
@@ -80,7 +112,7 @@ export default function Ingredients() {
       <div className="panel-head">
         <div>
           <h3>Ingredient Master</h3>
-          <p className="sub">Bulk purchase in → unit cost auto-calculated. Click the chip on any row to upload a photo.</p>
+          <p className="sub">Bulk purchase in → unit cost auto-calculated. Click any chip to view a photo full-size, or add one if empty.</p>
         </div>
       </div>
       <table>
@@ -96,12 +128,22 @@ export default function Ingredients() {
             const baseLabel = dim === 'mass' ? 'g' : dim === 'volume' ? 'ml' : 'pcs'
             const isEditing = editingId === i.id
 
+            const chip = (
+              <Chip
+                item={i}
+                size={32}
+                uploadable
+                onUpload={(file) => handleRowImageUpload(i, file)}
+                onRemove={i.image_url ? () => handleRowImageRemove(i) : null}
+              />
+            )
+
             if (isEditing) {
               return (
                 <tr key={i.id} style={{background:'#fafaff'}}>
                   <td>
                     <div className="row-name">
-                      <Chip item={i} size={32} uploadable onUpload={(f) => handleImageUpload(i, f)}/>
+                      {chip}
                       <input value={draft.name} onChange={e => setDraft({...draft, name: e.target.value})} style={{width:180}}/>
                     </div>
                   </td>
@@ -127,12 +169,7 @@ export default function Ingredients() {
 
             return (
               <tr key={i.id}>
-                <td>
-                  <div className="row-name">
-                    <Chip item={i} size={32} uploadable onUpload={(f) => handleImageUpload(i, f)}/>
-                    <strong>{i.name}</strong>
-                  </div>
-                </td>
+                <td><div className="row-name">{chip}<strong>{i.name}</strong></div></td>
                 <td>{UNITS[i.purchase_unit]?.label ?? i.purchase_unit}</td>
                 <td className="num">{i.purchase_qty}</td>
                 <td className="num">{Number(i.purchase_price).toFixed(2)}</td>
@@ -152,6 +189,17 @@ export default function Ingredients() {
       </table>
 
       <div className="row-add">
+        <div className="field">
+          <label>Photo</label>
+          <Chip
+            item={{ name: f.name || 'New', image_url: f.image_url }}
+            size={38}
+            color={nextColor}
+            uploadable
+            onUpload={handleAddImageUpload}
+            onRemove={f.image_url ? handleAddImageRemove : null}
+          />
+        </div>
         <div className="field"><label>Name</label><input value={f.name} onChange={e=>setF({...f,name:e.target.value})} placeholder="e.g. Cocoa Powder" style={{width:200}}/></div>
         <div className="field"><label>Unit</label>
           <select value={f.purchase_unit} onChange={e=>setF({...f,purchase_unit:e.target.value})} style={{width:90}}>
@@ -164,8 +212,6 @@ export default function Ingredients() {
         <div className="field"><label>Density g/ml</label><input type="number" step="0.01" value={f.density_g_ml} onChange={e=>setF({...f,density_g_ml:e.target.value})} style={{width:110}} placeholder="opt."/></div>
         <button className="primary" onClick={add}>+ Add Ingredient</button>
       </div>
-
-      <p className="hint" style={{marginTop:14}}>Tip: after adding, click the coloured square on any row to upload a photo of the ingredient.</p>
     </div>
   )
 }

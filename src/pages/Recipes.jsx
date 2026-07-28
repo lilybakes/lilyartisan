@@ -6,13 +6,17 @@ import { Icon } from '../lib/icons.jsx'
 import Chip from '../components/Chip.jsx'
 import { uploadImage, deleteImage } from '../lib/upload'
 
+const EMPTY_FORM = { name:'', category:'', yield_portions:'', target_food_cost_pct:'', image_url: null }
+
 export default function Recipes() {
   const { settings } = useSettings()
   const { rows, loading, insert, update, remove: baseRemove } = useTable('recipes', 'name')
-  const [f, setF] = useState({ name:'', category:'', yield_portions:'', target_food_cost_pct:'' })
+  const [f, setF] = useState(EMPTY_FORM)
 
   const [editingId, setEditingId] = useState(null)
   const [draft, setDraft] = useState({})
+
+  const nextColor = CHIP_COLORS[rows.length % CHIP_COLORS.length]
 
   function startEdit(r) {
     setEditingId(r.id)
@@ -38,21 +42,46 @@ export default function Recipes() {
   async function remove(id) {
     const row = rows.find(r => r.id === id)
     if (row?.image_url) {
-      try { await deleteImage(row.image_url) } catch (e) { console.warn('image cleanup failed', e) }
+      try { await deleteImage(row.image_url) } catch (e) { console.warn(e) }
     }
     await baseRemove(id)
   }
 
-  async function handleImageUpload(row, file) {
+  async function handleRowImageUpload(row, file) {
     try {
-      const newUrl = await uploadImage(file, 'recipes', 640)
+      const newUrl = await uploadImage(file, 'recipes', 1024)
       if (row.image_url) {
-        try { await deleteImage(row.image_url) } catch (e) { console.warn('old image cleanup failed', e) }
+        try { await deleteImage(row.image_url) } catch (e) { console.warn(e) }
       }
       await update(row.id, { image_url: newUrl })
     } catch (err) {
       alert('Upload failed: ' + err.message)
     }
+  }
+
+  async function handleRowImageRemove(row) {
+    if (row.image_url) {
+      try { await deleteImage(row.image_url) } catch (e) { console.warn(e) }
+    }
+    await update(row.id, { image_url: null })
+  }
+
+  async function handleAddImageUpload(file) {
+    try {
+      const newUrl = await uploadImage(file, 'recipes', 1024)
+      if (f.image_url) {
+        try { await deleteImage(f.image_url) } catch (e) { console.warn(e) }
+      }
+      setF(prev => ({ ...prev, image_url: newUrl }))
+    } catch (err) {
+      alert('Upload failed: ' + err.message)
+    }
+  }
+  async function handleAddImageRemove() {
+    if (f.image_url) {
+      try { await deleteImage(f.image_url) } catch (e) { console.warn(e) }
+    }
+    setF(prev => ({ ...prev, image_url: null }))
   }
 
   async function add() {
@@ -62,8 +91,9 @@ export default function Recipes() {
       category: f.category.trim() || null,
       yield_portions: parseInt(f.yield_portions),
       target_food_cost_pct: parseFloat(f.target_food_cost_pct) || settings.default_target_food_cost_pct,
+      image_url: f.image_url,
     })
-    setF({ name:'', category:'', yield_portions:'', target_food_cost_pct:'' })
+    setF(EMPTY_FORM)
   }
 
   return (
@@ -71,7 +101,7 @@ export default function Recipes() {
       <div className="panel-head">
         <div>
           <h3>Recipe Master</h3>
-          <p className="sub">Cakes and bakes with yield and target food-cost %. Click the tile on any row to upload a photo of the finished product.</p>
+          <p className="sub">Click any tile to view a photo full-size, or add one if empty.</p>
         </div>
       </div>
       <table>
@@ -82,13 +112,23 @@ export default function Recipes() {
           {rows.map((r, idx) => {
             const color = CHIP_COLORS[idx % CHIP_COLORS.length]
             const isEditing = editingId === r.id
+            const chip = (
+              <Chip
+                item={r}
+                size={48}
+                color={color}
+                uploadable
+                onUpload={(file) => handleRowImageUpload(r, file)}
+                onRemove={r.image_url ? () => handleRowImageRemove(r) : null}
+              />
+            )
 
             if (isEditing) {
               return (
                 <tr key={r.id} style={{background:'#fafaff'}}>
                   <td>
                     <div className="row-name">
-                      <Chip item={r} size={48} color={color} uploadable onUpload={(f) => handleImageUpload(r, f)}/>
+                      {chip}
                       <input value={draft.name} onChange={e => setDraft({...draft, name: e.target.value})} style={{width:240}}/>
                     </div>
                   </td>
@@ -107,12 +147,7 @@ export default function Recipes() {
 
             return (
               <tr key={r.id}>
-                <td>
-                  <div className="row-name">
-                    <Chip item={r} size={48} color={color} uploadable onUpload={(f) => handleImageUpload(r, f)}/>
-                    <strong>{r.name}</strong>
-                  </div>
-                </td>
+                <td><div className="row-name">{chip}<strong>{r.name}</strong></div></td>
                 <td><span className="pill bridge">{r.category || '—'}</span></td>
                 <td className="num">{r.yield_portions}</td>
                 <td className="num">{r.target_food_cost_pct}%</td>
@@ -129,6 +164,17 @@ export default function Recipes() {
       </table>
 
       <div className="row-add">
+        <div className="field">
+          <label>Photo</label>
+          <Chip
+            item={{ name: f.name || 'New', image_url: f.image_url }}
+            size={54}
+            color={nextColor}
+            uploadable
+            onUpload={handleAddImageUpload}
+            onRemove={f.image_url ? handleAddImageRemove : null}
+          />
+        </div>
         <div className="field"><label>Name</label><input value={f.name} onChange={e=>setF({...f,name:e.target.value})} placeholder="e.g. Chocolate Fudge Cake" style={{width:240}}/></div>
         <div className="field"><label>Category</label><input value={f.category} onChange={e=>setF({...f,category:e.target.value})} placeholder="Cake / Cupcake" style={{width:150}}/></div>
         <div className="field"><label>Yield</label><input type="number" value={f.yield_portions} onChange={e=>setF({...f,yield_portions:e.target.value})} style={{width:100}}/></div>
