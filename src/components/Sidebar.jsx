@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
 import { NavIcon } from '../lib/nav-icons.jsx'
 import { useSettings } from '../lib/settings.jsx'
 
@@ -13,31 +13,41 @@ const NAV = [
   { to:'/inventory',   label:'Inventory',    icon:'inventory' },
 ]
 
-export default function Sidebar({ open = false, onClose }) {
-  const { settings } = useSettings()
-  const location = useLocation()
+export default function Sidebar() {
+  // Defensive: works even if the SettingsProvider hasn't populated yet.
+  const settingsCtx = useSettings() || {}
+  const settings = settingsCtx.settings || {}
+  const [open, setOpen] = useState(false)
 
-  // On mobile, closing the drawer when the route changes is the expected UX.
+  // Listen for the open event from Topbar's hamburger.
   useEffect(() => {
-    if (onClose) onClose()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname])
+    const onOpen = () => setOpen(true)
+    const onCloseEv = () => setOpen(false)
+    window.addEventListener('mobile-nav-open', onOpen)
+    window.addEventListener('mobile-nav-close', onCloseEv)
+    return () => {
+      window.removeEventListener('mobile-nav-open', onOpen)
+      window.removeEventListener('mobile-nav-close', onCloseEv)
+    }
+  }, [])
 
   // Esc closes the drawer.
   useEffect(() => {
     if (!open) return
-    const onEsc = (e) => { if (e.key === 'Escape' && onClose) onClose() }
+    const onEsc = (e) => { if (e.key === 'Escape') setOpen(false) }
     document.addEventListener('keydown', onEsc)
     return () => document.removeEventListener('keydown', onEsc)
-  }, [open, onClose])
+  }, [open])
 
-  // Prevent body scroll while drawer is open on mobile.
+  // Lock body scroll while drawer is open.
   useEffect(() => {
     if (!open) return
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = prev }
   }, [open])
+
+  const close = () => setOpen(false)
 
   const [markPart1, markPart2] = (settings.app_name || 'Baker|Nomics').split('|')
   const logoSrc = settings.logo_data_url || '/assets/lily-mark-white.png'
@@ -47,11 +57,11 @@ export default function Sidebar({ open = false, onClose }) {
     <>
       <div
         className={'nav-backdrop' + (open ? ' visible' : '')}
-        onClick={onClose}
+        onClick={close}
         aria-hidden="true"
       />
       <aside className={open ? 'open' : ''}>
-        <Link to="/" className="brand" style={{textDecoration:'none', color:'inherit'}}>
+        <Link to="/" className="brand" style={{textDecoration:'none', color:'inherit'}} onClick={close}>
           <div className="brand-stamp">
             <img src={logoSrc} alt="" />
           </div>
@@ -70,6 +80,7 @@ export default function Sidebar({ open = false, onClose }) {
             key={n.to}
             to={n.to}
             end={n.to === '/'}
+            onClick={close}
             className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}
           >
             <span className="chip"><NavIcon name={n.icon}/></span>
@@ -78,7 +89,11 @@ export default function Sidebar({ open = false, onClose }) {
         ))}
 
         <div className="nav-section">System</div>
-        <NavLink to="/settings" className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}>
+        <NavLink
+          to="/settings"
+          onClick={close}
+          className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}
+        >
           <span className="chip"><NavIcon name="settings"/></span>
           Settings
         </NavLink>

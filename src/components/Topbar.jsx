@@ -2,12 +2,17 @@ import { Link } from 'react-router-dom'
 import { Icon } from '../lib/icons.jsx'
 import { useTable } from '../lib/data'
 
-export default function Topbar({ onMenuClick }) {
+export default function Topbar() {
   const { rows: links } = useTable('header_links', 'position')
+
+  // Tell the Sidebar to open — the Sidebar listens for this event on window.
+  const openNav = () => {
+    window.dispatchEvent(new CustomEvent('mobile-nav-open'))
+  }
 
   return (
     <div className="topbar">
-      <button className="hamburger" onClick={onMenuClick} aria-label="Open menu">
+      <button className="hamburger" onClick={openNav} aria-label="Open menu">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
              strokeWidth="2" strokeLinecap="round">
           <line x1="3" y1="6"  x2="21" y2="6"/>
