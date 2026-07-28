@@ -1,54 +1,44 @@
-# Lily Artisan — Cake Costing & BOM
+# Inventory save fix
 
-React + Vite frontend, Supabase Postgres backend, Netlify hosting.
+Two things were wrong on the Inventory page:
 
-## What's inside
+## 1. Silent upsert failure (root cause)
 
-- **Dashboard** — greeting (uses your name from Settings), colored stat cards, ingredient cost bar chart, margin gauge, recipe overview table.
-- **Ingredient Master** — bulk purchase in → unit cost auto-calculated (with waste %), optional density (g/ml) for mass ↔ volume bridging.
-- **Recipe Master** — cakes/bakes with yield and target food-cost %.
-- **Recipe BOM** — link ingredients to a recipe in any unit; conversion handled automatically.
-- **Yield & Costing** — total batch cost, portions, cost per portion.
-- **Selling Price** — suggested price = cost per portion ÷ target FC%. Editable per-recipe.
-- **Inventory** — optional stock-on-hand tracking with low-stock flag.
-- **Settings** — owner name, business name, currency, default target food-cost %.
+`useInventory.setStock` was calling `.upsert()` without `onConflict: 'ingredient_id'`. In Supabase, upserts against a table where you match on the primary key still need the conflict target specified explicitly — otherwise the write can silently no-op for new rows. That was almost certainly why nothing was being saved for a fresh ingredient (no existing inventory row for cocoa powder yet).
 
-## Unit conversion
+The fixed hook also **throws** on error instead of just alerting and returning, so the UI can react.
 
-- Same-dimension: g ↔ kg ↔ oz ↔ lb, and ml ↔ L ↔ tsp ↔ tbsp ↔ cup are exact.
-- Mass ↔ volume (e.g. "1 cup butter" against a kg purchase) uses each ingredient's density in g/ml. Missing density is flagged in the UI, not silently guessed.
+## 2. Uncontrolled input + no feedback
 
-## Setup — all online
+The input was uncontrolled (`defaultValue`), which means even if the save had worked, the UI gave you no signal that anything happened. And if the save failed, the alert would fire but the value would just sit there looking like nothing changed.
 
-### 1. Supabase
+The new row is fully controlled with clear states:
+- **Dirty** (value differs from what's saved) — violet border + focus ring, a "Save" button appears
+- **Saving** — a "Saving…" pill
+- **Saved** — a "Saved ✓" pill for 1.6s, then clears
+- **Error** — red border + a "Save failed" pill; hover the pill for the error message
 
-Already provisioned at `https://zbciulldxdoegndvywgf.supabase.co` (project: `lilybakes BOM`).
+Save triggers on **all three** of: pressing Enter, tabbing/clicking away from the input, or clicking the Save button. So no matter how you interact with it, the value gets committed.
 
-Open **SQL Editor** → paste in `supabase/schema.sql` → **Run**. This creates:
-- `settings` (singleton row: owner_name, business_name, currency, default_target_food_cost_pct)
-- `ingredients`, `recipes`, `bom_lines`, `inventory`
-- RLS enabled with anon-key permissive policies (single-user, no login yet)
-- One seed recipe
+## Files
 
-Safe to re-run — everything uses `IF NOT EXISTS`.
+```
+src/
+  lib/data.js              (useInventory rewritten: onConflict + throws)
+  pages/Inventory.jsx      (controlled input, feedback pills, save button)
+```
 
-### 2. GitHub
+## Apply
 
-Repo: `github.com/lilybakes/lilyartisan`. Upload contents of this folder to the repo root.
+Overwrite both files. Netlify auto-deploys. No Supabase changes needed.
 
-### 3. Netlify
+## Test
 
-- Site should already be connected to the repo.
-- Env vars under **Site settings → Environment variables**:
-  - `VITE_SUPABASE_URL` = `https://zbciulldxdoegndvywgf.supabase.co`
-  - `VITE_SUPABASE_ANON_KEY` = (from Supabase → Settings → API)
-- Build settings auto-read from `netlify.toml`: `npm run build`, publish `dist`.
+1. Go to Inventory
+2. Type `500` in the cocoa powder row (or whichever)
+3. You'll see the violet border and a Save button appear as you type
+4. Press Enter (or click Save, or tab away)
+5. "Saved ✓" pill appears briefly
+6. Refresh the page — value persists
 
-## Customization
-
-Everything user-facing (name in greeting, currency symbol on prices, default food-cost %) lives in the **Settings** page — no code changes needed.
-
-## Notes
-
-- Placeholder branding "SweetCost" and "Anthony" from earlier drafts are gone; the app addresses whoever is set as Owner Name in Settings.
-- Typical densities to fill in when adding ingredients: water 1.00, milk 1.03, butter 0.96, oil ~0.92, caster sugar ~0.85, cake flour ~0.53, cocoa powder ~0.5.
+If save fails for any reason (network, RLS, whatever), you'll now see "Save failed" with the actual reason on hover, instead of a silent no-op.
