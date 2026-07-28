@@ -1,28 +1,27 @@
 import { Link, NavLink } from 'react-router-dom'
-import { Icon } from '../lib/icons.jsx'
+import { NavIcon } from '../lib/nav-icons.jsx'
 import { useSettings } from '../lib/settings.jsx'
 
 const NAV = [
-  { to:'/',            label:'Dashboard',    icon:'dash',        color:'accent' },
-  { to:'/ingredients', label:'Ingredients',  icon:'ingredients', color:'info' },
-  { to:'/recipes',     label:'Recipes',      icon:'recipes',     color:'pink' },
-  { to:'/bom',         label:'Recipe BOM',   icon:'bom',         color:'warn' },
-  { to:'/costing',     label:'Yield & Cost', icon:'costing',     color:'success' },
-  { to:'/pricing',     label:'Pricing',      icon:'pricing',     color:'accent' },
-  { to:'/inventory',   label:'Inventory',    icon:'inventory',   color:'warn' },
+  { to:'/',            label:'Dashboard',    icon:'dash' },
+  { to:'/ingredients', label:'Ingredients',  icon:'ingredients' },
+  { to:'/recipes',     label:'Recipes',      icon:'recipes' },
+  { to:'/bom',         label:'Recipe BOM',   icon:'bom' },
+  { to:'/costing',     label:'Yield & Cost', icon:'costing' },
+  { to:'/pricing',     label:'Pricing',      icon:'pricing' },
+  { to:'/inventory',   label:'Inventory',    icon:'inventory' },
 ]
 
 export default function Sidebar() {
   const { settings } = useSettings()
 
   // Wordmark: split on "|" — first part navy, second part violet.
-  // Falls back to whole-string single-color if no delimiter present.
   const [markPart1, markPart2] = (settings.app_name || 'Baker|Nomics').split('|')
 
   // Logo: user-uploaded logo overrides bundled Lily mark.
   const logoSrc = settings.logo_data_url || '/assets/lily-mark-white.png'
 
-  const kicker = (settings.business_name || 'Lily Artisan').toUpperCase()
+  const kicker = (settings.business_name || 'Lily Ong Artisan').toUpperCase()
 
   return (
     <aside>
@@ -46,15 +45,15 @@ export default function Sidebar() {
           to={n.to}
           end={n.to === '/'}
           className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}
-          data-color={n.color}
         >
-          <span className="chip"><Icon name={n.icon} size={15}/></span>
+          <span className="chip"><NavIcon name={n.icon}/></span>
           {n.label}
         </NavLink>
       ))}
+
       <div className="nav-section">System</div>
-      <NavLink to="/settings" className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')} data-color="muted">
-        <span className="chip"><Icon name="settings" size={15}/></span>
+      <NavLink to="/settings" className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}>
+        <span className="chip"><NavIcon name="settings"/></span>
         Settings
       </NavLink>
     </aside>
