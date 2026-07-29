@@ -71,11 +71,9 @@ export default function Ingredients() {
     await update(row.id, { image_url: null })
   }
 
-  // Add-form image handlers
   async function handleAddImageUpload(file) {
     try {
       const newUrl = await uploadImage(file, 'ingredients', 512)
-      // If the user picks a different image before saving, clean up the previous upload
       if (f.image_url) {
         try { await deleteImage(f.image_url) } catch (e) { console.warn(e) }
       }
@@ -103,7 +101,6 @@ export default function Ingredients() {
       color: nextColor,
       image_url: f.image_url,
     })
-    // Reset form WITHOUT deleting the image — it's now attached to the new row
     setF(EMPTY_FORM)
   }
 
@@ -112,10 +109,10 @@ export default function Ingredients() {
       <div className="panel-head">
         <div>
           <h3>Ingredient Master</h3>
-          <p className="sub">Bulk purchase in → unit cost auto-calculated. Click any chip to view a photo full-size, or add one if empty.</p>
+          <p className="sub">Bulk purchase in → unit cost auto-calculated. Click any chip to view or add a photo.</p>
         </div>
       </div>
-      <table>
+      <table className="responsive-table">
         <thead>
           <tr><th>Ingredient</th><th>Unit</th><th className="num">Qty</th><th className="num">Price ({settings.currency})</th>
               <th className="num">Waste %</th><th className="num">Density</th><th className="num">Cost / base</th><th></th></tr>
@@ -140,23 +137,23 @@ export default function Ingredients() {
 
             if (isEditing) {
               return (
-                <tr key={i.id} style={{background:'#fafaff'}}>
+                <tr key={i.id} className="editing" style={{background:'#fafaff'}}>
                   <td>
                     <div className="row-name">
                       {chip}
-                      <input value={draft.name} onChange={e => setDraft({...draft, name: e.target.value})} style={{width:180}}/>
+                      <input value={draft.name} onChange={e => setDraft({...draft, name: e.target.value})} placeholder="Name" style={{width:180}}/>
                     </div>
                   </td>
-                  <td>
+                  <td data-label="Unit">
                     <select value={draft.purchase_unit} onChange={e => setDraft({...draft, purchase_unit: e.target.value})} style={{width:80}}>
                       {UNIT_KEYS.map(u => <option key={u} value={u}>{UNITS[u].label}</option>)}
                     </select>
                   </td>
-                  <td className="num"><input type="number" step="0.01" value={draft.purchase_qty} onChange={e => setDraft({...draft, purchase_qty: e.target.value})} style={{width:90, textAlign:'right'}}/></td>
-                  <td className="num"><input type="number" step="0.01" value={draft.purchase_price} onChange={e => setDraft({...draft, purchase_price: e.target.value})} style={{width:100, textAlign:'right'}}/></td>
-                  <td className="num"><input type="number" step="1" value={draft.waste_pct} onChange={e => setDraft({...draft, waste_pct: e.target.value})} style={{width:70, textAlign:'right'}}/></td>
-                  <td className="num"><input type="number" step="0.01" value={draft.density_g_ml} onChange={e => setDraft({...draft, density_g_ml: e.target.value})} placeholder="—" style={{width:80, textAlign:'right'}}/></td>
-                  <td className="num" style={{color:'var(--muted)', fontStyle:'italic'}}>recomputes on save</td>
+                  <td className="num" data-label="Qty"><input type="number" step="0.01" placeholder="Qty" value={draft.purchase_qty} onChange={e => setDraft({...draft, purchase_qty: e.target.value})} style={{width:90, textAlign:'right'}}/></td>
+                  <td className="num" data-label="Price"><input type="number" step="0.01" placeholder="Price" value={draft.purchase_price} onChange={e => setDraft({...draft, purchase_price: e.target.value})} style={{width:100, textAlign:'right'}}/></td>
+                  <td className="num" data-label="Waste %"><input type="number" step="1" placeholder="Waste %" value={draft.waste_pct} onChange={e => setDraft({...draft, waste_pct: e.target.value})} style={{width:70, textAlign:'right'}}/></td>
+                  <td className="num" data-label="Density"><input type="number" step="0.01" value={draft.density_g_ml} onChange={e => setDraft({...draft, density_g_ml: e.target.value})} placeholder="Density g/ml" style={{width:80, textAlign:'right'}}/></td>
+                  <td className="num" data-label="Cost/base" style={{color:'var(--muted)', fontStyle:'italic'}}>recomputes on save</td>
                   <td>
                     <div className="action-cell">
                       <button className="primary" onClick={saveEdit}>Save</button>
@@ -169,13 +166,18 @@ export default function Ingredients() {
 
             return (
               <tr key={i.id}>
-                <td><div className="row-name">{chip}<strong>{i.name}</strong></div></td>
-                <td>{UNITS[i.purchase_unit]?.label ?? i.purchase_unit}</td>
-                <td className="num">{i.purchase_qty}</td>
-                <td className="num">{Number(i.purchase_price).toFixed(2)}</td>
-                <td className="num">{i.waste_pct || 0}%</td>
-                <td className="num">{i.density_g_ml ?? '—'}</td>
-                <td className="num"><strong>{money(unitCostBase(i), settings.currency)}</strong>/{baseLabel}</td>
+                <td>
+                  <div className="row-name">
+                    {chip}
+                    <strong>{i.name}</strong>
+                  </div>
+                </td>
+                <td data-label="Unit">{UNITS[i.purchase_unit]?.label ?? i.purchase_unit}</td>
+                <td className="num" data-label="Qty">{i.purchase_qty}</td>
+                <td className="num" data-label="Price">{Number(i.purchase_price).toFixed(2)}</td>
+                <td className="num" data-label="Waste %">{i.waste_pct || 0}%</td>
+                <td className="num" data-label="Density">{i.density_g_ml ?? '—'}</td>
+                <td className="num" data-label="Cost / base"><strong>{money(unitCostBase(i), settings.currency)}</strong>/{baseLabel}</td>
                 <td>
                   <div className="action-cell">
                     <button className="edit" onClick={() => startEdit(i)} title="Edit"><Icon name="edit" size={13}/></button>

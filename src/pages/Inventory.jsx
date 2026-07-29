@@ -7,7 +7,6 @@ export default function Inventory() {
   const { rows: ingredients } = useTable('ingredients', 'name')
   const { rows: inv, setStock } = useInventory()
 
-  // Coerce stock_qty to a number here so downstream comparisons are numeric.
   const stockByIng = useMemo(
     () => Object.fromEntries(inv.map(x => [x.ingredient_id, Number(x.stock_qty)])),
     [inv]
@@ -21,7 +20,7 @@ export default function Inventory() {
           <p className="sub">Stock on hand per ingredient. Type a value and press Enter, tab out, or hit Save. Flags "low" under 25% of one purchase batch.</p>
         </div>
       </div>
-      <table>
+      <table className="responsive-table">
         <thead><tr><th>Ingredient</th><th className="num">Stock on hand</th><th>Status</th></tr></thead>
         <tbody>
           {ingredients.length === 0 && <tr><td colSpan="3" className="empty">No ingredients yet.</td></tr>}
@@ -41,10 +40,9 @@ export default function Inventory() {
 
 function InventoryRow({ ingredient, initialStock, onSave }) {
   const [text, setText] = useState(String(initialStock))
-  const [status, setStatus] = useState('idle') // idle | saving | saved | error
+  const [status, setStatus] = useState('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
-  // Sync the input if the server value changes (e.g. after a save elsewhere).
   useEffect(() => {
     setText(String(initialStock))
   }, [initialStock])
@@ -90,7 +88,7 @@ function InventoryRow({ ingredient, initialStock, onSave }) {
           <strong>{ingredient.name}</strong>
         </div>
       </td>
-      <td className="num">
+      <td className="num" data-label="Stock on hand">
         <div style={{display:'inline-flex', gap:8, alignItems:'center', justifyContent:'flex-end', flexWrap:'wrap'}}>
           <input
             type="number"
@@ -116,7 +114,7 @@ function InventoryRow({ ingredient, initialStock, onSave }) {
           {status === 'error'  && <span className="pill err" title={errorMsg}>Save failed</span>}
         </div>
       </td>
-      <td><span className={`pill ${low ? 'low' : 'ok'}`}>{low ? 'Low stock' : 'OK'}</span></td>
+      <td data-label="Status"><span className={`pill ${low ? 'low' : 'ok'}`}>{low ? 'Low stock' : 'OK'}</span></td>
     </tr>
   )
 }

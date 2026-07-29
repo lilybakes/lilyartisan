@@ -51,13 +51,13 @@ export default function Costing() {
             </div>
           </div>
         </div>
-        <table>
+        <table className="responsive-table">
           <thead><tr><th>Ingredient</th><th className="num">Qty used</th><th>Conversion</th><th className="num">Line cost</th></tr></thead>
           <tbody>
             {lines.length === 0 && <tr><td colSpan="4" className="empty">No BOM lines yet.</td></tr>}
             {lines.map(l => {
               const ing = ingById[l.ingredient_id]
-              if (!ing) return <tr key={l.id}><td>(deleted)</td><td className="num">{l.qty} {l.unit}</td><td>—</td><td className="num">—</td></tr>
+              if (!ing) return <tr key={l.id}><td>(deleted)</td><td className="num" data-label="Qty">{l.qty} {l.unit}</td><td data-label="Conversion">—</td><td className="num" data-label="Line cost">—</td></tr>
               const r = lineCost(ing, l.qty, l.unit)
               const badge = !r.ok ? <span className="pill err">{r.reason}</span>
                 : r.bridged ? <span className="pill bridge">via density</span>
@@ -65,9 +65,9 @@ export default function Costing() {
               return (
                 <tr key={l.id}>
                   <td><div className="row-name"><Chip item={ing} size={32}/><strong>{ing.name}</strong></div></td>
-                  <td className="num">{l.qty} {UNITS[l.unit]?.label}</td>
-                  <td>{badge}</td>
-                  <td className="num"><strong>{r.ok ? money(r.cost, settings.currency) : '—'}</strong></td>
+                  <td className="num" data-label="Qty used">{l.qty} {UNITS[l.unit]?.label}</td>
+                  <td data-label="Conversion">{badge}</td>
+                  <td className="num" data-label="Line cost"><strong>{r.ok ? money(r.cost, settings.currency) : '—'}</strong></td>
                 </tr>
               )
             })}

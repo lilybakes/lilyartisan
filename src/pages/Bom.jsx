@@ -72,11 +72,11 @@ export default function Bom() {
 
             if (isEditing) {
               return (
-                <div key={l.id} className="bom-line" style={{background:'#fafaff', borderColor:'#dedafc'}}>
+                <div key={l.id} className="bom-line editing" style={{background:'#fafaff', borderColor:'#dedafc'}}>
                   <select value={draft.ingredient_id} onChange={e => setDraft({...draft, ingredient_id: e.target.value})}>
                     {ingredients.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
                   </select>
-                  <input type="number" step="0.01" value={draft.qty} onChange={e => setDraft({...draft, qty: e.target.value})}/>
+                  <input type="number" step="0.01" placeholder="Qty" value={draft.qty} onChange={e => setDraft({...draft, qty: e.target.value})}/>
                   <select value={draft.unit} onChange={e => setDraft({...draft, unit: e.target.value})}>
                     {UNIT_KEYS.map(u => <option key={u} value={u}>{UNITS[u].label}</option>)}
                   </select>

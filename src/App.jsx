@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import Sidebar from './components/Sidebar.jsx'
 import Topbar from './components/Topbar.jsx'
+import BottomNav from './components/BottomNav.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Ingredients from './pages/Ingredients.jsx'
 import Recipes from './pages/Recipes.jsx'
@@ -29,6 +30,7 @@ export default function App() {
           </Routes>
         </div>
       </main>
+      <BottomNav/>
     </div>
   )
 }

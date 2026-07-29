@@ -1,55 +1,108 @@
-# Mobile UX overhaul
+# Mobile design pass — grounded in research
 
-Single-file fix. Overwrite `src/styles.css`. Netlify redeploys. Desktop is untouched.
+This delta applies established mobile UX principles to make the app feel native on phones while keeping the desktop experience exactly as it is.
 
-## What was wrong
+## What the research says (and what I applied)
 
-Two compounding problems:
+**1. Bottom tab bar > hamburger menu for primary nav**
+NN/g, UXPin, and every major UX outlet in 2025-2026 now recommend bottom tab bars for dashboards/productivity apps with 3–5 primary destinations. Spotify's move away from the hamburger correlated with a documented engagement jump. Hidden nav has 2-3× lower feature discoverability.
 
-**1. Horizontal overflow → auto-zoom.** Wide content (tables with 5–8 columns, forms with inline `width:200`/`240`/etc. inputs) pushed the page wider than the phone's viewport. Mobile browsers respond to this by zooming out to fit — which is why Dashboard looked shrunk. Meanwhile, pages that fit naturally looked "zoomed in" by comparison. Not actually zoomed; the mismatch is visual.
+**Applied:** New `BottomNav` component. Four primary tabs at the bottom of every screen on mobile — **Home, Recipes, Ingredients, BOM** — plus a "More" tab that opens the drawer with everything else (Yield & Cost, Pricing, Inventory, Settings). Hamburger stays in the topbar as a redundant path to the same drawer for users who look up first.
 
-**2. No mobile-first form/layout strategy.** The add-forms had fixed pixel widths on inputs from JSX inline styles. The BOM lines were rigid 5-column grids. Stat cards packed 4 abreast at desktop but had no graceful narrow-screen version.
+**2. Data tables → cards on mobile**
+Horizontal scroll is a fallback; card view is the recommended default. Same semantic HTML, transformed with CSS.
 
-## What's fixed
+**Applied:** Every data table now has `className="responsive-table"`. On ≤640px, CSS transforms them into stacked cards. Each `<td>` becomes a labeled row using `data-label` attributes. The first `<td>` (name + photo) is the card header; the last (actions) becomes a footer with buttons.
 
-- **`html, body { overflow-x: hidden; max-width: 100vw }`** — safety net. Even if some future component overflows, the page won't push wider than the viewport.
-- **Panels get `overflow-x: auto`** on mobile — wide tables scroll horizontally *inside the panel*, not on the page. Ingredient Master (8 cols) and other wide tables are usable now without shrinking the whole page.
-- **Add-forms stack vertically** with full-width fields. The `!important` on `width` overrides the inline `width={200}` etc. from JSX so I don't have to touch every page.
-- **BOM lines stack** into a card layout at ≤640px (name → qty → unit → status → cost → actions, each on its own row) instead of a squeezed 5-column grid.
-- **Stat cards** are 2-across at ≤960px, then reshape into a horizontal row layout (icon + label + value) at ≤640px so they're a scannable list on phones.
-- **Hero** loses the portrait art column on mobile (the halo composition doesn't work in a narrow strip) and the greeting scales down.
-- **Topbar** condenses — hamburger, search input, bell, avatar. Extra header-link icons hide at very narrow to keep the essentials tappable.
-- **Settings tabs** scroll horizontally if they don't fit rather than wrapping.
-- **Header-link editor rows** stack vertically with full-width inputs.
-- **Font size 16px on form inputs** at mobile — prevents iOS Safari's "auto-zoom on focus" behavior.
+**3. Touch targets ≥ 44×44px, font-size 16px on inputs**
+Apple HIG 44px, Material 48px. Sub-16px inputs trigger Safari's auto-zoom-on-focus, which is a UX killer.
 
-## Verify your viewport meta
+**Applied:** All form inputs on mobile jump to `font-size: 16px` and `padding: 12px 14px`. Bottom nav items are 48px+ tall. Buttons are full-width on mobile.
 
-If mobile *still* looks zoomed after the CSS deploys, the fix is in `index.html`. It needs this line inside `<head>`:
+**4. Safe area insets (`viewport-fit=cover` + `env(safe-area-inset-*)`)**
+For iOS notches, Dynamic Island, home indicator, and rounded corners.
 
-```html
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+**Applied:** New `index.html` with `viewport-fit=cover` and PWA meta tags. All fixed-position elements (topbar, bottom nav, sidebar drawer, lightbox close button) use `env(safe-area-inset-*)` so nothing hides under the home indicator or notch.
+
+**5. Content padding accounts for bottom nav**
+Standard oversight in mobile web apps.
+
+**Applied:** `.content` gets `padding-bottom: calc(76px + env(safe-area-inset-bottom))` so scrolling to the last row shows it fully above the nav.
+
+**6. PWA meta tags for install-quality feel**
+Even without a service worker, these tags give the app a polished mobile identity.
+
+**Applied:** `theme-color`, `apple-mobile-web-app-capable`, `apple-mobile-web-app-title`, `mobile-web-app-capable`, `format-detection`.
+
+## Files
+
+```
+index.html                      (PWA meta tags, viewport-fit=cover)
+src/
+  App.jsx                       (adds <BottomNav/>)
+  components/
+    BottomNav.jsx               (NEW — 5-tab bottom nav)
+  pages/
+    Dashboard.jsx               (data-label on Recipe Overview table)
+    Ingredients.jsx             (data-label on all cells, 'editing' class in edit mode)
+    Recipes.jsx                 (same)
+    Costing.jsx                 (data-label on breakdown table)
+    Pricing.jsx                 (data-label)
+    Inventory.jsx               (data-label)
+    Bom.jsx                     (className='editing' in edit mode)
+  styles.css                    (full mobile pass — see structure below)
 ```
 
-The default Vite `index.html` has this already, but worth double-checking. If it's missing or has `user-scalable=no` or a fixed width, mobile browsers apply their own default (usually 980px, hence the zoom-out).
+## Apply
 
-## Breakpoints (for future reference)
+Overwrite all listed files. `index.html` sits at your repo root, not in `src/`.
 
-- **>960px** — desktop as-is
-- **≤960px** — sidebar → drawer, stat cards 2-across, form stacking, tables scroll in panels
-- **≤640px** — stat cards horizontal layout, BOM lines stack, tighter hero
-- **≤420px** — extra tight (small phones)
+Netlify auto-deploys. Hard-refresh on your phone.
 
-Everything above 960px is untouched. Nothing in your desktop experience changes.
+**No Supabase changes. No new dependencies. `main.jsx` is untouched — `BrowserRouter` stays where it lives.**
 
-## Test after deploying
+## Layout on mobile — what it feels like now
 
-Load each page on your phone (or resize a desktop browser narrow):
+```
+┌─────────────────────────────────┐
+│  ≡  🔍 Search…       🔔  👤     │  ← topbar (safe-area top)
+├─────────────────────────────────┤
+│                                 │
+│         Page content            │
+│         (cards, not tables)     │
+│                                 │
+│                                 │
+├─────────────────────────────────┤
+│  🏠  📖  🧊  🧾  ≡              │  ← bottom nav (safe-area bottom)
+│ Home Recipes Ingr. BOM More     │
+└─────────────────────────────────┘
+```
 
-1. **Dashboard** — hero readable, 4 stat cards become 2 columns then stack, recipe overview table scrolls horizontally inside its panel
-2. **Ingredients** — 8-column table scrolls inside panel; add-form is a vertical stack with full-width inputs
-3. **Recipes** — same pattern
-4. **Recipe BOM** — line items become vertical cards, easy to scan
-5. **Yield & Cost** — 3 metric cards stack; ingredient breakdown table scrolls
-6. **Pricing / Inventory** — same table-in-panel-scroll pattern; Inventory row inputs are usable
-7. **Settings** — tabs scroll if narrow; General/Header Links forms are stacked vertical
+- **Tap a tab** → navigates (route change)
+- **Tap "More"** → opens sidebar drawer with all secondary pages (Yield & Cost, Pricing, Inventory, Settings)
+- **Tap hamburger** in topbar → same drawer
+- **Tap a card row** on Ingredients/Recipes → see all fields laid out; tap Edit to modify inline (the card expands into a form with labels above each input)
+
+## Structure of styles.css (for your reference)
+
+Reading top-to-bottom in the file:
+
+1. Design tokens (`:root { --... }`)
+2. Base reset + safety net (`html, body { overflow-x: hidden }`)
+3. Desktop layout — sidebar, topbar, hero, panels, tables, forms, buttons, pills, everything
+4. `@media (max-width: 960px)` — sidebar becomes drawer, bottom nav appears, hero and stat cards resize
+5. `@media (max-width: 640px)` — **tables transform to cards** (the big change), BOM lines stack, hero compacts
+6. `@media (max-width: 420px)` — small-phone tweaks
+
+Desktop styles (everything before the first `@media(max-width:960px)` block) are byte-for-byte identical to what you have now.
+
+## What's intentionally NOT in this delta
+
+Things that would be nice but are scope-heavy for this pass:
+
+- **Full bottom-sheet add form.** Current form still stacks vertically at the bottom of pages — it works cleanly, just not a modal sheet.
+- **Swipe-to-delete gestures.** Would need a small library or custom touch handlers.
+- **Pull-to-refresh.** Same reason.
+- **Service worker + offline PWA.** The meta tags are there but no SW yet.
+
+Any of those can be a follow-up.

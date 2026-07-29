@@ -171,7 +171,7 @@ export default function Dashboard() {
         <div className="panel-head">
           <div><h3>Recipe Overview</h3><p className="sub">Cost per portion vs suggested selling price</p></div>
         </div>
-        <table>
+        <table className="responsive-table">
           <thead><tr><th>Recipe</th><th>Category</th><th className="num">Cost/Portion</th><th className="num">Suggested Price</th><th className="num">Margin</th></tr></thead>
           <tbody>
             {recipes.length === 0 && <tr><td colSpan="5" className="empty">No recipes yet.</td></tr>}
@@ -184,10 +184,10 @@ export default function Dashboard() {
               return (
                 <tr key={r.id}>
                   <td><div className="row-name"><Chip item={r} size={40} color={color}/><strong>{r.name}</strong></div></td>
-                  <td><span className="pill bridge">{r.category || '—'}</span></td>
-                  <td className="num">{money(cpp, cur)}</td>
-                  <td className="num"><strong>{money(sp, cur)}</strong></td>
-                  <td className="num"><span className="pill ok">{m.toFixed(1)}%</span></td>
+                  <td data-label="Category"><span className="pill bridge">{r.category || '—'}</span></td>
+                  <td className="num" data-label="Cost / Portion">{money(cpp, cur)}</td>
+                  <td className="num" data-label="Suggested Price"><strong>{money(sp, cur)}</strong></td>
+                  <td className="num" data-label="Margin"><span className="pill ok">{m.toFixed(1)}%</span></td>
                 </tr>
               )
             })}
