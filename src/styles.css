@@ -42,6 +42,8 @@
 }
 *{ box-sizing:border-box; }
 html,body,#root{ margin:0; padding:0; min-height:100vh; }
+/* Safety net — nothing may push the page wider than the viewport. */
+html,body{ overflow-x:hidden; max-width:100vw; }
 body{ background:var(--bg); color:var(--ink); font-family:var(--font); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
 
 .app{ display:grid; grid-template-columns:260px 1fr; min-height:100vh; }
@@ -181,7 +183,6 @@ aside{ background:var(--panel); border-right:1px solid var(--line); padding:22px
   .hero-confetti.c2{ right:146px; }
   .hero-confetti.c3{ right:126px; }
 }
-@media(max-width:768px){ .hero-art{ display:none; } .hero{ min-height:auto; padding:24px; } }
 
 /* ============================================================
    STAT CARDS
@@ -224,7 +225,7 @@ tr:hover td{ background:#fafaff; }
 .row-name{ display:flex; align-items:center; gap:10px; }
 
 /* ============================================================
-   ROW CHIP (Ingredient/Recipe identity tile — NOT the nav chip)
+   ROW CHIP
    ============================================================ */
 .row-chip{
   border-radius:8px;
@@ -407,13 +408,18 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
 .loading{ color:var(--muted); text-align:center; padding:40px; }
 
 /* ============================================================
-   RESPONSIVE — mobile / narrow view
+   ==== MOBILE — comprehensive pass                        ====
+   ============================================================
+   Desktop styles above are untouched.
+   960px is the primary mobile switch (matches sidebar drawer).
+   640px is the "phone" pass. 420px is extra-compact.
    ============================================================ */
+
 @media(max-width:960px){
-  /* Layout: single column */
+  /* Layout collapse to single column */
   .app{ grid-template-columns:1fr; }
 
-  /* Aside becomes an off-canvas drawer */
+  /* Sidebar becomes off-canvas drawer */
   aside{
     position:fixed;
     top:0; left:0; bottom:0;
@@ -426,33 +432,205 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   }
   aside.open{ transform:translateX(0); }
 
-  /* Backdrop shows when drawer open */
   .nav-backdrop{ display:block; }
   .nav-backdrop.visible{ opacity:1; pointer-events:auto; }
 
-  /* Hamburger visible in the topbar */
   .hamburger{ display:flex; }
 
-  /* Topbar and content — tighter horizontal margins */
-  .topbar{ margin:12px 14px 0; padding:8px 12px; gap:10px; }
-  .content{ padding:16px 14px 40px; }
-  .search input{ font-size:15px; }
-
-  /* Hide the search icon on very narrow to save room — leave the input */
+  /* Topbar — tighter, keep search + hamburger + a few icons */
+  .topbar{
+    margin:12px 12px 0;
+    padding:8px 10px;
+    gap:8px;
+    border-radius:12px;
+  }
   .search svg{ display:none; }
+  .search input{ font-size:15px; } /* iOS won't auto-zoom inputs ≥16px, but 15 is fine here */
+  .top-icons{ gap:2px; }
+  .icn-btn{ width:34px; height:34px; }
 
-  /* Grid tightening */
-  .stat-row{ grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:14px; }
-  .metric-row{ grid-template-columns:1fr; }
+  /* Content */
+  .content{ padding:14px 12px 40px; }
 
-  /* Panels are edge-to-edge on mobile */
-  .panel{ padding:18px 16px; }
+  /* Panels — the anti-overflow container.
+     Wide tables scroll horizontally INSIDE the panel, not on the page. */
+  .panel{
+    padding:16px 14px;
+    margin-bottom:14px;
+    border-radius:12px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .panel-head{
+    flex-direction:column;
+    align-items:stretch;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .panel-head > button{ align-self:flex-start; }
+  .panel h3{ font-size:15px; }
+  .panel .sub{ font-size:12px; }
+
+  /* Hero */
+  .hero{
+    padding:22px 20px;
+    min-height:auto;
+    gap:16px;
+    border-radius:12px;
+    align-items:center;
+  }
+  .hero-text{ gap:10px; padding-bottom:0; }
+  .hero .greet{ font-size:20px; }
+  .hero p{ font-size:14px; }
+  .hero-art{ display:none; }
+
+  /* Stat cards — 2 columns, tighter */
+  .stat-row{
+    grid-template-columns:repeat(2, 1fr);
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .stat-card{
+    padding:14px;
+    min-height:100px;
+    border-radius:12px;
+  }
+  .stat-card .stat-icn{ width:36px; height:36px; margin-bottom:6px; }
+  .stat-card .stat-icn svg{ width:18px; height:18px; }
+  .stat-card .lbl{ font-size:11.5px; }
+  .stat-card .val{ font-size:20px; }
+  .stat-card .delta{ font-size:10.5px; }
+
+  /* Metric cards — single column */
+  .metric-row{
+    grid-template-columns:1fr;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .metric{ padding:14px 16px; }
+  .metric .m-icn{ width:44px; height:44px; }
+  .metric .m-icn svg{ width:20px; height:20px; }
+  .metric .v{ font-size:18px; }
+
+  /* Tables — tighter cells, but keep table layout so columns align.
+     The panel's overflow-x handles horizontal scroll. */
+  th{ padding:9px 8px; font-size:10.5px; }
+  td{ padding:10px 8px; font-size:12.5px; }
+
+  /* Row-add form — stack fields, full-width inputs.
+     `!important` overrides the inline width={200/240/etc} in JSX. */
+  .row-add{
+    flex-direction:column;
+    align-items:stretch;
+    gap:12px;
+    padding-top:12px;
+  }
+  .row-add .field{ width:100%; }
+  .row-add input,
+  .row-add select{
+    width:100% !important;
+    max-width:100%;
+    font-size:16px; /* prevent iOS auto-zoom on focus */
+  }
+  .row-add > button{
+    width:100%;
+    margin-top:4px;
+    padding:12px 18px;
+    font-size:14px;
+  }
+
+  /* Chart rows — narrower name column */
+  .chart-row .name{ width:100px; font-size:12px; }
+  .chart-row .val{ width:70px; font-size:12px; }
+
+  /* Conversion box */
+  .conv-box{ padding:12px; font-size:12px; }
+
+  /* Recipe picker — full width */
+  .recipe-select{ max-width:100%; }
+
+  /* Settings tabs — horizontal scroll if they don't fit */
+  .settings-tabs{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .settings-tabs::-webkit-scrollbar{ display:none; }
+  .settings-tabs button{
+    padding:12px 14px;
+    flex-shrink:0;
+    font-size:13px;
+  }
+
+  /* Header link editor rows — stack */
+  .header-link-row{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+  }
+  .header-link-row .field{
+    width:100% !important;
+    min-width:0 !important;
+    flex:1 1 auto !important;
+  }
+  .header-link-row .field input{ width:100%; }
+  .header-link-row > div:last-child{ display:flex; gap:6px; }
+  .header-link-row > div:last-child button.primary{ flex:1; }
+
+  /* Icon picker popover — never wider than viewport, right-anchored to avoid clipping */
+  .icon-picker-popover{
+    width:min(232px, calc(100vw - 32px));
+    right:0; left:auto;
+  }
+
+  /* Brand tile preview */
+  .brand-tile-preview{ width:64px; height:64px; border-radius:18px; }
+  .brand-tile-preview img{ height:38px !important; }
 }
 
-@media(max-width:520px){
-  /* Very narrow — hide some topbar icons to save space, keep bell + avatar */
-  .top-icons > a.icn-btn, .top-icons > .icn-btn:not(:nth-last-child(-n+2)){
-    display:none;
-  }
+@media(max-width:640px){
+  /* Extra-tight for real phone widths */
   .stat-row{ grid-template-columns:1fr; }
+  .stat-card{ min-height:auto; padding:16px 18px; flex-direction:row; align-items:center; gap:14px; }
+  .stat-card .stat-icn{ margin-bottom:0; }
+  .stat-card > div:first-child{ display:flex; align-items:center; gap:12px; }
+  .stat-card > div:last-child{ margin-left:auto; text-align:right; }
+  .stat-card .lbl{ margin-bottom:2px; }
+
+  /* BOM lines — stack to a card layout */
+  .bom-line{
+    grid-template-columns:1fr;
+    gap:8px;
+    padding:12px;
+    border-radius:10px;
+  }
+  .bom-line select,
+  .bom-line input{ width:100%; font-size:16px; }
+  .bom-line .row-name{ order:0; }
+  .bom-line .action-cell{ justify-content:flex-end; }
+
+  /* Panel headings */
+  .panel{ padding:14px 12px; }
+  .panel h3{ font-size:14.5px; }
+
+  /* Hero even more compact */
+  .hero{ padding:18px 16px; }
+  .hero .greet{ font-size:19px; }
+  .hero p{ font-size:13.5px; }
+
+  /* Hide the language/apps configured icons on smallest screens to save room */
+  .top-icons > a.icn-btn,
+  .top-icons > .icn-btn:not(:nth-last-child(-n+2)){ display:none; }
+
+  /* Tabs even tighter */
+  .settings-tabs button{ padding:10px 12px; font-size:12.5px; }
+}
+
+@media(max-width:420px){
+  /* Very small phones */
+  .topbar{ margin:10px 10px 0; padding:6px 8px; }
+  .content{ padding:12px 10px 32px; }
+  .avatar{ width:32px; height:32px; }
+  .avatar img{ height:86px; }
 }
