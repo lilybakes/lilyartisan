@@ -1811,3 +1811,267 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
 @media(max-width:640px){
   .coming-soon-grid{ grid-template-columns:1fr; }
 }
+
+/* ============================================================
+   DELTA — Personalization
+   Avatar improvements, Personalize page, sysadmin Gallery
+   ============================================================ */
+
+/* -------- Avatar improvements (initials fallback) -------- */
+.avatar{
+  display:flex; align-items:center; justify-content:center;
+  border-radius:50%;
+  overflow:hidden;
+  flex-shrink:0;
+  position:relative;
+  color:#fff;
+  font-family:inherit;
+}
+.avatar.avatar-ring{
+  border:2px solid var(--brand-online);
+  margin-left:6px;
+}
+.avatar.avatar-photo{
+  background:linear-gradient(135deg, var(--accent) 0%, var(--brand-pink) 100%);
+}
+.avatar.avatar-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.avatar.avatar-initials{
+  /* background applied inline based on user seed */
+}
+.avatar.avatar-initials span{
+  line-height:1;
+  user-select:none;
+}
+
+/* -------- Personalize page -------- */
+.personalize-preview{
+  padding:12px 0 6px;
+}
+.personalize-preview .hero-art{
+  position:relative;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+.personalize-preview .hero-halo{
+  position:absolute;
+  width:160px; height:160px;
+  border-radius:50%;
+  background:linear-gradient(135deg, #F1EFFF 0%, #FFE9F4 100%);
+  right:16px; bottom:-20px;
+}
+.personalize-preview .hero-portrait-img{
+  position:absolute;
+  right:20px; bottom:-16px;
+  height:210px;
+  width:auto;
+  filter:drop-shadow(0 8px 14px rgba(47,51,73,0.15));
+}
+.personalize-preview .hero-confetti.c1{ width:6px; height:6px; background:var(--brand-pink); right:12px; top:12px; border-radius:50%; position:absolute; }
+.personalize-preview .hero-confetti.c2{ width:5px; height:5px; background:var(--confetti-cyan); right:150px; top:44px; border-radius:50%; position:absolute; }
+.personalize-preview .hero-confetti.c3{ width:5px; height:5px; background:var(--brand-online); right:130px; bottom:20px; border-radius:50%; position:absolute; }
+
+.personalize-actions{
+  display:flex; gap:10px; flex-wrap:wrap;
+  margin-top:18px;
+}
+.personalize-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:10px 16px;
+  border-radius:8px;
+  font-family:inherit;
+  font-size:13.5px;
+  font-weight:600;
+  cursor:pointer;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink);
+  transition:all 0.15s;
+}
+.personalize-btn:hover:not(:disabled){
+  border-color:var(--accent);
+  color:var(--accent);
+  background:var(--accent-soft);
+}
+.personalize-btn:disabled{
+  opacity:0.45;
+  cursor:not-allowed;
+}
+.personalize-btn-primary{
+  background:var(--accent);
+  color:#fff;
+  border-color:var(--accent);
+  box-shadow:0 3px 8px rgba(115,103,240,0.28);
+}
+.personalize-btn-primary:hover:not(:disabled){
+  background:var(--accent-dark);
+  border-color:var(--accent-dark);
+  color:#fff;
+}
+.personalize-btn-primary.loading{
+  opacity:0.7;
+  cursor:wait;
+}
+.personalize-btn-danger:hover:not(:disabled){
+  border-color:var(--danger);
+  color:var(--danger);
+  background:var(--danger-soft);
+}
+
+/* -------- Avatar preview row (Personalize page) -------- */
+.avatar-preview-row{
+  display:flex; gap:20px; flex-wrap:wrap;
+  padding:20px 0 4px;
+  align-items:flex-start;
+}
+.avatar-preview-slot{
+  display:flex; flex-direction:column; align-items:center;
+  gap:10px;
+}
+.avatar-preview-label{
+  font-size:11px;
+  font-weight:600;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+}
+.avatar-preview-slot .avatar{
+  margin-left:0;
+}
+
+/* -------- Gallery grid (Personalize page — user picking a hero image) -------- */
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));
+  gap:12px;
+}
+.gallery-item{
+  position:relative;
+  aspect-ratio:2 / 3;
+  background:linear-gradient(135deg, #f4f2ff 0%, #ffe9f4 100%);
+  border:2px solid var(--line);
+  border-radius:12px;
+  overflow:hidden;
+  cursor:pointer;
+  padding:0;
+  transition:all 0.15s;
+}
+.gallery-item img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+.gallery-item:hover{
+  border-color:var(--accent);
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(50,51,74,0.10);
+}
+.gallery-item.selected{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(115,103,240,0.22);
+}
+.gallery-item-check{
+  position:absolute;
+  top:8px; right:8px;
+  width:26px; height:26px;
+  background:var(--accent);
+  color:#fff;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800;
+  font-size:15px;
+  box-shadow:0 3px 8px rgba(115,103,240,0.35);
+}
+
+/* -------- Sysadmin Gallery grid -------- */
+.sysgallery-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+  gap:16px;
+}
+.sysgallery-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  overflow:hidden;
+  transition:border-color 0.15s;
+}
+.sysgallery-card:hover{ border-color:#dedafc; }
+.sysgallery-card.inactive{ opacity:0.6; }
+.sysgallery-thumb{
+  position:relative;
+  aspect-ratio:2 / 3;
+  background:linear-gradient(135deg, #f4f2ff 0%, #ffe9f4 100%);
+  overflow:hidden;
+}
+.sysgallery-thumb img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+.sysgallery-inactive-overlay{
+  position:absolute;
+  top:8px; right:8px;
+  background:var(--danger);
+  color:#fff;
+  padding:3px 10px;
+  border-radius:12px;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:0.4px;
+  text-transform:uppercase;
+}
+.sysgallery-body{
+  padding:12px 14px;
+  display:flex; flex-direction:column; gap:8px;
+}
+.sysgallery-label-input{
+  padding:6px 10px !important;
+  font-size:13px !important;
+  border:1px solid transparent !important;
+  background:transparent !important;
+  font-weight:500;
+}
+.sysgallery-label-input:hover{
+  border-color:var(--line) !important;
+  background:#fafaff !important;
+}
+.sysgallery-label-input:focus{
+  border-color:var(--accent) !important;
+  background:#fff !important;
+}
+.sysgallery-meta{
+  font-size:11.5px;
+  color:var(--muted);
+  padding:0 2px;
+}
+.sysgallery-controls{
+  display:flex; gap:5px; flex-wrap:wrap;
+  padding-top:4px;
+  border-top:1px solid var(--line);
+  margin-top:4px;
+}
+.sysgallery-controls button{
+  flex:1;
+  min-width:0;
+  padding:5px 8px;
+  font-size:11.5px;
+}
+
+/* -------- Mobile personalize -------- */
+@media(max-width:640px){
+  .personalize-preview .hero-portrait-img{ height:180px; }
+  .personalize-preview .hero-halo{ width:130px; height:130px; }
+  .personalize-actions{ flex-direction:column; align-items:stretch; }
+  .personalize-actions .personalize-btn{ justify-content:center; }
+  .gallery-grid{ grid-template-columns:repeat(2, 1fr); }
+  .sysgallery-grid{ grid-template-columns:1fr; }
+  .avatar-preview-row{ justify-content:center; }
+}

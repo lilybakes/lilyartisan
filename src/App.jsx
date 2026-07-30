@@ -3,6 +3,7 @@ import AuthGuard from './components/AuthGuard.jsx'
 import SysadminGuard from './components/SysadminGuard.jsx'
 import AppLayout from './components/AppLayout.jsx'
 import ImpersonationBanner from './components/ImpersonationBanner.jsx'
+import { PersonalizationProvider } from './lib/personalization.jsx'
 
 // Public pages
 import Landing from './pages/Landing.jsx'
@@ -20,12 +21,14 @@ import Costing from './pages/Costing.jsx'
 import Pricing from './pages/Pricing.jsx'
 import Inventory from './pages/Inventory.jsx'
 import Settings from './pages/Settings.jsx'
+import Personalize from './pages/Personalize.jsx'
 
 // Sysadmin
 import Users from './pages/sysadmin/Users.jsx'
 import Billing from './pages/sysadmin/Billing.jsx'
 import Content from './pages/sysadmin/Content.jsx'
 import AuthSettings from './pages/sysadmin/AuthSettings.jsx'
+import Gallery from './pages/sysadmin/Gallery.jsx'
 import SysadminPlaceholder from './pages/sysadmin/Placeholder.jsx'
 
 export default function App() {
@@ -33,38 +36,43 @@ export default function App() {
     <>
       <ImpersonationBanner/>
       <Routes>
-        {/* ============ Public ============ */}
+        {/* Public */}
         <Route path="/"                element={<Landing/>}/>
         <Route path="/signup"          element={<Signup/>}/>
         <Route path="/login"           element={<Login/>}/>
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/reset-password"  element={<ResetPassword/>}/>
 
-        {/* ============ Protected app ============ */}
+        {/* Protected — wrapped in PersonalizationProvider so hero/avatar
+            read from the same shared state as the Personalize page */}
         <Route path="/app/*" element={
           <AuthGuard>
-            <AppLayout>
-              <Routes>
-                <Route index                element={<Dashboard/>}/>
-                <Route path="ingredients"   element={<Ingredients/>}/>
-                <Route path="recipes"       element={<Recipes/>}/>
-                <Route path="bom"           element={<Bom/>}/>
-                <Route path="costing"       element={<Costing/>}/>
-                <Route path="pricing"       element={<Pricing/>}/>
-                <Route path="inventory"     element={<Inventory/>}/>
-                <Route path="settings"      element={<Settings/>}/>
+            <PersonalizationProvider>
+              <AppLayout>
+                <Routes>
+                  <Route index                element={<Dashboard/>}/>
+                  <Route path="ingredients"   element={<Ingredients/>}/>
+                  <Route path="recipes"       element={<Recipes/>}/>
+                  <Route path="bom"           element={<Bom/>}/>
+                  <Route path="costing"       element={<Costing/>}/>
+                  <Route path="pricing"       element={<Pricing/>}/>
+                  <Route path="inventory"     element={<Inventory/>}/>
+                  <Route path="settings"      element={<Settings/>}/>
+                  <Route path="personalize"   element={<Personalize/>}/>
 
-                {/* Sysadmin — real pages */}
-                <Route path="sysadmin/users"    element={<SysadminGuard><Users/></SysadminGuard>}/>
-                <Route path="sysadmin/billing"  element={<SysadminGuard><Billing/></SysadminGuard>}/>
-                <Route path="sysadmin/content"  element={<SysadminGuard><Content/></SysadminGuard>}/>
-                <Route path="sysadmin/auth"     element={<SysadminGuard><AuthSettings/></SysadminGuard>}/>
+                  {/* Sysadmin — real pages */}
+                  <Route path="sysadmin/users"    element={<SysadminGuard><Users/></SysadminGuard>}/>
+                  <Route path="sysadmin/billing"  element={<SysadminGuard><Billing/></SysadminGuard>}/>
+                  <Route path="sysadmin/content"  element={<SysadminGuard><Content/></SysadminGuard>}/>
+                  <Route path="sysadmin/auth"     element={<SysadminGuard><AuthSettings/></SysadminGuard>}/>
+                  <Route path="sysadmin/gallery"  element={<SysadminGuard><Gallery/></SysadminGuard>}/>
 
-                {/* Sysadmin — placeholders */}
-                <Route path="sysadmin/platform" element={<SysadminGuard><SysadminPlaceholder title="Platform Settings" description="Feature flags, maintenance mode, platform announcements, backup schedule."/></SysadminGuard>}/>
-                <Route path="sysadmin/audit"    element={<SysadminGuard><SysadminPlaceholder title="Audit Log" description="Who did what, when. Especially useful for impersonation events and subscription date changes."/></SysadminGuard>}/>
-              </Routes>
-            </AppLayout>
+                  {/* Sysadmin — placeholders */}
+                  <Route path="sysadmin/platform" element={<SysadminGuard><SysadminPlaceholder title="Platform Settings" description="Feature flags, maintenance mode, platform announcements, backup schedule."/></SysadminGuard>}/>
+                  <Route path="sysadmin/audit"    element={<SysadminGuard><SysadminPlaceholder title="Audit Log" description="Who did what, when. Especially useful for impersonation events and subscription date changes."/></SysadminGuard>}/>
+                </Routes>
+              </AppLayout>
+            </PersonalizationProvider>
           </AuthGuard>
         }/>
       </Routes>

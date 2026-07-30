@@ -14,7 +14,6 @@ const NAV = [
   { to:'/app/inventory',   label:'Inventory',    icon:'inventory' },
 ]
 
-// Small inline icon set for sysadmin nav (avoids extending nav-icons.jsx)
 function SysIcon({ name }) {
   const props = { width:18, height:18, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.7, strokeLinecap:'round', strokeLinejoin:'round' }
   switch (name) {
@@ -22,19 +21,22 @@ function SysIcon({ name }) {
     case 'billing':  return <svg {...props}><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
     case 'content':  return <svg {...props}><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
     case 'auth':     return <svg {...props}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    case 'gallery':  return <svg {...props}><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
     case 'platform': return <svg {...props}><rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><line x1="6" y1="7" x2="6.01" y2="7"/><line x1="6" y1="17" x2="6.01" y2="17"/></svg>
     case 'audit':    return <svg {...props}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+    case 'palette':  return <svg {...props}><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
     default: return null
   }
 }
 
 const SYSADMIN_NAV = [
-  { to:'/app/sysadmin/users',    label:'Users',           icon:'users' },
-  { to:'/app/sysadmin/billing',  label:'Billing',         icon:'billing' },
-  { to:'/app/sysadmin/content',  label:'Content',         icon:'content' },
-  { to:'/app/sysadmin/auth',     label:'Auth & Login',    icon:'auth' },
-  { to:'/app/sysadmin/platform', label:'Platform',        icon:'platform' },
-  { to:'/app/sysadmin/audit',    label:'Audit Log',       icon:'audit' },
+  { to:'/app/sysadmin/users',    label:'Users',        icon:'users' },
+  { to:'/app/sysadmin/billing',  label:'Billing',      icon:'billing' },
+  { to:'/app/sysadmin/content',  label:'Content',      icon:'content' },
+  { to:'/app/sysadmin/auth',     label:'Auth & Login', icon:'auth' },
+  { to:'/app/sysadmin/gallery',  label:'Gallery',      icon:'gallery' },
+  { to:'/app/sysadmin/platform', label:'Platform',     icon:'platform' },
+  { to:'/app/sysadmin/audit',    label:'Audit Log',    icon:'audit' },
 ]
 
 export default function Sidebar() {
@@ -73,7 +75,7 @@ export default function Sidebar() {
 
   const [markPart1, markPart2] = (settings.app_name || 'Baker|Nomics').split('|')
   const logoSrc = settings.logo_data_url || '/assets/lily-mark-white.png'
-  const kicker = isSysadmin ? 'SYSADMIN' : (settings.business_name || 'Lily Ong Artisan').toUpperCase()
+  const kicker  = isSysadmin ? 'SYSADMIN' : (settings.business_name || 'Lily Ong Artisan').toUpperCase()
 
   async function handleSignOut() {
     close()
@@ -91,7 +93,7 @@ export default function Sidebar() {
       <aside className={open ? 'open' : ''}>
         <Link to="/app" className="brand" style={{textDecoration:'none', color:'inherit'}} onClick={close}>
           <div className="brand-stamp">
-            <img src={logoSrc} alt="" />
+            <img src={logoSrc} alt=""/>
           </div>
           <div className="brand-text">
             <div className="brand-wordmark">
@@ -118,6 +120,14 @@ export default function Sidebar() {
 
         <div className="nav-section">System</div>
         <NavLink
+          to="/app/personalize"
+          onClick={close}
+          className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}
+        >
+          <span className="chip"><SysIcon name="palette"/></span>
+          Personalize
+        </NavLink>
+        <NavLink
           to="/app/settings"
           onClick={close}
           className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}
@@ -143,7 +153,6 @@ export default function Sidebar() {
           </>
         )}
 
-        {/* Account block at bottom */}
         <div className="sidebar-account">
           <div className="account-info">
             <div className="account-email" title={user?.email}>{user?.email || '—'}</div>
