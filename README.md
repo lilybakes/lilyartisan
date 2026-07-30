@@ -1,110 +1,33 @@
-# Delta 1 — Auth Foundation
+# Login page fix
 
-Multi-tenant conversion, step 1 of 4. This delta adds authentication and per-user data isolation. Nothing else changes yet.
+Replace `src/styles.css` with the file in this zip. That's it — one file, full drop-in replacement.
 
-## Files in this delta
+## What was wrong
 
-```
-supabase/
-  delta-1-auth-foundation.sql    # Run once in SQL Editor
-src/
-  main.jsx                       # OVERWRITE — adds AuthProvider
-  App.jsx                        # OVERWRITE — auth routes + AuthGuard
-  lib/
-    auth.jsx                     # NEW — session, profile, sign in/out
-    settings.jsx                 # OVERWRITE — now per-user
-  pages/
-    Login.jsx                    # NEW
-    ForgotPassword.jsx           # NEW
-    ResetPassword.jsx            # NEW
-  components/
-    AuthGuard.jsx                # NEW — redirects to /login if no session
-    Sidebar.jsx                  # OVERWRITE — adds sign-out at bottom
-  styles-patch.css               # APPEND to end of src/styles.css
-```
+The `styles-patch.css` from Delta 1 was supposed to be **appended** to your existing `styles.css`. Since that didn't happen, the auth-page styles never loaded, and the login form rendered edge-to-edge with default HTML styling.
 
-## Deployment sequence (IMPORTANT — do in this order)
+My mistake for shipping it as a patch — should have shipped a full file. Fixed now.
 
-### Step 1 — Create both users in Supabase Dashboard (2 min, do this FIRST)
+## What's in the full file
 
-Go to Supabase Dashboard → your `lilybakes BOM` project → **Authentication** → **Users** → **Add user** (top-right).
+Everything from your existing `styles.css` (all the mobile work, card layouts, bottom nav) **plus**:
 
-Create two users, both with **"Auto Confirm User" enabled** (checkbox):
+- **Auth pages** (Login, Forgot, Reset) — centered glass-card design with subtle gradient blobs, backdrop blur, proper spacing, mobile-safe padding
+- **Sidebar account block** — email + role + Sign out button at bottom of the drawer
+- **Auth loading spinner** — the pulsing violet spinner shown while checking session
 
-| Email                    | Password    |
-|--------------------------|-------------|
-| lily2211@gmail.com       | 2211Qwer!   |
-| anthony2211@gmail.com    | 2211Qwer!   |
+## The new login page design
 
-Verify both appear in the user list before continuing.
+- Soft gradient background (violet + pink glow blobs, blurred)
+- Frosted-glass card (backdrop-blur + semi-transparent white)
+- Bigger brand stamp (60px) centered above title
+- Big "Baker" (dark) + "Nomics" (violet) split title
+- Rounded 10px inputs with proper mobile-safe 16px font-size
+- Lifted button with soft violet glow shadow
+- Clean "Forgot your password?" link below
 
-### Step 2 — Push Delta 1 code to GitHub
+Works desktop, tablet, phone — respects safe-area insets on iOS.
 
-Overwrite the files as listed above. Push to `main`. Netlify will start building.
+## No JSX changes needed
 
-**Wait for Netlify to say "Published"** before Step 3.
-
-### Step 3 — Run the migration SQL
-
-Go to Supabase → **SQL Editor** → paste the entire contents of `supabase/delta-1-auth-foundation.sql` → **Run**.
-
-You should see:
-```
-NOTICE:  Found Lily:  <uuid>
-NOTICE:  Found Admin: <uuid>
-Success. No rows returned
-```
-
-If you see `ERROR: User ... not found`, you skipped Step 1 — go back and create the users.
-
-### Step 4 — Hard-refresh your browser
-
-You should now see the login page. Sign in as either user with `2211Qwer!`.
-
-- **Lily** sees the app exactly as before with all her data intact.
-- **Anthony** sees an empty app (no data yet — sysadmin panel comes in Delta 2).
-
-## What this delta does NOT do (yet)
-
-- No sysadmin panel — comes in Delta 2
-- No signup / trial / paid subscription flow — comes in Delta 3
-- No read-only mode enforcement — comes in Delta 4
-- No custom email templates — Supabase default sender for now
-- Storage bucket policies stay permissive — will tighten in Delta 2 or 3 when we have real users
-
-## Rollback (if anything goes wrong)
-
-The migration is transactional — if any step fails, the entire migration is rolled back automatically, and your database is exactly as it was before. **Nothing is lost partial-way.**
-
-If the app breaks post-deploy but the migration succeeded:
-1. Revert the GitHub commit → Netlify redeploys the old code
-2. The old code uses the anon key with no session, but new RLS is per-user — you'll see empty app
-3. To temporarily restore full anon access while you debug, run this in SQL Editor:
-   ```sql
-   CREATE POLICY "temp anon" ON ingredients   FOR ALL TO anon USING (true) WITH CHECK (true);
-   CREATE POLICY "temp anon" ON recipes       FOR ALL TO anon USING (true) WITH CHECK (true);
-   CREATE POLICY "temp anon" ON bom_lines     FOR ALL TO anon USING (true) WITH CHECK (true);
-   CREATE POLICY "temp anon" ON inventory     FOR ALL TO anon USING (true) WITH CHECK (true);
-   CREATE POLICY "temp anon" ON header_links  FOR ALL TO anon USING (true) WITH CHECK (true);
-   CREATE POLICY "temp anon" ON settings      FOR ALL TO anon USING (true) WITH CHECK (true);
-   GRANT SELECT, INSERT, UPDATE, DELETE ON ingredients, recipes, bom_lines, inventory, header_links, settings TO anon;
-   ```
-   Then remove them once auth is working again.
-
-You've already exported CSV backups — if worst case, we import from those.
-
-## After deploy — what changes for Lily
-
-She'll need to log in once with `lily2211@gmail.com` / `2211Qwer!`. Session persists in her browser, so she won't be asked again unless she signs out or clears her browser storage.
-
-Tell her to change her password from the "Forgot password?" link on the login page (or we'll add a proper "Change password" flow in a later delta).
-
-## What's next (Delta 2)
-
-Once Delta 1 is verified working, Delta 2 adds:
-- `/admin` route, sysadmin-only
-- User list with roles, subscription dates
-- Invite user form (email + start/end dates)
-- Reset password / generate temp password / impersonate buttons
-- Business info config (invoice numbering, payment QR upload)
-- Editable invite email template
+The `Login.jsx`, `ForgotPassword.jsx`, `ResetPassword.jsx` files from Delta 1 already have the right structure. This fix is purely CSS.
