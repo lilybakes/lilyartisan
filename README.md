@@ -1,102 +1,81 @@
-# Brand Identity + Recipe Templates
+# Starter Recipes for New Users
 
-Big delta. Adds proper per-user branding and a Templates page with 4 fully-working printable sheets + 6 stubbed for future.
+One SQL file. Runs the migration + registers a trigger that auto-seeds every new user with realistic bakery starter content — 18 ingredients, 6 recipes, and all the BOM links pre-costed.
 
-## Files
+## The 6 starter recipes
 
-```
-supabase/
-  brand-identity.sql                            # NEW — 10 columns added to settings
+| Recipe | Category | Yield | Target FC% |
+|---|---|---|---|
+| Classic Sourdough Loaf | Bread | 1 loaf | 30% |
+| Chocolate Chip Cookies | Cookies | 24 | 30% |
+| Vanilla Cupcakes with Buttercream | Cakes | 12 | 28% |
+| Chocolate Fudge Cake | Cakes | 10 slices | 30% |
+| Blueberry Muffins | Muffins | 12 | 28% |
+| Almond Biscotti | Cookies | 20 | 25% |
 
-src/
-  components/
-    Sidebar.jsx                                 # OVERWRITE — adds Templates nav item under Recipes & Data
-    NavGlyph.jsx                                # OVERWRITE — adds the templates icon
-    templates/
-      index.js                                  # NEW — registry of all 10 templates
-      parts.jsx                                 # NEW — shared BrandHeader / BrandFooter
-      ClassicRecipeCard.jsx                     # NEW — full recipe, A5
-      CostBreakdown.jsx                         # NEW — internal cost sheet, A4
-      CareCard.jsx                              # NEW — customer care card, A6
-      ProductLabel.jsx                          # NEW — packaging label, A7
-  pages/
-    Settings.jsx                                # OVERWRITE — expanded Brand & Identity with 3 sub-tabs
-    Templates.jsx                               # NEW — picker + preview + print
-  styles.css                                    # OVERWRITE (full file)
-```
+Every recipe has `description`, `method`, `storage_notes`, and `allergen_notice` populated — so Classic Recipe Card, Care Card, and Product Label templates all look complete out of the box. No "missing method" placeholders.
+
+The 18 supporting ingredients (flour, butter, eggs, sugar, chocolate, blueberries, almonds, etc.) are priced in realistic RM for Malaysian bakery-supply channels and use consistent grams/millilitres/pieces so the costing math works without unit conversion.
 
 ## Deploy
 
-### 1. Run the SQL
+Supabase SQL Editor → paste `supabase/starter-recipes.sql` → Run.
 
-Supabase SQL Editor → paste `supabase/brand-identity.sql` → Run.
+The final SELECT should show two rows — `seed_starter_recipes` and `trigger_seed_starter_recipes`. That's your confirmation both the function and the trigger installed correctly.
 
-Adds 10 nullable columns to `settings`:
-- `tagline`, `brand_color` (default `#6C5CE7`)
-- `contact_phone`, `contact_email`, `website`, `address`
-- `instagram`, `facebook`
-- `default_storage_notes`, `default_allergen_notice`
+## How the trigger works
 
-(`logo_data_url` already exists — it becomes the per-user logo now.)
-
-### 2. Push the code
-
-All the files above. **One manual edit still needed in `App.jsx`** — add the templates route:
-
-```jsx
-import Templates from './pages/Templates.jsx'
-
-// inside the /app/* routes, next to Personalize / Settings:
-<Route path="templates" element={<Templates/>}/>
+```
+User signs up (any path — free trial, sysadmin invite, paid checkout approval)
+         ↓
+INSERT into auth.users
+         ↓
+Two AFTER INSERT triggers fire on auth.users:
+  1. on_auth_user_created         → creates profile + settings row
+  2. on_new_user_seed_recipes     → calls seed_starter_recipes(new_user_id)
+         ↓
+seed_starter_recipes() checks: does this user have ANY recipes already?
+  - Yes → return silently (idempotent)
+  - No  → insert 18 ingredients + 6 recipes + ~50 BOM lines under their user_id
 ```
 
-That's it — the sidebar already links to `/app/templates`.
+Every new signup lands in the app with something to explore. They can edit, delete, or use these as-is.
 
-### 3. Try it
+## Existing users are untouched
 
-1. Log in as Lily
-2. `/app/settings` → **Identity** sub-tab → upload logo, pick a brand color, fill business name + tagline
-3. **Contact & Address** sub-tab → phone, website, socials, address
-4. **Recipe defaults** sub-tab → default storage instructions, allergen notice
-5. Save
-6. `/app/templates` → pick a recipe → pick a template → **🖨️ Print / Save as PDF**
+The idempotency check (`IF EXISTS (SELECT 1 FROM recipes WHERE user_id = p_user_id LIMIT 1) THEN RETURN`) means Lily, Anthony, and anyone else who already has recipes gets skipped. Lily's real recipes stay hers.
 
-The 4 ready templates render with her logo, brand color as the accent, and all her contact info.
+## Manually seed an existing user
 
-## The 4 ready templates
+If a specific existing user somehow ended up empty and wants the starter content, run:
 
-| Template | Size | Use case |
-|---|---|---|
-| **Classic Recipe Card** | A5 portrait | Kitchen reference — full ingredients + method + brand |
-| **Cost Breakdown Sheet** | A4 portrait | Internal cost analysis — ingredient costs, cost per portion, margin at suggested price |
-| **Care & Storage Card** | A6 portrait | Customer-facing thank-you card with storage + allergen info |
-| **Product Label** | A7 portrait | Compact packaging label — allergens, ingredients list, contact |
+```sql
+SELECT seed_starter_recipes('<their-user-id>');
+```
 
-All 4 use the same brand accent color (from user's `brand_color`), logo, business name, tagline, and contact info.
+Only runs if they truly have no recipes. Safe to call.
 
-## The 6 coming next
+## Cost preview (what the app will show after seed)
 
-Stubbed in the picker with a "Coming next" badge. Wiring in future deltas:
-- Menu Insert · Wholesale Price List · Delivery Tag · Social Media Card · Recipe Binder Page · Certificate of Craft
+Rough numbers so you know what the templates will render for a new user:
 
-Each one just needs a new `.jsx` file exporting `{recipe, brand}` → `<div className="tpl printable">…</div>` plus registration in `templates/index.js` (change `ready: false, component: null` → `ready: true, component: YourNewTemplate`).
+| Recipe | Batch cost | Cost / portion | Suggested price / portion @ target FC% |
+|---|---|---|---|
+| Sourdough Loaf | ~RM 4.00 | RM 4.00 | RM 13.30 per loaf |
+| Chocolate Chip Cookies | ~RM 26.00 | RM 1.08 | RM 3.60 per cookie |
+| Vanilla Cupcakes | ~RM 14.40 | RM 1.20 | RM 4.30 per cupcake |
+| Chocolate Fudge Cake | ~RM 30.00 | RM 3.00 | RM 10.00 per slice (~RM 100 whole) |
+| Blueberry Muffins | ~RM 15.00 | RM 1.25 | RM 4.50 per muffin |
+| Almond Biscotti | ~RM 15.00 | RM 0.75 | RM 3.00 per piece |
 
-## Print behavior
+These are realistic artisan-bakery numbers — a new user sees immediately how the app turns their ingredient costs into confident prices.
 
-Uses `window.print()` + `@media print` CSS. Browser's print dialog opens; user picks "Save as PDF" for a downloadable file, or a real printer for hard copies. Every element outside `.printable` is hidden during print — sidebar, topbar, picker controls all vanish so only the template sheet is on the printed page.
+## Rollback
 
-Page size hints per template (A4/A5/A6/A7) are shown as badges in the picker — but the actual paper size is controlled by the user's print dialog. If they pick A4 and the template is A5-sized, they'll get an A5 sheet centered on an A4 page (which lets them fit multiple care cards per sheet).
-
-## Brand incompleteness nudge
-
-If the user hasn't set both a logo AND a business name, the Templates page shows a soft nudge card at the top: "Set up your brand first" linking to Settings. Not blocking — templates still render with fallback text, but the nudge encourages them to personalize.
-
-## What this unlocks for the SaaS story
-
-Bakers can now:
-- Print recipes for their kitchen with their own brand
-- Include care cards in every order (customer sees your logo, not BakeOnomics's)
-- Make product labels for retail/packaging
-- Print internal cost analyses for pricing decisions
-
-Every printed sheet is a piece of marketing that says "The Daily Crumb", not "BakeOnomics". You stay invisible while giving them tools to look professional.
+```sql
+DROP TRIGGER IF EXISTS on_new_user_seed_recipes ON auth.users;
+DROP FUNCTION IF EXISTS trigger_seed_starter_recipes();
+DROP FUNCTION IF EXISTS seed_starter_recipes(uuid);
+-- The added recipes columns (description, method, storage_notes, allergen_notice)
+-- can be left in place — nothing depends on them being removed.
+```
