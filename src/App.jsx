@@ -27,6 +27,7 @@ import Pricing from './pages/Pricing.jsx'
 import Inventory from './pages/Inventory.jsx'
 import Settings from './pages/Settings.jsx'
 import Personalize from './pages/Personalize.jsx'
+import Templates from './pages/Templates.jsx'
 
 // Sysadmin
 import Users from './pages/sysadmin/Users.jsx'
@@ -69,6 +70,7 @@ export default function App() {
                     <Route path="inventory"     element={<Inventory/>}/>
                     <Route path="settings"      element={<Settings/>}/>
                     <Route path="personalize"   element={<Personalize/>}/>
+                    <Route path="templates"     element={<Templates/>}/>
 
                     <Route path="sysadmin/orders"   element={<SysadminGuard><Orders/></SysadminGuard>}/>
                     <Route path="sysadmin/users"    element={<SysadminGuard><Users/></SysadminGuard>}/>

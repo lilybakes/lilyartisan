@@ -4,7 +4,8 @@ import { useSettings } from '../lib/settings.jsx'
 import { TEMPLATES, getTemplate } from '../components/templates/index.js'
 
 export default function Templates() {
-  const { settings } = useSettings()
+  const settingsCtx = useSettings() || {}
+  const settings = settingsCtx.settings || {}
   const [recipes, setRecipes]         = useState([])
   const [ingredients, setIngredients] = useState({})
   const [bomLines, setBomLines]       = useState({})
