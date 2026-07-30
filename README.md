@@ -1,29 +1,21 @@
-# Hero Photo Slide — Copy Centering
+# Sidebar Chip Fix
 
-One file. `src/styles.css` — overwrite.
+Bug in the previous `sidebar-nav` delta — one-file, one-line fix.
 
-## What was wrong
+## What went wrong
 
-On photo slides 1 and 3, the text sat glued to the viewport left edge. On a 1920px monitor, text was at 80–760px, then ~1160px of dead space between it and the right edge. The photo dominated the right two-thirds and the text felt marooned.
+In `Sidebar.jsx` I wrapped the glyph in `<span className="nav-chip">` but the CSS I shipped in the same delta was written against `.chip`. Classname mismatch → chip styling never applied:
 
-Same root cause as the split-slide fix: no content-column cap, so on wider screens the layout scaled worse instead of feeling more intentional.
+- Background stayed unset (no lavender `#EEECFE`)
+- `color: var(--nav-stroke)` never applied, so `currentColor` on the SVG strokes fell back to the row's `#6D6B77` text color
+- `.chip .glyph-fill` selector never matched, so the duotone fills stayed at the SVG's default `fill="none"`
+
+Result: plain black-and-white outline icons on a transparent chip.
 
 ## The fix
 
-`.hc-copy-left` now behaves like a proper landing-page content column:
+Change `className="nav-chip"` → `className="chip"` in `Sidebar.jsx`. One line. That's it.
 
-- **Absolutely spans the slide** (`inset: 0`) but capped at `max-width: 1440px` and centered horizontally via `margin: 0 auto`
-- **Content left-anchored within that column** (`align-items: flex-start`)
-- **Inner text (h1, p, eyebrow) gets `max-width: 620px`** so lines stay readable
+## Deploy
 
-## What each viewport gets
-
-- **≥1440px** — content column caps at 1440, text starts at `(viewport - 1440) / 2 + 80px` from left. On 1920 that's 320px. Photo still visible on right, but the text feels intentionally placed instead of edge-clinging.
-- **1024–1440px** — column matches viewport width, text at 80px from left (unchanged from before)
-- **<1024px** — unchanged (mobile already stacks the copy plate full-width)
-
-## Consistency with slide 5
-
-Slide 5 (`.hc-copy-center`) already uses `text-align: center` with `max-width: 860px` on the h2 and 580px on the p, so it doesn't have this problem — text stays centered regardless of viewport.
-
-Deploy, hard-refresh. Slides 1 and 3 will feel balanced now.
+Overwrite `src/components/Sidebar.jsx`, push, hard-refresh. The full duotone icon set from the spec (indigo strokes, `#C9C3FA` fills, white knock-outs) will now render.

@@ -92,7 +92,7 @@ export default function Sidebar() {
       className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}
       title={label}
     >
-      <span className="nav-chip">
+      <span className="chip">
         <NavGlyph name={icon}/>
       </span>
       <span className="nav-label">{label}</span>
