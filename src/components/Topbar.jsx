@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth.jsx'
-import { Icon } from '../lib/icons.jsx'
 import UserAvatar from './UserAvatar.jsx'
 
-// Small icon lookup for the custom "header link" icons stored in DB
 function HeaderLinkIcon({ name }) {
   const props = { width:18, height:18, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' }
   switch (name) {
@@ -27,6 +25,19 @@ export default function Topbar() {
       .order('position')
       .then(({ data }) => setLinks(data || []))
   }, [user?.id])
+
+  // Defensive dedupe: same icon+label appears only once, even if the DB has stale duplicates.
+  const uniqueLinks = useMemo(() => {
+    const seen = new Set()
+    const out = []
+    for (const link of links) {
+      const key = `${link.icon_name || ''}::${(link.label || '').toLowerCase()}`
+      if (seen.has(key)) continue
+      seen.add(key)
+      out.push(link)
+    }
+    return out
+  }, [links])
 
   function openDrawer() {
     window.dispatchEvent(new CustomEvent('mobile-nav-open'))
@@ -51,7 +62,7 @@ export default function Topbar() {
       </div>
 
       <div className="top-icons">
-        {links.map(link => (
+        {uniqueLinks.map(link => (
           link.url ? (
             <a key={link.id} className="icn-btn" href={link.url}
                target={link.open_in_new_tab ? '_blank' : '_self'}

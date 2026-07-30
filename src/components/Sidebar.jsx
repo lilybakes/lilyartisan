@@ -4,16 +4,9 @@ import { NavIcon } from '../lib/nav-icons.jsx'
 import { useSettings } from '../lib/settings.jsx'
 import { useAuth } from '../lib/auth.jsx'
 
-const NAV = [
-  { to:'/app',             label:'Dashboard',    icon:'dash', end:true },
-  { to:'/app/ingredients', label:'Ingredients',  icon:'ingredients' },
-  { to:'/app/recipes',     label:'Recipes',      icon:'recipes' },
-  { to:'/app/bom',         label:'Recipe BOM',   icon:'bom' },
-  { to:'/app/costing',     label:'Yield & Cost', icon:'costing' },
-  { to:'/app/pricing',     label:'Pricing',      icon:'pricing' },
-  { to:'/app/inventory',   label:'Inventory',    icon:'inventory' },
-]
-
+// ============================================================
+// Sysadmin section icons (inline SVG — small set, no lib needed)
+// ============================================================
 function SysIcon({ name }) {
   const props = { width:18, height:18, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.7, strokeLinecap:'round', strokeLinejoin:'round' }
   switch (name) {
@@ -29,16 +22,39 @@ function SysIcon({ name }) {
   }
 }
 
-const SYSADMIN_NAV = [
-  { to:'/app/sysadmin/users',    label:'Users',        icon:'users' },
-  { to:'/app/sysadmin/billing',  label:'Billing',      icon:'billing' },
-  { to:'/app/sysadmin/content',  label:'Content',      icon:'content' },
-  { to:'/app/sysadmin/auth',     label:'Auth & Login', icon:'auth' },
-  { to:'/app/sysadmin/gallery',  label:'Gallery',      icon:'gallery' },
-  { to:'/app/sysadmin/platform', label:'Platform',     icon:'platform' },
-  { to:'/app/sysadmin/audit',    label:'Audit Log',    icon:'audit' },
-]
+// ============================================================
+// Collapsible section — remembers open/closed in localStorage
+// ============================================================
+function NavGroup({ title, storageKey, defaultOpen = true, children }) {
+  const [open, setOpen] = useState(() => {
+    try {
+      const stored = localStorage.getItem('nav-group:' + storageKey)
+      return stored === null ? defaultOpen : stored === '1'
+    } catch { return defaultOpen }
+  })
+  function toggle() {
+    const next = !open
+    setOpen(next)
+    try { localStorage.setItem('nav-group:' + storageKey, next ? '1' : '0') } catch {}
+  }
+  return (
+    <div className={'nav-group' + (open ? ' open' : ' closed')}>
+      <button className="nav-group-header" onClick={toggle} type="button">
+        <span>{title}</span>
+        <svg className="nav-group-caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      {open && <div className="nav-group-body">{children}</div>}
+    </div>
+  )
+}
 
+function SubHeader({ children }) {
+  return <div className="nav-subheader">{children}</div>
+}
+
+// ============================================================
 export default function Sidebar() {
   const settingsCtx = useSettings() || {}
   const settings = settingsCtx.settings || {}
@@ -47,13 +63,13 @@ export default function Sidebar() {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    const onOpen = () => setOpen(true)
-    const onCloseEv = () => setOpen(false)
-    window.addEventListener('mobile-nav-open', onOpen)
-    window.addEventListener('mobile-nav-close', onCloseEv)
+    const onOpen  = () => setOpen(true)
+    const onClose = () => setOpen(false)
+    window.addEventListener('mobile-nav-open',  onOpen)
+    window.addEventListener('mobile-nav-close', onClose)
     return () => {
-      window.removeEventListener('mobile-nav-open', onOpen)
-      window.removeEventListener('mobile-nav-close', onCloseEv)
+      window.removeEventListener('mobile-nav-open',  onOpen)
+      window.removeEventListener('mobile-nav-close', onClose)
     }
   }, [])
 
@@ -83,6 +99,22 @@ export default function Sidebar() {
     navigate('/login', { replace: true })
   }
 
+  // Nav item factory — keeps JSX compact below
+  const item = (to, label, icon, iconType = 'nav') => (
+    <NavLink
+      key={to}
+      to={to}
+      end={to === '/app'}
+      onClick={close}
+      className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}
+    >
+      <span className={'chip' + (iconType === 'sys' ? ' chip-admin' : '')}>
+        {iconType === 'sys' ? <SysIcon name={icon}/> : <NavIcon name={icon}/>}
+      </span>
+      {label}
+    </NavLink>
+  )
+
   return (
     <>
       <div
@@ -104,55 +136,43 @@ export default function Sidebar() {
           </div>
         </Link>
 
-        <div className="nav-section">Main</div>
-        {NAV.map(n => (
-          <NavLink
-            key={n.to}
-            to={n.to}
-            end={n.end}
-            onClick={close}
-            className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}
-          >
-            <span className="chip"><NavIcon name={n.icon}/></span>
-            {n.label}
-          </NavLink>
-        ))}
+        {/* ============ MAIN ============ */}
+        <NavGroup title="Main" storageKey="main">
+          {item('/app',             'Dashboard',    'dash')}
+          <SubHeader>Recipes & Data</SubHeader>
+          {item('/app/ingredients', 'Ingredients',  'ingredients')}
+          {item('/app/recipes',     'Recipes',      'recipes')}
+          {item('/app/bom',         'Recipe BOM',   'bom')}
+          <SubHeader>Financials</SubHeader>
+          {item('/app/costing',     'Yield & Cost', 'costing')}
+          {item('/app/pricing',     'Pricing',      'pricing')}
+          <SubHeader>Operations</SubHeader>
+          {item('/app/inventory',   'Inventory',    'inventory')}
+        </NavGroup>
 
-        <div className="nav-section">System</div>
-        <NavLink
-          to="/app/personalize"
-          onClick={close}
-          className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}
-        >
-          <span className="chip"><SysIcon name="palette"/></span>
-          Personalize
-        </NavLink>
-        <NavLink
-          to="/app/settings"
-          onClick={close}
-          className={({isActive}) => 'nav-item' + (isActive ? ' active' : '')}
-        >
-          <span className="chip"><NavIcon name="settings"/></span>
-          Settings
-        </NavLink>
+        {/* ============ YOU ============ */}
+        <NavGroup title="You" storageKey="you">
+          {item('/app/personalize', 'Personalize', 'palette', 'sys')}
+          {item('/app/settings',    'Settings',    'settings')}
+        </NavGroup>
 
+        {/* ============ SYSADMIN ============ */}
         {isSysadmin && (
-          <>
-            <div className="nav-section nav-section-admin">Sysadmin</div>
-            {SYSADMIN_NAV.map(n => (
-              <NavLink
-                key={n.to}
-                to={n.to}
-                onClick={close}
-                className={({isActive}) => 'nav-item nav-item-admin' + (isActive ? ' active' : '')}
-              >
-                <span className="chip chip-admin"><SysIcon name={n.icon}/></span>
-                {n.label}
-              </NavLink>
-            ))}
-          </>
+          <NavGroup title="Sysadmin" storageKey="sysadmin">
+            <SubHeader>Business</SubHeader>
+            {item('/app/sysadmin/users',    'Users',        'users',    'sys')}
+            {item('/app/sysadmin/billing',  'Billing',      'billing',  'sys')}
+            <SubHeader>Content & Design</SubHeader>
+            {item('/app/sysadmin/content',  'Content',      'content',  'sys')}
+            {item('/app/sysadmin/auth',     'Auth & Login', 'auth',     'sys')}
+            {item('/app/sysadmin/gallery',  'Gallery',      'gallery',  'sys')}
+            <SubHeader>Platform</SubHeader>
+            {item('/app/sysadmin/platform', 'Platform',     'platform', 'sys')}
+            {item('/app/sysadmin/audit',    'Audit Log',    'audit',    'sys')}
+          </NavGroup>
         )}
 
+        {/* Account block — always pinned to the bottom */}
         <div className="sidebar-account">
           <div className="account-info">
             <div className="account-email" title={user?.email}>{user?.email || '—'}</div>

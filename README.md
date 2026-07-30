@@ -1,115 +1,99 @@
-# Delta 3b — Content Editor + Email Templates
+# Personalization — Consolidated Redo
 
-Sysadmin gets full control over what appears on the landing page and the emails your users will receive.
+Ships EVERYTHING you need for the hero + avatar customization in one clean bundle. Deploy this over whatever state you're in and it'll work.
 
-## What's shipping
+## Step-by-step (do these in order)
 
-**Content page** (`/app/sysadmin/content`) — six tabs, all live-editable:
-- **Hero** — eyebrow, title (two lines), tagline, body, CTAs, fine print
-- **Features** — section header + drag-orderable list of feature cards, each with icon (from 8 presets), color tone, title, body
-- **Pricing** — plan name, currency, amount, period, feature list, CTA, fine print
-- **FAQ** — reorderable question/answer pairs
-- **Final CTA** — closing CTA section
-- **Coming Soon** — items that show in every user's Settings page
+### 1. Push the code
 
-Every tab has "Reset to default" so you can always get back to the original copy.
-
-**Auth & Login page** (`/app/sysadmin/auth`) — email template editor:
-- Four seeded templates: **Invite**, **Welcome (trial)**, **Trial expiring**, **Subscription expiring**
-- Subject + body with `{{variable}}` substitution
-- Click-to-insert variable chips (name, sender_name, action_link, subscription_link, end_date, days_left, business_name)
-- Edit / Preview toggle — preview substitutes sample values so you see how it'll actually look
-- SMTP notice at the top: templates are stored but not yet sent until you configure custom SMTP in Supabase
-
-**Coming Soon widget component** — drop it into your Settings page and it renders whatever items you added in Content editor. Zero items = renders nothing.
-
-## Files
+Push all these files. Wait for Netlify "Published":
 
 ```
-supabase/
-  delta-3b-content.sql              # Migration — creates content_blocks + email_templates
+public/
+  gallery/
+    baker-01.png, chef-01.png, chef-02.png   ← 3 seeded images
 src/
-  App.jsx                           # OVERWRITE — real Content + AuthSettings routes
+  App.jsx                                     ← routes for Personalize + Gallery + PersonalizationProvider wrap
   lib/
-    content-defaults.js             # NEW — shared source of truth for hardcoded fallbacks
-    sysadmin-api.js                 # OVERWRITE — includes content + email APIs
-  pages/
-    Landing.jsx                     # OVERWRITE — fetches from content_blocks with defaults fallback
-    sysadmin/
-      Content.jsx                   # NEW — 6-tab editor
-      AuthSettings.jsx              # NEW — email template editor
+    personalization.jsx                       ← state context
+    initials.js                               ← initials + brand color util
   components/
-    FeatureIcon.jsx                 # NEW — 8-icon set for feature cards
-    ComingSoonWidget.jsx            # NEW — user-facing widget
-  styles.css                        # OVERWRITE (full file — Delta 2 + 3a + 3b combined)
+    HeroImage.jsx                             ← used by Dashboard
+    UserAvatar.jsx                            ← used by Topbar
+    Sidebar.jsx                               ← collapsible nav with Personalize + Gallery
+    Topbar.jsx                                ← uses UserAvatar, dedupes header_links
+  pages/
+    Dashboard.jsx                             ← renders HeroImage
+    Personalize.jsx                           ← user page
+    sysadmin/
+      Gallery.jsx                             ← sysadmin page
+  styles.css                                  ← full file
+supabase/
+  delta-personalization.sql                   ← migration (REQUIRED — run this next)
+  diagnose.sql                                ← diagnostic queries
 ```
 
-## Deploy steps
+### 2. Run the migration
 
-### Step 1 — Push code + wait for Netlify
+Supabase → SQL Editor → paste **`supabase/delta-personalization.sql`** → Run.
 
-Overwrite the files. Push. Wait for Netlify "Published".
+**This is the piece most likely to have been missed.** It adds the columns, creates the gallery table, seeds the 3 images, and creates the update RPC.
 
-### Step 2 — Run migration
+### 3. Verify with the diagnostic
 
-Supabase SQL Editor → paste `supabase/delta-3b-content.sql` → Run.
+Paste **`supabase/diagnose.sql`** into SQL Editor → Run.
 
-Verify with:
-```sql
-SELECT key FROM content_blocks;      -- empty initially, filled as you save
-SELECT key, label FROM email_templates;   -- 4 seeded rows
-```
+You should see:
+- Q1: 3 rows (hero_mode, hero_url, avatar_url)
+- Q2: 3 rows (chef-01, baker-01, chef-02)
+- Q3: 1 row
+- Q4: 2 rows, both with `hero_mode='default'`
 
-### Step 3 — Test as sysadmin
+If Q1 or Q2 or Q3 come back empty, the migration didn't run — go back to step 2.
 
-1. Log in as Anthony
-2. Navigate to `/app/sysadmin/content` → 6 tabs, all pre-filled with the current landing copy
-3. Change the hero title from "Guess less." to "Guess never." → Save
-4. Open `/` in a new tab → confirm the change appears
-5. Navigate to `/app/sysadmin/auth` → 4 email templates → open Invite template → click Preview → see substituted values
+### 4. Hard-refresh and find the pages
 
-### Step 4 — Add the Coming Soon widget to your Settings page
+Cmd/Ctrl + Shift + R.
 
-Open `src/pages/Settings.jsx` and add:
+Log in as **Anthony**.
 
-```jsx
-import ComingSoonWidget from '../components/ComingSoonWidget.jsx'
-```
+Look at the sidebar. It's now collapsible — three sections: **Main**, **You**, **Sysadmin**.
 
-Then drop `<ComingSoonWidget/>` wherever you want it to appear (typically at the bottom of the page).
+**To find the USER-side customization page:**
+- Sidebar → click **You** section header if it's collapsed
+- Click **Personalize** (has a palette icon)
+- URL: `/app/personalize`
 
-If you'd rather I generate a full Settings.jsx with the widget integrated in a "Coming Soon" tab, tell me and I'll ship it in the next delta.
+**To find the SYSADMIN "image bank" module:**
+- Sidebar → click **Sysadmin** section header if it's collapsed
+- Under the "Content & Design" sub-header, click **Gallery** (has a gallery icon)
+- URL: `/app/sysadmin/gallery`
 
-## About the Landing page rendering
+### 5. Test
 
-`Landing.jsx` now fetches all content from `content_blocks` on load. Between the initial render and the fetch completing, it shows the defaults from `content-defaults.js`. Users won't notice — the transition is instant on any decent connection.
+On **Personalize** (`/app/personalize`):
+- Live preview of your hero at the top
+- Buttons: **Upload your own**, **Use default**, **Show blank**
+- Below: 3 gallery items (the chef images) — click any to select
+- Second section: your avatar + upload/remove buttons
 
-If the DB fetch fails (network, RLS misconfig, whatever), defaults are used. **The landing page never breaks.**
+On **Gallery** (`/app/sysadmin/gallery`):
+- Grid of 3 seeded items (labeled "Static default")
+- Top-right: **+ Upload new** button
+- Per-item: label editor, ↑↓ reorder, hide/show, remove
 
-## About Email Templates
+## Common mistakes I've seen
 
-The four templates are stored but not sent yet. Here's why:
+- **Forgot to push the `public/gallery/` folder** → Personalize page shows broken images. Netlify only ships what's in the git repo.
+- **Ran nav-fix SQL but not personalization SQL** → sidebar has "Personalize" and "Gallery" links, but clicking them either 404s or the page loads with errors.
+- **Pushed some files but not App.jsx** → routes not registered, clicking sidebar links falls through to the dashboard or 404s.
 
-**Currently:** When you invite a user or send a password reset, Supabase Auth uses its **own** built-in email templates. You can edit those directly in Supabase Dashboard → Auth → Emails → Templates. Sender is `noreply@mail.app.supabase.io`.
+The diagnostic in Step 3 catches all three.
 
-**Next step (whenever you're ready):** Configure custom SMTP in Supabase Dashboard → Auth → Emails → SMTP Settings. Point it at Resend, SendGrid, or Mailgun. Once done, **the templates from our editor become the ones that get sent**. Zero code change needed — I'll wire in the send flow in a later delta.
+## If you STILL can't find the pages after step 3 passes
 
-For **new invite templates** we design (like "Trial expiring in 3 days"), we need to send them ourselves via a scheduled Edge Function. That comes in a later delta (Delta 5+).
+Send me the browser dev tools console output from:
+1. Loading `/app/personalize` directly (paste the URL)
+2. Loading `/app/sysadmin/gallery` directly
 
-## What's NOT in this delta
-
-- Actual email sending — awaits SMTP setup
-- Scheduled email jobs (trial expiring notices) — Delta 5+
-- Platform Settings + Audit Log UIs — Delta 3c or later
-- Public checkout + payment queue — Delta 4
-
-## Rollback
-
-Additive only. Safe.
-
-To fully rollback the schema:
-```sql
-DROP TABLE IF EXISTS content_blocks, email_templates;
-```
-
-Your saved content will be gone but the Landing page falls back to code defaults, so nothing breaks visually.
+Any red errors tell us what's happening.
