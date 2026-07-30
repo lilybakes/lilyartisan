@@ -148,8 +148,11 @@ export default function Landing() {
             <ul className="pricing-features">
               {pricingFeatures.map((feat, i) => <li key={i}>{feat}</li>)}
             </ul>
-            <Link to="/signup" className="landing-btn landing-btn-primary landing-btn-lg landing-btn-full">
-              {pricing.cta}
+            <Link to="/checkout" className="landing-btn landing-btn-primary landing-btn-lg landing-btn-full">
+              Subscribe now — {pricing.currency}{pricing.amount}{pricing.period}
+            </Link>
+            <Link to="/signup" className="landing-btn-ghost landing-btn-full" style={{marginTop:10, textAlign:'center', display:'block'}}>
+              or start a 14-day free trial →
             </Link>
             {pricing.fineprint && <p className="pricing-fineprint">{pricing.fineprint}</p>}
           </div>
