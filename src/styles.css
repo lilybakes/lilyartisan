@@ -2817,3 +2817,49 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   .checkout-upload{ flex-direction:column; text-align:center; padding:20px; }
   .order-detail-grid{ grid-template-columns:1fr; }
 }
+/* Hero carousel — responsive + reduced motion.
+   Add data-bn-hero to the <section>, data-bn-slide to each slide,
+   data-bn-copy to each copy plate, data-bn-arrow to the two arrow buttons. */
+
+@media (max-width: 1279px) {
+  [data-bn-hero] { height: 600px; }
+  [data-bn-slide] { padding-left: 56px !important; padding-right: 56px !important; }
+  [data-bn-copy] h1 { font-size: 58px !important; }
+  [data-bn-copy] h2 { font-size: 46px !important; }
+}
+
+@media (max-width: 1023px) {
+  [data-bn-hero] { height: auto; min-height: 560px; }
+  [data-bn-arrow] { display: none !important; }
+
+  /* screenshot slides stack: copy first, shot below */
+  [data-bn-slide][data-bn-layout="split"] {
+    flex-direction: column !important;
+    gap: 28px !important;
+    padding: 48px 28px 88px !important;
+  }
+  [data-bn-slide][data-bn-layout="split"] > * { flex: 1 1 auto !important; width: 100%; }
+
+  /* photo slides: copy plate becomes static, image sits behind at reduced height */
+  [data-bn-copy] {
+    position: static !important;
+    width: 100% !important;
+    padding: 64px 28px 96px !important;
+  }
+  [data-bn-copy] h1 { font-size: 42px !important; }
+  [data-bn-copy] h2 { font-size: 38px !important; }
+  [data-bn-copy] p  { font-size: 16.5px !important; }
+  [data-bn-copy] a  { font-size: 15px !important; }
+}
+
+@media (max-width: 599px) {
+  [data-bn-copy] h1 { font-size: 34px !important; }
+  [data-bn-copy] h2 { font-size: 31px !important; }
+  [data-bn-copy] > div { flex-direction: column !important; align-items: stretch !important; }
+  [data-bn-copy] a { text-align: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-bn-hero] img { animation: none !important; }
+  [data-bn-hero] [data-bn-track] { transition: none !important; }
+}

@@ -4,6 +4,7 @@ import { useAuth } from '../lib/auth.jsx'
 import { supabase } from '../lib/supabase'
 import { FeatureIcon } from '../components/FeatureIcon.jsx'
 import Logo from '../components/Logo.jsx'
+import HeroCarousel from '../components/HeroCarousel.jsx'
 import {
   CONTENT_DEFAULTS,
   HERO_DEFAULT, FEATURES_HEAD_DEFAULT, FEATURES_DEFAULT,
@@ -59,55 +60,8 @@ export default function Landing() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="landing-hero">
-        <div className="landing-hero-blob landing-hero-blob-1"/>
-        <div className="landing-hero-blob landing-hero-blob-2"/>
-        <div className="landing-container landing-hero-inner">
-          <div className="landing-hero-copy">
-            {hero.eyebrow && <div className="landing-eyebrow">{hero.eyebrow}</div>}
-            <h1 className="landing-hero-title">
-              {hero.title_line_1}<br/>
-              <span className="landing-hero-title-accent">{hero.title_line_2}</span>
-            </h1>
-            {hero.tagline && <p className="landing-hero-tagline">{hero.tagline}</p>}
-            <p className="landing-hero-body">{hero.body}</p>
-            <div className="landing-hero-ctas">
-              <Link to="/signup" className="landing-btn landing-btn-primary landing-btn-lg">{hero.cta_primary}</Link>
-              <Link to="/login" className="landing-btn-ghost landing-btn-lg">{hero.cta_secondary}</Link>
-            </div>
-            {hero.fineprint && <p className="landing-hero-fineprint">{hero.fineprint}</p>}
-          </div>
-
-          <div className="landing-hero-visual">
-            <div className="preview-window">
-              <div className="preview-window-bar">
-                <span className="preview-dot preview-dot-r"/>
-                <span className="preview-dot preview-dot-y"/>
-                <span className="preview-dot preview-dot-g"/>
-              </div>
-              <div className="preview-window-inner">
-                <div className="preview-hero">
-                  <div className="preview-hero-title">Welcome back 👋</div>
-                  <div className="preview-hero-sub">Your bakery costing dashboard</div>
-                </div>
-                <div className="preview-stats">
-                  <div className="preview-stat preview-stat-1"><div className="preview-stat-lbl">Recipes</div><div className="preview-stat-val">12</div></div>
-                  <div className="preview-stat preview-stat-2"><div className="preview-stat-lbl">Avg Cost</div><div className="preview-stat-val">RM8.40</div></div>
-                  <div className="preview-stat preview-stat-3"><div className="preview-stat-lbl">Margin</div><div className="preview-stat-val">62%</div></div>
-                </div>
-                <div className="preview-panel">
-                  <div className="preview-panel-title">Cost Breakdown</div>
-                  <div className="preview-bar-row"><div className="preview-bar-name">Butter</div><div className="preview-bar-track"><div className="preview-bar-fill" style={{width:'82%', background:'#7367f0'}}/></div></div>
-                  <div className="preview-bar-row"><div className="preview-bar-name">Flour</div><div className="preview-bar-track"><div className="preview-bar-fill" style={{width:'64%', background:'#00cfe8'}}/></div></div>
-                  <div className="preview-bar-row"><div className="preview-bar-name">Sugar</div><div className="preview-bar-track"><div className="preview-bar-fill" style={{width:'46%', background:'#ff9f43'}}/></div></div>
-                  <div className="preview-bar-row"><div className="preview-bar-name">Eggs</div><div className="preview-bar-track"><div className="preview-bar-fill" style={{width:'32%', background:'#28c76f'}}/></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Hero — 5-slide carousel */}
+      <HeroCarousel/>
 
       {/* Features */}
       <section className="landing-section" id="features">
