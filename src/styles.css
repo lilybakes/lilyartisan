@@ -66,16 +66,41 @@ aside{ background:var(--panel); border-right:1px solid var(--line); padding:22px
 .nav-item:hover{ background:var(--nav-row-hover); color:var(--nav-label-hover); }
 .nav-item.active{ background:linear-gradient(90deg, #7367F0 0%, #8F85F3 100%); color:#FFFFFF; font-weight:600; box-shadow:var(--shadow-active); }
 
-.chip{ width:30px; height:30px; border-radius:9px; background:var(--nav-chip-bg); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.15s ease; }
+/* Chip — the 30x30 icon container. Uses `color` so glyphs (which stroke with currentColor) recolour on active. */
+.chip{
+  width:30px; height:30px;
+  border-radius:9px;
+  background:var(--nav-chip-bg);
+  color:var(--nav-stroke);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  transition:background 0.15s ease, color 0.15s ease;
+}
 .chip svg{ width:18px; height:18px; }
-.nav-item.active .chip{ background:rgba(255,255,255,0.22); }
 
-.nav-glyph .s   { fill:none;             stroke:var(--nav-stroke); }
-.nav-glyph .f   { fill:var(--nav-fill);  stroke:none; }
-.nav-glyph .fe  { fill:#FFFFFF;          stroke:var(--nav-stroke); stroke-width:1.6; }
-.nav-item.active .nav-glyph .s  { stroke:#FFFFFF; }
-.nav-item.active .nav-glyph .f  { fill:transparent; }
-.nav-item.active .nav-glyph .fe { fill:transparent; stroke:#FFFFFF; }
+/* Duotone glyph fills — one class per fill role.
+   .glyph-fill = the ONE duotone shape (indigo tint)
+   .glyph-dot  = solid decorative dot (follows currentColor)
+   .glyph-hole = white knock-out (padlock keyhole, price tag eyelet) */
+.chip .glyph-fill { fill: var(--nav-fill); }
+.chip .glyph-dot  { fill: currentColor; }
+.chip .glyph-hole { fill: #FFFFFF; }
+
+/* Active row: chip goes translucent white, glyph strokes go white,
+   and every fill is removed — per the design spec. */
+.nav-item.active .chip{
+  background:rgba(255,255,255,0.22);
+  color:#FFFFFF;
+}
+.nav-item.active .chip .glyph-fill,
+.nav-item.active .chip .glyph-dot,
+.nav-item.active .chip .glyph-hole{ fill:none; }
+
+/* Legacy .nav-glyph classes — still used by the mobile bottom-nav via NavIcon.
+   Kept here so bottom-nav continues to render correctly. */
+.nav-glyph .s   { fill:none;            stroke:var(--nav-stroke); }
+.nav-glyph .f   { fill:var(--nav-fill); stroke:none; }
+.nav-glyph .fe  { fill:#FFFFFF;         stroke:var(--nav-stroke); stroke-width:1.6; }
 
 .nav-backdrop{ position:fixed; inset:0; background:rgba(15, 17, 30, 0.55); z-index:150; opacity:0; pointer-events:none; transition:opacity 0.25s ease; display:none; }
 .hamburger{ display:none; align-items:center; justify-content:center; width:36px; height:36px; background:none; border:none; border-radius:8px; cursor:pointer; color:var(--ink-soft); padding:0; transition:background 0.15s, color 0.15s; }
@@ -1214,17 +1239,8 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
 /* ============================================================
    SYSADMIN nav styling + placeholder
    ============================================================ */
-.nav-section-admin{
-  color:var(--accent);
-  border-top:1px solid var(--line);
-  padding-top:16px;
-  margin-top:8px;
-}
-.chip-admin{
-  background:linear-gradient(135deg, rgba(115,103,240,0.14), rgba(255,79,163,0.14));
-}
-.chip-admin svg{ color:var(--accent-dark); }
-.nav-item-admin.active .chip-admin svg{ color:#fff; }
+/* .chip-admin removed — all chips are now unified indigo (#EEECFE) per the sidebar spec.
+   Pink is reserved for the hero gradient and the top-bar avatar ground. */
 
 .sysadmin-placeholder{
   padding:56px 24px;
@@ -2103,62 +2119,60 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   margin-bottom:2px;
 }
 
-/* Group header (the collapsible click target) */
+/* Two-level header hierarchy per spec:
+   Primary  = top-level (MAIN, YOU, SYSADMIN) — weight 600, has chevron, collapsible
+   Sub      = inside a primary group (BUSINESS, CONTENT & DESIGN, PLATFORM, RECIPES & DATA, etc.) — weight 400, no chevron, lighter */
 .nav-group-header{
   display:flex; align-items:center; justify-content:space-between;
   width:100%;
-  padding:14px 12px 8px;
-  background:none;
-  border:none;
-  cursor:pointer;
+  background:none; border:none;
   font-family:inherit;
-  font-size:10.5px;
-  font-weight:700;
-  color:var(--muted);
   text-transform:uppercase;
-  letter-spacing:0.7px;
+  letter-spacing:0.16em;
   text-align:left;
   transition:color 0.15s;
 }
-.nav-group-header:hover{
-  color:var(--ink);
+
+.nav-group-header-primary{
+  padding:10px 12px 4px;
+  font-size:10px;
+  font-weight:600;
+  color:#A5A3AE;
+  cursor:pointer;
 }
+.nav-group-header-primary:hover{ color:var(--ink); }
+
+.nav-group-header-sub{
+  padding:8px 12px 4px;
+  font-size:10px;
+  font-weight:400;
+  color:#C4C2CE;
+  cursor:default;
+  justify-content:flex-start;
+}
+/* First sub-header inside a group hugs the top */
+.nav-group-body > .nav-group-header-sub:first-child{
+  padding-top:6px;
+}
+
 .nav-group-caret{
   transition:transform 0.2s ease;
-  color:var(--muted);
+  color:#A5A3AE;
   flex-shrink:0;
 }
-.nav-group.closed .nav-group-caret{
-  transform:rotate(-90deg);
-}
-.nav-group.closed .nav-group-header{
-  color:var(--ink-soft);
-}
+.nav-group.closed .nav-group-caret{ transform:rotate(-90deg); }
+.nav-group.closed .nav-group-header-primary{ color:var(--ink-soft); }
 
 .nav-group-body{
   display:flex;
   flex-direction:column;
-  gap:0;
-}
-
-/* Sub-header (inside a group, non-collapsible visual separator) */
-.nav-subheader{
-  font-size:9.5px;
-  font-weight:700;
-  color:var(--muted);
-  text-transform:uppercase;
-  letter-spacing:0.6px;
-  padding:12px 12px 4px;
-  opacity:0.75;
-}
-.nav-group-body > .nav-subheader:first-child{
-  padding-top:6px;
+  gap:4px;
 }
 
 /* Slightly tighter nav items inside groups */
 .nav-group-body .nav-item{
-  padding:8px 12px;
-  margin-bottom:1px;
+  padding:9px 12px;
+  margin-bottom:0;
 }
 
 /* Mobile — inside the drawer, everything stacks; sidebar-account still pinned bottom */
