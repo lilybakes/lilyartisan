@@ -1,78 +1,38 @@
-# Hero Carousel
+# Hero Carousel v2 — Fix
 
-Replaces the current single hero on the Landing page with a 5-slide autoplay carousel per the CAROUSEL-CONTEXT spec you sent.
+Ditches the fragile external-screenshot approach for slides 2 and 4. Now they use **inline mock UIs** built from divs — a fake dashboard and a fake recipe cost breakdown, styled to look like real screenshots. Always renders, never breaks, no external files needed.
+
+## What was wrong before
+
+Slides 2 and 4 expected `hero-2.png` and `hero-4.png` in `public/hero/`. Those files didn't exist. My "graceful fallback" placeholder used `onError` handlers and inline styles — combined with the `data-bn-*` attribute selectors in `responsive.css`, the layout misbehaved on some browser widths.
+
+## What's fixed
+
+- **Slide 2** now shows a mock dashboard: greeting → 3 stat cards (Recipes / Avg Cost / Avg Margin) → cost breakdown panel with 4 ingredient bars
+- **Slide 4** now shows a mock recipe: recipe name + suggested price → 4 ingredient rows (one highlighted with "↑ 8%" price change tag) → summary bar with cost per portion + margin
+- All CSS moved into proper classes in `styles.css` — no more inline-style + attribute-selector fragility
+- Photo slides (1, 3, 5) still use `/hero/hero-1.jpg`, `/hero/hero-3.jpg`, `/hero/hero-5.jpg` (already shipped as placeholders), with a graceful gradient fallback if the file is missing
+- Responsive rules are cleaner and don't depend on data attributes
 
 ## Files
 
 ```
-public/
-  hero/
-    hero-1.jpg                # placeholder (baker with bread) — swap for real
-    hero-3.jpg                # placeholder (chef in hat)      — swap for real
-    hero-5.jpg                # placeholder (chef blue shirt)  — swap for real
-    hero-2.png                # (missing — will show placeholder frame until you drop this in)
-    hero-4.png                # (missing — will show placeholder frame until you drop this in)
 src/
   components/
-    HeroCarousel.jsx          # NEW
-  pages/
-    Landing.jsx               # OVERWRITE — hero section replaced with <HeroCarousel/>
-  styles.css                  # OVERWRITE (full file, responsive.css appended)
+    HeroCarousel.jsx        # OVERWRITE — v2 with inline mock UIs
+  styles.css                # OVERWRITE (full file — new .hc-* classes at the end)
 ```
+
+**Note:** you can also **delete `public/hero/hero-2.png` and `hero-4.png` from your git repo if they exist** — no longer needed. The 3 photo files (`hero-1.jpg`, `hero-3.jpg`, `hero-5.jpg`) are still used and should stay.
 
 ## Deploy
 
-1. Push all files. `public/hero/` folder MUST be pushed to git.
-2. Wait for Netlify Published.
-3. Hard-refresh `/`.
+1. Push both files
+2. Wait for Netlify Published
+3. Hard-refresh `/`
 
-You'll see the 5-slide carousel with:
-- Slides 1, 3, 5 already showing your baker/chef photos
-- Slides 2, 4 showing a "Screenshot — drop the file in public/hero/" placeholder frame
-- Full autoplay, keyboard navigation, dots + counter + progress bar, hover-to-pause
+Slide 4 will now show the recipe cost mock cleanly, no giant blurry image.
 
-## Adding the real images
+## Bonus: mock UIs help even after real screenshots exist
 
-The placeholders for 1, 3, 5 are your existing gallery images. For the real spec-compliant hero, you want:
-
-| File | Type | What it should show |
-| --- | --- | --- |
-| `hero-1.jpg` | Photo, ≥2400px wide | Hands shaping dough, overhead. Right two-thirds calm. |
-| `hero-2.png` | Screenshot, 1440×900 @2x | Your BakerNomics dashboard — sidebar visible, no browser chrome, real numbers (no RM 0.00 rows) |
-| `hero-3.jpg` | Photo | Box handover at the counter. Subject right of centre. |
-| `hero-4.png` | Screenshot | One recipe's cost breakdown, same capture settings |
-| `hero-5.jpg` | Photo | Baker portrait at the counter, centred, shop soft behind |
-
-Just drop them in `public/hero/` and push. The Frame component detects when a screenshot is missing and shows the placeholder — no code changes needed once you add real files.
-
-## Features live in the component
-
-- **Autoplay** — 6s per slide, loops
-- **Pause on hover** — mouse into the carousel, autoplay stops
-- **Keyboard** — ← / → step slides
-- **Progress bar** — 3px violet along the bottom, fills over 6s
-- **Dots + counter** — click any dot to jump, right side shows "n / 5"
-- **Arrows** — round buttons at 22px inset, both sides (hidden below 1024px)
-- **Ken Burns** — photo slides slowly zoom 1.04 → 1.12 over 14–18s
-- **Reduced motion** — `prefers-reduced-motion: reduce` disables autoplay + zoom
-- **Responsive** — stacks under 1024px, hides arrows, shrinks type
-
-## Copy is hardcoded
-
-Per the spec, the 5 slides use exact marketing copy. That's baked into `HeroCarousel.jsx`. Editing via the sysadmin Content editor won't affect the carousel — the Content editor still works for Features, Pricing, FAQ, Final CTA, and Coming Soon (those sections are unchanged below the carousel).
-
-If you want editable carousel slides in a future delta, we can wire them to `content_blocks`. Not in this delta.
-
-## What got removed from Landing
-
-The old hero section is gone — the "Welcome" gradient with the fake dashboard preview window. Everything else on the page stays: header, Features grid, Pricing card, FAQ, Final CTA, Footer.
-
-## Note about routes
-
-CTA buttons on the slides:
-- **Start 14-day Free Trial** → `/signup` (trial)
-- **Sign in** → `/login`
-- **Price my recipes free** → `/signup`
-- **See a 90-sec tour** → `#features` anchor (until you have a tour page)
-
-If you'd rather all "Start Free Trial" buttons point at `/checkout` (paid) instead of `/signup` (trial), just edit `HeroCarousel.jsx` — search for `to="/signup"` and change to `to="/checkout"`.
+Later, if you want to swap in actual browser-window screenshots for slides 2 and 4, you can — just add `hero-2.png` / `hero-4.png` and update HeroCarousel to render `<img>` inside the `.hc-frame` instead of the mock components. But honestly, the mock UIs look sharper than photos (crisp text, retina-perfect at any zoom), so I'd keep them.
