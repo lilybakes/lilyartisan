@@ -3228,3 +3228,517 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   .hc-photo{ animation:none !important; }
   .hc-track{ transition:none !important; }
 }
+
+/* ============================================================
+   Settings — brand identity expansion
+   ============================================================ */
+.settings-subtabs{
+  display:flex; gap:5px;
+  padding:4px;
+  background:var(--nav-row-hover);
+  border-radius:10px;
+  margin-bottom:20px;
+  width:fit-content;
+  max-width:100%;
+  overflow-x:auto;
+}
+.settings-subtabs button{
+  padding:8px 16px;
+  background:none; border:none;
+  border-radius:7px;
+  font-family:inherit;
+  font-size:13px; font-weight:600;
+  color:var(--ink-soft);
+  cursor:pointer;
+  transition:all 0.15s;
+  white-space:nowrap;
+}
+.settings-subtabs button:hover{ color:var(--ink); }
+.settings-subtabs button.active{
+  background:#fff;
+  color:var(--accent-dark);
+  box-shadow:0 1px 3px rgba(0,0,0,0.06);
+}
+
+.brand-identity-row{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:24px;
+  margin-bottom:22px;
+  padding-bottom:22px;
+  border-bottom:1px solid var(--line);
+}
+.brand-logo-block, .brand-color-block{
+  display:flex; flex-direction:column; gap:8px;
+}
+.brand-logo-block label,
+.brand-color-block label{
+  font-size:12px; font-weight:600; color:var(--ink-soft);
+  text-transform:uppercase; letter-spacing:0.4px;
+}
+.brand-logo-preview{
+  width:120px; height:120px;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  background:#fafaff;
+  overflow:hidden;
+}
+.brand-logo-preview img{
+  max-width:100%; max-height:100%;
+  object-fit:contain;
+}
+.brand-logo-empty{
+  color:var(--muted); font-size:12px;
+}
+.brand-color-picker{
+  display:flex; gap:10px; align-items:center;
+}
+.brand-color-picker input[type="color"]{
+  width:56px; height:44px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:2px;
+  cursor:pointer;
+  background:#fff;
+}
+.brand-color-picker input[type="text"]{
+  padding:11px 14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+
+@media(max-width:640px){
+  .brand-identity-row{ grid-template-columns:1fr; }
+}
+
+
+/* ============================================================
+   Templates page — picker + preview
+   ============================================================ */
+.templates-controls{
+  margin-bottom:20px;
+}
+.templates-controls .field select{
+  width:100%; max-width:420px;
+  padding:11px 14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-family:inherit;
+  font-size:14px;
+  background:#fff;
+}
+
+.template-picker{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+  gap:12px;
+  margin-bottom:20px;
+}
+.template-pick{
+  position:relative;
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 16px 14px 14px;
+  background:#fff;
+  border:2px solid var(--line);
+  border-radius:12px;
+  cursor:pointer;
+  text-align:left;
+  font-family:inherit;
+  transition:all 0.15s;
+  min-height:78px;
+}
+.template-pick:hover:not(.disabled):not(.active){
+  border-color:var(--accent);
+  transform:translateY(-1px);
+  box-shadow:0 3px 10px rgba(115,103,240,0.15);
+}
+.template-pick.active{
+  border-color:var(--accent);
+  background:var(--accent-soft);
+  box-shadow:0 3px 10px rgba(115,103,240,0.18);
+}
+.template-pick.disabled{
+  cursor:not-allowed;
+  opacity:0.65;
+}
+.template-pick-icon{
+  font-size:26px;
+  line-height:1;
+  flex-shrink:0;
+  margin-top:2px;
+}
+.template-pick-body{ flex:1; min-width:0; }
+.template-pick-name{
+  font-weight:700; font-size:14px;
+  color:var(--ink);
+  margin-bottom:4px;
+}
+.template-pick.active .template-pick-name{ color:var(--accent-dark); }
+.template-pick-desc{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  line-height:1.45;
+}
+.template-pick-badge{
+  position:absolute; top:8px; right:8px;
+  padding:3px 8px;
+  background:#F0F1F7;
+  color:var(--muted);
+  border-radius:999px;
+  font-size:10px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+}
+.template-pick-size{
+  position:absolute; top:8px; right:8px;
+  padding:3px 8px;
+  background:var(--accent-soft);
+  color:var(--accent-dark);
+  border-radius:999px;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:0.4px;
+}
+
+.templates-actions{
+  display:flex; align-items:center; gap:14px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+.templates-actions .hint{ margin:0; font-size:12px; }
+
+.templates-preview{
+  margin-top:20px;
+  padding:24px;
+  background:#F5F6FA;
+  border-radius:14px;
+  display:flex; align-items:flex-start; justify-content:center;
+}
+
+
+/* ============================================================
+   Template sheets — the actual printable output
+   ============================================================ */
+.tpl{
+  /* Every template uses --brand as its accent color */
+  --brand: #6C5CE7;
+  background:#fff;
+  color:#1F2440;
+  font-family:'Plus Jakarta Sans','Public Sans',-apple-system,sans-serif;
+  box-shadow:0 8px 28px rgba(50,51,74,0.10);
+  border-radius:8px;
+  overflow:hidden;
+  display:flex; flex-direction:column;
+}
+
+/* --- Shared brand header/footer --- */
+.tpl-brand-header{
+  display:flex; align-items:center; gap:16px;
+  padding:22px 28px;
+  border-bottom:3px solid var(--brand);
+}
+.tpl-brand-header-compact{
+  padding:14px 22px;
+  border-bottom-width:2px;
+}
+.tpl-brand-logo{
+  width:52px; height:52px;
+  object-fit:contain;
+  flex-shrink:0;
+}
+.tpl-brand-header-compact .tpl-brand-logo{ width:38px; height:38px; }
+.tpl-brand-text{ flex:1; min-width:0; }
+.tpl-brand-name{
+  font-size:22px; font-weight:800;
+  letter-spacing:-0.02em;
+  color:var(--brand);
+}
+.tpl-brand-header-compact .tpl-brand-name{ font-size:17px; }
+.tpl-brand-tagline{
+  font-size:12px; color:#6E7490;
+  margin-top:2px;
+}
+
+.tpl-brand-footer{
+  padding:14px 28px;
+  background:#FAFAFC;
+  border-top:1px solid #EDEEF6;
+  font-size:11px;
+  color:#6E7490;
+  line-height:1.55;
+  margin-top:auto;
+}
+.tpl-brand-address{ white-space:pre-line; margin-bottom:4px; }
+.tpl-brand-contact{ display:flex; flex-wrap:wrap; gap:14px; }
+.tpl-brand-contact span:not(:last-child)::after{
+  content:'·';
+  margin-left:14px;
+  opacity:0.5;
+}
+
+/* --- Section styling --- */
+.tpl-section{ padding:20px 28px; }
+.tpl-section-title{
+  font-size:11px;
+  font-weight:700;
+  color:var(--brand);
+  text-transform:uppercase;
+  letter-spacing:0.6px;
+  margin:0 0 12px;
+  padding-bottom:6px;
+  border-bottom:1px solid var(--line);
+}
+.tpl-recipe-name{
+  margin:0;
+  font-size:26px;
+  font-weight:800;
+  letter-spacing:-0.02em;
+  color:#1F2440;
+}
+.tpl-recipe-meta{
+  margin-top:8px;
+  display:flex; gap:8px; flex-wrap:wrap;
+  font-size:12px;
+  color:#6E7490;
+}
+.tpl-recipe-meta-chip{
+  padding:4px 10px;
+  background:var(--accent-soft, #EEECFE);
+  color:var(--brand);
+  border-radius:999px;
+  font-weight:600;
+  font-size:11px;
+}
+.tpl-empty{ color:#A5A3AE; font-size:12.5px; font-style:italic; }
+
+/* --- Classic Recipe Card --- */
+.tpl-classic{ width:148mm; min-height:210mm; }  /* A5 portrait */
+.tpl-classic-body{ padding:22px 28px; flex:1; }
+.tpl-ingredients-list{ display:flex; flex-direction:column; gap:4px; }
+.tpl-ingredient-row{
+  display:grid; grid-template-columns:90px 1fr; gap:14px;
+  padding:8px 0;
+  border-bottom:1px dashed #E7E9F2;
+  font-size:13.5px;
+}
+.tpl-ing-qty{
+  font-weight:700;
+  color:var(--brand);
+  font-variant-numeric:tabular-nums;
+}
+.tpl-ing-name{ color:#1F2440; }
+.tpl-method{
+  font-size:13px;
+  line-height:1.65;
+  white-space:pre-line;
+  color:#4A5068;
+}
+
+/* --- Cost Breakdown --- */
+.tpl-cost{ width:210mm; min-height:297mm; }  /* A4 portrait */
+.tpl-cost-title-row{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
+  padding:22px 28px 18px;
+  border-bottom:1px solid var(--line);
+}
+.tpl-cost-headline{ text-align:right; flex-shrink:0; }
+.tpl-cost-headline-lbl{
+  font-size:10.5px; font-weight:700;
+  color:#6E7490;
+  text-transform:uppercase; letter-spacing:0.5px;
+}
+.tpl-cost-headline-val{
+  font-size:32px; font-weight:800;
+  letter-spacing:-0.02em;
+  color:var(--brand);
+  margin-top:2px;
+}
+.tpl-cost-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+.tpl-cost-table th{
+  padding:8px 10px;
+  border-bottom:2px solid var(--brand);
+  color:var(--brand);
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+  text-align:left;
+}
+.tpl-cost-table td{
+  padding:9px 10px;
+  border-bottom:1px solid #EDEEF6;
+  font-variant-numeric:tabular-nums;
+}
+.tpl-cost-table tfoot td{
+  border-bottom:none;
+  border-top:2px solid #1F2440;
+  padding-top:12px;
+}
+.tpl-cost-summary{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:14px;
+  padding:20px 28px;
+}
+.tpl-cost-stat{
+  padding:16px 18px;
+  background:#F8F9FC;
+  border-radius:10px;
+}
+.tpl-cost-stat-lbl{
+  font-size:10.5px; font-weight:700;
+  color:#6E7490;
+  text-transform:uppercase; letter-spacing:0.5px;
+  margin-bottom:4px;
+}
+.tpl-cost-stat-val{
+  font-size:22px; font-weight:800;
+  letter-spacing:-0.02em;
+  color:#1F2440;
+}
+.tpl-cost-note{
+  margin:0 28px 20px;
+  padding:12px 16px;
+  background:#FFF8ED;
+  border:1px solid #F5D9A8;
+  border-radius:8px;
+  font-size:11.5px;
+  color:#6E4B0F;
+  line-height:1.5;
+}
+
+/* --- Care & Storage Card --- */
+.tpl-care{ width:105mm; min-height:148mm; }  /* A6 portrait */
+.tpl-care-body{ padding:20px 22px; flex:1; }
+.tpl-care-thanks{
+  font-size:12px;
+  color:var(--brand);
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin-bottom:8px;
+}
+.tpl-care-product{
+  margin:0;
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:-0.02em;
+  color:#1F2440;
+}
+.tpl-care-tagline{
+  margin-top:4px;
+  font-size:12.5px;
+  color:#6E7490;
+  font-style:italic;
+  margin-bottom:18px;
+}
+.tpl-care-section{
+  display:flex; gap:12px;
+  padding:12px 0;
+  border-top:1px dashed #E7E9F2;
+}
+.tpl-care-section-icon{
+  font-size:22px;
+  flex-shrink:0;
+  line-height:1.2;
+}
+.tpl-care-section-title{
+  font-size:11px;
+  font-weight:700;
+  color:var(--brand);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin-bottom:4px;
+}
+.tpl-care-section-body{
+  font-size:12.5px;
+  line-height:1.55;
+  color:#4A5068;
+}
+
+/* --- Product Label --- */
+.tpl-label{
+  width:74mm; min-height:105mm;   /* A7 portrait */
+  padding:14px 16px;
+  gap:10px;
+  border-top:4px solid var(--brand);
+}
+.tpl-label-header{
+  display:flex; align-items:center; gap:10px;
+  padding-bottom:8px;
+  border-bottom:1px solid #EDEEF6;
+}
+.tpl-label-logo{ width:30px; height:30px; object-fit:contain; }
+.tpl-label-brand{
+  font-size:13px;
+  font-weight:800;
+  color:var(--brand);
+  letter-spacing:-0.01em;
+}
+.tpl-label-product{
+  font-size:15px;
+  font-weight:800;
+  color:#1F2440;
+  letter-spacing:-0.02em;
+}
+.tpl-label-line{
+  font-size:9.5px;
+  line-height:1.5;
+  color:#4A5068;
+}
+.tpl-label-allergens{
+  padding:8px 10px;
+  background:#FFF3E0;
+  border:1px solid #F5D9A8;
+  border-radius:6px;
+  font-size:9.5px;
+  font-weight:600;
+  color:#6E4B0F;
+  line-height:1.4;
+}
+.tpl-label-footer{
+  margin-top:auto;
+  padding-top:8px;
+  border-top:1px solid #EDEEF6;
+  display:flex; flex-wrap:wrap; gap:10px;
+  font-size:9px;
+  color:#6E7490;
+}
+
+
+/* ============================================================
+   Print styles — the template becomes the whole page
+   ============================================================ */
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+
+  /* Hide app chrome */
+  aside, .topbar, .templates-controls, .no-print, .bottom-nav,
+  .impersonation-banner, .announcement-banner, .templates-actions,
+  .template-picker, .panel-head, .panel > .conv-box{
+    display:none !important;
+  }
+
+  /* Reset layout for print */
+  html, body{ background:#fff !important; }
+  .app, .content, .panel, .templates-preview{
+    display:block !important;
+    background:transparent !important;
+    padding:0 !important; margin:0 !important;
+    box-shadow:none !important;
+    border:none !important;
+  }
+
+  .printable{
+    box-shadow:none !important;
+    border-radius:0 !important;
+    page-break-inside:avoid;
+    break-inside:avoid;
+  }
+}

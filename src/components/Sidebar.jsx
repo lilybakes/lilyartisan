@@ -118,6 +118,7 @@ export default function Sidebar() {
           {item('/app/ingredients', 'Ingredients',  'ingredients')}
           {item('/app/recipes',     'Recipes',      'recipes')}
           {item('/app/bom',         'Recipe BOM',   'bom')}
+          {item('/app/templates',   'Templates',    'templates')}
           <SubGroup>Financials</SubGroup>
           {item('/app/costing',     'Yield & Cost', 'costing')}
           {item('/app/pricing',     'Pricing',      'pricing')}

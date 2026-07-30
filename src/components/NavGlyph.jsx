@@ -97,6 +97,17 @@ export function NavGlyph({ name }) {
         </svg>
       )
 
+    case 'templates':
+      // Two stacked cards — the front one filled
+      return (
+        <svg {...SVG_PROPS}>
+          <rect className="glyph-fill" x="4.5" y="8" width="12" height="12" rx="2"/>
+          <rect x="7.5" y="4" width="12" height="12" rx="2" stroke="currentColor" strokeWidth={SW}/>
+          <rect x="4.5" y="8" width="12" height="12" rx="2" stroke="currentColor" strokeWidth={SW}/>
+          <path d="M7 12h7.5M7 15h5" stroke="currentColor" strokeWidth={SW}/>
+        </svg>
+      )
+
     /* ============================================================ You */
     case 'personalize':
       // Artist's palette — body filled, three paint dots solid
