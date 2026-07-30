@@ -1,54 +1,60 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { supabase } from './supabase'
+import { useAuth } from './auth.jsx'
 
 const DEFAULTS = {
-  id: 1,
-  owner_name: 'Lily',
-  business_name: 'Lily Artisan',
-  app_name: 'Baker|Nomics',
-  logo_data_url: null,
+  owner_name: 'User',
+  business_name: 'My Bakery',
   currency: 'RM',
   default_target_food_cost_pct: 28,
+  app_name: 'Baker|Nomics',
+  logo_data_url: null,
 }
 
-const SettingsContext = createContext({
-  settings: DEFAULTS,
-  loading: true,
-  updateSettings: async () => {},
-})
+const SettingsContext = createContext(null)
 
 export function SettingsProvider({ children }) {
+  // useAuth() may return null if this provider is mounted above AuthProvider,
+  // so guard defensively.
+  const auth = useAuth()
+  const userId = auth?.session?.user?.id ?? null
+
   const [settings, setSettings] = useState(DEFAULTS)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   const load = useCallback(async () => {
-    const { data, error } = await supabase.from('settings').select('*').eq('id', 1).single()
-    if (error) {
-      console.warn('Settings load failed, using defaults:', error.message)
-      setSettings(DEFAULTS)
-    } else {
-      setSettings({ ...DEFAULTS, ...data })
-    }
+    if (!userId) { setSettings(DEFAULTS); setLoading(false); return }
+    setLoading(true)
+    const { data, error } = await supabase
+      .from('settings')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle()
+    if (error) console.error('[settings load]', error)
+    if (data) setSettings({ ...DEFAULTS, ...data })
+    else setSettings(DEFAULTS)
     setLoading(false)
-  }, [])
+  }, [userId])
 
   useEffect(() => { load() }, [load])
 
   const updateSettings = async (patch) => {
-    const { data, error } = await supabase.from('settings')
-      .update({ ...patch, updated_at: new Date().toISOString() })
-      .eq('id', 1).select().single()
+    if (!userId) return
+    const { data, error } = await supabase
+      .from('settings')
+      .update(patch)
+      .eq('user_id', userId)
+      .select()
+      .single()
     if (error) { alert(error.message); return }
-    setSettings(s => ({ ...s, ...data }))
+    if (data) setSettings(prev => ({ ...prev, ...data }))
   }
 
   return (
-    <SettingsContext.Provider value={{ settings, loading, updateSettings }}>
+    <SettingsContext.Provider value={{ settings, updateSettings, loading, refresh: load }}>
       {children}
     </SettingsContext.Provider>
   )
 }
 
-export function useSettings() {
-  return useContext(SettingsContext)
-}
+export const useSettings = () => useContext(SettingsContext)

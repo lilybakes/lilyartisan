@@ -1,0 +1,149 @@
+/* ============================================================
+   APPEND THIS TO THE END OF src/styles.css
+   Adds: auth page styles, sidebar account section
+   ============================================================ */
+
+/* -------- Auth pages (Login, Forgot, Reset) -------- */
+.auth-page{
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  padding-top:calc(20px + var(--safe-top, 0px));
+  padding-bottom:calc(20px + var(--safe-bottom, 0px));
+  background:linear-gradient(135deg, #f5f5f9 0%, #ede9fe 100%);
+}
+.auth-card{
+  background:#fff;
+  border-radius:20px;
+  padding:36px 32px;
+  box-shadow:0 20px 60px rgba(50,51,74,0.10);
+  max-width:400px;
+  width:100%;
+}
+.auth-brand{ text-align:center; margin-bottom:26px; }
+.auth-brand .brand-stamp{ width:56px; height:56px; border-radius:16px; }
+.auth-brand .brand-stamp img{ height:33px; }
+.auth-title{
+  font-size:26px; font-weight:800; letter-spacing:-0.4px;
+  margin:0 0 6px;
+}
+.auth-title .part1{ color:var(--brand-ink); }
+.auth-title .part2{ color:var(--accent); }
+.auth-tagline{
+  color:var(--muted); margin:0; font-size:13.5px;
+}
+.auth-form{ display:flex; flex-direction:column; gap:14px; }
+.auth-form .field{ display:flex; flex-direction:column; gap:5px; }
+.auth-form .field > span{
+  font-size:11.5px; font-weight:600; color:var(--muted);
+  text-transform:uppercase; letter-spacing:0.4px;
+}
+.auth-form input{
+  font-size:16px; /* prevent iOS zoom */
+  padding:12px 14px;
+}
+.auth-form button.primary{
+  padding:13px 18px;
+  font-size:14.5px;
+  margin-top:4px;
+}
+.auth-error{
+  background:var(--danger-soft);
+  color:var(--danger);
+  padding:10px 14px;
+  border-radius:8px;
+  font-size:13px;
+  border:1px solid #fbd0d0;
+}
+.auth-success{
+  background:var(--success-soft);
+  color:var(--success);
+  padding:12px 14px;
+  border-radius:8px;
+  font-size:13px;
+  border:1px solid #c5ecd6;
+  line-height:1.45;
+}
+.auth-links{
+  text-align:center;
+  margin-top:22px;
+  font-size:13px;
+}
+.auth-links a{
+  color:var(--accent);
+  text-decoration:none;
+  font-weight:500;
+}
+.auth-links a:hover{ text-decoration:underline; }
+
+/* -------- Auth loading state -------- */
+.auth-loading{
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--bg);
+}
+.auth-loading-spinner{
+  width:36px; height:36px;
+  border:3px solid var(--accent-soft);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:auth-spin 0.8s linear infinite;
+}
+@keyframes auth-spin{ to{ transform:rotate(360deg); } }
+
+/* -------- Sidebar account block (bottom of sidebar) -------- */
+.sidebar-account{
+  margin-top:auto;
+  padding:14px 8px 4px;
+  border-top:1px solid var(--line);
+  margin-top:20px;
+}
+.account-info{
+  padding:0 12px 10px;
+}
+.account-email{
+  font-size:12.5px;
+  color:var(--ink);
+  font-weight:500;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.account-role{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:2px;
+}
+.signout-btn{
+  display:flex; align-items:center; gap:10px;
+  width:100%;
+  padding:9px 12px;
+  border-radius:8px;
+  background:none;
+  border:none;
+  color:var(--ink-soft);
+  font-family:inherit;
+  font-size:13.5px;
+  font-weight:500;
+  cursor:pointer;
+  text-align:left;
+  transition:background 0.15s, color 0.15s;
+}
+.signout-btn:hover{
+  background:var(--danger-soft);
+  color:var(--danger);
+}
+.signout-btn svg{ flex-shrink:0; }
+
+/* Ensure sidebar uses flex column so account block can push to bottom */
+aside{ display:flex; flex-direction:column; }
+
+/* -------- Mobile: auth pages -------- */
+@media(max-width:520px){
+  .auth-card{ padding:28px 22px; border-radius:16px; }
+  .auth-brand{ margin-bottom:22px; }
+  .auth-title{ font-size:22px; }
+}

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { NavIcon } from '../lib/nav-icons.jsx'
 import { useSettings } from '../lib/settings.jsx'
+import { useAuth } from '../lib/auth.jsx'
 
 const NAV = [
   { to:'/',            label:'Dashboard',    icon:'dash' },
@@ -14,12 +15,12 @@ const NAV = [
 ]
 
 export default function Sidebar() {
-  // Defensive: works even if the SettingsProvider hasn't populated yet.
   const settingsCtx = useSettings() || {}
   const settings = settingsCtx.settings || {}
+  const { user, isSysadmin, signOut } = useAuth() || {}
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
-  // Listen for the open event from Topbar's hamburger.
   useEffect(() => {
     const onOpen = () => setOpen(true)
     const onCloseEv = () => setOpen(false)
@@ -31,7 +32,6 @@ export default function Sidebar() {
     }
   }, [])
 
-  // Esc closes the drawer.
   useEffect(() => {
     if (!open) return
     const onEsc = (e) => { if (e.key === 'Escape') setOpen(false) }
@@ -39,7 +39,6 @@ export default function Sidebar() {
     return () => document.removeEventListener('keydown', onEsc)
   }, [open])
 
-  // Lock body scroll while drawer is open.
   useEffect(() => {
     if (!open) return
     const prev = document.body.style.overflow
@@ -52,6 +51,12 @@ export default function Sidebar() {
   const [markPart1, markPart2] = (settings.app_name || 'Baker|Nomics').split('|')
   const logoSrc = settings.logo_data_url || '/assets/lily-mark-white.png'
   const kicker = (settings.business_name || 'Lily Ong Artisan').toUpperCase()
+
+  async function handleSignOut() {
+    close()
+    await signOut?.()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <>
@@ -97,6 +102,24 @@ export default function Sidebar() {
           <span className="chip"><NavIcon name="settings"/></span>
           Settings
         </NavLink>
+
+        {/* Account block at bottom */}
+        <div className="sidebar-account">
+          <div className="account-info">
+            <div className="account-email" title={user?.email}>{user?.email || '—'}</div>
+            <div className="account-role">
+              {isSysadmin ? 'System administrator' : 'Subscriber'}
+            </div>
+          </div>
+          <button className="signout-btn" onClick={handleSignOut}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Sign out
+          </button>
+        </div>
       </aside>
     </>
   )

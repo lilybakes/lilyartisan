@@ -1,108 +1,110 @@
-# Mobile design pass — grounded in research
+# Delta 1 — Auth Foundation
 
-This delta applies established mobile UX principles to make the app feel native on phones while keeping the desktop experience exactly as it is.
+Multi-tenant conversion, step 1 of 4. This delta adds authentication and per-user data isolation. Nothing else changes yet.
 
-## What the research says (and what I applied)
-
-**1. Bottom tab bar > hamburger menu for primary nav**
-NN/g, UXPin, and every major UX outlet in 2025-2026 now recommend bottom tab bars for dashboards/productivity apps with 3–5 primary destinations. Spotify's move away from the hamburger correlated with a documented engagement jump. Hidden nav has 2-3× lower feature discoverability.
-
-**Applied:** New `BottomNav` component. Four primary tabs at the bottom of every screen on mobile — **Home, Recipes, Ingredients, BOM** — plus a "More" tab that opens the drawer with everything else (Yield & Cost, Pricing, Inventory, Settings). Hamburger stays in the topbar as a redundant path to the same drawer for users who look up first.
-
-**2. Data tables → cards on mobile**
-Horizontal scroll is a fallback; card view is the recommended default. Same semantic HTML, transformed with CSS.
-
-**Applied:** Every data table now has `className="responsive-table"`. On ≤640px, CSS transforms them into stacked cards. Each `<td>` becomes a labeled row using `data-label` attributes. The first `<td>` (name + photo) is the card header; the last (actions) becomes a footer with buttons.
-
-**3. Touch targets ≥ 44×44px, font-size 16px on inputs**
-Apple HIG 44px, Material 48px. Sub-16px inputs trigger Safari's auto-zoom-on-focus, which is a UX killer.
-
-**Applied:** All form inputs on mobile jump to `font-size: 16px` and `padding: 12px 14px`. Bottom nav items are 48px+ tall. Buttons are full-width on mobile.
-
-**4. Safe area insets (`viewport-fit=cover` + `env(safe-area-inset-*)`)**
-For iOS notches, Dynamic Island, home indicator, and rounded corners.
-
-**Applied:** New `index.html` with `viewport-fit=cover` and PWA meta tags. All fixed-position elements (topbar, bottom nav, sidebar drawer, lightbox close button) use `env(safe-area-inset-*)` so nothing hides under the home indicator or notch.
-
-**5. Content padding accounts for bottom nav**
-Standard oversight in mobile web apps.
-
-**Applied:** `.content` gets `padding-bottom: calc(76px + env(safe-area-inset-bottom))` so scrolling to the last row shows it fully above the nav.
-
-**6. PWA meta tags for install-quality feel**
-Even without a service worker, these tags give the app a polished mobile identity.
-
-**Applied:** `theme-color`, `apple-mobile-web-app-capable`, `apple-mobile-web-app-title`, `mobile-web-app-capable`, `format-detection`.
-
-## Files
+## Files in this delta
 
 ```
-index.html                      (PWA meta tags, viewport-fit=cover)
+supabase/
+  delta-1-auth-foundation.sql    # Run once in SQL Editor
 src/
-  App.jsx                       (adds <BottomNav/>)
-  components/
-    BottomNav.jsx               (NEW — 5-tab bottom nav)
+  main.jsx                       # OVERWRITE — adds AuthProvider
+  App.jsx                        # OVERWRITE — auth routes + AuthGuard
+  lib/
+    auth.jsx                     # NEW — session, profile, sign in/out
+    settings.jsx                 # OVERWRITE — now per-user
   pages/
-    Dashboard.jsx               (data-label on Recipe Overview table)
-    Ingredients.jsx             (data-label on all cells, 'editing' class in edit mode)
-    Recipes.jsx                 (same)
-    Costing.jsx                 (data-label on breakdown table)
-    Pricing.jsx                 (data-label)
-    Inventory.jsx               (data-label)
-    Bom.jsx                     (className='editing' in edit mode)
-  styles.css                    (full mobile pass — see structure below)
+    Login.jsx                    # NEW
+    ForgotPassword.jsx           # NEW
+    ResetPassword.jsx            # NEW
+  components/
+    AuthGuard.jsx                # NEW — redirects to /login if no session
+    Sidebar.jsx                  # OVERWRITE — adds sign-out at bottom
+  styles-patch.css               # APPEND to end of src/styles.css
 ```
 
-## Apply
+## Deployment sequence (IMPORTANT — do in this order)
 
-Overwrite all listed files. `index.html` sits at your repo root, not in `src/`.
+### Step 1 — Create both users in Supabase Dashboard (2 min, do this FIRST)
 
-Netlify auto-deploys. Hard-refresh on your phone.
+Go to Supabase Dashboard → your `lilybakes BOM` project → **Authentication** → **Users** → **Add user** (top-right).
 
-**No Supabase changes. No new dependencies. `main.jsx` is untouched — `BrowserRouter` stays where it lives.**
+Create two users, both with **"Auto Confirm User" enabled** (checkbox):
 
-## Layout on mobile — what it feels like now
+| Email                    | Password    |
+|--------------------------|-------------|
+| lily2211@gmail.com       | 2211Qwer!   |
+| anthony2211@gmail.com    | 2211Qwer!   |
 
+Verify both appear in the user list before continuing.
+
+### Step 2 — Push Delta 1 code to GitHub
+
+Overwrite the files as listed above. Push to `main`. Netlify will start building.
+
+**Wait for Netlify to say "Published"** before Step 3.
+
+### Step 3 — Run the migration SQL
+
+Go to Supabase → **SQL Editor** → paste the entire contents of `supabase/delta-1-auth-foundation.sql` → **Run**.
+
+You should see:
 ```
-┌─────────────────────────────────┐
-│  ≡  🔍 Search…       🔔  👤     │  ← topbar (safe-area top)
-├─────────────────────────────────┤
-│                                 │
-│         Page content            │
-│         (cards, not tables)     │
-│                                 │
-│                                 │
-├─────────────────────────────────┤
-│  🏠  📖  🧊  🧾  ≡              │  ← bottom nav (safe-area bottom)
-│ Home Recipes Ingr. BOM More     │
-└─────────────────────────────────┘
+NOTICE:  Found Lily:  <uuid>
+NOTICE:  Found Admin: <uuid>
+Success. No rows returned
 ```
 
-- **Tap a tab** → navigates (route change)
-- **Tap "More"** → opens sidebar drawer with all secondary pages (Yield & Cost, Pricing, Inventory, Settings)
-- **Tap hamburger** in topbar → same drawer
-- **Tap a card row** on Ingredients/Recipes → see all fields laid out; tap Edit to modify inline (the card expands into a form with labels above each input)
+If you see `ERROR: User ... not found`, you skipped Step 1 — go back and create the users.
 
-## Structure of styles.css (for your reference)
+### Step 4 — Hard-refresh your browser
 
-Reading top-to-bottom in the file:
+You should now see the login page. Sign in as either user with `2211Qwer!`.
 
-1. Design tokens (`:root { --... }`)
-2. Base reset + safety net (`html, body { overflow-x: hidden }`)
-3. Desktop layout — sidebar, topbar, hero, panels, tables, forms, buttons, pills, everything
-4. `@media (max-width: 960px)` — sidebar becomes drawer, bottom nav appears, hero and stat cards resize
-5. `@media (max-width: 640px)` — **tables transform to cards** (the big change), BOM lines stack, hero compacts
-6. `@media (max-width: 420px)` — small-phone tweaks
+- **Lily** sees the app exactly as before with all her data intact.
+- **Anthony** sees an empty app (no data yet — sysadmin panel comes in Delta 2).
 
-Desktop styles (everything before the first `@media(max-width:960px)` block) are byte-for-byte identical to what you have now.
+## What this delta does NOT do (yet)
 
-## What's intentionally NOT in this delta
+- No sysadmin panel — comes in Delta 2
+- No signup / trial / paid subscription flow — comes in Delta 3
+- No read-only mode enforcement — comes in Delta 4
+- No custom email templates — Supabase default sender for now
+- Storage bucket policies stay permissive — will tighten in Delta 2 or 3 when we have real users
 
-Things that would be nice but are scope-heavy for this pass:
+## Rollback (if anything goes wrong)
 
-- **Full bottom-sheet add form.** Current form still stacks vertically at the bottom of pages — it works cleanly, just not a modal sheet.
-- **Swipe-to-delete gestures.** Would need a small library or custom touch handlers.
-- **Pull-to-refresh.** Same reason.
-- **Service worker + offline PWA.** The meta tags are there but no SW yet.
+The migration is transactional — if any step fails, the entire migration is rolled back automatically, and your database is exactly as it was before. **Nothing is lost partial-way.**
 
-Any of those can be a follow-up.
+If the app breaks post-deploy but the migration succeeded:
+1. Revert the GitHub commit → Netlify redeploys the old code
+2. The old code uses the anon key with no session, but new RLS is per-user — you'll see empty app
+3. To temporarily restore full anon access while you debug, run this in SQL Editor:
+   ```sql
+   CREATE POLICY "temp anon" ON ingredients   FOR ALL TO anon USING (true) WITH CHECK (true);
+   CREATE POLICY "temp anon" ON recipes       FOR ALL TO anon USING (true) WITH CHECK (true);
+   CREATE POLICY "temp anon" ON bom_lines     FOR ALL TO anon USING (true) WITH CHECK (true);
+   CREATE POLICY "temp anon" ON inventory     FOR ALL TO anon USING (true) WITH CHECK (true);
+   CREATE POLICY "temp anon" ON header_links  FOR ALL TO anon USING (true) WITH CHECK (true);
+   CREATE POLICY "temp anon" ON settings      FOR ALL TO anon USING (true) WITH CHECK (true);
+   GRANT SELECT, INSERT, UPDATE, DELETE ON ingredients, recipes, bom_lines, inventory, header_links, settings TO anon;
+   ```
+   Then remove them once auth is working again.
+
+You've already exported CSV backups — if worst case, we import from those.
+
+## After deploy — what changes for Lily
+
+She'll need to log in once with `lily2211@gmail.com` / `2211Qwer!`. Session persists in her browser, so she won't be asked again unless she signs out or clears her browser storage.
+
+Tell her to change her password from the "Forgot password?" link on the login page (or we'll add a proper "Change password" flow in a later delta).
+
+## What's next (Delta 2)
+
+Once Delta 1 is verified working, Delta 2 adds:
+- `/admin` route, sysadmin-only
+- User list with roles, subscription dates
+- Invite user form (email + start/end dates)
+- Reset password / generate temp password / impersonate buttons
+- Business info config (invoice numbering, payment QR upload)
+- Editable invite email template
