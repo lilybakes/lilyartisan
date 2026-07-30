@@ -1,7 +1,13 @@
-import { ClassicRecipeCard } from './ClassicRecipeCard.jsx'
-import { CostBreakdown }    from './CostBreakdown.jsx'
-import { CareCard }         from './CareCard.jsx'
-import { ProductLabel }     from './ProductLabel.jsx'
+import { ClassicRecipeCard }  from './ClassicRecipeCard.jsx'
+import { CostBreakdown }      from './CostBreakdown.jsx'
+import { CareCard }           from './CareCard.jsx'
+import { ProductLabel }       from './ProductLabel.jsx'
+import { MenuInsert }         from './MenuInsert.jsx'
+import { WholesalePriceList } from './WholesalePriceList.jsx'
+import { DeliveryTag }        from './DeliveryTag.jsx'
+import { SocialMediaCard }    from './SocialMediaCard.jsx'
+import { RecipeBinderPage }   from './RecipeBinderPage.jsx'
+import { CertificateOfCraft } from './CertificateOfCraft.jsx'
 
 export const TEMPLATES = [
   {
@@ -11,6 +17,7 @@ export const TEMPLATES = [
     icon: '📖',
     component: ClassicRecipeCard,
     ready: true,
+    multi: false,
     pageSize: 'A5',
   },
   {
@@ -20,6 +27,7 @@ export const TEMPLATES = [
     icon: '💰',
     component: CostBreakdown,
     ready: true,
+    multi: false,
     pageSize: 'A4',
   },
   {
@@ -29,64 +37,78 @@ export const TEMPLATES = [
     icon: '🏷️',
     component: CareCard,
     ready: true,
+    multi: false,
     pageSize: 'A6',
   },
   {
     key: 'label',
     name: 'Product Label',
     description: 'Compact label with allergens, ingredients list, and best-by date. For packaging.',
-    icon: '🏷️',
+    icon: '📇',
     component: ProductLabel,
     ready: true,
+    multi: false,
     pageSize: 'A7',
   },
   {
     key: 'menu',
     name: 'Menu Insert',
-    description: 'Multi-recipe compact menu insert with prices.',
+    description: 'Multi-recipe compact menu insert with prices, grouped by category.',
     icon: '📋',
-    component: null,
-    ready: false,
+    component: MenuInsert,
+    ready: true,
+    multi: true,
+    pageSize: 'A5',
   },
   {
     key: 'wholesale',
     name: 'Wholesale Price List',
-    description: 'Multi-recipe wholesale sheet for B2B customers.',
+    description: 'Multi-recipe wholesale sheet for B2B customers — retail, wholesale, batch pricing.',
     icon: '🧾',
-    component: null,
-    ready: false,
+    component: WholesalePriceList,
+    ready: true,
+    multi: true,
+    pageSize: 'A4',
   },
   {
     key: 'delivery',
     name: 'Delivery Tag',
-    description: 'Small tag for delivery orders with customer name and care info.',
+    description: 'Small hang-tag for delivery orders with care info and thank-you.',
     icon: '📦',
-    component: null,
-    ready: false,
+    component: DeliveryTag,
+    ready: true,
+    multi: false,
+    pageSize: 'A7',
   },
   {
     key: 'social',
     name: 'Social Media Card',
-    description: 'Instagram-sized square recipe teaser for posts.',
+    description: 'Square Instagram-ready card. Screenshot to post; brand color background.',
     icon: '📱',
-    component: null,
-    ready: false,
+    component: SocialMediaCard,
+    ready: true,
+    multi: false,
+    pageSize: '1:1',
   },
   {
     key: 'binder',
     name: 'Recipe Binder Page',
-    description: 'Detailed A4 page with photo slot for your recipe binder.',
+    description: 'Detailed A4 kitchen page with photo slot, full cost table, method, and notes.',
     icon: '📓',
-    component: null,
-    ready: false,
+    component: RecipeBinderPage,
+    ready: true,
+    multi: false,
+    pageSize: 'A4',
   },
   {
     key: 'cert',
     name: 'Certificate of Craft',
-    description: 'Decorative "made with care" certificate for premium orders.',
+    description: 'Decorative landscape certificate for premium orders and gift packaging.',
     icon: '🎖️',
-    component: null,
-    ready: false,
+    component: CertificateOfCraft,
+    ready: true,
+    multi: false,
+    pageSize: 'A4 ↔',
   },
 ]
 
