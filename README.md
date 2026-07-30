@@ -1,38 +1,35 @@
-# Hero Carousel v2 — Fix
+# Hero Photos
 
-Ditches the fragile external-screenshot approach for slides 2 and 4. Now they use **inline mock UIs** built from divs — a fake dashboard and a fake recipe cost breakdown, styled to look like real screenshots. Always renders, never breaks, no external files needed.
-
-## What was wrong before
-
-Slides 2 and 4 expected `hero-2.png` and `hero-4.png` in `public/hero/`. Those files didn't exist. My "graceful fallback" placeholder used `onError` handlers and inline styles — combined with the `data-bn-*` attribute selectors in `responsive.css`, the layout misbehaved on some browser widths.
-
-## What's fixed
-
-- **Slide 2** now shows a mock dashboard: greeting → 3 stat cards (Recipes / Avg Cost / Avg Margin) → cost breakdown panel with 4 ingredient bars
-- **Slide 4** now shows a mock recipe: recipe name + suggested price → 4 ingredient rows (one highlighted with "↑ 8%" price change tag) → summary bar with cost per portion + margin
-- All CSS moved into proper classes in `styles.css` — no more inline-style + attribute-selector fragility
-- Photo slides (1, 3, 5) still use `/hero/hero-1.jpg`, `/hero/hero-3.jpg`, `/hero/hero-5.jpg` (already shipped as placeholders), with a graceful gradient fallback if the file is missing
-- Responsive rules are cleaner and don't depend on data attributes
+Three real hero photos, converted from PNG to optimized JPG.
 
 ## Files
 
 ```
-src/
-  components/
-    HeroCarousel.jsx        # OVERWRITE — v2 with inline mock UIs
-  styles.css                # OVERWRITE (full file — new .hc-* classes at the end)
+public/hero/
+  hero-1.jpg    Overhead dough kneading      269 KB   1376×768
+  hero-3.jpg    Market bakery handover       254 KB   1408×768
+  hero-5.jpg    Counter portrait, front-on   187 KB   1312×816
 ```
 
-**Note:** you can also **delete `public/hero/hero-2.png` and `hero-4.png` from your git repo if they exist** — no longer needed. The 3 photo files (`hero-1.jpg`, `hero-3.jpg`, `hero-5.jpg`) are still used and should stay.
+Just drop the whole `public/hero/` folder into your repo (it'll merge/overwrite the existing placeholder JPGs).
 
 ## Deploy
 
-1. Push both files
-2. Wait for Netlify Published
-3. Hard-refresh `/`
+1. Extract the zip
+2. Copy `public/hero/*.jpg` into your repo's `public/hero/` folder (overwriting the 3 baker cartoon placeholders)
+3. Commit + push
+4. Hard-refresh `/`
 
-Slide 4 will now show the recipe cost mock cleanly, no giant blurry image.
+You'll immediately see the real photos on slides 1, 3, and 5. Slides 2 and 4 still use the inline mock UIs from the previous carousel-fix delta.
 
-## Bonus: mock UIs help even after real screenshots exist
+## Note on resolution
 
-Later, if you want to swap in actual browser-window screenshots for slides 2 and 4, you can — just add `hero-2.png` / `hero-4.png` and update HeroCarousel to render `<img>` inside the `.hc-frame` instead of the mock components. But honestly, the mock UIs look sharper than photos (crisp text, retina-perfect at any zoom), so I'd keep them.
+Spec wanted ≥2400px wide. These are ~1400px wide — smaller, but I optimized the JPG quality to 85 which keeps them crisp on desktop. If you ever want to swap in higher-res versions later (say, if you generate 2400px+ originals from Gemini or elsewhere), just re-run the same convert command to keep file sizes reasonable:
+
+```bash
+convert your-2400px-photo.png -quality 85 -strip -interlace Plane hero-1.jpg
+```
+
+## Nothing else needed
+
+No code changes required — the carousel already references these exact filenames from the last delta. Just the photos going into the right folder.
