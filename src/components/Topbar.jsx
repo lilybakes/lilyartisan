@@ -1,18 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth.jsx'
+import { Icon } from '../lib/icons.jsx'
 import UserAvatar from './UserAvatar.jsx'
-
-function HeaderLinkIcon({ name }) {
-  const props = { width:18, height:18, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' }
-  switch (name) {
-    case 'globe': return <svg {...props}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-    case 'grid':  return <svg {...props}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-    case 'bell':  return <svg {...props}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-    case 'help':  return <svg {...props}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    default:      return <svg {...props}><circle cx="12" cy="12" r="9"/></svg>
-  }
-}
 
 export default function Topbar() {
   const { user } = useAuth() || {}
@@ -26,7 +16,7 @@ export default function Topbar() {
       .then(({ data }) => setLinks(data || []))
   }, [user?.id])
 
-  // Defensive dedupe: same icon+label appears only once, even if the DB has stale duplicates.
+  // Defensive dedupe: same icon+label appears only once, even if DB has stale duplicates.
   const uniqueLinks = useMemo(() => {
     const seen = new Set()
     const out = []
@@ -68,16 +58,16 @@ export default function Topbar() {
                target={link.open_in_new_tab ? '_blank' : '_self'}
                rel={link.open_in_new_tab ? 'noopener noreferrer' : undefined}
                title={link.label}>
-              <HeaderLinkIcon name={link.icon_name}/>
+              <Icon name={link.icon_name || 'link'} size={18}/>
             </a>
           ) : (
             <div key={link.id} className="icn-btn" title={link.label}>
-              <HeaderLinkIcon name={link.icon_name}/>
+              <Icon name={link.icon_name || 'link'} size={18}/>
             </div>
           )
         ))}
         <div className="icn-btn" title="Notifications">
-          <HeaderLinkIcon name="bell"/>
+          <Icon name="bell" size={18}/>
           <span className="dot"/>
         </div>
         <UserAvatar size={34}/>

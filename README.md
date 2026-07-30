@@ -1,57 +1,15 @@
-# Coming Soon Polish
+# Topbar Icons Fix
 
-Three changes, three files.
+One file. Overwrite `src/components/Topbar.jsx`.
 
-## What changed
+## What was wrong
 
-**1. No gradient on Coming Soon cards** — plain white with a subtle grey border. Hover adds a soft violet border and shadow lift.
+Topbar had a limited inline switch that only knew globe, grid, bell, and help. Any other icon you picked in Settings → Header Links fell through to a default circle.
 
-**2. Show/Hide toggle in sysadmin editor** — each Coming Soon item now has a "Hide" button in the row controls. Hidden items:
-   - Stay in your editor list (dimmed, marked "Hidden")
-   - Are NOT shown to users on their Settings page
-   - Can be toggled back with the "Show" button
-   - Are NOT deleted — they persist across saves
-   
-   The header now shows something like `Items (4 visible, 2 hidden)` so you know at a glance.
+## Fix
 
-**3. 3-column grid on the user side** — was 2 columns. Now responsive:
-   - Desktop / wide screens: **3 columns**
-   - Tablet (< 900px): 2 columns
-   - Mobile (< 640px): 1 column
-
-## Files
-
-```
-src/
-  pages/sysadmin/
-    Content.jsx                # OVERWRITE — ComingSoonEditor now has Hide/Show toggle
-  components/
-    ComingSoonWidget.jsx       # OVERWRITE — filters out items with visible:false
-  styles.css                   # OVERWRITE (full file)
-```
+Topbar now uses the same `Icon` component from `src/lib/icons.jsx` that your Settings IconPicker uses to preview and pick icons. Whatever's available in the picker is now available in the topbar — they're pulling from the same source.
 
 ## Deploy
 
-Push. Wait for Netlify Published. Hard-refresh.
-
-## Data note
-
-Items now optionally have a `visible: boolean` field:
-
-```json
-{ "title": "Tax Rate", "description": "...", "visible": true }
-```
-
-- Existing items in your DB don't have this field → **treated as visible** (backward-compatible)
-- New items you add get `visible: true` automatically
-- Clicking Hide sets `visible: false`
-
-No SQL migration needed.
-
-## Test
-
-1. `/app/sysadmin/content` → Coming Soon tab
-2. Click **Hide** on 2 of the 6 items → their cards dim, header updates to "4 visible, 2 hidden"
-3. Click **Save changes**
-4. Log in as Lily → `/app/settings` → Coming Soon → sees only the 4 visible items in a 3-column grid, no gradient
-5. Back as Anthony → click **Show** on the hidden ones → Save → Lily sees them again
+Overwrite the file, push, hard-refresh. Test with any icon you picked before — it now renders correctly.
