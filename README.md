@@ -1,131 +1,115 @@
-# Delta 3a — User Management + Billing Config
+# Delta 3b — Content Editor + Email Templates
 
-The biggest sysadmin delta. This is what turns your platform into something you can actually run as a business.
+Sysadmin gets full control over what appears on the landing page and the emails your users will receive.
 
 ## What's shipping
 
-**Users page** (`/app/sysadmin/users`):
-- Full user list with filter
-- **Invite** — creates a user with sysadmin-set start/end dates, returns credentials + optional password-reset email
-- **Extend / change dates** — modify subscription window and plan type
-- **Send password reset email** — Supabase-native reset link
-- **Generate temp password** — random password shown once, share out-of-band
-- **Suspend / Reactivate** — soft freeze, reversible, data intact, login blocked
-- **Detach / Reattach email** — clears email + password, data preserved. Reattach assigns new email + sends reset link
-- **Delete permanently** — hard delete with typed-email confirmation, cascades all data
-- **Impersonate** — signs you in AS the user for 15 minutes with a red sticky banner. Click "Stop Impersonating" to swap back to sysadmin session
+**Content page** (`/app/sysadmin/content`) — six tabs, all live-editable:
+- **Hero** — eyebrow, title (two lines), tagline, body, CTAs, fine print
+- **Features** — section header + drag-orderable list of feature cards, each with icon (from 8 presets), color tone, title, body
+- **Pricing** — plan name, currency, amount, period, feature list, CTA, fine print
+- **FAQ** — reorderable question/answer pairs
+- **Final CTA** — closing CTA section
+- **Coming Soon** — items that show in every user's Settings page
 
-**Billing page** (`/app/sysadmin/billing`):
-- **Business info** — name, registration number, address, contact info
-- **Invoice numbering** — prefix, year-reset toggle, next sequence, live preview (`2026-0001`)
-- **Payment method** — Bank/account details, payment instructions, DuitNow QR image upload
+Every tab has "Reset to default" so you can always get back to the original copy.
 
-**Audit log** — every sysadmin action writes to `audit_log` table (viewable UI comes in a later delta, but data is recorded now)
+**Auth & Login page** (`/app/sysadmin/auth`) — email template editor:
+- Four seeded templates: **Invite**, **Welcome (trial)**, **Trial expiring**, **Subscription expiring**
+- Subject + body with `{{variable}}` substitution
+- Click-to-insert variable chips (name, sender_name, action_link, subscription_link, end_date, days_left, business_name)
+- Edit / Preview toggle — preview substitutes sample values so you see how it'll actually look
+- SMTP notice at the top: templates are stored but not yet sent until you configure custom SMTP in Supabase
+
+**Coming Soon widget component** — drop it into your Settings page and it renders whatever items you added in Content editor. Zero items = renders nothing.
 
 ## Files
 
 ```
 supabase/
-  delta-3a-users-billing.sql           # Migration — run once
+  delta-3b-content.sql              # Migration — creates content_blocks + email_templates
 src/
-  App.jsx                              # OVERWRITE — real Users + Billing routes, mounts ImpersonationBanner
+  App.jsx                           # OVERWRITE — real Content + AuthSettings routes
   lib/
-    sysadmin-api.js                    # NEW — RPC wrappers
-    impersonation.js                   # NEW — sessionStorage helpers
+    content-defaults.js             # NEW — shared source of truth for hardcoded fallbacks
+    sysadmin-api.js                 # OVERWRITE — includes content + email APIs
+  pages/
+    Landing.jsx                     # OVERWRITE — fetches from content_blocks with defaults fallback
+    sysadmin/
+      Content.jsx                   # NEW — 6-tab editor
+      AuthSettings.jsx              # NEW — email template editor
   components/
-    ImpersonationBanner.jsx            # NEW — sticky red banner
-  pages/sysadmin/
-    Users.jsx                          # NEW — main page + all 8 modals
-    Billing.jsx                        # NEW — 3-tab config
-  styles-patch.css                     # APPEND to end of src/styles.css
+    FeatureIcon.jsx                 # NEW — 8-icon set for feature cards
+    ComingSoonWidget.jsx            # NEW — user-facing widget
+  styles.css                        # OVERWRITE (full file — Delta 2 + 3a + 3b combined)
 ```
 
 ## Deploy steps
 
 ### Step 1 — Push code + wait for Netlify
 
-Overwrite files. Push. Wait for Netlify "Published".
+Overwrite the files. Push. Wait for Netlify "Published".
 
 ### Step 2 — Run migration
 
-Supabase → SQL Editor → paste `supabase/delta-3a-users-billing.sql` → Run.
+Supabase SQL Editor → paste `supabase/delta-3b-content.sql` → Run.
 
-Should succeed silently. Verify with:
+Verify with:
 ```sql
-SELECT * FROM platform_settings;      -- should have 1 row
-SELECT COUNT(*) FROM profiles;        -- your existing users
+SELECT key FROM content_blocks;      -- empty initially, filled as you save
+SELECT key, label FROM email_templates;   -- 4 seeded rows
 ```
 
-### Step 3 — Hard-refresh + test
+### Step 3 — Test as sysadmin
 
-Log in as Anthony (`anthony2211@gmail.com`). Navigate to:
-- `/app/sysadmin/users` — should see list including Lily and yourself
-- `/app/sysadmin/billing` — should see 3 tabs pre-filled with your Swim Revelation info
+1. Log in as Anthony
+2. Navigate to `/app/sysadmin/content` → 6 tabs, all pre-filled with the current landing copy
+3. Change the hero title from "Guess less." to "Guess never." → Save
+4. Open `/` in a new tab → confirm the change appears
+5. Navigate to `/app/sysadmin/auth` → 4 email templates → open Invite template → click Preview → see substituted values
 
-**Smoke test — invite a fake user:**
-1. Users → "+ Invite user"
-2. Fill: email `test@example.com`, dates default OK, plan yearly
-3. Submit → see success screen with email + temp password
-4. Skip the reset email (test doesn't exist)
-5. Refresh list → see the new user
+### Step 4 — Add the Coming Soon widget to your Settings page
 
-**Test impersonation on the fake user:**
-1. Click Actions → Impersonate
-2. Confirm → you're redirected to `/app` **as** test@example.com
-3. Red banner at top: "Impersonating test@example.com"
-4. Click "Stop Impersonating" → back to your sysadmin session
+Open `src/pages/Settings.jsx` and add:
 
-**Delete the fake user when done:**
-1. Actions → Delete permanently
-2. Type `test@example.com` to confirm → deleted
+```jsx
+import ComingSoonWidget from '../components/ComingSoonWidget.jsx'
+```
 
-## About impersonation — how it works under the hood
+Then drop `<ComingSoonWidget/>` wherever you want it to appear (typically at the bottom of the page).
 
-Supabase doesn't expose direct impersonation, so we use a **password-swap** approach:
+If you'd rather I generate a full Settings.jsx with the widget integrated in a "Coming Soon" tab, tell me and I'll ship it in the next delta.
 
-1. Sysadmin clicks Impersonate
-2. Server-side RPC (SECURITY DEFINER) does:
-   - Verify caller is sysadmin
-   - Save the target's current password hash + a random session token
-   - Overwrite the target's password with a random 15-min token
-   - Log the impersonation event
-3. Client saves the sysadmin's own session in `sessionStorage`
-4. Client signs out sysadmin, signs in as target with the temp password
-5. Redirect to `/app` — banner appears from `sessionStorage` flag
-6. Click "Stop Impersonating" → server-side restores the original password hash from the session record. Client restores sysadmin session via `supabase.auth.setSession()`
+## About the Landing page rendering
 
-**Fail-safes:**
-- Session auto-expires after 15 minutes (record stored; user can always reset via Forgot password if you forget to stop)
-- Every start and stop is in `audit_log`
-- Detached and sysadmin accounts cannot be impersonated
+`Landing.jsx` now fetches all content from `content_blocks` on load. Between the initial render and the fetch completing, it shows the defaults from `content-defaults.js`. Users won't notice — the transition is instant on any decent connection.
 
-**Limitations to know:**
-- If sysadmin closes the tab without stopping, their session is lost (they'll need to log in again — the target's password will be restored automatically on next impersonation stop OR by manually running `sysadmin_stop_impersonation` in SQL)
-- Best practice: always click "Stop Impersonating" before closing the tab
+If the DB fetch fails (network, RLS misconfig, whatever), defaults are used. **The landing page never breaks.**
 
-## About the Users page RPC
+## About Email Templates
 
-`sysadmin_list_users()` is a SECURITY DEFINER function that bypasses per-user RLS. Only sysadmins can call it — the function checks `is_sysadmin()` at the top.
+The four templates are stored but not sent yet. Here's why:
 
-Regular `SELECT * FROM profiles` still respects RLS, so users can't see each other's profiles even in the client.
+**Currently:** When you invite a user or send a password reset, Supabase Auth uses its **own** built-in email templates. You can edit those directly in Supabase Dashboard → Auth → Emails → Templates. Sender is `noreply@mail.app.supabase.io`.
 
-## What's NOT in this delta (coming in 3b / 4)
+**Next step (whenever you're ready):** Configure custom SMTP in Supabase Dashboard → Auth → Emails → SMTP Settings. Point it at Resend, SendGrid, or Mailgun. Once done, **the templates from our editor become the ones that get sent**. Zero code change needed — I'll wire in the send flow in a later delta.
 
-- **Content editor** (landing page copy, Coming Soon widget) — Delta 3b
-- **Auth email template editor** — Delta 3b
-- **Audit log UI** — Delta 3c (data is being written already)
-- **Platform settings** (feature flags, maintenance mode) — Delta 3c
-- **Public checkout / payment queue** (proof upload, verify, invoice, receipt) — Delta 4
-- **Read-only mode enforcement** for expired accounts — Delta 5
+For **new invite templates** we design (like "Trial expiring in 3 days"), we need to send them ourselves via a scheduled Edge Function. That comes in a later delta (Delta 5+).
+
+## What's NOT in this delta
+
+- Actual email sending — awaits SMTP setup
+- Scheduled email jobs (trial expiring notices) — Delta 5+
+- Platform Settings + Audit Log UIs — Delta 3c or later
+- Public checkout + payment queue — Delta 4
 
 ## Rollback
 
-If something breaks:
-1. Revert GitHub commit → Netlify redeploys previous code
-2. Migration is **additive only** — no data lost, no columns dropped. Safe to leave the new tables/columns in place even if you rollback the frontend.
-3. If you want to fully rollback the schema too:
-   ```sql
-   DROP FUNCTION IF EXISTS sysadmin_list_users, sysadmin_invite_user, sysadmin_extend_subscription, sysadmin_suspend_user, sysadmin_unsuspend_user, sysadmin_detach_email, sysadmin_reattach_email, sysadmin_generate_temp_password, sysadmin_get_user_email, sysadmin_delete_user, sysadmin_start_impersonation, sysadmin_stop_impersonation, log_audit CASCADE;
-   DROP TABLE IF EXISTS impersonation_sessions, audit_log, platform_settings;
-   ALTER TABLE profiles DROP COLUMN IF EXISTS email_status, DROP COLUMN IF EXISTS email_changed_at, DROP COLUMN IF EXISTS suspended_at, DROP COLUMN IF EXISTS suspended_reason;
-   ```
+Additive only. Safe.
+
+To fully rollback the schema:
+```sql
+DROP TABLE IF EXISTS content_blocks, email_templates;
+```
+
+Your saved content will be gone but the Landing page falls back to code defaults, so nothing breaks visually.

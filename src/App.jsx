@@ -24,6 +24,8 @@ import Settings from './pages/Settings.jsx'
 // Sysadmin
 import Users from './pages/sysadmin/Users.jsx'
 import Billing from './pages/sysadmin/Billing.jsx'
+import Content from './pages/sysadmin/Content.jsx'
+import AuthSettings from './pages/sysadmin/AuthSettings.jsx'
 import SysadminPlaceholder from './pages/sysadmin/Placeholder.jsx'
 
 export default function App() {
@@ -55,10 +57,10 @@ export default function App() {
                 {/* Sysadmin — real pages */}
                 <Route path="sysadmin/users"    element={<SysadminGuard><Users/></SysadminGuard>}/>
                 <Route path="sysadmin/billing"  element={<SysadminGuard><Billing/></SysadminGuard>}/>
+                <Route path="sysadmin/content"  element={<SysadminGuard><Content/></SysadminGuard>}/>
+                <Route path="sysadmin/auth"     element={<SysadminGuard><AuthSettings/></SysadminGuard>}/>
 
                 {/* Sysadmin — placeholders */}
-                <Route path="sysadmin/content"  element={<SysadminGuard><SysadminPlaceholder title="Content" description="Landing page copy, Coming Soon widget editor, marketing images, FAQ."/></SysadminGuard>}/>
-                <Route path="sysadmin/auth"     element={<SysadminGuard><SysadminPlaceholder title="Auth & Login" description="Email templates (invite, welcome, reset), session length, signup rules, allow/deny lists."/></SysadminGuard>}/>
                 <Route path="sysadmin/platform" element={<SysadminGuard><SysadminPlaceholder title="Platform Settings" description="Feature flags, maintenance mode, platform announcements, backup schedule."/></SysadminGuard>}/>
                 <Route path="sysadmin/audit"    element={<SysadminGuard><SysadminPlaceholder title="Audit Log" description="Who did what, when. Especially useful for impersonation events and subscription date changes."/></SysadminGuard>}/>
               </Routes>
