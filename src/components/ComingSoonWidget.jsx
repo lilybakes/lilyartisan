@@ -2,20 +2,15 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 /**
- * Reads the sysadmin-editable Coming Soon list from content_blocks.
- * Drop this anywhere in your user-facing Settings page.
- *
- * Props:
- *   title    — heading (default "Coming Soon")
- *   subtitle — sub-heading (default matches the existing user Settings copy)
- *
- * Renders nothing if there are no items.
+ * Reads the sysadmin-editable Coming Soon list from content_blocks and
+ * shows only items with `visible !== false` (defaults to visible if unset,
+ * so items saved before the flag existed still render).
  */
 export default function ComingSoonWidget({
-  title = 'Coming Soon',
+  title    = 'Coming Soon',
   subtitle = 'Placeholders for future customization.',
 } = {}) {
-  const [items, setItems] = useState(null)   // null = loading, [] = none, [...] = items
+  const [items, setItems] = useState(null)   // null = loading
 
   useEffect(() => {
     supabase.from('content_blocks')
@@ -28,7 +23,9 @@ export default function ComingSoonWidget({
   }, [])
 
   if (items === null) return null
-  if (items.length === 0) return null
+
+  const visible = items.filter(it => it.visible !== false)
+  if (visible.length === 0) return null
 
   return (
     <div className="panel">
@@ -39,7 +36,7 @@ export default function ComingSoonWidget({
         </div>
       </div>
       <div className="coming-soon-grid">
-        {items.map((it, i) => (
+        {visible.map((it, i) => (
           <div key={i} className="coming-soon-card">
             <div className="coming-soon-title">{it.title}</div>
             <div className="coming-soon-desc">{it.description}</div>

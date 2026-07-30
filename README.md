@@ -1,42 +1,57 @@
-# Settings Rewire
+# Coming Soon Polish
 
-Two files. Overwrite both, push, done.
+Three changes, three files.
 
-## What changed in `Settings.jsx`
+## What changed
 
-**Coming Soon tab** — was hardcoded 6 cards, now renders `<ComingSoonWidget/>` which fetches the items from `content_blocks` in the DB. Whatever you edit in `/app/sysadmin/content` → Coming Soon tab now shows up in Lily's Settings.
+**1. No gradient on Coming Soon cards** — plain white with a subtle grey border. Hover adds a soft violet border and shadow lift.
 
-**General tab cleanup** — removed the "App Name" field and the whole Logo upload panel. Both were dead code after brand-swap (their values are ignored by the Sidebar / Landing / everywhere). Kept:
-- Owner Name
-- Business Name
-- Currency
-- Default Target Food Cost %
+**2. Show/Hide toggle in sysadmin editor** — each Coming Soon item now has a "Hide" button in the row controls. Hidden items:
+   - Stay in your editor list (dimmed, marked "Hidden")
+   - Are NOT shown to users on their Settings page
+   - Can be toggled back with the "Show" button
+   - Are NOT deleted — they persist across saves
+   
+   The header now shows something like `Items (4 visible, 2 hidden)` so you know at a glance.
 
-**Header Links tab** — unchanged.
+**3. 3-column grid on the user side** — was 2 columns. Now responsive:
+   - Desktop / wide screens: **3 columns**
+   - Tablet (< 900px): 2 columns
+   - Mobile (< 640px): 1 column
 
-## What's in `ComingSoonWidget.jsx`
+## Files
 
-Same widget I shipped in Delta 3b, with configurable `title` / `subtitle` props (defaults match your existing copy: "Coming Soon" / "Placeholders for future customization."). Included here so you don't have to hunt for the right version — just overwrite it.
+```
+src/
+  pages/sysadmin/
+    Content.jsx                # OVERWRITE — ComingSoonEditor now has Hide/Show toggle
+  components/
+    ComingSoonWidget.jsx       # OVERWRITE — filters out items with visible:false
+  styles.css                   # OVERWRITE (full file)
+```
 
 ## Deploy
 
-Push both files. Wait for Netlify Published. Hard-refresh.
+Push. Wait for Netlify Published. Hard-refresh.
 
-## Test the end-to-end sync
+## Data note
 
-1. Log in as Anthony
-2. `/app/sysadmin/content` → Coming Soon tab → edit one of the 6 items (e.g., change "Tax Rate" description) → Save
-3. Log out, log in as Lily
-4. `/app/settings` → Coming Soon tab → see the edit
+Items now optionally have a `visible: boolean` field:
 
-Or just add a new item, delete one, whatever — Lily's page reflects it after refresh.
-
-## Note about your dead fields
-
-If your DB still has values in `settings.app_name` and `settings.logo_data_url`, they'll stay there — the UI just doesn't expose them anymore. No cleanup needed. If you ever want to clear them:
-
-```sql
-UPDATE settings SET app_name = NULL, logo_data_url = NULL;
+```json
+{ "title": "Tax Rate", "description": "...", "visible": true }
 ```
 
-Optional. Zero effect either way.
+- Existing items in your DB don't have this field → **treated as visible** (backward-compatible)
+- New items you add get `visible: true` automatically
+- Clicking Hide sets `visible: false`
+
+No SQL migration needed.
+
+## Test
+
+1. `/app/sysadmin/content` → Coming Soon tab
+2. Click **Hide** on 2 of the 6 items → their cards dim, header updates to "4 visible, 2 hidden"
+3. Click **Save changes**
+4. Log in as Lily → `/app/settings` → Coming Soon → sees only the 4 visible items in a 3-column grid, no gradient
+5. Back as Anthony → click **Show** on the hidden ones → Save → Lily sees them again

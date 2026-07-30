@@ -406,37 +406,47 @@ function ComingSoonEditor({ items, onSave, onReset }) {
     if (j < 0 || j >= next.length) return prev
     ;[next[i], next[j]] = [next[j], next[i]]; return next
   })
-  const remove = (i) => setList(prev => prev.filter((_, idx) => idx !== i))
-  const add    = () => setList(prev => [...prev, { title: 'New upcoming feature', description: 'A brief note about what\'s coming.' }])
+  const remove     = (i) => setList(prev => prev.filter((_, idx) => idx !== i))
+  const toggleShow = (i) => update(i, { visible: list[i].visible === false })
+  const add        = () => setList(prev => [...prev, { title: 'New upcoming feature', description: 'A brief note about what\'s coming.', visible: true }])
+
+  const visibleCount = list.filter(it => it.visible !== false).length
+  const hiddenCount  = list.length - visibleCount
 
   return (
     <form className="admin-form" onSubmit={(e) => { e.preventDefault(); onSave(list) }}>
       <div className="admin-section">
         <div style={{background:'var(--accent-soft)', border:'1px solid #dedafc', borderRadius:8, padding:'12px 14px', marginBottom:16, fontSize:13, color:'var(--ink-soft)', lineHeight:1.55}}>
-          <strong style={{color:'var(--accent-dark)'}}>What appears here:</strong> Cards shown to all logged-in users in their Settings page. Use it to tell them what's coming next.
+          <strong style={{color:'var(--accent-dark)'}}>What appears here:</strong> Cards shown to all logged-in users in their Settings page. Use it to tell them what's coming next. <strong>Hide</strong> to keep an item saved but out of the user view.
         </div>
-        <h4>Items ({list.length})</h4>
+        <h4>Items ({visibleCount} visible{hiddenCount > 0 ? `, ${hiddenCount} hidden` : ''})</h4>
         {list.length === 0 && (
           <p className="empty" style={{padding:'20px 0'}}>No items yet. Add one to get started.</p>
         )}
-        {list.map((it, i) => (
-          <div key={i} className="admin-item-card">
-            <div className="admin-item-head">
-              <span className="admin-item-num">#{i + 1}</span>
-              <div className="admin-item-controls">
-                <button type="button" className="edit" onClick={() => move(i, -1)} disabled={i === 0}>↑</button>
-                <button type="button" className="edit" onClick={() => move(i, +1)} disabled={i === list.length - 1}>↓</button>
-                <button type="button" className="ghost" onClick={() => remove(i)}>Remove</button>
+        {list.map((it, i) => {
+          const isHidden = it.visible === false
+          return (
+            <div key={i} className={'admin-item-card' + (isHidden ? ' admin-item-hidden' : '')}>
+              <div className="admin-item-head">
+                <span className="admin-item-num">#{i + 1}{isHidden && <em style={{marginLeft:8, fontStyle:'normal', color:'var(--muted)'}}>· Hidden</em>}</span>
+                <div className="admin-item-controls">
+                  <button type="button" className="edit" onClick={() => move(i, -1)} disabled={i === 0}>↑</button>
+                  <button type="button" className="edit" onClick={() => move(i, +1)} disabled={i === list.length - 1}>↓</button>
+                  <button type="button" className="edit" onClick={() => toggleShow(i)}>
+                    {isHidden ? 'Show' : 'Hide'}
+                  </button>
+                  <button type="button" className="ghost" onClick={() => remove(i)}>Remove</button>
+                </div>
               </div>
+              <label className="field"><span>Title</span>
+                <input value={it.title} onChange={e => update(i, { title: e.target.value })}/>
+              </label>
+              <label className="field"><span>Description</span>
+                <textarea rows="2" value={it.description} onChange={e => update(i, { description: e.target.value })}/>
+              </label>
             </div>
-            <label className="field"><span>Title</span>
-              <input value={it.title} onChange={e => update(i, { title: e.target.value })}/>
-            </label>
-            <label className="field"><span>Description</span>
-              <textarea rows="2" value={it.description} onChange={e => update(i, { description: e.target.value })}/>
-            </label>
-          </div>
-        ))}
+          )
+        })}
         <button type="button" className="ghost" onClick={add} style={{border:'1px dashed var(--line)', padding:'10px 16px', width:'100%', borderRadius:8, color:'var(--accent)'}}>
           + Add Coming Soon item
         </button>
