@@ -1,77 +1,29 @@
-# Rename: BakerNomics → BakeOnomics
+# Hero Photo Slide — Copy Centering
 
-Complete brand rename across code + database. Preserves all your sysadmin content edits.
+One file. `src/styles.css` — overwrite.
 
-## What's included
+## What was wrong
 
-```
-supabase/
-  rename-to-bakeonomics.sql            # DB rename (content_blocks, email_templates, platform_settings, settings)
+On photo slides 1 and 3, the text sat glued to the viewport left edge. On a 1920px monitor, text was at 80–760px, then ~1160px of dead space between it and the right edge. The photo dominated the right two-thirds and the text felt marooned.
 
-src/
-  components/
-    Logo.jsx                            # OVERWRITE — Bake (navy) + Onomics (violet) wordmark
-    HeroCarousel.jsx                    # OVERWRITE — updated URLs (app.bakeonomics.com) + body copy
-  lib/
-    content-defaults.js                 # OVERWRITE — default landing copy, in case defaults are ever reset
-  pages/
-    Checkout.jsx                        # OVERWRITE — "Subscribe to BakeOnomics"
-    CheckoutPending.jsx                 # OVERWRITE — success message + login copy
-    Maintenance.jsx                     # OVERWRITE (already had no mentions, safe to skip if unchanged)
-    Signup.jsx                          # OVERWRITE (same — safe to skip if unchanged)
-```
+Same root cause as the split-slide fix: no content-column cap, so on wider screens the layout scaled worse instead of feeling more intentional.
 
-## Deploy — 3 steps
+## The fix
 
-### Step 1 — Run the SQL
+`.hc-copy-left` now behaves like a proper landing-page content column:
 
-Supabase SQL Editor → paste `supabase/rename-to-bakeonomics.sql` → Run.
+- **Absolutely spans the slide** (`inset: 0`) but capped at `max-width: 1440px` and centered horizontally via `margin: 0 auto`
+- **Content left-anchored within that column** (`align-items: flex-start`)
+- **Inner text (h1, p, eyebrow) gets `max-width: 620px`** so lines stay readable
 
-The last SELECT shows how many BakerNomics mentions remain in each table. Should return all zeros. If not, re-run and something is caching.
+## What each viewport gets
 
-### Step 2 — Push the code files
+- **≥1440px** — content column caps at 1440, text starts at `(viewport - 1440) / 2 + 80px` from left. On 1920 that's 320px. Photo still visible on right, but the text feels intentionally placed instead of edge-clinging.
+- **1024–1440px** — column matches viewport width, text at 80px from left (unchanged from before)
+- **<1024px** — unchanged (mobile already stacks the copy plate full-width)
 
-Overwrite the 7 files, commit, push. Netlify redeploys.
+## Consistency with slide 5
 
-### Step 3 — Find anything I missed
+Slide 5 (`.hc-copy-center`) already uses `text-align: center` with `max-width: 860px` on the h2 and 580px on the p, so it doesn't have this problem — text stays centered regardless of viewport.
 
-I don't have your `index.html`, `public/site.webmanifest`, `Login.jsx`, `ForgotPassword.jsx`, `ResetPassword.jsx`, or `package.json`. **In Cursor/VS Code**, do a project-wide find-and-replace (case-sensitive) with these two passes:
-
-- Find: `BakerNomics`  →  Replace: `BakeOnomics`
-- Find: `bakernomics`  →  Replace: `bakeonomics`
-
-**Also check specifically:**
-- `index.html` — the `<title>` tag, `<meta name="description">`, and any Open Graph tags
-- `public/site.webmanifest` — the `name` and `short_name` fields
-- `package.json` — the `name` field (optional — cosmetic only)
-
-If you use the GitHub web UI: use the repo-level search bar at the top, search `BakerNomics`, click each result, click the pencil to edit, save.
-
-## Known edge case — the wordmark split
-
-The Logo component previously rendered `Baker` + `Nomics` as two separate `<span>`s so each half could get a different color. A blind find-and-replace of `BakerNomics` won't touch this because it's split across JSX. I've handled this in `Logo.jsx` already — the new split is `Bake` (navy) + `Onomics` (violet). If your Logo lives anywhere else besides `src/components/Logo.jsx`, check for that split there too.
-
-## Not renamed
-
-- **Supabase storage bucket** is still `lilyartisan-images`. Users never see this in the UI, only in payment-proof image URLs. Renaming it means migrating all uploads. Not worth it right now.
-- **GitHub repo name** (`lilyartisan`) — unrelated to what users see. Rename it in GitHub Settings if you want, but Netlify auto-follows repo renames.
-- **Favicon set** — you said this is done outside this chat.
-
-## What users will see immediately after deploy
-
-- Sidebar wordmark: "BakeOnomics"
-- Landing page hero carousel + all copy: "BakeOnomics"
-- Checkout flow: "Subscribe to BakeOnomics"
-- Approval emails Anthony sends: "Welcome to BakeOnomics" / "Invited to BakeOnomics"
-- Sysadmin Content editor already shows the new brand (your existing edits with the old brand are updated in-place)
-
-## Rollback
-
-Every rename is a REPLACE — to roll back, run the same SQL with the strings swapped:
-
-```sql
-UPDATE content_blocks SET content = REPLACE(content::text, 'BakeOnomics', 'BakerNomics')::jsonb;
--- ...and similar for each table
-```
-
-But you'll want to keep BakeOnomics — bakernomics.com is taken.
+Deploy, hard-refresh. Slides 1 and 3 will feel balanced now.

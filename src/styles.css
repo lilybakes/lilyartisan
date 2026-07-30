@@ -2896,14 +2896,21 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   z-index:2;
 }
 .hc-copy-left{
-  position:absolute; top:0; left:0;
-  width:min(680px, 55%); height:100%;
-  justify-content:center;
-  padding:0 0 40px 80px;
+  /* Absolutely span the slide, but cap to a content column and center — so
+     the text doesn't glue to the viewport edge on wide/ultrawide screens. */
+  position:absolute; inset:0;
+  max-width:1440px;
+  margin:0 auto;
+  /* Flex layout for the content itself */
+  align-items:flex-start;    /* left-anchor content within the 1440px column */
+  justify-content:center;    /* vertical center */
+  padding:0 80px 40px;
   pointer-events:none;
 }
+/* Constrain text width for readability — headline + body get a comfortable column */
+.hc-copy-left > *{ max-width:min(620px, 100%); }
 .hc-copy-left > *:not(.hc-ctas){ pointer-events:auto; }
-.hc-copy-left .hc-ctas{ pointer-events:auto; }
+.hc-copy-left .hc-ctas{ pointer-events:auto; max-width:none; }
 
 .hc-copy-center{
   position:absolute; inset:0;
@@ -3168,7 +3175,7 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   .hc-copy h1{ font-size:58px; }
   .hc-copy h2{ font-size:46px; }
   .hc-copy-center h2{ font-size:44px; }
-  .hc-copy-left{ padding:0 0 40px 48px; }
+  .hc-copy-left{ padding:0 48px 40px; }
   .hc-copy-split{ flex-basis:380px; }
   .hc-frame{ flex-basis:560px; }
 }
