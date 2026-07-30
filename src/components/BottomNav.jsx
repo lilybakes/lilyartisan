@@ -1,12 +1,11 @@
 import { NavLink } from 'react-router-dom'
 import { NavIcon } from '../lib/nav-icons.jsx'
 
-// Four thumb-reachable primary destinations. Everything else lives behind "More".
 const TABS = [
-  { to: '/',            label: 'Home',        icon: 'dash' },
-  { to: '/recipes',     label: 'Recipes',     icon: 'recipes' },
-  { to: '/ingredients', label: 'Ingredients', icon: 'ingredients' },
-  { to: '/bom',         label: 'BOM',         icon: 'bom' },
+  { to: '/app',             label: 'Home',        icon: 'dash',        end:true },
+  { to: '/app/recipes',     label: 'Recipes',     icon: 'recipes' },
+  { to: '/app/ingredients', label: 'Ingredients', icon: 'ingredients' },
+  { to: '/app/bom',         label: 'BOM',         icon: 'bom' },
 ]
 
 export default function BottomNav() {
@@ -18,7 +17,7 @@ export default function BottomNav() {
         <NavLink
           key={t.to}
           to={t.to}
-          end={t.to === '/'}
+          end={t.end}
           className={({isActive}) => 'bottom-nav-item' + (isActive ? ' active' : '')}
         >
           <span className="bottom-nav-icon"><NavIcon name={t.icon} size={22}/></span>
