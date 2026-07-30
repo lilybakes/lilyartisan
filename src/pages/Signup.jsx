@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth.jsx'
 import { setRememberMe } from '../lib/rememberMe'
+import Logo from '../components/Logo.jsx'
 
 export default function Signup() {
   const { signIn } = useAuth()
@@ -69,14 +70,12 @@ export default function Signup() {
   return (
     <div className="auth-page">
       <div className="auth-card auth-card-wide">
-        <div className="auth-brand">
-          <div className="brand-stamp" style={{margin:'0 auto 14px'}}>
-            <img src="/assets/lily-mark-white.png" alt=""/>
-          </div>
-          <h1 className="auth-title">
-            Start your <span className="part2">free trial</span>
+        <div className="auth-brand" style={{display:'flex', flexDirection:'column', alignItems:'center', gap:12}}>
+          <Logo size={56}/>
+          <h1 className="auth-title" style={{margin:0}}>
+            Start your <span style={{color:'#6C5CE7'}}>free trial</span>
           </h1>
-          <p className="auth-tagline">14 days · no credit card · full access</p>
+          <p className="auth-tagline" style={{margin:0}}>14 days · no credit card · full access</p>
         </div>
 
         <form className="auth-form" onSubmit={onSubmit}>

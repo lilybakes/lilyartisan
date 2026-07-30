@@ -1,23 +1,80 @@
-# Default Hero Swap
+# Brand Swap — The Margin b
 
-Replaces the default hero image with the baker-with-bread character.
+New logo everywhere. Wordmark and badge hardcoded (no longer editable via Settings). Sub-label ("SYSADMIN" for admins, business name for users) stays dynamic.
 
-## What to do
+## Files
 
-Replace the file at `public/assets/lily-portrait.png` in your repo with the one in this zip.
+```
+public/                             ← ALL FLAT AT public/ ROOT
+  favicon.ico
+  favicon.svg
+  favicon-16x16.png
+  favicon-32x32.png
+  favicon-48x48.png
+  favicon-96x96.png
+  apple-touch-icon.png
+  android-chrome-192x192.png
+  android-chrome-512x512.png
+  maskable-icon-512x512.png
+  safari-pinned-tab.svg
+  og-mark-1200x630.png
+  site.webmanifest
+  logo-mark.svg
+  logo-mark-mono-dark.svg
+src/
+  components/
+    Logo.jsx                        ← NEW — the single source of the brand
+    Sidebar.jsx                     ← OVERWRITE — uses <Logo/>, no more logo_data_url
+  pages/
+    Landing.jsx                     ← OVERWRITE — new header + footer wordmark
+    Login.jsx                       ← OVERWRITE — new Logo above form
+    Signup.jsx                      ← OVERWRITE — new Logo above form
+  styles.css                        ← OVERWRITE — Plus Jakarta Sans, tweaked .brand padding
+```
 
-That's it. Push. Wait for Netlify. Hard-refresh.
+## Step 1 — Update index.html
 
-## Why this works
+Open `index.html` at the repo root. Inside the `<head>` tag, **replace any existing favicon/og/font links** with this block:
 
-`HeroImage.jsx` references `/assets/lily-portrait.png` as its default source. Overwriting the file swaps the default globally — every user whose `hero_mode` is `'default'` (which is all new users, and anyone who clicked "Use default") will now see the baker instead of the previous portrait.
+```html
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#6C5CE7">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#6C5CE7">
+<meta property="og:image" content="/og-mark-1200x630.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+```
 
-## No code changes, no SQL
+The `preconnect` + Google Fonts link is the one thing that MUST get added — the app's font is now Plus Jakarta Sans. Without those links, the app falls back to Public Sans (still fine, but not the intended brand).
 
-- Nothing in `HeroImage.jsx` needs to change
-- Nothing in the DB needs to change
-- Users who already picked a custom / gallery / blank hero stay on their choice — this only affects "default" mode
+## Step 2 — Push all the files
 
-## Note about the gallery
+Push `public/` and `src/` folders. Wait for Netlify "Published".
 
-The baker image is also in the sysadmin gallery as `/gallery/baker-01.png`. It's still available there as a gallery pick. Now it's both the default AND a gallery option — a user who selects "Use default" and a user who picks the baker from the gallery end up with the same visual, but their DB state differs (`hero_mode='default'` vs `hero_mode='gallery'`). If you'd rather have them be different images, remove the baker gallery item via `/app/sysadmin/gallery` and upload a different one.
+## Step 3 — Hard-refresh + tab cache-bust
+
+- Cmd/Ctrl + Shift + R on the app
+- Close and re-open the browser tab (favicons are aggressively cached)
+
+## What you'll see
+
+- **Sidebar top-left:** new gradient badge (violet→magenta, 73% ring), "BakerNomics" (Baker in near-black, Nomics in violet), "SYSADMIN" or your business name below in tiny grey uppercase
+- **Landing page header** and **footer**: same wordmark, no badge on the login/signup cards is the ~56px version
+- **Browser tab icon:** the new "b" mark
+- **When you install as PWA / share to social:** proper icons and OG image
+
+## What's locked down (per your ask)
+
+- **Logo badge:** hardcoded in `Logo.jsx`. Cannot be replaced via Settings. `settings.logo_data_url` is now ignored.
+- **"BakerNomics" wordmark:** hardcoded. Cannot be replaced via Settings. `settings.app_name` is now ignored.
+- **Sub-label under wordmark:** stays dynamic — `SYSADMIN` for admins, `settings.business_name` uppercased for users. This is the only piece a user's Settings still affects.
+
+## Notes
+
+- The old `/assets/lily-mark-white.png` image is no longer referenced. You can leave it in the repo (harmless) or delete it.
+- The `Settings` page may still show an "App Name" or "Logo" field. It doesn't break anything if the user edits them — the values are just no longer read anywhere in the UI. If you want to remove those fields from the Settings page too, that's a separate small pass.

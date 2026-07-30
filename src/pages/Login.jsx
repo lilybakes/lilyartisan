@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../lib/auth.jsx'
 import { setRememberMe, shouldRemember } from '../lib/rememberMe'
+import Logo from '../components/Logo.jsx'
 
 export default function Login() {
   const { signIn, session } = useAuth()
@@ -32,14 +33,12 @@ export default function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <div className="auth-brand">
-          <div className="brand-stamp" style={{margin:'0 auto 14px'}}>
-            <img src="/assets/lily-mark-white.png" alt=""/>
-          </div>
-          <h1 className="auth-title">
-            <span className="part1">Baker</span><span className="part2">Nomics</span>
+        <div className="auth-brand" style={{display:'flex', flexDirection:'column', alignItems:'center', gap:12}}>
+          <Logo size={56}/>
+          <h1 className="auth-title" style={{margin:0}}>
+            <span style={{color:'#1F2440'}}>Baker</span><span style={{color:'#6C5CE7'}}>Nomics</span>
           </h1>
-          <p className="auth-tagline">Welcome back — sign in to continue</p>
+          <p className="auth-tagline" style={{margin:0}}>Welcome back — sign in to continue</p>
         </div>
 
         <form className="auth-form" onSubmit={onSubmit}>

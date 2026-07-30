@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../lib/auth.jsx'
 import { supabase } from '../lib/supabase'
 import { FeatureIcon } from '../components/FeatureIcon.jsx'
+import Logo from '../components/Logo.jsx'
 import {
   CONTENT_DEFAULTS,
   HERO_DEFAULT, FEATURES_HEAD_DEFAULT, FEATURES_DEFAULT,
@@ -40,12 +41,7 @@ export default function Landing() {
       <header className="landing-header">
         <div className="landing-header-inner">
           <Link to="/" className="landing-brand" style={{textDecoration:'none'}}>
-            <div className="brand-stamp"><img src="/assets/lily-mark-white.png" alt=""/></div>
-            <div className="brand-text">
-              <div className="brand-wordmark">
-                <span className="part1">Baker</span><span className="part2">Nomics</span>
-              </div>
-            </div>
+            <Logo size={36} showWordmark/>
           </Link>
           <nav className="landing-nav">
             <a href="#features" className="landing-navlink">Features</a>
@@ -197,7 +193,7 @@ export default function Landing() {
         <div className="landing-container landing-footer-inner">
           <div>
             <div className="landing-footer-brand">
-              <span className="part1">Baker</span><span className="part2">Nomics</span>
+              <span style={{color:'#1F2440'}}>Baker</span><span style={{color:'#6C5CE7'}}>Nomics</span>
             </div>
             <div className="landing-footer-tag">Made with care in Malaysia 🇲🇾</div>
           </div>

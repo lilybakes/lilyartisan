@@ -3,9 +3,10 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { NavIcon } from '../lib/nav-icons.jsx'
 import { useSettings } from '../lib/settings.jsx'
 import { useAuth } from '../lib/auth.jsx'
+import Logo from './Logo.jsx'
 
 // ============================================================
-// Sysadmin section icons (inline SVG — small set, no lib needed)
+// Sysadmin section icons
 // ============================================================
 function SysIcon({ name }) {
   const props = { width:18, height:18, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.7, strokeLinecap:'round', strokeLinejoin:'round' }
@@ -89,9 +90,10 @@ export default function Sidebar() {
 
   const close = () => setOpen(false)
 
-  const [markPart1, markPart2] = (settings.app_name || 'Baker|Nomics').split('|')
-  const logoSrc = settings.logo_data_url || '/assets/lily-mark-white.png'
-  const kicker  = isSysadmin ? 'SYSADMIN' : (settings.business_name || 'Lily Ong Artisan').toUpperCase()
+  // Sub-label under the wordmark is the only editable text piece:
+  //   sysadmin → 'SYSADMIN'
+  //   user     → their business name (or 'MEMBER' as fallback)
+  const subLabel = isSysadmin ? 'SYSADMIN' : (settings.business_name || 'Member')
 
   async function handleSignOut() {
     close()
@@ -99,7 +101,6 @@ export default function Sidebar() {
     navigate('/login', { replace: true })
   }
 
-  // Nav item factory — keeps JSX compact below
   const item = (to, label, icon, iconType = 'nav') => (
     <NavLink
       key={to}
@@ -124,16 +125,7 @@ export default function Sidebar() {
       />
       <aside className={open ? 'open' : ''}>
         <Link to="/app" className="brand" style={{textDecoration:'none', color:'inherit'}} onClick={close}>
-          <div className="brand-stamp">
-            <img src={logoSrc} alt=""/>
-          </div>
-          <div className="brand-text">
-            <div className="brand-wordmark">
-              <span className="part1">{markPart1}</span>
-              {markPart2 && <span className="part2">{markPart2}</span>}
-            </div>
-            <div className="brand-kicker">{kicker}</div>
-          </div>
+          <Logo size={40} showWordmark subLabel={subLabel}/>
         </Link>
 
         {/* ============ MAIN ============ */}
