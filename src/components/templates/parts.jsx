@@ -12,8 +12,10 @@ export function BrandHeader({ brand, compact = false }) {
       )}
       <div className="tpl-brand-text">
         <div className="tpl-brand-name">{brand.business_name || 'Your Bakery'}</div>
-        {brand.tagline && !compact && (
-          <div className="tpl-brand-tagline">{brand.tagline}</div>
+        {brand.tagline && (
+          <div className={'tpl-brand-tagline' + (compact ? ' tpl-brand-tagline-small' : '')}>
+            {brand.tagline}
+          </div>
         )}
       </div>
     </header>
@@ -21,22 +23,24 @@ export function BrandHeader({ brand, compact = false }) {
 }
 
 export function BrandFooter({ brand }) {
-  const bits = []
-  if (brand.contact_phone) bits.push(brand.contact_phone)
-  if (brand.contact_email) bits.push(brand.contact_email)
-  if (brand.website)       bits.push(brand.website)
-  if (brand.instagram)     bits.push('@' + brand.instagram)
+  const contacts = []
+  if (brand.contact_phone) contacts.push(brand.contact_phone)
+  if (brand.contact_email) contacts.push(brand.contact_email)
+  if (brand.website)       contacts.push(brand.website)
 
-  if (bits.length === 0 && !brand.address) return null
+  const socials = []
+  if (brand.instagram) socials.push('@' + brand.instagram)
+  if (brand.facebook)  socials.push('fb/' + brand.facebook)
+
+  if (contacts.length === 0 && socials.length === 0 && !brand.address) return null
 
   return (
     <footer className="tpl-brand-footer">
       {brand.address && <div className="tpl-brand-address">{brand.address}</div>}
-      {bits.length > 0 && (
+      {(contacts.length > 0 || socials.length > 0) && (
         <div className="tpl-brand-contact">
-          {bits.map((b, i) => (
-            <span key={i}>{b}</span>
-          ))}
+          {contacts.map((c, i) => <span key={'c'+i}>{c}</span>)}
+          {socials.map((s, i)  => <span key={'s'+i} className="tpl-brand-social">{s}</span>)}
         </div>
       )}
     </footer>

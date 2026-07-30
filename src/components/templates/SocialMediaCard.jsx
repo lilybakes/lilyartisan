@@ -14,7 +14,10 @@ export function SocialMediaCard({ recipe, brand }) {
 
       <div className="tpl-social-mark">
         {brand.logo_data_url && <img src={brand.logo_data_url} alt="" className="tpl-social-logo"/>}
-        <div className="tpl-social-brand">{brand.business_name || 'Your Bakery'}</div>
+        <div className="tpl-social-mark-text">
+          <div className="tpl-social-brand">{brand.business_name || 'Your Bakery'}</div>
+          {brand.tagline && <div className="tpl-social-tagline">{brand.tagline}</div>}
+        </div>
       </div>
 
       <div className="tpl-social-center">
@@ -32,7 +35,10 @@ export function SocialMediaCard({ recipe, brand }) {
       </div>
 
       <div className="tpl-social-footer">
-        {brand.instagram && <span className="tpl-social-handle">@{brand.instagram}</span>}
+        <div className="tpl-social-handles">
+          {brand.instagram && <span className="tpl-social-handle">@{brand.instagram}</span>}
+          {brand.facebook  && <span className="tpl-social-handle">fb/{brand.facebook}</span>}
+        </div>
         {brand.website && <span className="tpl-social-web">{brand.website}</span>}
       </div>
     </div>

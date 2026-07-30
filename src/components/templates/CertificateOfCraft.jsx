@@ -5,6 +5,12 @@
 export function CertificateOfCraft({ recipe, brand }) {
   const today = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
 
+  const contacts = []
+  if (brand.website)   contacts.push(brand.website)
+  if (brand.instagram) contacts.push('@' + brand.instagram)
+  if (brand.facebook)  contacts.push('fb/' + brand.facebook)
+  if (brand.contact_phone) contacts.push(brand.contact_phone)
+
   return (
     <div className="tpl tpl-cert printable" style={{ '--brand': brand.brand_color }}>
       <div className="tpl-cert-inner">
@@ -55,6 +61,17 @@ export function CertificateOfCraft({ recipe, brand }) {
               <div className="tpl-cert-signature-label">{today}</div>
             </div>
           </div>
+
+          {(brand.address || contacts.length > 0) && (
+            <div className="tpl-cert-address-block">
+              {brand.address && <div className="tpl-cert-address">{brand.address}</div>}
+              {contacts.length > 0 && (
+                <div className="tpl-cert-contact">
+                  {contacts.map((c, i) => <span key={i}>{c}</span>)}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
