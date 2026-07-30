@@ -1,149 +1,320 @@
 /* ============================================================
    APPEND THIS TO THE END OF src/styles.css
-   Adds: auth page styles, sidebar account section
+   Adds: modals, sysadmin UI, impersonation banner, action menus
    ============================================================ */
 
-/* -------- Auth pages (Login, Forgot, Reset) -------- */
-.auth-page{
-  min-height:100vh;
-  min-height:100dvh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  padding-top:calc(20px + var(--safe-top, 0px));
-  padding-bottom:calc(20px + var(--safe-bottom, 0px));
-  background:linear-gradient(135deg, #f5f5f9 0%, #ede9fe 100%);
-}
-.auth-card{
-  background:#fff;
-  border-radius:20px;
-  padding:36px 32px;
-  box-shadow:0 20px 60px rgba(50,51,74,0.10);
-  max-width:400px;
-  width:100%;
-}
-.auth-brand{ text-align:center; margin-bottom:26px; }
-.auth-brand .brand-stamp{ width:56px; height:56px; border-radius:16px; }
-.auth-brand .brand-stamp img{ height:33px; }
-.auth-title{
-  font-size:26px; font-weight:800; letter-spacing:-0.4px;
-  margin:0 0 6px;
-}
-.auth-title .part1{ color:var(--brand-ink); }
-.auth-title .part2{ color:var(--accent); }
-.auth-tagline{
-  color:var(--muted); margin:0; font-size:13.5px;
-}
-.auth-form{ display:flex; flex-direction:column; gap:14px; }
-.auth-form .field{ display:flex; flex-direction:column; gap:5px; }
-.auth-form .field > span{
-  font-size:11.5px; font-weight:600; color:var(--muted);
-  text-transform:uppercase; letter-spacing:0.4px;
-}
-.auth-form input{
-  font-size:16px; /* prevent iOS zoom */
-  padding:12px 14px;
-}
-.auth-form button.primary{
-  padding:13px 18px;
-  font-size:14.5px;
-  margin-top:4px;
-}
-.auth-error{
-  background:var(--danger-soft);
-  color:var(--danger);
+/* ---------- Flash messages ---------- */
+.flash{
   padding:10px 14px;
   border-radius:8px;
   font-size:13px;
-  border:1px solid #fbd0d0;
+  margin-bottom:14px;
+  border:1px solid transparent;
 }
-.auth-success{
-  background:var(--success-soft);
-  color:var(--success);
-  padding:12px 14px;
-  border-radius:8px;
-  font-size:13px;
-  border:1px solid #c5ecd6;
-  line-height:1.45;
-}
-.auth-links{
-  text-align:center;
-  margin-top:22px;
-  font-size:13px;
-}
-.auth-links a{
-  color:var(--accent);
-  text-decoration:none;
-  font-weight:500;
-}
-.auth-links a:hover{ text-decoration:underline; }
+.flash-ok{ background:var(--success-soft); color:var(--success); border-color:#c5ecd6; }
+.flash-err{ background:var(--danger-soft); color:var(--danger); border-color:#fbd0d0; }
 
-/* -------- Auth loading state -------- */
-.auth-loading{
-  min-height:100vh;
-  display:flex; align-items:center; justify-content:center;
-  background:var(--bg);
-}
-.auth-loading-spinner{
+/* ---------- User row ---------- */
+.user-avatar{
   width:36px; height:36px;
-  border:3px solid var(--accent-soft);
-  border-top-color:var(--accent);
-  border-radius:50%;
-  animation:auth-spin 0.8s linear infinite;
+  border-radius:10px;
+  background:linear-gradient(135deg, var(--accent) 0%, var(--brand-pink) 100%);
+  color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700;
+  font-size:14px;
+  flex-shrink:0;
 }
-@keyframes auth-spin{ to{ transform:rotate(360deg); } }
+.user-avatar-admin{
+  background:linear-gradient(135deg, var(--brand-ink) 0%, var(--accent-dark) 100%);
+}
 
-/* -------- Sidebar account block (bottom of sidebar) -------- */
-.sidebar-account{
-  margin-top:auto;
-  padding:14px 8px 4px;
-  border-top:1px solid var(--line);
-  margin-top:20px;
+/* ---------- Actions menu (dropdown from Actions button) ---------- */
+.actions-menu{
+  position:absolute;
+  top:calc(100% + 6px);
+  right:0;
+  z-index:50;
+  min-width:230px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:0 12px 32px rgba(50,51,74,0.14), 0 3px 8px rgba(50,51,74,0.06);
+  padding:6px;
+  display:flex; flex-direction:column;
+  gap:1px;
 }
-.account-info{
-  padding:0 12px 10px;
-}
-.account-email{
-  font-size:12.5px;
-  color:var(--ink);
-  font-weight:500;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.account-role{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:2px;
-}
-.signout-btn{
-  display:flex; align-items:center; gap:10px;
-  width:100%;
-  padding:9px 12px;
-  border-radius:8px;
+.actions-menu button{
   background:none;
   border:none;
-  color:var(--ink-soft);
-  font-family:inherit;
-  font-size:13.5px;
-  font-weight:500;
-  cursor:pointer;
   text-align:left;
-  transition:background 0.15s, color 0.15s;
+  padding:9px 12px;
+  border-radius:6px;
+  font-family:inherit;
+  font-size:13px;
+  color:var(--ink);
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background 0.12s;
 }
-.signout-btn:hover{
+.actions-menu button:hover{ background:var(--nav-row-hover); }
+.actions-menu button.danger{ color:var(--danger); }
+.actions-menu button.danger:hover{ background:var(--danger-soft); }
+.actions-menu-divider{
+  height:1px;
+  background:var(--line);
+  margin:4px 0;
+}
+
+/* ---------- Modals ---------- */
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(15,17,30,0.55);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  z-index:200;
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  padding-top:calc(20px + var(--safe-top, 0px));
+  padding-bottom:calc(20px + var(--safe-bottom, 0px));
+  animation:modalFadeIn 0.15s ease;
+}
+@keyframes modalFadeIn{ from{ opacity:0 } to{ opacity:1 } }
+.modal-card{
+  background:#fff;
+  border-radius:18px;
+  max-width:480px;
+  width:100%;
+  max-height:90vh;
+  overflow:auto;
+  box-shadow:0 24px 60px rgba(50,51,74,0.24);
+  animation:modalScaleIn 0.18s ease;
+}
+.modal-card-wide{ max-width:640px; }
+@keyframes modalScaleIn{ from{ transform:scale(0.96); opacity:0.6 } to{ transform:scale(1); opacity:1 } }
+.modal-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 24px;
+  border-bottom:1px solid var(--line);
+}
+.modal-head h3{
+  margin:0;
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:-0.2px;
+}
+.modal-close{
+  width:32px; height:32px;
+  border:none;
+  background:none;
+  border-radius:8px;
+  color:var(--ink-soft);
+  cursor:pointer;
+  font-size:18px;
+  transition:background 0.15s;
+}
+.modal-close:hover{ background:var(--nav-row-hover); color:var(--ink); }
+.modal-body{ padding:20px 24px 24px; }
+
+/* ---------- Admin forms ---------- */
+.admin-form{ display:flex; flex-direction:column; gap:14px; }
+.admin-form p{ margin:0; font-size:13.5px; line-height:1.55; color:var(--ink-soft); }
+.admin-form .field{ display:flex; flex-direction:column; gap:5px; }
+.admin-form .field > span{
+  font-size:11px;
+  font-weight:600;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+}
+.admin-form input,
+.admin-form select,
+.admin-form textarea{
+  font-family:inherit;
+  font-size:14px;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  width:100%;
+  background:#fff;
+  color:var(--ink);
+  transition:all 0.15s;
+}
+.admin-form textarea{ resize:vertical; min-height:70px; line-height:1.5; }
+.admin-form input:focus,
+.admin-form select:focus,
+.admin-form textarea:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(115,103,240,0.12);
+}
+.admin-form-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.admin-form button.primary{ padding:12px 18px; font-size:14px; }
+.admin-form button.primary.danger{
+  background:var(--danger);
+  box-shadow:0 3px 8px rgba(234,84,85,0.32);
+}
+.admin-form button.primary.danger:hover{ background:#d63e3f; }
+
+/* Credential display box (after invite / temp password) */
+.credential-box{
+  background:linear-gradient(135deg, #f4f2ff 0%, #fff4e0 100%);
+  border:1px solid #dedafc;
+  border-radius:10px;
+  padding:14px 16px;
+  display:flex; flex-direction:column; gap:10px;
+}
+.credential-box > div{ display:flex; flex-direction:column; gap:3px; }
+.credential-box label{
+  font-size:10.5px;
+  font-weight:700;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+}
+.credential-box code{
+  font-family:'SF Mono', Menlo, Monaco, Consolas, monospace;
+  font-size:14px;
+  background:#fff;
+  padding:8px 12px;
+  border-radius:6px;
+  border:1px solid var(--line);
+  color:var(--accent-dark);
+  font-weight:600;
+  user-select:all;
+  word-break:break-all;
+}
+
+/* Danger box */
+.danger-box{
   background:var(--danger-soft);
+  border:1px solid #fbd0d0;
+  border-radius:10px;
+  padding:14px 16px;
   color:var(--danger);
+  font-size:13px;
+  line-height:1.5;
 }
-.signout-btn svg{ flex-shrink:0; }
+.danger-box strong{ display:block; margin-bottom:4px; font-size:14px; }
+.danger-box p{ margin:0; color:var(--danger); }
 
-/* Ensure sidebar uses flex column so account block can push to bottom */
-aside{ display:flex; flex-direction:column; }
+/* ---------- Impersonation banner (sticky at top of viewport) ---------- */
+.impersonation-banner{
+  position:sticky;
+  top:0;
+  z-index:190;
+  background:linear-gradient(90deg, var(--danger) 0%, #f5595a 100%);
+  color:#fff;
+  padding-top:var(--safe-top, 0px);
+}
+.impersonation-banner-inner{
+  padding:10px 20px;
+  display:flex; align-items:center; gap:14px;
+  max-width:1400px;
+  margin:0 auto;
+}
+.impersonation-banner-icon{
+  width:32px; height:32px;
+  background:rgba(255,255,255,0.22);
+  border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.impersonation-banner-text{
+  flex:1;
+  min-width:0;
+  display:flex; flex-direction:column;
+  font-size:13.5px;
+  line-height:1.35;
+}
+.impersonation-banner-text strong{ font-weight:700; }
+.impersonation-banner-note{ opacity:0.9; font-size:12px; }
+.impersonation-banner-btn{
+  padding:8px 14px;
+  background:#fff;
+  color:var(--danger);
+  border:none;
+  border-radius:8px;
+  font-family:inherit;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:transform 0.12s;
+}
+.impersonation-banner-btn:hover{ transform:translateY(-1px); }
+.impersonation-banner-btn:disabled{ opacity:0.7; cursor:not-allowed; }
+.impersonation-banner-error{
+  background:rgba(0,0,0,0.15);
+  padding:8px 20px;
+  font-size:12.5px;
+}
 
-/* -------- Mobile: auth pages -------- */
-@media(max-width:520px){
-  .auth-card{ padding:28px 22px; border-radius:16px; }
-  .auth-brand{ margin-bottom:22px; }
-  .auth-title{ font-size:22px; }
+/* ---------- Invoice preview ---------- */
+.invoice-preview{
+  background:var(--accent-soft);
+  border:1px solid #dedafc;
+  border-radius:8px;
+  padding:14px 16px;
+  display:flex; align-items:center; gap:14px;
+}
+.invoice-preview label{
+  font-size:11px;
+  font-weight:600;
+  color:var(--accent-dark);
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+}
+.invoice-preview code{
+  font-family:'SF Mono', Menlo, monospace;
+  font-size:16px;
+  font-weight:700;
+  color:var(--accent-dark);
+  background:#fff;
+  padding:5px 12px;
+  border-radius:6px;
+}
+
+/* ---------- QR upload ---------- */
+.qr-upload{
+  display:flex; align-items:center; gap:16px;
+  padding:14px;
+  border:1px dashed var(--line);
+  border-radius:10px;
+  background:#fafaff;
+}
+.qr-preview{
+  width:120px; height:120px;
+  object-fit:contain;
+  border-radius:8px;
+  background:#fff;
+  border:1px solid var(--line);
+}
+.qr-placeholder{
+  width:120px; height:120px;
+  border-radius:8px;
+  background:#fff;
+  border:1px dashed var(--line);
+  color:var(--muted);
+  font-size:12px;
+  display:flex; align-items:center; justify-content:center;
+  text-align:center;
+  padding:0 10px;
+}
+.qr-actions{ display:flex; flex-direction:column; gap:8px; }
+
+/* ---------- Mobile ---------- */
+@media(max-width:640px){
+  .modal-card{ border-radius:14px; max-height:100vh; height:100vh; max-width:100vw; }
+  .modal-body{ padding:16px 18px 24px; }
+  .modal-head{ padding:16px 18px; }
+  .admin-form-row{ grid-template-columns:1fr; }
+  .impersonation-banner-inner{ padding:10px 14px; gap:10px; }
+  .impersonation-banner-text strong{ font-size:12.5px; }
+  .impersonation-banner-note{ display:none; }
+  .impersonation-banner-btn{ padding:7px 12px; font-size:12px; }
+  .qr-upload{ flex-direction:column; align-items:stretch; }
+  .qr-preview, .qr-placeholder{ width:100%; height:180px; }
+  .actions-menu{ position:fixed; left:20px; right:20px; top:auto; bottom:20px; }
 }

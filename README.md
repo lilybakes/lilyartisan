@@ -1,120 +1,131 @@
-# Delta 2 — Landing + Signup + URL Restructure + Remember Me + Sysadmin Nav
+# Delta 3a — User Management + Billing Config
 
-Multi-tenant conversion, step 2 of 4. This delta turns the app into something you can actually promote and sell.
+The biggest sysadmin delta. This is what turns your platform into something you can actually run as a business.
 
 ## What's shipping
 
-- **One-page landing site** at `/` — hero, features, pricing, FAQ, CTAs
-- **Public signup** at `/signup` — instant 14-day trial creation
-- **URL restructure** — app moves from `/*` to `/app/*`. Landing lives at `/`.
-- **"Keep me signed in"** checkbox on login (defaults ON, 6-month persistence)
-- **Sysadmin nav section** — visible only to Anthony's account, 6 placeholder pages (Users, Billing, Content, Auth & Login, Platform, Audit Log)
-- **`SysadminGuard`** — blocks non-admins from admin routes
+**Users page** (`/app/sysadmin/users`):
+- Full user list with filter
+- **Invite** — creates a user with sysadmin-set start/end dates, returns credentials + optional password-reset email
+- **Extend / change dates** — modify subscription window and plan type
+- **Send password reset email** — Supabase-native reset link
+- **Generate temp password** — random password shown once, share out-of-band
+- **Suspend / Reactivate** — soft freeze, reversible, data intact, login blocked
+- **Detach / Reattach email** — clears email + password, data preserved. Reattach assigns new email + sends reset link
+- **Delete permanently** — hard delete with typed-email confirmation, cascades all data
+- **Impersonate** — signs you in AS the user for 15 minutes with a red sticky banner. Click "Stop Impersonating" to swap back to sysadmin session
 
-Anthony sees the full app *plus* the Sysadmin nav section. Lily sees the app exactly as before. Neither loses anything.
+**Billing page** (`/app/sysadmin/billing`):
+- **Business info** — name, registration number, address, contact info
+- **Invoice numbering** — prefix, year-reset toggle, next sequence, live preview (`2026-0001`)
+- **Payment method** — Bank/account details, payment instructions, DuitNow QR image upload
 
-## Files in this delta
+**Audit log** — every sysadmin action writes to `audit_log` table (viewable UI comes in a later delta, but data is recorded now)
+
+## Files
 
 ```
+supabase/
+  delta-3a-users-billing.sql           # Migration — run once
 src/
-  App.jsx                              # OVERWRITE — new route structure
+  App.jsx                              # OVERWRITE — real Users + Billing routes, mounts ImpersonationBanner
   lib/
-    supabase.js                        # OVERWRITE — plugs in remember-me storage
-    rememberMe.js                      # NEW — storage adapter
-  pages/
-    Landing.jsx                        # NEW — the one-pager
-    Signup.jsx                         # NEW — trial signup form
-    Login.jsx                          # OVERWRITE — adds remember-me checkbox
-    sysadmin/
-      Placeholder.jsx                  # NEW — shared placeholder for all 6 admin routes
+    sysadmin-api.js                    # NEW — RPC wrappers
+    impersonation.js                   # NEW — sessionStorage helpers
   components/
-    AppLayout.jsx                      # NEW — extracted layout wrapper
-    Sidebar.jsx                        # OVERWRITE — /app/* paths + Sysadmin section
-    BottomNav.jsx                      # OVERWRITE — /app/* paths
-    SysadminGuard.jsx                  # NEW — role check
-  styles.css                           # OVERWRITE (full file with landing + sysadmin styles)
+    ImpersonationBanner.jsx            # NEW — sticky red banner
+  pages/sysadmin/
+    Users.jsx                          # NEW — main page + all 8 modals
+    Billing.jsx                        # NEW — 3-tab config
+  styles-patch.css                     # APPEND to end of src/styles.css
 ```
 
 ## Deploy steps
 
-### Step 1 — Push code, wait for Netlify "Published"
+### Step 1 — Push code + wait for Netlify
 
-Overwrite the files above. Push to `main`. Wait for Netlify to build (~3 min).
+Overwrite files. Push. Wait for Netlify "Published".
 
-### Step 2 — Configure long session TTL in Supabase
+### Step 2 — Run migration
 
-Go to Supabase Dashboard → **Authentication** → **Sessions** (in the left sidebar).
+Supabase → SQL Editor → paste `supabase/delta-3a-users-billing.sql` → Run.
 
-Find **"Refresh Token Reuse Interval"** or **"Session Length"**.
+Should succeed silently. Verify with:
+```sql
+SELECT * FROM platform_settings;      -- should have 1 row
+SELECT COUNT(*) FROM profiles;        -- your existing users
+```
 
-- Free tier default may be short (7 days). Set to the maximum allowed.
-- If you upgrade to Supabase Pro later, you can set it to 6+ months.
+### Step 3 — Hard-refresh + test
 
-Even if the dashboard cap is short, the **localStorage persistence still works** — the session is refreshed each time Lily opens the app, so she stays logged in as long as she uses it periodically. Only if she doesn't open the app for weeks would she need to sign in again.
+Log in as Anthony (`anthony2211@gmail.com`). Navigate to:
+- `/app/sysadmin/users` — should see list including Lily and yourself
+- `/app/sysadmin/billing` — should see 3 tabs pre-filled with your Swim Revelation info
 
-### Step 3 — Hard-refresh, test
+**Smoke test — invite a fake user:**
+1. Users → "+ Invite user"
+2. Fill: email `test@example.com`, dates default OK, plan yearly
+3. Submit → see success screen with email + temp password
+4. Skip the reset email (test doesn't exist)
+5. Refresh list → see the new user
 
-**Anthony's flow:**
-1. Visit `https://lilyartisan.netlify.app/` → see landing page
-2. Click "Log in" (top-right) → `/login` → sign in with anthony2211@gmail.com
-3. Land on `/app` → see full app with **SYSADMIN** nav section at bottom of sidebar
-4. Click any sysadmin item → see "Coming in Delta 3" placeholder
-5. Close browser, reopen, type `lilyartisan.netlify.app/app` → still logged in
+**Test impersonation on the fake user:**
+1. Click Actions → Impersonate
+2. Confirm → you're redirected to `/app` **as** test@example.com
+3. Red banner at top: "Impersonating test@example.com"
+4. Click "Stop Impersonating" → back to your sysadmin session
 
-**Lily's flow:**
-1. Visit landing → click "Log in" → sign in
-2. Land on `/app` → same app, no sysadmin section
-3. Try typing `/app/sysadmin/users` manually → redirected to `/app` (SysadminGuard blocks her)
+**Delete the fake user when done:**
+1. Actions → Delete permanently
+2. Type `test@example.com` to confirm → deleted
 
-**Signup flow (test with a throwaway email):**
-1. Visit landing → click "Start Free Trial"
-2. Fill form → submit → instant account, redirects to `/app`
-3. Check Supabase Dashboard → Auth → Users → see new user
-4. Check `profiles` table → new user has `subscription_status='trial'`, `subscription_end = now + 14 days`
+## About impersonation — how it works under the hood
 
-## About the landing page copy
+Supabase doesn't expose direct impersonation, so we use a **password-swap** approach:
 
-Everything on the landing page is currently hard-coded in `src/pages/Landing.jsx`. In Delta 3, the sysadmin Content page will let you edit:
-- Headlines and body text
-- Feature card content
-- Pricing details
-- FAQ items
-- Footer info
+1. Sysadmin clicks Impersonate
+2. Server-side RPC (SECURITY DEFINER) does:
+   - Verify caller is sysadmin
+   - Save the target's current password hash + a random session token
+   - Overwrite the target's password with a random 15-min token
+   - Log the impersonation event
+3. Client saves the sysadmin's own session in `sessionStorage`
+4. Client signs out sysadmin, signs in as target with the temp password
+5. Redirect to `/app` — banner appears from `sessionStorage` flag
+6. Click "Stop Impersonating" → server-side restores the original password hash from the session record. Client restores sysadmin session via `supabase.auth.setSession()`
 
-For now, if you want to tweak copy urgently, edit `Landing.jsx` and redeploy.
+**Fail-safes:**
+- Session auto-expires after 15 minutes (record stored; user can always reset via Forgot password if you forget to stop)
+- Every start and stop is in `audit_log`
+- Detached and sysadmin accounts cannot be impersonated
 
-## To-do list I owe you
+**Limitations to know:**
+- If sysadmin closes the tab without stopping, their session is lost (they'll need to log in again — the target's password will be restored automatically on next impersonation stop OR by manually running `sysadmin_stop_impersonation` in SQL)
+- Best practice: always click "Stop Impersonating" before closing the tab
 
-1. **Screenshots** — send me clean shots of Dashboard, Recipes, Yield & Cost pages once app is polished. I'll swap them in for the placeholder mockup on the hero.
-2. **Full Coming Soon editor** — you asked for admin control over the Coming Soon widget. That lives in Delta 3 (sysadmin Content page).
-3. **Landing page editor** — same, Delta 3.
+## About the Users page RPC
 
-## About "Remember Me"
+`sysadmin_list_users()` is a SECURITY DEFINER function that bypasses per-user RLS. Only sysadmins can call it — the function checks `is_sysadmin()` at the top.
 
-Two states:
-- **Checked (default)** → session stored in `localStorage`. Survives browser close. Users stay logged in until they explicitly click Sign Out.
-- **Unchecked** → session stored in `sessionStorage`. Dies when browser closes. Users log in fresh each time.
+Regular `SELECT * FROM profiles` still respects RLS, so users can't see each other's profiles even in the client.
 
-Implemented via a custom Supabase storage adapter (`src/lib/rememberMe.js`) that routes token writes to the appropriate storage based on the user's choice at login time.
+## What's NOT in this delta (coming in 3b / 4)
 
-## What's NOT in this delta (comes later)
-
-- Actual sysadmin UIs (user list, invite form, etc.) — Delta 3
-- Payment queue, invoice/receipt generation — Delta 4
-- Read-only mode enforcement + subscription page — Delta 5
-- Custom SMTP for professional-looking invite emails
-- Actual screenshot embeds on landing
+- **Content editor** (landing page copy, Coming Soon widget) — Delta 3b
+- **Auth email template editor** — Delta 3b
+- **Audit log UI** — Delta 3c (data is being written already)
+- **Platform settings** (feature flags, maintenance mode) — Delta 3c
+- **Public checkout / payment queue** (proof upload, verify, invoice, receipt) — Delta 4
+- **Read-only mode enforcement** for expired accounts — Delta 5
 
 ## Rollback
 
-If something breaks post-deploy:
-1. Revert the GitHub commit → Netlify redeploys previous version
-2. Since Delta 2 doesn't touch database schema, no SQL rollback needed
-3. Lily and Anthony's data is untouched
-
-## What's next (Delta 3)
-
-- Full sysadmin **Users** module — user list, roles, invite, reset password, extend dates, impersonate
-- Sysadmin **Content** module — landing page editor, Coming Soon editor
-- Sysadmin **Billing** config — business info, payment method (QR upload), invoice numbering
-- Sysadmin **Auth** config — email template editor for invites
+If something breaks:
+1. Revert GitHub commit → Netlify redeploys previous code
+2. Migration is **additive only** — no data lost, no columns dropped. Safe to leave the new tables/columns in place even if you rollback the frontend.
+3. If you want to fully rollback the schema too:
+   ```sql
+   DROP FUNCTION IF EXISTS sysadmin_list_users, sysadmin_invite_user, sysadmin_extend_subscription, sysadmin_suspend_user, sysadmin_unsuspend_user, sysadmin_detach_email, sysadmin_reattach_email, sysadmin_generate_temp_password, sysadmin_get_user_email, sysadmin_delete_user, sysadmin_start_impersonation, sysadmin_stop_impersonation, log_audit CASCADE;
+   DROP TABLE IF EXISTS impersonation_sessions, audit_log, platform_settings;
+   ALTER TABLE profiles DROP COLUMN IF EXISTS email_status, DROP COLUMN IF EXISTS email_changed_at, DROP COLUMN IF EXISTS suspended_at, DROP COLUMN IF EXISTS suspended_reason;
+   ```
