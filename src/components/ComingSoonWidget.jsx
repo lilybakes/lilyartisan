@@ -2,12 +2,19 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 /**
- * Displays the Coming Soon items that sysadmin edited in /app/sysadmin/content.
- * Drop this component anywhere in your Settings page.
+ * Reads the sysadmin-editable Coming Soon list from content_blocks.
+ * Drop this anywhere in your user-facing Settings page.
+ *
+ * Props:
+ *   title    — heading (default "Coming Soon")
+ *   subtitle — sub-heading (default matches the existing user Settings copy)
  *
  * Renders nothing if there are no items.
  */
-export default function ComingSoonWidget() {
+export default function ComingSoonWidget({
+  title = 'Coming Soon',
+  subtitle = 'Placeholders for future customization.',
+} = {}) {
   const [items, setItems] = useState(null)   // null = loading, [] = none, [...] = items
 
   useEffect(() => {
@@ -20,21 +27,20 @@ export default function ComingSoonWidget() {
       })
   }, [])
 
-  if (items === null)   return null
+  if (items === null) return null
   if (items.length === 0) return null
 
   return (
     <div className="panel">
       <div className="panel-head">
         <div>
-          <h3>Coming Soon</h3>
-          <p className="sub">Features we're working on next.</p>
+          <h3>{title}</h3>
+          <p className="sub">{subtitle}</p>
         </div>
       </div>
       <div className="coming-soon-grid">
         {items.map((it, i) => (
           <div key={i} className="coming-soon-card">
-            <div className="coming-soon-badge">Coming soon</div>
             <div className="coming-soon-title">{it.title}</div>
             <div className="coming-soon-desc">{it.description}</div>
           </div>

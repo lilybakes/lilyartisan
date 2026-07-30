@@ -1,121 +1,65 @@
-# Delta 3c — Platform Settings + Audit Log
+# Coming Soon Sync
 
-The last two placeholder sysadmin pages become real. Both were being written to since Delta 3a; now they have UIs.
+Two-part fix so the Coming Soon items you edit in sysadmin actually reach Lily's Settings page.
 
-## What's shipping
+## What's happening
 
-**Platform page** (`/app/sysadmin/platform`) — four sections:
-1. **Signup Rules** — toggle whether new people can sign up; trial toggle reserved for Delta 4
-2. **Maintenance Mode** — toggle + custom message. When ON, regular users see a maintenance page; sysadmins bypass with a red strip at the top
-3. **Platform Announcement** — banner shown at the top of every authenticated page. Toggle + message + severity picker (info / warning / critical). Users can dismiss for the session
-4. **Backups** — informational card with a link to Supabase Dashboard → Database → Backups
+- Sysadmin **Content editor** reads from `content_blocks` in the DB
+- Lily's **Settings page** currently has the 6 items **hardcoded**
+- So right now: your edits go nowhere on the user side
 
-**Audit Log page** (`/app/sysadmin/audit`) — searchable table:
-- Every sysadmin action since Delta 3a is already recorded — invite, extend, suspend, detach, delete, temp password, password reset, impersonate start/stop
-- Columns: When (relative time, full timestamp on hover), Actor, Action (color-coded pill), Target, Details (expandable JSON)
-- Filters: action dropdown (with counts), search actor or target email, row limit (50/100/250/500)
-- Expandable per-row details for the raw `details` JSON
+## Fix
 
-**Announcement banner** — shown at the top of every authenticated page when active, with three severity styles. Info = soft purple, Warning = amber, Critical = red
+### Step 1 — Run the SQL (adds the 6 items to the DB)
 
-**Maintenance gate** — non-sysadmins get a friendly "Down for maintenance" page. Sysadmins see the app plus a red strip reminding them maintenance is on
+Supabase SQL Editor → paste `supabase/seed-coming-soon.sql` → Run.
 
-**Signup gate** — when signups are disabled, `/signup` shows a "Signups temporarily paused" card with a link to sign in
+You'll see 1 row returned with `item_count = 6`. That's the marker of success.
 
-## Files
+Now navigate to `/app/sysadmin/content` → Coming Soon tab → you'll see the 6 items with edit/reorder/delete controls.
 
-```
-supabase/
-  delta-3c-platform-audit.sql       # Migration
-src/
-  App.jsx                           # OVERWRITE — wires everything
-  lib/
-    platform.js                     # NEW — usePlatformStatus hook
-  components/
-    AnnouncementBanner.jsx          # NEW
-    MaintenanceGate.jsx             # NEW
-  pages/
-    Maintenance.jsx                 # NEW
-    Signup.jsx                      # OVERWRITE — checks signups_enabled
-    sysadmin/
-      Platform.jsx                  # NEW (replaces placeholder)
-      AuditLog.jsx                  # NEW (replaces placeholder)
-  styles.css                        # OVERWRITE (full file)
+### Step 2 — Rewire Lily's Settings page (uses the DB)
+
+Overwrite `src/components/ComingSoonWidget.jsx` with the version in this zip. It's the same widget from Delta 3b, now with configurable `title` / `subtitle` props so it matches your current copy.
+
+Then in `src/pages/Settings.jsx`:
+
+**Add the import at the top:**
+```jsx
+import ComingSoonWidget from '../components/ComingSoonWidget.jsx'
 ```
 
-## Deploy steps
+**Find the section that renders the Coming Soon tab** — it'll look something like:
 
-### Step 1 — Push code + wait for Netlify
-
-### Step 2 — Run migration
-
-Supabase SQL Editor → paste `supabase/delta-3c-platform-audit.sql` → Run.
-
-Verify:
-```sql
-SELECT signups_enabled, maintenance_mode, announcement_enabled, announcement_severity
-FROM platform_settings WHERE id = 1;
-```
-Should return 1 row with `signups_enabled=true`, `maintenance_mode=false`, `announcement_enabled=false`, `announcement_severity='info'`.
-
-### Step 3 — Test as Anthony (sysadmin)
-
-**Announcement:**
-1. `/app/sysadmin/platform` → scroll to "Platform Announcement"
-2. Toggle "Announcement active" ON
-3. Type a message → click Save
-4. Pick severity Warning
-5. Navigate to `/app` (Dashboard) → see the amber banner at top
-6. Click ✕ on the banner → it dismisses for this session
-7. Go back to Platform → toggle announcement OFF
-
-**Maintenance mode:**
-1. `/app/sysadmin/platform` → "Maintenance Mode" section
-2. Change the message ("We're upgrading the servers — back at 3pm")
-3. Toggle "Maintenance mode active" ON
-4. **In an incognito window**, log in as Lily → she sees the maintenance page instead of the app
-5. Back in your normal window, you (Anthony) see a red strip at top but the app still works
-6. Toggle maintenance OFF → Lily can refresh and get back in
-
-**Audit Log:**
-1. `/app/sysadmin/audit` → see rows from all sysadmin actions you've done since Delta 3a
-2. Filter by action (e.g. only "Started impersonation")
-3. Click "Details" on a row → see the raw JSON
-
-**Signups closed:**
-1. Platform → toggle "Signups open" OFF
-2. Open incognito → visit `/signup` → see "Signups are closed" card
-3. Toggle back ON
-
-### Step 4 — Nothing to test for regular users
-
-Lily has no visibility into any of these controls — she just experiences them (banner appears, maintenance page appears, etc).
-
-## About how state propagates
-
-The Platform toggles take effect on the **next page load** for existing users. No realtime — I kept it simple. If you flip maintenance mode ON, users who are already inside the app stay inside until their next navigation. This is intentional and safe for MVP.
-
-## What's NOT in this delta
-
-- Real-time updates (Supabase Realtime subscription) — planned if we ever need instant enforcement
-- Feature-flag enforcement beyond signups (e.g. hide specific pages by flag) — add per-flag when needed
-- Trial toggle enforcement — comes in Delta 4 with public checkout
-
-## Rollback
-
-Additive. Safe.
-
-```sql
-ALTER TABLE platform_settings
-  DROP COLUMN IF EXISTS signups_enabled,
-  DROP COLUMN IF EXISTS trial_enabled,
-  DROP COLUMN IF EXISTS maintenance_mode,
-  DROP COLUMN IF EXISTS maintenance_message,
-  DROP COLUMN IF EXISTS announcement_enabled,
-  DROP COLUMN IF EXISTS announcement_message,
-  DROP COLUMN IF EXISTS announcement_severity;
-DROP FUNCTION IF EXISTS sysadmin_list_audit_log(text, text, integer);
-DROP FUNCTION IF EXISTS sysadmin_list_audit_actions();
+```jsx
+{tab === 'coming_soon' && (
+  <div className="panel">
+    <div className="panel-head">
+      <div>
+        <h3>Coming Soon</h3>
+        <p className="sub">Placeholders for future customization.</p>
+      </div>
+    </div>
+    <div ...>
+      {/* Tax Rate card */}
+      {/* Multi-user Access card */}
+      {/* Export / Backup card */}
+      {/* ...etc — the 6 hardcoded cards */}
+    </div>
+  </div>
+)}
 ```
 
-Next up: **Delta 4** — the paid checkout flow you asked about at the beginning (proof upload, verify queue, invoice generation, invite trigger).
+**Replace that entire block with just:**
+
+```jsx
+{tab === 'coming_soon' && <ComingSoonWidget/>}
+```
+
+The widget renders its own panel, heading, subtitle, and card grid — so you're removing everything and putting one line back.
+
+Push. Hard-refresh. Log in as Lily — she now sees the 6 items pulled from the DB. Edit one in sysadmin Content editor → save → she sees the change on refresh.
+
+## If step 2 is unclear
+
+Share your current `src/pages/Settings.jsx` in your next message and I'll ship a full replacement so you don't have to touch code.
