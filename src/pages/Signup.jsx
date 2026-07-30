@@ -3,11 +3,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth.jsx'
 import { setRememberMe } from '../lib/rememberMe'
+import { usePlatformStatus } from '../lib/platform.js'
 import Logo from '../components/Logo.jsx'
 
 export default function Signup() {
   const { signIn } = useAuth()
   const navigate = useNavigate()
+  const { status: platform, loading: platformLoading } = usePlatformStatus()
 
   const [name, setName]         = useState('')
   const [business, setBusiness] = useState('')
@@ -65,6 +67,24 @@ export default function Signup() {
 
     setLoading(false)
     navigate('/app', { replace: true })
+  }
+
+  // Signups closed? Show a friendly notice instead of the form.
+  if (!platformLoading && platform && platform.signups_enabled === false) {
+    return (
+      <div className="auth-page">
+        <div className="auth-card">
+          <div className="auth-brand" style={{display:'flex', flexDirection:'column', alignItems:'center', gap:12}}>
+            <Logo size={56}/>
+            <h1 className="auth-title" style={{margin:0}}>Signups are closed</h1>
+            <p className="auth-tagline" style={{margin:0}}>New accounts are temporarily paused. Check back soon.</p>
+          </div>
+          <div style={{textAlign:'center', paddingTop:8}}>
+            <Link to="/login" className="cta" style={{textDecoration:'none', display:'inline-block'}}>Already have an account? Sign in →</Link>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

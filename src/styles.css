@@ -2148,3 +2148,237 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   aside{ min-height:100vh; overflow-y:auto; }
   /* On mobile the drawer height matches viewport; scrolling stays inside the drawer */
 }
+
+/* ============================================================
+   DELTA 3c — Platform Settings + Audit Log
+   ============================================================ */
+
+/* -------- Announcement banner (top of authenticated pages) -------- */
+.announcement-banner{
+  padding-top:var(--safe-top, 0px);
+}
+.announcement-inner{
+  padding:10px 20px;
+  display:flex; align-items:center; gap:12px;
+  max-width:1400px;
+  margin:0 auto;
+  font-size:13.5px;
+  line-height:1.4;
+}
+.announcement-icon{ font-size:18px; flex-shrink:0; }
+.announcement-text{ flex:1; min-width:0; font-weight:500; }
+.announcement-close{
+  background:rgba(0,0,0,0.15);
+  border:none;
+  color:inherit;
+  width:26px; height:26px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:12px;
+  opacity:0.7;
+  flex-shrink:0;
+  transition:opacity 0.15s;
+}
+.announcement-close:hover{ opacity:1; }
+.announcement-info{
+  background:linear-gradient(90deg, #edeafd 0%, #f0e9fe 100%);
+  color:#4A3FCB;
+  border-bottom:1px solid #dedafc;
+}
+.announcement-warning{
+  background:linear-gradient(90deg, #fff4e0 0%, #ffe9d0 100%);
+  color:#8a4a1f;
+  border-bottom:1px solid #ffd9c2;
+}
+.announcement-critical{
+  background:linear-gradient(90deg, #ea5455 0%, #f5595a 100%);
+  color:#fff;
+  border-bottom:1px solid #d63e3f;
+}
+.announcement-critical .announcement-close{ background:rgba(255,255,255,0.25); }
+@media(max-width:640px){
+  .announcement-inner{ padding:9px 14px; gap:9px; font-size:12.5px; }
+}
+
+/* -------- Sysadmin maintenance strip (when maintenance ON for sysadmin) -------- */
+.sysadmin-maintenance-strip{
+  background:linear-gradient(90deg, var(--danger) 0%, #f5595a 100%);
+  color:#fff;
+  padding:8px 20px;
+  font-size:12.5px;
+  text-align:center;
+  padding-top:calc(8px + var(--safe-top, 0px));
+}
+.sysadmin-maintenance-strip a{
+  color:#fff;
+  text-decoration:underline;
+  font-weight:600;
+}
+
+/* -------- Maintenance page (shown to non-sysadmin users) -------- */
+.maintenance-page{
+  min-height:100vh;
+  background:linear-gradient(135deg, #f5f6fa 0%, #edeafd 100%);
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+}
+.maintenance-card{
+  background:#fff;
+  border-radius:18px;
+  padding:48px 40px;
+  max-width:440px;
+  width:100%;
+  text-align:center;
+  box-shadow:0 12px 32px rgba(50,51,74,0.10);
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+}
+.maintenance-card h1{
+  margin:12px 0 0;
+  font-size:24px;
+  font-weight:700;
+  color:var(--ink);
+  letter-spacing:-0.3px;
+}
+.maintenance-card p{
+  margin:0;
+  font-size:14.5px;
+  color:var(--ink-soft);
+  line-height:1.6;
+}
+.maintenance-card .ghost{
+  margin-top:8px;
+  padding:10px 22px;
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+  font-size:13.5px;
+  font-weight:600;
+  background:#fff;
+  cursor:pointer;
+  border-radius:8px;
+}
+.maintenance-card .ghost:hover{ border-color:var(--accent); color:var(--accent); }
+.maintenance-hint{
+  font-size:12.5px !important;
+  color:var(--muted) !important;
+  margin-top:6px !important;
+}
+
+/* -------- Toggle rows (Platform page) -------- */
+.toggle-row{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 0;
+  gap:16px;
+  border-top:1px solid var(--line);
+}
+.toggle-row:first-of-type{ border-top:none; padding-top:6px; }
+.toggle-row-text{ flex:1; min-width:0; }
+.toggle-row-label{ font-weight:600; font-size:14px; color:var(--ink); margin-bottom:2px; }
+.toggle-row-desc{ font-size:12.5px; color:var(--muted); line-height:1.45; }
+.toggle-row-disabled{ opacity:0.55; }
+
+/* Modern switch */
+.switch{
+  position:relative;
+  display:inline-block;
+  width:44px; height:24px;
+  flex-shrink:0;
+}
+.switch input{ opacity:0; width:0; height:0; }
+.switch-slider{
+  position:absolute;
+  cursor:pointer;
+  inset:0;
+  background:#c9cfda;
+  border-radius:24px;
+  transition:background 0.2s;
+}
+.switch-slider::before{
+  content:'';
+  position:absolute;
+  height:18px; width:18px;
+  left:3px; top:3px;
+  background:#fff;
+  border-radius:50%;
+  transition:transform 0.2s;
+  box-shadow:0 1px 3px rgba(0,0,0,0.2);
+}
+.switch input:checked + .switch-slider{ background:var(--accent); }
+.switch input:checked + .switch-slider::before{ transform:translateX(20px); }
+.switch input:disabled + .switch-slider{ cursor:not-allowed; opacity:0.5; }
+
+/* -------- Severity picker (Platform page) -------- */
+.severity-picker{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:8px;
+  margin-top:2px;
+}
+.severity-btn{
+  display:flex; flex-direction:column; align-items:flex-start; gap:2px;
+  padding:12px 14px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:10px;
+  cursor:pointer;
+  font-family:inherit;
+  transition:all 0.15s;
+  text-align:left;
+}
+.severity-btn:hover{ border-color:var(--accent); background:var(--accent-soft); }
+.severity-btn.selected{
+  border-color:var(--accent);
+  background:var(--accent-soft);
+  box-shadow:0 0 0 2px rgba(115,103,240,0.15);
+}
+.severity-btn-label{ font-size:13.5px; font-weight:600; color:var(--ink); }
+.severity-btn-desc{ font-size:11.5px; color:var(--muted); }
+
+/* -------- Backup card -------- */
+.backup-card{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px;
+  padding:14px 16px;
+  background:#fafaff;
+  border:1px solid var(--line);
+  border-radius:10px;
+  margin-top:6px;
+}
+.backup-card a:hover{ border-color:var(--accent) !important; color:var(--accent) !important; }
+
+/* -------- Audit log page -------- */
+.audit-filters{
+  display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  padding-bottom:14px;
+  margin-bottom:14px;
+  border-bottom:1px solid var(--line);
+}
+.audit-filters select,
+.audit-filters input{ font-size:13px; padding:8px 12px; }
+
+.audit-table td{ vertical-align:middle; }
+.audit-details-row{ background:#fafaff; }
+.audit-details{
+  margin:0;
+  padding:12px 16px;
+  font-family:'SF Mono', Menlo, Monaco, Consolas, monospace;
+  font-size:11.5px;
+  color:var(--ink-soft);
+  background:#fafaff;
+  border-radius:6px;
+  line-height:1.5;
+  overflow:auto;
+  max-height:200px;
+}
+
+/* Audit action pills (denser variants of the standard pill) */
+.audit-pill-info{ background:#edeafd; color:#4A3FCB; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; }
+.audit-pill-ok{   background:var(--success-soft); color:var(--success); padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; }
+.audit-pill-warning{ background:#fff4e0; color:#8a4a1f; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; }
+.audit-pill-danger{ background:var(--danger-soft); color:var(--danger); padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; }
+
+@media(max-width:640px){
+  .severity-picker{ grid-template-columns:1fr; }
+  .backup-card{ flex-direction:column; align-items:stretch; }
+  .audit-filters{ flex-direction:column; align-items:stretch; }
+  .audit-filters select, .audit-filters input, .audit-filters button{ width:100%; max-width:none !important; }
+}

@@ -1,80 +1,121 @@
-# Brand Swap — The Margin b
+# Delta 3c — Platform Settings + Audit Log
 
-New logo everywhere. Wordmark and badge hardcoded (no longer editable via Settings). Sub-label ("SYSADMIN" for admins, business name for users) stays dynamic.
+The last two placeholder sysadmin pages become real. Both were being written to since Delta 3a; now they have UIs.
+
+## What's shipping
+
+**Platform page** (`/app/sysadmin/platform`) — four sections:
+1. **Signup Rules** — toggle whether new people can sign up; trial toggle reserved for Delta 4
+2. **Maintenance Mode** — toggle + custom message. When ON, regular users see a maintenance page; sysadmins bypass with a red strip at the top
+3. **Platform Announcement** — banner shown at the top of every authenticated page. Toggle + message + severity picker (info / warning / critical). Users can dismiss for the session
+4. **Backups** — informational card with a link to Supabase Dashboard → Database → Backups
+
+**Audit Log page** (`/app/sysadmin/audit`) — searchable table:
+- Every sysadmin action since Delta 3a is already recorded — invite, extend, suspend, detach, delete, temp password, password reset, impersonate start/stop
+- Columns: When (relative time, full timestamp on hover), Actor, Action (color-coded pill), Target, Details (expandable JSON)
+- Filters: action dropdown (with counts), search actor or target email, row limit (50/100/250/500)
+- Expandable per-row details for the raw `details` JSON
+
+**Announcement banner** — shown at the top of every authenticated page when active, with three severity styles. Info = soft purple, Warning = amber, Critical = red
+
+**Maintenance gate** — non-sysadmins get a friendly "Down for maintenance" page. Sysadmins see the app plus a red strip reminding them maintenance is on
+
+**Signup gate** — when signups are disabled, `/signup` shows a "Signups temporarily paused" card with a link to sign in
 
 ## Files
 
 ```
-public/                             ← ALL FLAT AT public/ ROOT
-  favicon.ico
-  favicon.svg
-  favicon-16x16.png
-  favicon-32x32.png
-  favicon-48x48.png
-  favicon-96x96.png
-  apple-touch-icon.png
-  android-chrome-192x192.png
-  android-chrome-512x512.png
-  maskable-icon-512x512.png
-  safari-pinned-tab.svg
-  og-mark-1200x630.png
-  site.webmanifest
-  logo-mark.svg
-  logo-mark-mono-dark.svg
+supabase/
+  delta-3c-platform-audit.sql       # Migration
 src/
+  App.jsx                           # OVERWRITE — wires everything
+  lib/
+    platform.js                     # NEW — usePlatformStatus hook
   components/
-    Logo.jsx                        ← NEW — the single source of the brand
-    Sidebar.jsx                     ← OVERWRITE — uses <Logo/>, no more logo_data_url
+    AnnouncementBanner.jsx          # NEW
+    MaintenanceGate.jsx             # NEW
   pages/
-    Landing.jsx                     ← OVERWRITE — new header + footer wordmark
-    Login.jsx                       ← OVERWRITE — new Logo above form
-    Signup.jsx                      ← OVERWRITE — new Logo above form
-  styles.css                        ← OVERWRITE — Plus Jakarta Sans, tweaked .brand padding
+    Maintenance.jsx                 # NEW
+    Signup.jsx                      # OVERWRITE — checks signups_enabled
+    sysadmin/
+      Platform.jsx                  # NEW (replaces placeholder)
+      AuditLog.jsx                  # NEW (replaces placeholder)
+  styles.css                        # OVERWRITE (full file)
 ```
 
-## Step 1 — Update index.html
+## Deploy steps
 
-Open `index.html` at the repo root. Inside the `<head>` tag, **replace any existing favicon/og/font links** with this block:
+### Step 1 — Push code + wait for Netlify
 
-```html
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
-<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#6C5CE7">
-<link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#6C5CE7">
-<meta property="og:image" content="/og-mark-1200x630.png">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+### Step 2 — Run migration
+
+Supabase SQL Editor → paste `supabase/delta-3c-platform-audit.sql` → Run.
+
+Verify:
+```sql
+SELECT signups_enabled, maintenance_mode, announcement_enabled, announcement_severity
+FROM platform_settings WHERE id = 1;
+```
+Should return 1 row with `signups_enabled=true`, `maintenance_mode=false`, `announcement_enabled=false`, `announcement_severity='info'`.
+
+### Step 3 — Test as Anthony (sysadmin)
+
+**Announcement:**
+1. `/app/sysadmin/platform` → scroll to "Platform Announcement"
+2. Toggle "Announcement active" ON
+3. Type a message → click Save
+4. Pick severity Warning
+5. Navigate to `/app` (Dashboard) → see the amber banner at top
+6. Click ✕ on the banner → it dismisses for this session
+7. Go back to Platform → toggle announcement OFF
+
+**Maintenance mode:**
+1. `/app/sysadmin/platform` → "Maintenance Mode" section
+2. Change the message ("We're upgrading the servers — back at 3pm")
+3. Toggle "Maintenance mode active" ON
+4. **In an incognito window**, log in as Lily → she sees the maintenance page instead of the app
+5. Back in your normal window, you (Anthony) see a red strip at top but the app still works
+6. Toggle maintenance OFF → Lily can refresh and get back in
+
+**Audit Log:**
+1. `/app/sysadmin/audit` → see rows from all sysadmin actions you've done since Delta 3a
+2. Filter by action (e.g. only "Started impersonation")
+3. Click "Details" on a row → see the raw JSON
+
+**Signups closed:**
+1. Platform → toggle "Signups open" OFF
+2. Open incognito → visit `/signup` → see "Signups are closed" card
+3. Toggle back ON
+
+### Step 4 — Nothing to test for regular users
+
+Lily has no visibility into any of these controls — she just experiences them (banner appears, maintenance page appears, etc).
+
+## About how state propagates
+
+The Platform toggles take effect on the **next page load** for existing users. No realtime — I kept it simple. If you flip maintenance mode ON, users who are already inside the app stay inside until their next navigation. This is intentional and safe for MVP.
+
+## What's NOT in this delta
+
+- Real-time updates (Supabase Realtime subscription) — planned if we ever need instant enforcement
+- Feature-flag enforcement beyond signups (e.g. hide specific pages by flag) — add per-flag when needed
+- Trial toggle enforcement — comes in Delta 4 with public checkout
+
+## Rollback
+
+Additive. Safe.
+
+```sql
+ALTER TABLE platform_settings
+  DROP COLUMN IF EXISTS signups_enabled,
+  DROP COLUMN IF EXISTS trial_enabled,
+  DROP COLUMN IF EXISTS maintenance_mode,
+  DROP COLUMN IF EXISTS maintenance_message,
+  DROP COLUMN IF EXISTS announcement_enabled,
+  DROP COLUMN IF EXISTS announcement_message,
+  DROP COLUMN IF EXISTS announcement_severity;
+DROP FUNCTION IF EXISTS sysadmin_list_audit_log(text, text, integer);
+DROP FUNCTION IF EXISTS sysadmin_list_audit_actions();
 ```
 
-The `preconnect` + Google Fonts link is the one thing that MUST get added — the app's font is now Plus Jakarta Sans. Without those links, the app falls back to Public Sans (still fine, but not the intended brand).
-
-## Step 2 — Push all the files
-
-Push `public/` and `src/` folders. Wait for Netlify "Published".
-
-## Step 3 — Hard-refresh + tab cache-bust
-
-- Cmd/Ctrl + Shift + R on the app
-- Close and re-open the browser tab (favicons are aggressively cached)
-
-## What you'll see
-
-- **Sidebar top-left:** new gradient badge (violet→magenta, 73% ring), "BakerNomics" (Baker in near-black, Nomics in violet), "SYSADMIN" or your business name below in tiny grey uppercase
-- **Landing page header** and **footer**: same wordmark, no badge on the login/signup cards is the ~56px version
-- **Browser tab icon:** the new "b" mark
-- **When you install as PWA / share to social:** proper icons and OG image
-
-## What's locked down (per your ask)
-
-- **Logo badge:** hardcoded in `Logo.jsx`. Cannot be replaced via Settings. `settings.logo_data_url` is now ignored.
-- **"BakerNomics" wordmark:** hardcoded. Cannot be replaced via Settings. `settings.app_name` is now ignored.
-- **Sub-label under wordmark:** stays dynamic — `SYSADMIN` for admins, `settings.business_name` uppercased for users. This is the only piece a user's Settings still affects.
-
-## Notes
-
-- The old `/assets/lily-mark-white.png` image is no longer referenced. You can leave it in the repo (harmless) or delete it.
-- The `Settings` page may still show an "App Name" or "Logo" field. It doesn't break anything if the user edits them — the values are just no longer read anywhere in the UI. If you want to remove those fields from the Settings page too, that's a separate small pass.
+Next up: **Delta 4** — the paid checkout flow you asked about at the beginning (proof upload, verify queue, invoice generation, invite trigger).
