@@ -1,13 +1,5 @@
-// BakerNomics logo — "The Margin b"
-//
-// Usage:
-//   <Logo size={40} showWordmark subLabel="SYSADMIN" />
-//   <Logo size={36} showWordmark />
-//   <Logo size={24} />
-//
-// The badge is HARDCODED — never swap it for user-uploaded images.
-// The wordmark "BakerNomics" is HARDCODED — never read it from settings.
-// Only the `subLabel` prop is dynamic (SYSADMIN / user's business name / etc).
+// BakeOnomics logo — "The Margin b"
+// Two-tone wordmark: "Bake" (navy) + "Onomics" (violet)
 
 export function Logo({
   size = 40,
@@ -16,7 +8,7 @@ export function Logo({
   subLabel,
   theme = 'light',
 }) {
-  const gradId    = 'bnGrad'
+  const gradId = 'bnGrad'
   const showTrack = size >= 24
   const wordInk    = theme === 'dark' ? '#FFFFFF' : '#1F2440'
   const wordAccent = theme === 'dark' ? '#C084FC' : '#6C5CE7'
@@ -27,7 +19,7 @@ export function Logo({
       height={size}
       viewBox="0 0 96 96"
       role="img"
-      aria-label="BakerNomics"
+      aria-label="BakeOnomics"
       style={{ flex: '0 0 auto', display: 'block' }}
     >
       <defs>
@@ -43,17 +35,12 @@ export function Logo({
         <rect x="2" y="2" width="92" height="92" rx="27" fill="none" stroke="#FFFFFF" strokeWidth="4"/>
       )}
 
-      {/* Vertical stem */}
       <rect x="26" y="20" width="10" height="56" rx="5" fill="#FFFFFF"/>
-      {/* Track ring — dropped at small sizes */}
       {showTrack && (
         <circle cx="52" cy="54" r="17" fill="none" stroke="#FFFFFF" strokeOpacity="0.34" strokeWidth="10"/>
       )}
-      {/* 73% arc, starting at 12 o'clock, clockwise */}
       <circle
-        cx="52"
-        cy="54"
-        r="17"
+        cx="52" cy="54" r="17"
         fill="none"
         stroke={variant === 'outline' ? '#C084FC' : '#FFFFFF'}
         strokeWidth="10"
@@ -69,30 +56,29 @@ export function Logo({
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
       {badge}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 }}>
-        <div style={{
-          fontFamily: "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-          fontSize: 19,
-          fontWeight: 800,
-          letterSpacing: '-0.03em',
-          lineHeight: 1.1,
-          color: wordInk,
-          whiteSpace: 'nowrap',
-        }}>
-          Baker<span style={{ color: wordAccent }}>Nomics</span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <div
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: 19,
+            fontWeight: 800,
+            letterSpacing: '-0.03em',
+            lineHeight: 1.1,
+            color: wordInk,
+          }}
+        >
+          Bake<span style={{ color: wordAccent }}>Onomics</span>
         </div>
         {subLabel && (
-          <div style={{
-            fontFamily: "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-            fontSize: 9,
-            fontWeight: 700,
-            letterSpacing: '0.16em',
-            color: '#A2A8BE',
-            textTransform: 'uppercase',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}>
+          <div
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: 9,
+              fontWeight: 700,
+              letterSpacing: '0.16em',
+              color: '#A2A8BE',
+            }}
+          >
             {subLabel}
           </div>
         )}

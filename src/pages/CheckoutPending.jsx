@@ -82,7 +82,7 @@ export default function CheckoutPending() {
           <div className="checkout-card checkout-card-success">
             <div className="checkout-big-icon">✅</div>
             <h1>Payment verified!</h1>
-            <p>Your BakerNomics subscription is active. We've sent your login credentials to <strong>{order.customer_email}</strong>.</p>
+            <p>Your BakeOnomics subscription is active. We've sent your login credentials to <strong>{order.customer_email}</strong>.</p>
             <Link to="/login" className="checkout-btn" style={{textDecoration:'none', textAlign:'center', display:'block'}}>Sign in →</Link>
           </div>
         </div>

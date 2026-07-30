@@ -48,7 +48,7 @@ export default function Checkout() {
 
         <div className="checkout-card">
           <div className="checkout-header">
-            <h1>Subscribe to BakerNomics</h1>
+            <h1>Subscribe to BakeOnomics</h1>
             <p>Full access, one year — <strong>RM{amount.toFixed(2)}</strong>. Pay via DuitNow or Maybank transfer after this step.</p>
           </div>
 

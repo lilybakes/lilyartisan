@@ -18,7 +18,7 @@ export const HERO_DEFAULT = {
   title_line_1: 'Bake more.',
   title_line_2: 'Guess less.',
   tagline: 'Price with confidence. Bake with joy.',
-  body: 'BakerNomics is for artisan and boutique bakers who love the craft but hate the guesswork. Track every ingredient cost, understand your true margin per portion, and know exactly what to charge — without a spreadsheet in sight.',
+  body: 'BakeOnomics is for artisan and boutique bakers who love the craft but hate the guesswork. Track every ingredient cost, understand your true margin per portion, and know exactly what to charge — without a spreadsheet in sight.',
   cta_primary: 'Start 14-day Free Trial',
   cta_secondary: 'Sign in',
   fineprint: 'No credit card required · Cancel anytime · Made in Malaysia 🇲🇾',
@@ -32,7 +32,7 @@ export const FEATURES_HEAD_DEFAULT = {
 
 export const FEATURES_DEFAULT = [
   { icon: 'cost',    tone: 'a', title: 'Real ingredient costs, always current.',      body: 'Change a butter price once, and every recipe using it updates instantly. No spreadsheet gymnastics.' },
-  { icon: 'chart',   tone: 'b', title: 'Auto-suggested selling prices.',              body: 'Set your target food-cost %, and BakerNomics calculates the price that hits your margin every time.' },
+  { icon: 'chart',   tone: 'b', title: 'Auto-suggested selling prices.',              body: 'Set your target food-cost %, and BakeOnomics calculates the price that hits your margin every time.' },
   { icon: 'measure', tone: 'c', title: 'Recipe BOMs with unit-smart conversions.',    body: 'Grams to cups, tablespoons to liters — density-aware where it matters. No more "close enough".' },
   { icon: 'mobile',  tone: 'd', title: 'Works on your phone.',                        body: 'Update stock at the market. Price a new cake at the pop-up. Full app on any screen. No app to install.' },
 ]
@@ -44,7 +44,7 @@ export const PRICING_HEAD_DEFAULT = {
 }
 
 export const PRICING_DEFAULT = {
-  plan_name: 'BakerNomics Yearly',
+  plan_name: 'BakeOnomics Yearly',
   currency: 'RM',
   amount: '149',
   period: '/year',
@@ -69,7 +69,7 @@ export const FAQ_HEAD_DEFAULT = {
 export const FAQ_DEFAULT = [
   { q: 'Do I need a credit card to try it?',           a: 'No. The 14-day trial is completely free with just an email address. No card required.' },
   { q: 'How do I pay after the trial?',                a: 'DuitNow QR or Maybank bank transfer. Once we verify your payment, we send you a proper invoice and receipt to your email.' },
-  { q: 'Can I use it on my phone?',                    a: 'Yes. BakerNomics is fully mobile-optimized. There\'s nothing to install — just open your browser and sign in.' },
+  { q: 'Can I use it on my phone?',                    a: 'Yes. BakeOnomics is fully mobile-optimized. There\'s nothing to install — just open your browser and sign in.' },
   { q: 'What happens to my data if I cancel?',         a: 'Your data is kept safe. You can renew anytime and pick up right where you left off — recipes, ingredients, costings, all intact.' },
   { q: 'Can I export my recipes?',                     a: 'Yes. CSV export is built in, so you can back up your recipes and ingredient master anytime.' },
   { q: 'Is my data private?',                          a: 'Yes. Every user\'s data is completely isolated at the database level. No other baker on the platform can see your recipes, costs, or pricing.' },

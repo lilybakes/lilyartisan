@@ -11,7 +11,7 @@ function MockDashboard() {
         <span className="hc-dot hc-dot-r"/>
         <span className="hc-dot hc-dot-y"/>
         <span className="hc-dot hc-dot-g"/>
-        <span className="hc-url">app.bakernomics.com / dashboard</span>
+        <span className="hc-url">app.bakeonomics.com / dashboard</span>
       </div>
       <div className="hc-screen">
         <div className="hc-greeting">
@@ -43,7 +43,7 @@ function MockRecipe() {
         <span className="hc-dot hc-dot-r"/>
         <span className="hc-dot hc-dot-y"/>
         <span className="hc-dot hc-dot-g"/>
-        <span className="hc-url">app.bakernomics.com / recipes / sourdough</span>
+        <span className="hc-url">app.bakeonomics.com / recipes / sourdough</span>
       </div>
       <div className="hc-screen">
         <div className="hc-recipe-head">
@@ -129,7 +129,7 @@ export default function HeroCarousel() {
     <section
       className="hc"
       aria-roledescription="carousel"
-      aria-label="BakerNomics highlights"
+      aria-label="BakeOnomics highlights"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -176,7 +176,7 @@ export default function HeroCarousel() {
           <div className="hc-copy hc-copy-left">
             <h2>You've been pricing by feel.</h2>
             <p className="hc-lede">Start pricing by fact.</p>
-            <p>That RM 12 loaf you've charged for two years? BakerNomics tells you what it actually costs today — butter hike included.</p>
+            <p>That RM 12 loaf you've charged for two years? BakeOnomics tells you what it actually costs today — butter hike included.</p>
             <div className="hc-ctas">
               <Link to="/signup" className="hc-btn hc-btn-primary">Price my recipes free</Link>
             </div>

@@ -1,35 +1,77 @@
-# Hero Photos
+# Rename: BakerNomics → BakeOnomics
 
-Three real hero photos, converted from PNG to optimized JPG.
+Complete brand rename across code + database. Preserves all your sysadmin content edits.
 
-## Files
+## What's included
 
 ```
-public/hero/
-  hero-1.jpg    Overhead dough kneading      269 KB   1376×768
-  hero-3.jpg    Market bakery handover       254 KB   1408×768
-  hero-5.jpg    Counter portrait, front-on   187 KB   1312×816
+supabase/
+  rename-to-bakeonomics.sql            # DB rename (content_blocks, email_templates, platform_settings, settings)
+
+src/
+  components/
+    Logo.jsx                            # OVERWRITE — Bake (navy) + Onomics (violet) wordmark
+    HeroCarousel.jsx                    # OVERWRITE — updated URLs (app.bakeonomics.com) + body copy
+  lib/
+    content-defaults.js                 # OVERWRITE — default landing copy, in case defaults are ever reset
+  pages/
+    Checkout.jsx                        # OVERWRITE — "Subscribe to BakeOnomics"
+    CheckoutPending.jsx                 # OVERWRITE — success message + login copy
+    Maintenance.jsx                     # OVERWRITE (already had no mentions, safe to skip if unchanged)
+    Signup.jsx                          # OVERWRITE (same — safe to skip if unchanged)
 ```
 
-Just drop the whole `public/hero/` folder into your repo (it'll merge/overwrite the existing placeholder JPGs).
+## Deploy — 3 steps
 
-## Deploy
+### Step 1 — Run the SQL
 
-1. Extract the zip
-2. Copy `public/hero/*.jpg` into your repo's `public/hero/` folder (overwriting the 3 baker cartoon placeholders)
-3. Commit + push
-4. Hard-refresh `/`
+Supabase SQL Editor → paste `supabase/rename-to-bakeonomics.sql` → Run.
 
-You'll immediately see the real photos on slides 1, 3, and 5. Slides 2 and 4 still use the inline mock UIs from the previous carousel-fix delta.
+The last SELECT shows how many BakerNomics mentions remain in each table. Should return all zeros. If not, re-run and something is caching.
 
-## Note on resolution
+### Step 2 — Push the code files
 
-Spec wanted ≥2400px wide. These are ~1400px wide — smaller, but I optimized the JPG quality to 85 which keeps them crisp on desktop. If you ever want to swap in higher-res versions later (say, if you generate 2400px+ originals from Gemini or elsewhere), just re-run the same convert command to keep file sizes reasonable:
+Overwrite the 7 files, commit, push. Netlify redeploys.
 
-```bash
-convert your-2400px-photo.png -quality 85 -strip -interlace Plane hero-1.jpg
+### Step 3 — Find anything I missed
+
+I don't have your `index.html`, `public/site.webmanifest`, `Login.jsx`, `ForgotPassword.jsx`, `ResetPassword.jsx`, or `package.json`. **In Cursor/VS Code**, do a project-wide find-and-replace (case-sensitive) with these two passes:
+
+- Find: `BakerNomics`  →  Replace: `BakeOnomics`
+- Find: `bakernomics`  →  Replace: `bakeonomics`
+
+**Also check specifically:**
+- `index.html` — the `<title>` tag, `<meta name="description">`, and any Open Graph tags
+- `public/site.webmanifest` — the `name` and `short_name` fields
+- `package.json` — the `name` field (optional — cosmetic only)
+
+If you use the GitHub web UI: use the repo-level search bar at the top, search `BakerNomics`, click each result, click the pencil to edit, save.
+
+## Known edge case — the wordmark split
+
+The Logo component previously rendered `Baker` + `Nomics` as two separate `<span>`s so each half could get a different color. A blind find-and-replace of `BakerNomics` won't touch this because it's split across JSX. I've handled this in `Logo.jsx` already — the new split is `Bake` (navy) + `Onomics` (violet). If your Logo lives anywhere else besides `src/components/Logo.jsx`, check for that split there too.
+
+## Not renamed
+
+- **Supabase storage bucket** is still `lilyartisan-images`. Users never see this in the UI, only in payment-proof image URLs. Renaming it means migrating all uploads. Not worth it right now.
+- **GitHub repo name** (`lilyartisan`) — unrelated to what users see. Rename it in GitHub Settings if you want, but Netlify auto-follows repo renames.
+- **Favicon set** — you said this is done outside this chat.
+
+## What users will see immediately after deploy
+
+- Sidebar wordmark: "BakeOnomics"
+- Landing page hero carousel + all copy: "BakeOnomics"
+- Checkout flow: "Subscribe to BakeOnomics"
+- Approval emails Anthony sends: "Welcome to BakeOnomics" / "Invited to BakeOnomics"
+- Sysadmin Content editor already shows the new brand (your existing edits with the old brand are updated in-place)
+
+## Rollback
+
+Every rename is a REPLACE — to roll back, run the same SQL with the strings swapped:
+
+```sql
+UPDATE content_blocks SET content = REPLACE(content::text, 'BakeOnomics', 'BakerNomics')::jsonb;
+-- ...and similar for each table
 ```
 
-## Nothing else needed
-
-No code changes required — the carousel already references these exact filenames from the last delta. Just the photos going into the right folder.
+But you'll want to keep BakeOnomics — bakernomics.com is taken.
