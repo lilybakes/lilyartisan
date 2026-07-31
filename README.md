@@ -1,46 +1,34 @@
-# Templates Picker — Compact Icon List
+# Fix: All 10 Templates Active + Default as a Style Variant
 
-Replaces the big preview-card grid with a compact 2-column icon list. Cuts the picker's vertical footprint by roughly 75%.
+Two-file fix for two things:
+
+1. **The 6 hidden templates are ready again.** The style-variants delta accidentally overwrote the all-ready registry with the old "4 ready + 6 soon" version. Restored — all 10 templates are `ready: true` with their own gradient colors.
+
+2. **Default is now a proper style variant.** The picker previously had 5 options (Clean Modern was the "default"). Now it has 6, and Default (App Brand) — the current clean-purple app style — is the first option, separate from Clean Modern (which is the warm-brown Plus Jakarta Sans + JetBrains Mono treatment from the handoff).
 
 ## Files
 
 ```
 src/
-  pages/Templates.jsx     # OVERWRITE — big PreviewIllustration → small TemplateIcon, tpl-grid → tpl-list
-  styles.css              # OVERWRITE (full file) — tpl-card CSS replaced with tpl-item compact CSS
+  components/templates/index.js       # OVERWRITE — all 10 ready with gradients
+  lib/template-styles.js              # OVERWRITE — 6 variants, Default first
 ```
 
-Two files.
+## The 6 variants
 
-## What changed
+| Order | Key | Name | Look |
+|---|---|---|---|
+| 1 | `default` | Default (App Brand) | Current clean-purple, uses your brand color |
+| 2 | `clean-modern` | Clean Modern | Warm brown, Plus Jakarta Sans + JetBrains Mono, hairlines |
+| 3 | `kraft` | Rustic Kraft & Stamp | Kraft paper, Bitter serif, dashed dividers, rubber stamps |
+| 4 | `letterpress` | Vintage Letterpress | Playfair + Cormorant, everything centered, fleurons |
+| 5 | `editorial` | Editorial Magazine | DM Serif Display + Archivo, thick black rules |
+| 6 | `minimal` | Quiet Minimal | Manrope 300 + IBM Plex Mono, 0.5px hairlines |
 
-**Before** — 5-column grid of large cards. Each card had a 3:2 aspect-ratio gradient preview thumbnail (~120px tall) containing an abstract UI illustration, then the name and description underneath. On desktop, the picker took ~280px of vertical space just to show 10 templates.
+## Why no CSS changes needed
 
-**After** — 2-column list. Each row is one horizontal item: 38×38 gradient icon chip on the left (with a small monochrome line-icon inside), template name + size badge inline, description one line below. Total picker height ≈ 260px for all 10, but crucially only ~40px per row instead of ~180px per card.
+The `variant-default` class doesn't have any CSS rules targeting it — it intentionally falls through to the base `.tpl` styles, which are the current clean-purple app aesthetic. The 5 iteration variants (`.tpl.variant-kraft` etc.) have their own CSS overrides that were shipped in the `style-variants` delta.
 
-## Layout details
+## Deploy
 
-- **Icon chip:** 38×38 rounded square with the template's gradient background and a white line icon (18px SVG) inside. Icons per template:
-  - Classic Card: document with lines
-  - Cost Breakdown: bar chart
-  - Care & Storage: bulleted list
-  - Product Label: tag shape
-  - Menu Insert: 2×2 grid
-  - Wholesale: table rows
-  - Delivery Tag: tag with punch dot
-  - Social Media: framed square with lens
-  - Recipe Binder: (uses card-lines icon)
-  - Certificate: seal with ribbon
-- **Right side:** name (bold) + size badge (inline pill: A5, A4, A6, A7, 1:1), then description clipped to 1 line
-- **Active state:** purple border + soft violet background + subtle shadow
-- **Responsive:** 2 columns on desktop/tablet, 1 column below 720px
-
-## Interactions preserved
-
-- Click a row to select
-- All 10 templates still ready and functional
-- Style picker dropdown still appears below when a template is selected
-- Print button unchanged
-- Description shows on hover as tooltip via `title` attribute (in case the 1-line clip cuts something)
-
-Deploy: overwrite the 2 files, push, hard-refresh.
+Overwrite the 2 files, push, hard-refresh. All 10 templates in the picker are active. The Style dropdown next to the preview shows 6 options starting with "Default (App Brand)".
