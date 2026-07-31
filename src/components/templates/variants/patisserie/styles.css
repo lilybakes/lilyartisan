@@ -1,0 +1,1403 @@
+/* =============================================================================
+   PATISSERIE VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   Refined bakery voice — warm cream paper, deep pinkish burgundy ink, blush
+   pink washes on the Care Card and Delivery Tag, muted rose for section
+   eyebrows, champagne gold for the delicate frame borders that appear on
+   every portrait template. Cormorant Garamond for elegant serif titles;
+   Manrope for body prose. Method steps render as gold Roman numerals; the
+   final numeral turns burgundy and the leading imperative in the text is
+   bolded burgundy.
+
+   Palette:
+     Paper         #FDF8F0   warm cream / ivory page
+     Pink          #F5D9D6   soft blush — Care Card + Delivery Tag ground,
+                             Cost caution wash, Label allergen box
+     Pink deep     #EBC6C2   dusty rose accent (pill fills, deeper touches)
+     Burgundy      #7A2E3B   THE Patisserie color — titles, brand name, prices
+     Burgundy deep #5E2130   Social Card background
+     Mauve         #A0596B   section eyebrows (INGREDIENTS, METHOD, STORAGE…)
+     Gold          #C89E6C   thin frame border, short accent rules under titles
+     Gold light    #DBB48A   softer gold hairlines
+     Ink           #3A2530   very dark burgundy-tinted near-black body text
+     Body          #4A3540   softer body
+     Muted         #8C7580   italic subtitles ("Artisan bakery — Ipoh")
+     Hair          rgba(122, 46, 59, 0.15)   dividers, faintly burgundy-tinted
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, primitives, frame
+   ============================================================================= */
+
+.pa-tpl {
+  --pa-paper: #FDF8F0;
+  --pa-pink: #F5D9D6;
+  --pa-pink-deep: #EBC6C2;
+  --pa-burgundy: #7A2E3B;
+  --pa-burgundy-deep: #5E2130;
+  --pa-mauve: #A0596B;
+  --pa-gold: #C89E6C;
+  --pa-gold-light: #DBB48A;
+  --pa-ink: #3A2530;
+  --pa-body: #4A3540;
+  --pa-muted: #8C7580;
+  --pa-hair: rgba(122, 46, 59, 0.15);
+  --pa-hair-mauve: rgba(160, 89, 107, 0.32);
+  --pa-hair-gold: rgba(200, 158, 108, 0.55);
+
+  --pa-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --pa-sans:  'Manrope', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  background: var(--pa-paper);
+  color: var(--pa-body);
+  font-family: var(--pa-sans);
+  font-weight: 400;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(58, 37, 48, 0.10);
+  box-sizing: border-box;
+}
+.pa-tpl * { box-sizing: border-box; }
+
+/* --- Thin gold frame border — the signature of Patisserie -------------- *
+   Applied to every portrait template EXCEPT the Social Card (which has
+   its own inset cream border on burgundy). The frame is the inner element
+   .pa-frame; the outer .pa-tpl provides the surrounding page padding. */
+.pa-frame {
+  flex: 1;
+  border: 0.75px solid var(--pa-gold);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 0;
+}
+
+/* --- Gold-ring DC circle logo ----------------------------------------- */
+.pa-logo {
+  border-radius: 50%;
+  border: 1px solid var(--pa-gold);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--pa-burgundy);
+  background: transparent;
+  flex-shrink: 0;
+  aspect-ratio: 1;
+}
+.pa-logo-cream {
+  border-color: rgba(253, 248, 240, 0.7);
+  color: var(--pa-paper);
+}
+.pa-logo-initials {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding-left: 0.02em;
+  font-size: 0.42em;
+  line-height: 1;
+}
+.pa-logo-sm { width: 34px; height: 34px; font-size: 34px; }
+.pa-logo-md { width: 50px; height: 50px; font-size: 50px; }
+.pa-logo-lg { width: 64px; height: 64px; font-size: 64px; }
+
+.pa-logo-img { width: 74%; height: 74%; object-fit: contain; border-radius: 50%; }
+
+/* --- Brand lockup ------------------------------------------------------- */
+.pa-brand-lockup { display: flex; gap: 14px; }
+.pa-brand-lockup-inline { flex-direction: row; align-items: center; }
+.pa-brand-lockup-stacked { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.pa-brand-lockup-textonly { flex-direction: column; align-items: flex-start; gap: 2px; }
+.pa-brand-text { display: flex; flex-direction: column; gap: 3px; }
+
+.pa-brand-name {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  color: var(--pa-burgundy);
+  margin: 0;
+  line-height: 1.1;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+}
+.pa-brand-ink   { color: var(--pa-burgundy); }
+.pa-brand-cream { color: var(--pa-paper); }
+
+.pa-brand-tagline {
+  font-family: var(--pa-sans);
+  font-style: italic;
+  color: var(--pa-muted);
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.pa-brand-tagline-ink   { color: var(--pa-muted); }
+.pa-brand-tagline-cream { color: var(--pa-paper); opacity: 0.65; }
+
+/* --- Serif title (Cormorant Garamond, refined) ------------------------ */
+.pa-title {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  color: var(--pa-burgundy);
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: 0.005em;
+}
+
+/* --- Section eyebrow — Manrope 500 uppercase tracked, MAUVE default --- */
+.pa-eyebrow {
+  font-family: var(--pa-sans);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 10px;
+  padding-left: 0.22em;
+  line-height: 1.4;
+  color: var(--pa-mauve);
+}
+.pa-eyebrow-mauve    { color: var(--pa-mauve); }
+.pa-eyebrow-muted    { color: var(--pa-muted); }
+.pa-eyebrow-burgundy { color: var(--pa-burgundy); }
+.pa-eyebrow-cream    { color: var(--pa-paper); opacity: 0.8; }
+
+.pa-muted { color: var(--pa-muted); }
+
+/* --- Italic subtitle — Manrope italic muted --------------------------- */
+.pa-subtitle {
+  font-family: var(--pa-sans);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--pa-muted);
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 0;
+}
+.pa-subtitle-muted    { color: var(--pa-muted); }
+.pa-subtitle-mauve    { color: var(--pa-mauve); }
+.pa-subtitle-cream    { color: var(--pa-paper); opacity: 0.72; }
+
+/* --- Rules ------------------------------------------------------------- */
+.pa-rule { border: none; padding: 0; margin: 0; display: block; width: 100%; }
+.pa-rule-hair     { height: 1px; background: var(--pa-hair); }
+.pa-rule-mauve    { height: 1px; background: var(--pa-hair-mauve); }
+.pa-rule-gold     { height: 1px; background: var(--pa-hair-gold); }
+.pa-rule-cream    { height: 1px; background: rgba(253, 248, 240, 0.35); }
+
+/* --- Short thin gold decorative underline ----------------------------- */
+.pa-rule-short {
+  display: block;
+  width: 32mm;
+  height: 1px;
+  background: var(--pa-gold);
+  margin: 3mm 0;
+}
+.pa-rule-short-gold   { background: var(--pa-gold); }
+.pa-rule-short-mauve  { background: var(--pa-hair-mauve); }
+.pa-rule-short-cream  { background: rgba(253, 248, 240, 0.45); }
+
+/* Center the short rule on center-aligned blocks */
+.pa-recipe .pa-rule-short,
+.pa-care   .pa-rule-short,
+.pa-menu   .pa-rule-short,
+.pa-label  .pa-rule-short,
+.pa-delivery .pa-rule-short,
+.pa-cert   .pa-rule-short {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --- Numeric cells ---------------------------------------------------- */
+.pa-num {
+  text-align: right;
+  font-family: var(--pa-sans);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+/* --- Roman numeral method mark — plain gold, no chip ------------------ *
+   The final numeral turns burgundy; the final step's leading imperative
+   phrase is bolded burgundy in the text. */
+.pa-method-num {
+  color: var(--pa-gold);
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 13px;
+  text-align: right;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  padding-top: 0.5mm;
+}
+.pa-method-num[data-final="true"] { color: var(--pa-burgundy); font-weight: 600; }
+
+.pa-method-step-final {
+  color: var(--pa-ink);
+}
+.pa-method-step-final strong {
+  font-weight: 700;
+  color: var(--pa-burgundy);
+}
+
+/* --- Method sub-group heading (mauve tracked caps) -------------------- */
+.pa-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--pa-sans);
+  font-weight: 500;
+  color: var(--pa-mauve);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  font-size: 10px;
+  margin: 4mm 0 3mm;
+  display: block;
+}
+.pa-method-group::before { content: '' !important; }
+
+/* --- Gold-ring seal (Certificate MADE / BY / HAND) -------------------- */
+.pa-seal {
+  border-radius: 50%;
+  border: 1.25px solid var(--pa-gold);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--pa-burgundy);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+.pa-seal-inner {
+  display: flex; flex-direction: column; align-items: center;
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding-left: 0.14em;
+  font-size: 8px;
+  text-align: center;
+  line-height: 1.35;
+  color: var(--pa-burgundy);
+}
+
+/* --- Empty-state ------------------------------------------------------ */
+.pa-empty {
+  color: var(--pa-muted);
+  font-family: var(--pa-sans);
+  font-style: italic;
+  font-size: 12px;
+  margin: 3mm 0 0;
+}
+
+/* --- Footer ----------------------------------------------------------- */
+.pa-footer {
+  font-family: var(--pa-sans);
+  color: var(--pa-body);
+  font-size: 9.5px;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+}
+.pa-footer-split {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12mm;
+}
+.pa-footer-split .pa-footer-right { text-align: right; }
+.pa-footer-centered {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 1.5mm;
+}
+.pa-footer-minimal { text-align: center; }
+.pa-footer-line { font-size: 9.5px; color: var(--pa-body); }
+
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.pa-recipe {
+  width: 148mm; min-height: 210mm;
+  padding: 8mm;
+  display: flex; flex-direction: column;
+}
+.pa-recipe .pa-frame {
+  padding: 8mm 8mm 6mm;
+}
+.pa-recipe-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 2mm;
+  padding-bottom: 4mm;
+}
+.pa-recipe-brand-name {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--pa-burgundy);
+  margin: 3mm 0 0;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.pa-recipe-brand-tag { font-size: 10px; margin-top: 0; }
+.pa-recipe .pa-rule-short { margin: 3mm auto 2mm; }
+.pa-recipe-eyebrow { font-size: 9.5px; letter-spacing: 0.28em; padding-left: 0.28em; margin-top: 1mm; }
+
+.pa-recipe-title {
+  font-size: 30px;
+  line-height: 1.1;
+  margin-top: 4mm;
+  max-width: 120mm;
+  font-weight: 500;
+}
+.pa-recipe-meta { font-size: 10.5px; margin-top: 3mm; }
+
+.pa-recipe-body {
+  display: grid; grid-template-columns: 50mm 1fr;
+  gap: 8mm;
+  flex: 1;
+  padding-top: 6mm;
+}
+.pa-recipe-ingredients > .pa-eyebrow,
+.pa-recipe-method > .pa-eyebrow {
+  margin-bottom: 4mm;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+}
+
+.pa-recipe-ing-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+}
+.pa-recipe-ing-list li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 2.2mm 0;
+  border-bottom: 1px solid var(--pa-hair);
+  font-family: var(--pa-sans);
+  font-size: 10.5px;
+  color: var(--pa-ink);
+  font-weight: 400;
+  gap: 3mm;
+}
+.pa-recipe-ing-name { color: var(--pa-ink); }
+.pa-recipe-ing-qty {
+  color: var(--pa-burgundy);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pa-recipe-method-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3.5mm;
+  font-family: var(--pa-sans);
+  font-size: 11px;
+  color: var(--pa-body);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.pa-recipe-method-list li {
+  display: grid;
+  grid-template-columns: 10mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.pa-recipe-method-step { padding-top: 0; }
+
+.pa-recipe-footer-wrap { margin-top: auto; padding-top: 6mm; }
+
+
+/* =============================================================================
+   02 — COST SHEET  (A4 portrait, 210×297mm) — INTERNAL
+   ============================================================================= */
+.pa-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 8mm;
+  display: flex; flex-direction: column;
+}
+.pa-cost .pa-frame {
+  padding: 12mm 14mm 10mm;
+}
+.pa-cost-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 12mm;
+}
+.pa-cost-brand {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 20px;
+  color: var(--pa-burgundy);
+  letter-spacing: 0.02em;
+}
+.pa-cost-header-right {
+  font-size: 10px; letter-spacing: 0.24em; padding-left: 0.24em;
+}
+
+.pa-cost-title-block {
+  padding: 10mm 0 8mm;
+  text-align: center;
+}
+.pa-cost-title {
+  font-size: 42px;
+  line-height: 1.1;
+  margin: 0;
+  max-width: 160mm;
+  margin-left: auto; margin-right: auto;
+}
+.pa-cost-meta {
+  font-size: 12px;
+  margin-top: 4mm;
+  text-align: center;
+}
+
+.pa-cost-stats-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  margin: 6mm 0 6mm;
+  align-items: center;
+  text-align: center;
+  padding: 4mm 0;
+}
+.pa-cost-stat {
+  display: flex; flex-direction: column; gap: 3mm;
+  padding: 0 6mm;
+  border-right: 1px solid var(--pa-hair-mauve);
+}
+.pa-cost-stat:last-child { border-right: none; }
+.pa-cost-stat .pa-eyebrow { font-size: 9.5px; letter-spacing: 0.24em; padding-left: 0.24em; }
+.pa-cost-stat-val {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  color: var(--pa-burgundy);
+  font-size: 26px;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.pa-cost-stat-val-lg {
+  font-size: 34px;
+}
+
+.pa-cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8mm;
+  font-family: var(--pa-sans);
+  font-size: 11px;
+  color: var(--pa-body);
+  font-weight: 400;
+}
+.pa-cost-table thead th {
+  font-family: var(--pa-sans);
+  font-weight: 500;
+  color: var(--pa-mauve);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  padding: 3mm 4mm 4mm;
+  padding-left: calc(4mm + 0.22em);
+  font-size: 9.5px;
+  text-align: left;
+  border-bottom: 1px solid var(--pa-hair-mauve);
+}
+.pa-cost-table thead th.pa-num { text-align: right; padding-right: 4mm; }
+.pa-cost-table td {
+  padding: 3.2mm 4mm;
+  border-bottom: 1px solid var(--pa-hair);
+}
+.pa-cost-table td.pa-num { padding-right: 4mm; padding-left: 4mm; }
+.pa-cost-td-name { color: var(--pa-ink); font-weight: 400; }
+.pa-cost-td-val  { color: var(--pa-burgundy); font-weight: 500; }
+.pa-cost-empty {
+  padding: 8mm 0 !important;
+  color: var(--pa-muted);
+  font-style: italic;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.pa-cost-batch-row td {
+  padding: 4mm 4mm 3mm;
+  border-bottom: none;
+  border-top: 1px solid var(--pa-hair-mauve);
+  font-family: var(--pa-sans);
+  font-weight: 500;
+  color: var(--pa-mauve);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  padding-left: calc(4mm + 0.22em);
+}
+.pa-cost-batch-row td.pa-num {
+  color: var(--pa-burgundy);
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 16px;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  padding-left: 4mm;
+}
+
+.pa-cost-caution {
+  margin-top: 10mm;
+  padding: 6mm 8mm;
+  background: var(--pa-pink);
+  border-radius: 4mm;
+  font-family: var(--pa-sans);
+  font-size: 11px;
+  color: var(--pa-ink);
+  font-weight: 400;
+  line-height: 1.5;
+}
+.pa-cost-caution strong { color: var(--pa-burgundy); font-weight: 700; }
+
+.pa-cost-footer-wrap { margin-top: auto; padding-top: 8mm; }
+
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, 105×148mm) — FULL PINK BACKGROUND
+   ============================================================================= */
+.pa-tpl.pa-care {
+  background: var(--pa-pink);
+  width: 105mm; min-height: 148mm;
+  padding: 6mm;
+  display: flex; flex-direction: column;
+}
+.pa-care .pa-frame {
+  padding: 7mm 7mm 5mm;
+}
+.pa-care-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 1.5mm;
+  padding-bottom: 3mm;
+}
+.pa-care-brand-name {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--pa-burgundy);
+  margin-top: 3mm;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.pa-care-brand-tag { font-size: 9px; }
+.pa-care-thanks {
+  font-family: var(--pa-sans);
+  font-style: italic;
+  color: var(--pa-mauve);
+  font-size: 10.5px;
+  margin: 3mm 0 0;
+  font-weight: 400;
+}
+
+.pa-care-title-block {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  padding: 4mm 0 4mm;
+  gap: 3mm;
+}
+.pa-care-product {
+  font-size: 24px;
+  line-height: 1.1;
+  max-width: 80mm;
+  font-weight: 500;
+}
+
+.pa-care-body {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 5mm;
+  padding: 3mm 0;
+}
+.pa-care-section > .pa-eyebrow {
+  margin-bottom: 2mm;
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+}
+.pa-care-text {
+  font-family: var(--pa-sans);
+  color: var(--pa-ink);
+  font-size: 10.5px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 400;
+}
+.pa-care-allergens {
+  font-family: var(--pa-sans);
+  font-style: italic;
+  color: var(--pa-ink);
+  font-size: 10.5px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 400;
+}
+
+.pa-care-footer-wrap { margin-top: auto; padding-top: 4mm; }
+.pa-care-footer-wrap .pa-footer-line { font-size: 8.5px; color: var(--pa-body); }
+
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.pa-label {
+  width: 74mm; min-height: 105mm;
+  padding: 4mm;
+  display: flex; flex-direction: column;
+}
+.pa-label .pa-frame {
+  padding: 5mm 5mm 4mm;
+}
+.pa-label-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 1mm;
+}
+.pa-label-brand-name {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--pa-burgundy);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.pa-label-brand-tag { font-size: 8.5px; }
+.pa-label .pa-rule-short { width: 18mm; margin: 2.5mm auto 0; }
+
+.pa-label-title-block {
+  padding: 4mm 0 3mm;
+  text-align: center;
+}
+.pa-label-product {
+  font-size: 17px;
+  line-height: 1.15;
+  max-width: 62mm;
+  margin: 0 auto;
+  font-weight: 500;
+}
+
+.pa-label-section { margin: 3mm 0; }
+.pa-label-section > .pa-eyebrow {
+  margin-bottom: 1.5mm;
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+}
+.pa-label-body {
+  font-family: var(--pa-sans);
+  color: var(--pa-ink);
+  font-size: 9.5px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 400;
+}
+
+.pa-label-allergen-box {
+  margin: 3mm 0;
+  padding: 3mm 4mm;
+  background: var(--pa-pink);
+  border-radius: 2mm;
+}
+.pa-label-allergen-box > .pa-eyebrow {
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  color: var(--pa-burgundy);
+  margin-bottom: 1.5mm;
+}
+.pa-label-allergens {
+  font-family: var(--pa-sans);
+  color: var(--pa-burgundy);
+  font-size: 9.5px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 500;
+}
+
+.pa-label-footer-wrap { margin-top: auto; }
+.pa-label-footer {
+  font-family: var(--pa-sans);
+  color: var(--pa-muted);
+  font-size: 8.5px;
+  line-height: 1.5;
+  font-weight: 400;
+  text-align: center;
+}
+
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.pa-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 8mm;
+  display: flex; flex-direction: column;
+}
+.pa-menu .pa-frame {
+  padding: 10mm 12mm 8mm;
+}
+.pa-menu-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 1.5mm;
+  padding-bottom: 8mm;
+}
+.pa-menu-brand-name {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 22px;
+  color: var(--pa-burgundy);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.pa-menu-brand-tag { font-size: 10.5px; }
+.pa-menu-header .pa-rule-short { margin: 3mm auto 2mm; }
+.pa-menu-header .pa-eyebrow { font-size: 10px; letter-spacing: 0.28em; padding-left: 0.28em; }
+
+.pa-menu-body { padding: 2mm 0 4mm; }
+.pa-menu-empty {
+  text-align: center; color: var(--pa-muted);
+  font-style: italic;
+  margin-top: 20mm;
+}
+
+.pa-menu-cat-block { margin-bottom: 9mm; }
+.pa-menu-cat-label {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  padding-left: 0.28em;
+  margin-bottom: 5mm;
+  color: var(--pa-mauve);
+  text-align: center;
+}
+
+.pa-menu-cat-items {
+  display: flex; flex-direction: column; gap: 5mm;
+}
+.pa-menu-item {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 8mm;
+}
+.pa-menu-item-body { flex: 1; min-width: 0; }
+.pa-menu-item-name {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  color: var(--pa-ink);
+  font-size: 17px;
+  line-height: 1.15;
+  letter-spacing: 0.005em;
+}
+.pa-menu-item-desc {
+  font-family: var(--pa-sans);
+  font-style: italic;
+  color: var(--pa-muted);
+  font-size: 10.5px;
+  margin-top: 1mm;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.pa-menu-item-price {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  color: var(--pa-burgundy);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  letter-spacing: 0.01em;
+}
+
+.pa-menu-footer-wrap { margin-top: auto; }
+.pa-menu-footer-wrap .pa-footer-line { font-size: 9px; }
+
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.pa-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 8mm;
+  display: flex; flex-direction: column;
+}
+.pa-wholesale .pa-frame {
+  padding: 12mm 14mm 10mm;
+}
+.pa-wholesale-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 1mm;
+  padding-bottom: 4mm;
+}
+.pa-wholesale-brand-name {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 20px;
+  color: var(--pa-burgundy);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.pa-wholesale-brand-tag { font-size: 10.5px; }
+
+.pa-wholesale-title-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12mm;
+  padding: 8mm 0 4mm;
+}
+.pa-wholesale-title-left { flex: 1; min-width: 0; }
+.pa-wholesale-title {
+  font-size: 34px;
+  line-height: 1.1;
+  margin: 0;
+  font-weight: 500;
+}
+.pa-wholesale-effective {
+  font-size: 12px;
+  margin-top: 3mm;
+}
+.pa-wholesale-title-right {
+  text-align: right;
+  padding-top: 4mm;
+  display: flex; flex-direction: column; gap: 2mm;
+}
+.pa-wholesale-note {
+  font-family: var(--pa-sans);
+  color: var(--pa-ink);
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.pa-wholesale-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8mm;
+  font-family: var(--pa-sans);
+  font-size: 11px;
+  color: var(--pa-body);
+  font-weight: 400;
+}
+.pa-wholesale-table thead th {
+  font-family: var(--pa-sans);
+  font-weight: 500;
+  color: var(--pa-mauve);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  padding: 4mm 5mm;
+  padding-left: calc(5mm + 0.22em);
+  font-size: 9.5px;
+  text-align: left;
+  border-bottom: 1px solid var(--pa-hair-mauve);
+}
+.pa-wholesale-table thead th.pa-num { text-align: right; padding-right: 5mm; }
+.pa-wholesale-table td {
+  padding: 4mm 5mm;
+  border-bottom: 1px solid var(--pa-hair);
+}
+.pa-wholesale-table tbody tr:last-child td { border-bottom: 1px solid var(--pa-hair-mauve); }
+.pa-wholesale-table td.pa-num { padding-left: 5mm; padding-right: 5mm; }
+.pa-wholesale-td-name { color: var(--pa-ink); font-weight: 400; }
+.pa-wholesale-td-price { color: var(--pa-burgundy); font-weight: 700; }
+
+.pa-wholesale-currency {
+  margin-top: 4mm;
+  font-size: 10.5px;
+}
+
+.pa-wholesale-terms-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 18mm;
+  margin-top: 10mm;
+}
+.pa-wholesale-terms-col > .pa-eyebrow {
+  margin-bottom: 4mm;
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+}
+.pa-wholesale-terms-list {
+  list-style: disc; padding: 0 0 0 4mm; margin: 0;
+  display: flex; flex-direction: column; gap: 2.5mm;
+  font-family: var(--pa-sans);
+  color: var(--pa-ink);
+  font-size: 10.5px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+.pa-wholesale-terms-list li::marker { color: var(--pa-mauve); }
+.pa-wholesale-order-lines {
+  display: flex; flex-direction: column; gap: 2mm;
+  font-family: var(--pa-sans);
+  color: var(--pa-ink);
+  font-size: 11px;
+  font-weight: 400;
+}
+.pa-wholesale-order-handle { color: var(--pa-burgundy); font-weight: 500; }
+
+.pa-wholesale-sig-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 18mm;
+  margin-top: 10mm;
+}
+.pa-wholesale-sig-cell { display: flex; flex-direction: column; gap: 1mm; }
+.pa-wholesale-sig-line { height: 1px; background: var(--pa-hair-mauve); margin-bottom: 2mm; width: 100%; }
+.pa-wholesale-sig-cell .pa-eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+}
+
+.pa-wholesale-footer-wrap { margin-top: auto; padding-top: 8mm; }
+
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, 74×105mm) — FULL PINK BACKGROUND
+   ============================================================================= */
+.pa-tpl.pa-delivery {
+  background: var(--pa-pink);
+  width: 74mm; min-height: 105mm;
+  padding: 4mm;
+  display: flex; flex-direction: column;
+}
+.pa-delivery .pa-frame {
+  padding: 3mm 5mm 4mm;
+  align-items: center; text-align: center;
+}
+.pa-delivery-hole {
+  width: 4mm; height: 4mm;
+  border: 1px solid var(--pa-gold);
+  border-radius: 50%;
+  margin: 1.5mm 0 3mm;
+  background: transparent;
+}
+.pa-delivery-brand {
+  display: flex; flex-direction: column; align-items: center; gap: 2mm;
+  margin-bottom: 4mm;
+}
+.pa-delivery-brand-name {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--pa-burgundy);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+/* Keep DC logo on pink readable — gold ring, burgundy letters */
+.pa-delivery .pa-logo {
+  border-color: var(--pa-gold);
+  color: var(--pa-burgundy);
+}
+
+.pa-delivery-eyebrow {
+  font-family: var(--pa-sans);
+  font-style: italic;
+  color: var(--pa-mauve);
+  font-size: 9.5px;
+  margin: 0 0 2mm;
+  font-weight: 400;
+}
+.pa-delivery-product {
+  font-size: 18px;
+  line-height: 1.15;
+  max-width: 58mm;
+  font-weight: 500;
+}
+.pa-delivery .pa-rule-short {
+  width: 18mm;
+  margin: 2mm auto 3mm;
+  background: var(--pa-gold);
+}
+.pa-delivery-care-body {
+  font-family: var(--pa-sans);
+  color: var(--pa-ink);
+  font-size: 9.5px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 400;
+}
+
+.pa-delivery-footer {
+  margin-top: auto;
+  padding-top: 4mm;
+}
+.pa-delivery-footer-line {
+  font-family: var(--pa-sans);
+  color: var(--pa-body);
+  font-size: 8px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+
+/* =============================================================================
+   08 — SOCIAL MEDIA CARD  (1080×1080 = 148×148mm) — DEEP BURGUNDY BACKGROUND
+   ============================================================================= */
+.pa-tpl.pa-social {
+  background: var(--pa-burgundy-deep);
+  color: var(--pa-paper);
+  width: 148mm; height: 148mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.pa-social-frame {
+  flex: 1;
+  border: 0.75px solid rgba(253, 248, 240, 0.35);
+  margin: 5mm;
+  padding: 12mm 14mm 10mm;
+  display: flex; flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+.pa-social-top {
+  display: flex; align-items: center; justify-content: center;
+  padding-bottom: 4mm;
+}
+.pa-social-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  padding-left: 0.32em;
+  color: var(--pa-paper);
+  opacity: 0.8;
+}
+
+.pa-social-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4mm;
+  padding: 4mm 0;
+}
+.pa-social-title {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 42px;
+  color: var(--pa-paper);
+  margin: 0;
+  max-width: 118mm;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+.pa-social-rule {
+  height: 1px;
+  background: rgba(253, 248, 240, 0.45);
+  width: 30mm;
+  margin: 2mm 0 3mm;
+}
+.pa-social-desc {
+  font-family: var(--pa-sans);
+  font-style: italic;
+  color: var(--pa-paper);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0 0 3mm;
+  max-width: 108mm;
+  opacity: 0.85;
+  font-weight: 400;
+}
+.pa-social-price {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  color: var(--pa-paper);
+  font-size: 16px;
+  margin: 2mm 0 0;
+  letter-spacing: 0.02em;
+  opacity: 0.9;
+}
+
+.pa-social-footer {
+  padding-top: 6mm;
+  display: flex; flex-direction: column; align-items: center; gap: 1.5mm;
+}
+.pa-social-brand-name {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  color: var(--pa-paper);
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.pa-social-brand-tag {
+  font-family: var(--pa-sans);
+  font-style: italic;
+  color: var(--pa-paper);
+  opacity: 0.7;
+  font-size: 10px;
+  margin: 0;
+  font-weight: 400;
+}
+.pa-social-handles {
+  font-family: var(--pa-sans);
+  color: var(--pa-paper);
+  opacity: 0.6;
+  font-size: 9.5px;
+  margin-top: 1mm;
+  letter-spacing: 0.06em;
+}
+
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.pa-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 8mm;
+  display: flex; flex-direction: column;
+}
+.pa-binder .pa-frame {
+  padding: 10mm 12mm 8mm;
+}
+.pa-binder-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+}
+.pa-binder-brand-lockup { display: flex; align-items: center; gap: 10px; }
+.pa-binder-brand-text { display: flex; flex-direction: column; gap: 1mm; }
+.pa-binder-brand-name {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--pa-burgundy);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.pa-binder-brand-tag { font-size: 9.5px; }
+.pa-binder-header-right {
+  font-size: 10px; letter-spacing: 0.24em; padding-left: 0.24em;
+}
+
+.pa-binder-title-row {
+  display: flex; gap: 12mm; align-items: flex-start;
+}
+.pa-binder-title-left { flex: 1; min-width: 0; }
+.pa-binder-title {
+  font-size: 32px;
+  line-height: 1.1;
+  margin: 0;
+  font-weight: 500;
+}
+.pa-binder .pa-rule-short { margin: 3mm 0; }
+.pa-binder-desc {
+  font-size: 12px;
+  margin: 2mm 0 0;
+}
+.pa-binder-photo {
+  width: 52mm; height: 42mm; flex-shrink: 0;
+  background: var(--pa-pink);
+  border-radius: 2mm;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 4mm;
+}
+.pa-binder-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 1mm; }
+.pa-binder-photo-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 1mm;
+}
+.pa-binder-photo-placeholder .pa-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  color: var(--pa-mauve);
+}
+
+.pa-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8mm;
+  padding: 2mm 0 4mm;
+}
+.pa-binder-meta-cell { display: flex; flex-direction: column; gap: 2mm; }
+.pa-binder-meta-cell > .pa-eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+}
+.pa-binder-meta-val {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  color: var(--pa-burgundy);
+  font-size: 18px;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+
+.pa-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12mm;
+  flex: 1;
+}
+.pa-binder-section > .pa-eyebrow {
+  margin-bottom: 4mm;
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+}
+
+.pa-binder-ing-list { display: flex; flex-direction: column; }
+.pa-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 2.2mm 0;
+  border-bottom: 1px solid var(--pa-hair);
+  font-family: var(--pa-sans);
+  font-size: 10.5px;
+  color: var(--pa-ink);
+  font-weight: 400;
+  align-items: baseline;
+}
+.pa-binder-ing-name { color: var(--pa-ink); }
+.pa-binder-ing-qty {
+  color: var(--pa-body);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+}
+.pa-binder-ing-cost {
+  color: var(--pa-burgundy);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+  font-weight: 500;
+}
+.pa-binder-batch-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 3mm 0 2mm;
+  border-top: 1px solid var(--pa-hair-mauve);
+  font-family: var(--pa-sans);
+  font-size: 10px;
+  color: var(--pa-mauve);
+  font-weight: 500;
+  margin-top: 2mm;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+}
+.pa-binder-batch-row > span:last-child {
+  font-family: var(--pa-serif);
+  color: var(--pa-burgundy);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  padding-left: 0;
+}
+
+.pa-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--pa-sans);
+  font-size: 10.5px;
+  color: var(--pa-body);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.pa-binder-method li {
+  display: grid;
+  grid-template-columns: 10mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.pa-binder-method-step { padding-top: 0; }
+
+.pa-binder-notes { margin-top: 8mm; }
+.pa-binder-notes > .pa-eyebrow {
+  margin-bottom: 3mm;
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+}
+.pa-binder-notes-lines { display: flex; flex-direction: column; gap: 7px; }
+.pa-binder-notes-line { border-bottom: 1px solid var(--pa-hair); height: 5mm; }
+
+.pa-binder-footer-wrap { margin-top: auto; padding-top: 6mm; }
+
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, 297×210mm, fixed height)
+   ============================================================================= */
+.pa-cert {
+  width: 297mm; height: 210mm;
+  padding: 6mm;
+  display: flex;
+}
+.pa-cert .pa-frame {
+  padding: 14mm 26mm 12mm;
+  align-items: center; text-align: center;
+}
+.pa-cert-top {
+  display: flex; flex-direction: column; align-items: center; gap: 5mm;
+  padding-top: 2mm;
+}
+.pa-cert-title-label {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  padding-left: 0.32em;
+}
+
+.pa-cert-body {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4mm;
+  max-width: 240mm;
+}
+.pa-cert-intro {
+  font-size: 13px;
+  margin: 0;
+}
+.pa-cert-product {
+  font-family: var(--pa-serif);
+  font-weight: 500;
+  font-size: 54px;
+  color: var(--pa-burgundy);
+  margin: 3mm 0 0;
+  line-height: 1.05;
+  max-width: 240mm;
+  letter-spacing: 0.01em;
+}
+.pa-cert-body .pa-rule-short { width: 42mm; margin: 3mm auto 0; }
+
+.pa-cert-attribution {
+  display: flex; flex-direction: column; align-items: center; gap: 2mm;
+  padding-bottom: 6mm;
+}
+.pa-cert-outro {
+  font-size: 13px;
+  margin: 0;
+}
+.pa-cert-brand-name {
+  font-family: var(--pa-serif);
+  font-weight: 700;
+  color: var(--pa-burgundy);
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  margin: 2mm 0 0;
+  line-height: 1.1;
+}
+.pa-cert-tagline { font-size: 11px; }
+
+.pa-cert-signature-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20mm;
+  width: 100%;
+  align-items: flex-end;
+  padding: 4mm 8mm 2mm;
+  max-width: 260mm;
+}
+.pa-cert-sig-cell {
+  display: flex; flex-direction: column; gap: 2mm;
+  align-items: flex-start;
+  min-width: 0;
+}
+.pa-cert-sig-cell-right { align-items: flex-end; text-align: right; }
+.pa-cert-sig-line {
+  height: 1px;
+  background: var(--pa-gold);
+  margin-bottom: 2mm;
+  width: 100%;
+}
+.pa-cert-sig-cell .pa-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+}
+.pa-cert-sig-img {
+  display: block;
+  max-width: 44mm; max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+.pa-cert-seal-wrap {
+  display: flex; justify-content: center; align-items: center;
+  padding-bottom: 2mm;
+}

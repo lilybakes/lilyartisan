@@ -1,0 +1,1731 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+
+/* =============================================================================
+   BAUHAUS VARIANT — dedicated templates, solid primary color compositions
+   =============================================================================
+   Warm cream paper. Super-heavy Archivo Black titles all caps. Solid
+   geometric shapes (rectangles, quarter-circles, squares, circles) in
+   cobalt BLUE, marigold YELLOW, vermillion RED, and true near-BLACK.
+   Every template opens with a shape composition across its top edge.
+
+   Palette:
+     Paper       #F0EAE0   warm cream/beige
+     Blue        #2A4BE0   cobalt Bauhaus blue
+     Yellow      #F5B819   marigold yellow
+     Red         #DF3F1F   vermillion red
+     Black       #0F0F10   near-black — text, rules, chips
+     Body        #2A2A2A   softer body text
+     Muted       #6E6E6E   meta labels
+     Hair        rgba(15, 15, 16, 0.15)
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, primitives
+   ============================================================================= */
+
+.bh-tpl {
+  --bh-paper: #F0EAE0;
+  --bh-blue: #2A4BE0;
+  --bh-yellow: #F5B819;
+  --bh-red: #DF3F1F;
+  --bh-black: #0F0F10;
+  --bh-body: #2A2A2A;
+  --bh-muted: #6E6E6E;
+  --bh-cream: #F0EAE0;
+  --bh-white: #FFFFFF;
+  --bh-hair: rgba(15, 15, 16, 0.15);
+  --bh-hair-strong: rgba(15, 15, 16, 0.30);
+
+  --bh-sans: 'Manrope', 'Inter', 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --bh-display: 'Archivo Black', 'Manrope', 'Inter', -apple-system, sans-serif;
+
+  background: var(--bh-paper);
+  color: var(--bh-body);
+  font-family: var(--bh-sans);
+  font-weight: 400;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(15, 15, 16, 0.10);
+  box-sizing: border-box;
+}
+.bh-tpl * { box-sizing: border-box; }
+
+/* --- BAUHAUS LOGO MARK: blue QC · yellow circle · red QC ------------- */
+.bh-logo-mark {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.bh-logo-mark-sm { height: 10px; }
+.bh-logo-mark-md { height: 14px; }
+.bh-logo-mark-lg { height: 18px; }
+
+.bh-logo-mark-qc-blue,
+.bh-logo-mark-qc-red,
+.bh-logo-mark-circle-yellow {
+  display: block;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 1;
+}
+.bh-logo-mark-qc-blue {
+  background: var(--bh-blue);
+  border-radius: 100% 0 0 0;
+}
+.bh-logo-mark-circle-yellow {
+  background: var(--bh-yellow);
+  border-radius: 50%;
+}
+.bh-logo-mark-qc-red {
+  background: var(--bh-red);
+  border-radius: 0 0 100% 0;
+}
+.bh-logo-mark-md { height: 16px; }
+.bh-logo-mark-lg { height: 22px; }
+
+/* on cream backgrounds behind (yellow social bg / dark bands), swap
+   the yellow center disk to cream so it doesn't blend into the bg */
+.bh-logo-mark-cream .bh-logo-mark-circle-yellow {
+  background: var(--bh-cream);
+}
+
+/* --- Uploaded logo image fallback ------------------------------------ */
+.bh-logo {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bh-white);
+  border: 1.5px solid var(--bh-black);
+  flex-shrink: 0;
+}
+.bh-logo-img { width: 82%; height: 82%; object-fit: contain; }
+
+/* --- Brand lockup ---------------------------------------------------- */
+.bh-brand-lockup { display: flex; gap: 10px; }
+.bh-brand-lockup-inline { flex-direction: row; align-items: center; }
+.bh-brand-lockup-stacked { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.bh-brand-lockup-textonly { flex-direction: column; align-items: flex-start; gap: 2px; }
+.bh-brand-text { display: flex; flex-direction: column; gap: 2px; }
+
+.bh-brand-name {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  color: var(--bh-black);
+  margin: 0;
+  line-height: 1;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.bh-brand-ink   { color: var(--bh-black); }
+.bh-brand-cream { color: var(--bh-cream); }
+
+.bh-brand-tagline {
+  font-family: var(--bh-sans);
+  color: var(--bh-muted);
+  margin: 0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.bh-brand-tagline-ink   { color: var(--bh-muted); }
+.bh-brand-tagline-cream { color: var(--bh-cream); opacity: 0.85; }
+
+/* --- Titles: Archivo Black all-caps tight tracking ------------------- */
+.bh-title {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  color: var(--bh-black);
+  line-height: 0.95;
+  margin: 0;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* --- Meta eyebrow: Manrope 700 wide-tracked -------------------------- */
+.bh-eyebrow {
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.bh-eyebrow-blue  { color: var(--bh-blue); }
+.bh-eyebrow-red   { color: var(--bh-red); }
+.bh-eyebrow-black { color: var(--bh-black); }
+.bh-eyebrow-muted { color: var(--bh-muted); }
+.bh-eyebrow-cream { color: var(--bh-cream); opacity: 0.85; }
+
+.bh-muted { color: var(--bh-muted); }
+
+/* --- Rules: thick, definitive ---------------------------------------- */
+.bh-rule { border: none; padding: 0; margin: 0; display: block; width: 100%; }
+.bh-rule-thin    { height: 1px; }
+.bh-rule-medium  { height: 2px; }
+.bh-rule-thick   { height: 3px; }
+
+.bh-rule-ink   { background: var(--bh-black); }
+.bh-rule-blue  { background: var(--bh-blue); }
+.bh-rule-red   { background: var(--bh-red); }
+.bh-rule-cream { background: var(--bh-cream); }
+
+/* --- Solid rectangle chip -------------------------------------------- */
+.bh-chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding-left: 0.14em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.bh-chip-sm { padding: 5px 9px; font-size: 8.5px; }
+.bh-chip-md { padding: 7px 12px; font-size: 9.5px; min-height: 8mm; }
+
+.bh-chip-black  { background: var(--bh-black);  color: var(--bh-white); }
+.bh-chip-blue   { background: var(--bh-blue);   color: var(--bh-white); }
+.bh-chip-yellow { background: var(--bh-yellow); color: var(--bh-black); }
+.bh-chip-red    { background: var(--bh-red);    color: var(--bh-white); }
+
+/* --- Numbered method chip — solid SQUARES ---------------------------- */
+.bh-method-chip {
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--bh-sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.bh-method-chip-normal {
+  background: var(--bh-blue);
+  color: var(--bh-white);
+}
+.bh-method-chip-accent {
+  background: var(--bh-red);
+  color: var(--bh-white);
+}
+
+/* --- Method sub-group heading ---------------------------------------- */
+.bh-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  color: var(--bh-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em !important;
+  font-size: 10px;
+  margin: 4mm 0 2mm;
+  display: block;
+}
+.bh-method-group::before { content: '' !important; }
+
+/* --- Numeric cell alignment ------------------------------------------ */
+.bh-num {
+  text-align: right;
+  font-family: var(--bh-sans);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+/* --- Empty-state ----------------------------------------------------- */
+.bh-empty {
+  color: var(--bh-muted);
+  font-family: var(--bh-sans);
+  font-style: italic;
+  font-size: 11.5px;
+  margin: 3mm 0 0;
+}
+
+/* --- Footer ---------------------------------------------------------- */
+.bh-footer {
+  font-family: var(--bh-sans);
+  color: var(--bh-body);
+  font-size: 9.5px;
+  line-height: 1.5;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding-left: 0.16em;
+  font-weight: 500;
+}
+.bh-footer-split {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12mm;
+}
+.bh-footer-split .bh-footer-right { text-align: right; }
+.bh-footer-centered {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 2mm;
+}
+.bh-footer-minimal { text-align: center; }
+.bh-footer-line { font-size: 9.5px; color: var(--bh-body); }
+
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.bh-recipe {
+  width: 148mm; min-height: 210mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+
+/* --- Top composition band --- */
+.bh-recipe-top {
+  position: relative;
+  width: 100%;
+  height: 50mm;
+  flex-shrink: 0;
+}
+/* Blue rectangle: wide, spans most of the width, on top-left */
+.bh-recipe-top-blue {
+  position: absolute;
+  top: 0; left: 0;
+  width: 108mm; height: 50mm;
+  background: var(--bh-blue);
+}
+/* Yellow quarter-circle bulging in from top-right of blue rect */
+.bh-recipe-top-yellow {
+  position: absolute;
+  top: 0; right: 20mm;
+  width: 35mm; height: 35mm;
+  background: var(--bh-yellow);
+  border-radius: 0 0 0 100%;
+}
+/* Small red rectangle at the right edge */
+.bh-recipe-top-red {
+  position: absolute;
+  top: 0; right: 0;
+  width: 20mm; height: 50mm;
+  background: var(--bh-red);
+}
+/* Content overlay on the blue band */
+.bh-recipe-top-content {
+  position: absolute;
+  top: 0; left: 0;
+  width: 108mm; height: 50mm;
+  padding: 8mm 8mm 6mm;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  z-index: 2;
+}
+.bh-recipe-top-brand {
+  display: flex; flex-direction: column; gap: 3mm;
+}
+.bh-recipe-top-brand-name {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  color: var(--bh-cream);
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.bh-recipe-top-brand-tag {
+  font-family: var(--bh-sans);
+  color: var(--bh-cream);
+  opacity: 0.85;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.bh-recipe-header {
+  padding: 8mm 12mm 5mm;
+  display: flex; flex-direction: column;
+  gap: 4mm;
+}
+.bh-recipe-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+}
+.bh-recipe-title {
+  font-size: 34px;
+  line-height: 0.95;
+  max-width: 130mm;
+}
+.bh-recipe-meta-row {
+  display: flex; flex-wrap: wrap;
+  gap: 4mm;
+  margin-top: 2mm;
+}
+
+.bh-recipe-body {
+  display: grid; grid-template-columns: 52mm 1fr;
+  gap: 8mm;
+  flex: 1;
+  padding: 4mm 12mm 8mm;
+}
+.bh-recipe-ingredients > .bh-eyebrow,
+.bh-recipe-method > .bh-eyebrow {
+  margin-bottom: 4mm;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+}
+
+.bh-recipe-ing-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+}
+.bh-recipe-ing-list li {
+  display: grid;
+  grid-template-columns: 6px 1fr auto;
+  gap: 3mm;
+  align-items: baseline;
+  padding: 2.2mm 0;
+  border-bottom: 1px solid var(--bh-hair);
+  font-family: var(--bh-sans);
+  font-size: 10px;
+  color: var(--bh-body);
+  letter-spacing: 0.08em;
+  padding-left: 0;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.bh-recipe-ing-bullet {
+  display: block;
+  width: 6px; height: 6px;
+  background: var(--bh-black);
+  position: relative; top: -1px;
+}
+.bh-recipe-ing-name { color: var(--bh-black); font-weight: 700; letter-spacing: 0.06em; }
+.bh-recipe-ing-qty {
+  color: var(--bh-body);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.bh-recipe-method-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3.5mm;
+  font-family: var(--bh-sans);
+  font-size: 11px;
+  color: var(--bh-body);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.bh-recipe-method-list li {
+  display: grid;
+  grid-template-columns: 8mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.bh-recipe-method-step { padding-top: 1mm; }
+.bh-recipe-method-step-final { color: var(--bh-black); }
+.bh-recipe-method-step-final strong { font-weight: 800; color: var(--bh-red); }
+
+.bh-recipe-footer-wrap { margin-top: auto; padding: 0 12mm 10mm; }
+
+
+/* =============================================================================
+   02 — COST SHEET  (A4 portrait, 210×297mm) — INTERNAL
+   ============================================================================= */
+.bh-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 16mm 12mm;
+  display: flex; flex-direction: column;
+}
+.bh-cost-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+}
+.bh-cost-tag-red {
+  background: var(--bh-red);
+  color: var(--bh-white);
+  padding: 5mm 8mm;
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  padding-left: calc(8mm + 0.20em);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.bh-cost-title-row {
+  display: flex; gap: 12mm; align-items: flex-start;
+  padding: 4mm 0 10mm;
+}
+.bh-cost-title-left { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4mm; }
+.bh-cost-title {
+  font-size: 40px;
+  line-height: 0.95;
+  max-width: 130mm;
+}
+.bh-cost-meta {
+  font-family: var(--bh-sans);
+  color: var(--bh-body);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  text-transform: uppercase;
+  margin-top: 2mm;
+}
+
+/* Blue price card top-right */
+.bh-cost-price-card {
+  width: 62mm;
+  background: var(--bh-blue);
+  color: var(--bh-white);
+  padding: 6mm 7mm 7mm;
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+}
+.bh-cost-price-eyebrow {
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin-bottom: 3mm;
+}
+.bh-cost-price-val {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 4mm;
+}
+.bh-cost-price-divider {
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.4);
+  margin-bottom: 4mm;
+  width: 100%;
+}
+.bh-cost-price-line {
+  display: flex; justify-content: space-between;
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  padding-left: 0.14em;
+  text-transform: uppercase;
+  padding: 1.2mm 0;
+}
+
+.bh-cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4mm;
+  font-family: var(--bh-sans);
+  font-size: 10.5px;
+  color: var(--bh-body);
+  font-weight: 500;
+}
+.bh-cost-table thead th {
+  background: var(--bh-black);
+  color: var(--bh-white);
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 4mm 5mm;
+  padding-left: calc(5mm + 0.18em);
+  font-size: 9.5px;
+  text-align: left;
+}
+.bh-cost-table thead th.bh-num { text-align: right; padding-right: 5mm; padding-left: 5mm; }
+.bh-cost-th-yellow {
+  background: var(--bh-yellow) !important;
+  color: var(--bh-black) !important;
+}
+.bh-cost-table td {
+  padding: 3.5mm 5mm;
+  border-bottom: 1px solid var(--bh-hair);
+  letter-spacing: 0.06em;
+  padding-left: calc(5mm + 0.06em);
+}
+.bh-cost-table td.bh-num { padding-right: 5mm; padding-left: 5mm; }
+.bh-cost-td-name { color: var(--bh-black); font-weight: 700; }
+.bh-cost-td-yellow {
+  background: var(--bh-yellow);
+  color: var(--bh-black);
+  font-weight: 700;
+}
+.bh-cost-empty {
+  padding: 8mm 0 !important;
+  color: var(--bh-muted);
+  font-style: italic;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.bh-cost-batch-row td {
+  padding: 5mm 5mm 4mm;
+  border-bottom: none;
+  border-top: 2.5px solid var(--bh-black);
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  color: var(--bh-black);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding-left: calc(5mm + 0.18em);
+}
+.bh-cost-batch-row td.bh-num {
+  padding-left: 5mm;
+  letter-spacing: 0.04em;
+}
+.bh-cost-batch-val {
+  color: var(--bh-blue) !important;
+  font-family: var(--bh-display);
+  font-weight: 900;
+  font-size: 14px !important;
+  letter-spacing: -0.01em !important;
+}
+
+.bh-cost-stats-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 5mm;
+  margin-top: 10mm;
+}
+.bh-cost-stat {
+  border: 1.5px solid var(--bh-black);
+  padding: 8mm 8mm;
+  display: flex; flex-direction: column; gap: 4mm;
+  background: var(--bh-paper);
+}
+.bh-cost-stat .bh-eyebrow { font-size: 9.5px; letter-spacing: 0.18em; }
+.bh-cost-stat-val {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  color: var(--bh-black);
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.bh-cost-stat-accent {
+  background: var(--bh-yellow);
+  border-color: var(--bh-yellow);
+}
+.bh-cost-stat-eyebrow {
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  font-size: 9.5px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  color: var(--bh-black);
+}
+.bh-cost-stat-accent .bh-cost-stat-val { color: var(--bh-black); }
+
+.bh-cost-caution {
+  margin-top: 8mm;
+  background: var(--bh-black);
+  color: var(--bh-white);
+  padding: 5mm 7mm;
+  display: flex; align-items: center; gap: 6mm;
+}
+.bh-cost-caution-label {
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  color: var(--bh-yellow);
+  flex-shrink: 0;
+}
+.bh-cost-caution-body {
+  font-family: var(--bh-sans);
+  font-size: 10.5px;
+  color: var(--bh-white);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.bh-cost-footer-wrap { margin-top: auto; padding-top: 10mm; }
+
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, 105×148mm)
+   ============================================================================= */
+.bh-care {
+  width: 105mm; min-height: 148mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+
+/* Top composition band */
+.bh-care-top {
+  position: relative;
+  width: 100%;
+  height: 35mm;
+  flex-shrink: 0;
+}
+.bh-care-top-red {
+  position: absolute;
+  top: 0; left: 0;
+  width: 40mm; height: 40mm;
+  background: var(--bh-red);
+  border-radius: 0 0 100% 0;
+}
+.bh-care-top-blue {
+  position: absolute;
+  top: 0; left: 45mm;
+  width: 30mm; height: 35mm;
+  background: var(--bh-blue);
+}
+.bh-care-top-yellow {
+  position: absolute;
+  top: 0; right: 0;
+  width: 25mm; height: 35mm;
+  background: var(--bh-yellow);
+}
+
+.bh-care-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 2mm;
+  padding: 6mm 8mm 4mm;
+}
+.bh-care-brand-name {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--bh-black);
+  margin-top: 2mm;
+  line-height: 1;
+}
+.bh-care-brand-tag {
+  font-family: var(--bh-sans);
+  color: var(--bh-muted);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+}
+
+.bh-care-title-block {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  padding: 4mm 6mm 4mm;
+  gap: 3mm;
+}
+.bh-care-product {
+  font-size: 22px;
+  line-height: 0.95;
+  max-width: 88mm;
+}
+.bh-care-eyebrow { font-size: 9.5px; letter-spacing: 0.24em; padding-left: 0.24em; }
+
+.bh-care-body {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 5mm;
+  padding: 3mm 8mm 3mm;
+}
+.bh-care-section > .bh-eyebrow { margin-bottom: 2mm; font-size: 9.5px; letter-spacing: 0.22em; padding-left: 0.22em; }
+.bh-care-text {
+  font-family: var(--bh-sans);
+  color: var(--bh-body);
+  font-size: 10.5px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 400;
+}
+.bh-care-allergens {
+  display: flex; flex-wrap: wrap; gap: 3mm;
+  padding-top: 1mm;
+}
+
+.bh-care-footer-wrap { margin-top: auto; padding: 6mm 8mm 6mm; }
+.bh-care-footer-wrap .bh-footer-line { font-size: 8px; letter-spacing: 0.20em; padding-left: 0.20em; }
+
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.bh-label {
+  width: 74mm; min-height: 105mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+
+/* Top composition band */
+.bh-label-top {
+  position: relative;
+  width: 100%;
+  height: 22mm;
+  flex-shrink: 0;
+}
+.bh-label-top-blue {
+  position: absolute;
+  top: 0; left: 0;
+  width: 58mm; height: 22mm;
+  background: var(--bh-blue);
+}
+.bh-label-top-yellow {
+  position: absolute;
+  top: 0; right: 8mm;
+  width: 14mm; height: 14mm;
+  background: var(--bh-yellow);
+  border-radius: 0 0 0 100%;
+}
+.bh-label-top-red {
+  position: absolute;
+  top: 0; right: 0;
+  width: 8mm; height: 22mm;
+  background: var(--bh-red);
+}
+.bh-label-top-content {
+  position: absolute;
+  top: 0; left: 0;
+  width: 58mm; height: 22mm;
+  padding: 4mm 5mm;
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 2;
+}
+.bh-label-top-brand { display: flex; flex-direction: column; gap: 1.5mm; }
+
+.bh-label-brand-name {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  font-size: 10px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--bh-cream);
+  line-height: 1;
+}
+.bh-label-brand-city {
+  font-family: var(--bh-sans);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  color: var(--bh-cream);
+  opacity: 0.85;
+  line-height: 1;
+}
+
+.bh-label-title-block { padding: 5mm 6mm 3mm; }
+.bh-label-product {
+  font-size: 18px;
+  line-height: 0.95;
+  max-width: 60mm;
+}
+
+.bh-label-section { padding: 0 6mm; margin-bottom: 3mm; }
+.bh-label-section > .bh-eyebrow { margin-bottom: 1.5mm; font-size: 8.5px; letter-spacing: 0.22em; padding-left: 0.22em; }
+.bh-label-body {
+  font-family: var(--bh-sans);
+  color: var(--bh-body);
+  font-size: 10px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 400;
+}
+.bh-label-allergens {
+  display: flex; flex-wrap: wrap; gap: 2mm;
+  padding-top: 1mm;
+}
+
+.bh-label .bh-rule { margin-left: 6mm; margin-right: 6mm; width: calc(100% - 12mm); }
+
+.bh-label-footer-wrap { margin-top: auto; padding: 0 6mm 4mm; }
+.bh-label-footer {
+  font-family: var(--bh-sans);
+  color: var(--bh-body);
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.bh-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+
+/* Top composition band: black rect center, yellow QC top-left, red QC top-right */
+.bh-menu-top {
+  position: relative;
+  width: 100%;
+  height: 32mm;
+  flex-shrink: 0;
+}
+.bh-menu-top-yellow {
+  position: absolute;
+  top: 0; left: 0;
+  width: 26mm; height: 26mm;
+  background: var(--bh-yellow);
+  border-radius: 0 0 100% 0;
+}
+.bh-menu-top-red {
+  position: absolute;
+  top: 0; right: 0;
+  width: 26mm; height: 26mm;
+  background: var(--bh-red);
+  border-radius: 0 0 0 100%;
+}
+.bh-menu-top-black {
+  position: absolute;
+  top: 0;
+  left: 24mm; right: 24mm;
+  height: 32mm;
+  background: var(--bh-black);
+  display: flex; align-items: center; justify-content: center;
+  padding: 2mm 4mm;
+}
+.bh-menu-brand-name {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--bh-cream);
+  text-align: center;
+  line-height: 1;
+}
+
+.bh-menu-header {
+  padding: 6mm 14mm 8mm;
+  text-align: center;
+}
+.bh-menu-header .bh-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+}
+
+.bh-menu-body { padding: 0 14mm 6mm; }
+.bh-menu-empty {
+  text-align: center; color: var(--bh-muted);
+  font-style: italic;
+  margin-top: 20mm;
+}
+
+.bh-menu-cat-block { margin-bottom: 10mm; }
+.bh-menu-cat-badge {
+  margin-bottom: 5mm;
+}
+
+.bh-menu-cat-items {
+  display: flex; flex-direction: column; gap: 5mm;
+}
+.bh-menu-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8mm;
+  padding-bottom: 4mm;
+  border-bottom: 1px solid var(--bh-hair);
+}
+.bh-menu-item:last-child { border-bottom: none; }
+.bh-menu-item-body { flex: 1; min-width: 0; }
+.bh-menu-item-name {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  color: var(--bh-black);
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.bh-menu-item-desc {
+  font-family: var(--bh-sans);
+  color: var(--bh-muted);
+  font-size: 10px;
+  margin-top: 2mm;
+  line-height: 1.45;
+  font-weight: 400;
+}
+.bh-menu-item-price {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  color: var(--bh-black);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  padding-top: 0.5mm;
+  letter-spacing: -0.02em;
+}
+
+.bh-menu-footer-wrap { margin-top: auto; padding: 0 14mm 10mm; }
+.bh-menu-footer-wrap .bh-footer-line { font-size: 8.5px; letter-spacing: 0.20em; padding-left: 0.20em; }
+
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.bh-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 16mm 12mm;
+  display: flex; flex-direction: column;
+}
+.bh-wholesale-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+}
+.bh-wholesale-effective {
+  background: var(--bh-yellow);
+  color: var(--bh-black);
+  padding: 4mm 7mm;
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  font-size: 9.5px;
+  letter-spacing: 0.20em;
+  padding-left: calc(7mm + 0.20em);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.bh-wholesale-title-row {
+  display: flex; gap: 12mm; align-items: stretch;
+  padding: 4mm 0 10mm;
+}
+.bh-wholesale-title-left { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4mm; }
+.bh-wholesale-title {
+  font-size: 34px;
+  line-height: 0.95;
+  max-width: 130mm;
+}
+.bh-wholesale-desc {
+  font-family: var(--bh-sans);
+  color: var(--bh-body);
+  font-size: 11.5px;
+  margin: 0;
+  max-width: 130mm;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.bh-wholesale-terms-card {
+  width: 72mm;
+  background: var(--bh-red);
+  color: var(--bh-white);
+  padding: 7mm 8mm;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 2mm;
+  flex-shrink: 0;
+}
+.bh-wholesale-terms-card-eyebrow {
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+.bh-wholesale-terms-card-big {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 1mm 0;
+}
+.bh-wholesale-terms-card-sub {
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  text-transform: uppercase;
+}
+
+.bh-wholesale-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4mm;
+  font-family: var(--bh-sans);
+  font-size: 10.5px;
+  color: var(--bh-body);
+  font-weight: 500;
+}
+.bh-wholesale-table thead th {
+  background: var(--bh-black);
+  color: var(--bh-white);
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 4mm 5mm;
+  padding-left: calc(5mm + 0.18em);
+  font-size: 9.5px;
+  text-align: left;
+  border: 1px solid var(--bh-black);
+}
+.bh-wholesale-table thead th.bh-num { text-align: right; padding-right: 5mm; padding-left: 5mm; }
+.bh-wholesale-th-blue {
+  background: var(--bh-blue) !important;
+  border-color: var(--bh-blue) !important;
+}
+.bh-wholesale-th-yellow {
+  background: var(--bh-yellow) !important;
+  color: var(--bh-black) !important;
+  border-color: var(--bh-yellow) !important;
+}
+.bh-wholesale-table td {
+  padding: 3.5mm 5mm;
+  border: 1px solid var(--bh-hair-strong);
+  letter-spacing: 0.06em;
+  padding-left: calc(5mm + 0.06em);
+}
+.bh-wholesale-table td.bh-num { padding-right: 5mm; padding-left: 5mm; }
+.bh-wholesale-td-name { color: var(--bh-black); font-weight: 700; }
+.bh-wholesale-td-price { color: var(--bh-blue); font-weight: 700; }
+.bh-wholesale-empty {
+  padding: 8mm 0 !important;
+  color: var(--bh-muted);
+  font-style: italic;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.bh-wholesale-currency {
+  margin-top: 4mm; font-size: 9.5px; letter-spacing: 0.22em; padding-left: 0.22em;
+}
+
+.bh-wholesale-terms-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16mm;
+  margin-top: 12mm;
+}
+.bh-wholesale-terms-col > .bh-eyebrow { margin-bottom: 4mm; font-size: 10.5px; letter-spacing: 0.22em; padding-left: 0.22em; }
+.bh-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--bh-sans);
+  color: var(--bh-body);
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.bh-wholesale-terms-list li {
+  padding-left: 5mm;
+  position: relative;
+}
+.bh-wholesale-terms-list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px;
+  width: 5px; height: 5px;
+  background: var(--bh-black);
+}
+.bh-wholesale-order-lines {
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--bh-sans);
+  color: var(--bh-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  padding-left: 0.10em;
+  text-transform: uppercase;
+}
+
+.bh-wholesale-sig-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 10mm;
+}
+.bh-wholesale-sig-cell { display: flex; flex-direction: column; gap: 2mm; }
+.bh-wholesale-sig-line { height: 2px; background: var(--bh-black); margin-bottom: 2mm; width: 100%; }
+.bh-wholesale-sig-cell .bh-eyebrow { font-size: 9.5px; letter-spacing: 0.22em; padding-left: 0.22em; }
+
+.bh-wholesale-footer-wrap { margin-top: auto; padding-top: 10mm; }
+
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, 74×105mm) — cream, no full-bleed
+   ============================================================================= */
+.bh-tpl.bh-delivery {
+  width: 74mm; min-height: 105mm;
+  background: var(--bh-paper);
+  color: var(--bh-black);
+  padding: 3mm 6mm 5mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.bh-delivery-hole {
+  width: 5mm; height: 5mm;
+  border: 1.5px solid var(--bh-black);
+  border-radius: 50%;
+  margin: 1mm 0 3mm;
+  background: var(--bh-paper);
+}
+.bh-delivery-shapes {
+  display: flex; align-items: center; gap: 3mm;
+  margin-bottom: 4mm;
+  height: 8mm;
+}
+.bh-delivery-qc-blue {
+  display: block;
+  width: 8mm; height: 8mm;
+  background: var(--bh-blue);
+  border-radius: 100% 0 0 0;
+}
+.bh-delivery-circle-yellow {
+  display: block;
+  width: 8mm; height: 8mm;
+  background: var(--bh-yellow);
+  border-radius: 50%;
+}
+.bh-delivery-square-red {
+  display: block;
+  width: 8mm; height: 8mm;
+  background: var(--bh-red);
+}
+
+.bh-delivery-brand-name {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--bh-black);
+  margin-bottom: 4mm;
+  line-height: 1;
+}
+.bh-delivery-eyebrow {
+  font-size: 8.5px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+  margin-bottom: 2mm;
+}
+.bh-delivery-product {
+  font-size: 20px;
+  line-height: 0.95;
+  max-width: 60mm;
+  margin-bottom: 5mm;
+}
+
+.bh-delivery-care-box {
+  width: 100%;
+  background: var(--bh-yellow);
+  color: var(--bh-black);
+  padding: 4mm 5mm 5mm;
+  display: flex; flex-direction: column; gap: 2mm;
+  text-align: left;
+  min-height: 30mm;
+}
+.bh-delivery-care-label {
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  color: var(--bh-black);
+}
+.bh-delivery-care-body {
+  font-family: var(--bh-sans);
+  color: var(--bh-body);
+  font-size: 9.5px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 400;
+}
+
+.bh-delivery-footer {
+  margin-top: auto;
+  padding-top: 5mm;
+  text-align: center;
+  width: 100%;
+}
+.bh-delivery-footer-line {
+  font-family: var(--bh-sans);
+  color: var(--bh-body);
+  font-size: 8px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+
+/* =============================================================================
+   08 — SOCIAL MEDIA CARD  (1080×1080 = 148×148mm) — yellow full-bleed
+   ============================================================================= */
+.bh-tpl.bh-social {
+  width: 148mm; height: 148mm;
+  background: var(--bh-yellow);
+  color: var(--bh-black);
+  padding: 12mm 12mm 10mm;
+  display: flex; flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+/* Blue quarter-circle bulging in from top-right */
+.bh-social-qc-blue {
+  position: absolute;
+  top: 0; right: 0;
+  width: 50mm; height: 50mm;
+  background: var(--bh-blue);
+  border-radius: 0 0 0 100%;
+  z-index: 0;
+}
+/* Red quarter-circle bulging in from bottom-left */
+.bh-social-qc-red {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 40mm; height: 40mm;
+  background: var(--bh-red);
+  border-radius: 0 100% 0 0;
+  z-index: 0;
+}
+.bh-social > * { position: relative; z-index: 1; }
+
+.bh-social-header {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2mm;
+  max-width: 90mm;
+}
+.bh-social-brand-name {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  color: var(--bh-black);
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.bh-social-brand-tag {
+  font-family: var(--bh-sans);
+  color: var(--bh-black);
+  opacity: 0.8;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+}
+
+.bh-social-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 6mm 0;
+  max-width: 118mm;
+}
+.bh-social-eyebrow {
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  color: var(--bh-red);
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+  text-transform: uppercase;
+  margin-bottom: 5mm;
+}
+.bh-social-title {
+  font-size: 52px;
+  color: var(--bh-black);
+  margin: 0 0 5mm;
+  max-width: 118mm;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+.bh-social-desc {
+  font-family: var(--bh-sans);
+  color: var(--bh-black);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 100mm;
+  font-weight: 500;
+}
+
+.bh-social-footer {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding-top: 5mm;
+  gap: 6mm;
+}
+.bh-social-cta {
+  background: var(--bh-black);
+  color: var(--bh-white);
+  padding: 5mm 8mm;
+  font-family: var(--bh-display);
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.bh-social-handles {
+  font-family: var(--bh-sans);
+  color: var(--bh-black);
+  font-size: 9px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-align: right;
+  line-height: 1.5;
+}
+.bh-social-website { opacity: 0.7; margin-top: 1mm; }
+
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait)
+   ============================================================================= */
+.bh-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 16mm 12mm;
+  display: flex; flex-direction: column;
+}
+.bh-binder-top {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+}
+.bh-binder-top-shapes {
+  display: flex; align-items: center; gap: 4mm;
+  height: 8mm;
+}
+.bh-binder-top-blue,
+.bh-binder-top-black,
+.bh-binder-top-red {
+  display: block;
+  height: 8mm;
+}
+.bh-binder-top-blue   { width: 12mm; background: var(--bh-blue); }
+.bh-binder-top-yellow {
+  display: block;
+  height: 8mm; width: 8mm;
+  background: var(--bh-yellow);
+  border-radius: 100% 0 0 0;
+}
+.bh-binder-top-black  { width: 18mm; background: var(--bh-black); }
+.bh-binder-top-red    { width: 8mm;  background: var(--bh-red); }
+
+.bh-binder-top-meta {
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  color: var(--bh-black);
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+}
+
+.bh-binder-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  padding-bottom: 4mm;
+}
+.bh-binder-brand-lockup { display: flex; align-items: center; gap: 10px; }
+.bh-binder-brand-text { display: flex; flex-direction: column; gap: 2mm; }
+.bh-binder-brand-name {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--bh-black);
+  line-height: 1;
+}
+
+.bh-binder-title-row {
+  display: flex; gap: 12mm; align-items: flex-start;
+  padding: 8mm 0 4mm;
+}
+.bh-binder-title-left { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3mm; }
+.bh-binder-title { font-size: 32px; line-height: 0.95; margin: 0; max-width: 120mm; }
+.bh-binder-desc {
+  font-family: var(--bh-sans);
+  color: var(--bh-muted);
+  font-size: 11.5px;
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.bh-binder-photo {
+  width: 58mm; height: 44mm; flex-shrink: 0;
+  background: var(--bh-black);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 4mm;
+}
+.bh-binder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.bh-binder-photo-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 1mm;
+  font-family: var(--bh-sans);
+  font-weight: 700;
+  color: var(--bh-cream);
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.bh-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8mm;
+  padding: 4mm 0;
+}
+.bh-binder-meta-cell { display: flex; flex-direction: column; gap: 2mm; }
+.bh-binder-meta-cell > .bh-eyebrow { font-size: 9.5px; letter-spacing: 0.22em; padding-left: 0.22em; }
+.bh-binder-meta-val {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  color: var(--bh-black);
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.bh-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12mm;
+  flex: 1;
+}
+.bh-binder-section > .bh-eyebrow { margin-bottom: 5mm; font-size: 10.5px; letter-spacing: 0.22em; padding-left: 0.22em; }
+
+.bh-binder-ing-list { display: flex; flex-direction: column; }
+.bh-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 2.5mm 0;
+  border-bottom: 1px solid var(--bh-hair);
+  font-family: var(--bh-sans);
+  font-size: 10.5px;
+  color: var(--bh-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  align-items: baseline;
+}
+.bh-binder-ing-name { color: var(--bh-black); font-weight: 700; }
+.bh-binder-ing-qty {
+  color: var(--bh-body);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+  font-weight: 500;
+}
+.bh-binder-ing-cost {
+  color: var(--bh-blue);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+  font-weight: 700;
+}
+.bh-binder-batch-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 3mm 0 2mm;
+  border-top: 2.5px solid var(--bh-black);
+  font-family: var(--bh-sans);
+  font-size: 11px;
+  color: var(--bh-black);
+  font-weight: 700;
+  margin-top: 2mm;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  padding-left: 0.16em;
+}
+.bh-binder-batch-row > span:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  padding-left: 0;
+  letter-spacing: 0.04em;
+  color: var(--bh-blue);
+  font-family: var(--bh-display);
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.bh-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3.5mm;
+  font-family: var(--bh-sans);
+  font-size: 11px;
+  color: var(--bh-body);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.bh-binder-method li {
+  display: grid;
+  grid-template-columns: 8mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.bh-binder-method-step { padding-top: 1mm; }
+.bh-binder-method-step-final { color: var(--bh-black); }
+.bh-binder-method-step-final strong { font-weight: 800; color: var(--bh-red); }
+
+.bh-binder-notes { margin-top: 8mm; }
+.bh-binder-notes > .bh-eyebrow { margin-bottom: 3mm; font-size: 10.5px; letter-spacing: 0.22em; padding-left: 0.22em; }
+.bh-binder-notes-lines { display: flex; flex-direction: column; gap: 7px; }
+.bh-binder-notes-line { border-bottom: 1.5px solid var(--bh-hair-strong); height: 5mm; }
+
+.bh-binder-footer-wrap { margin-top: auto; padding-top: 6mm; }
+
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, 297×210mm) — fixed height
+   ============================================================================= */
+.bh-tpl.bh-cert {
+  width: 297mm; height: 210mm;
+  padding: 0;
+  display: block;
+  position: relative;
+}
+/* Corner shapes on cream */
+.bh-cert-qc-blue {
+  position: absolute;
+  top: 0; left: 0;
+  width: 50mm; height: 50mm;
+  background: var(--bh-blue);
+  border-radius: 0 0 100% 0;
+  z-index: 0;
+}
+.bh-cert-qc-yellow {
+  position: absolute;
+  top: 90mm; right: 0;
+  width: 22mm; height: 22mm;
+  background: var(--bh-yellow);
+  border-radius: 100% 0 0 100%;
+  z-index: 0;
+}
+.bh-cert-sq-red {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 30mm; height: 30mm;
+  background: var(--bh-red);
+  z-index: 0;
+}
+
+.bh-cert-frame {
+  position: absolute;
+  top: 18mm; left: 30mm; right: 30mm; bottom: 18mm;
+  border: 2px solid var(--bh-black);
+  background: var(--bh-paper);
+  padding: 12mm 20mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  z-index: 1;
+}
+.bh-cert-frame-top {
+  display: flex; flex-direction: column; align-items: center;
+}
+.bh-cert-title-label { font-size: 11.5px; letter-spacing: 0.32em; padding-left: 0.32em; }
+
+.bh-cert-body {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 5mm;
+  max-width: 220mm;
+  padding: 4mm 0;
+}
+.bh-cert-intro {
+  font-family: var(--bh-sans);
+  color: var(--bh-muted);
+  font-size: 12.5px;
+  margin: 0;
+  font-weight: 400;
+}
+.bh-cert-product {
+  font-size: 52px;
+  margin: 2mm 0;
+  line-height: 0.95;
+  max-width: 220mm;
+  letter-spacing: -0.02em;
+  color: var(--bh-black);
+}
+
+.bh-cert-attribution {
+  display: flex; flex-direction: column; align-items: center; gap: 2mm;
+  padding-bottom: 3mm;
+}
+.bh-cert-outro {
+  font-family: var(--bh-sans);
+  color: var(--bh-muted);
+  font-size: 12.5px;
+  margin: 0;
+  font-weight: 400;
+}
+.bh-cert-brand-name {
+  font-family: var(--bh-display);
+  font-weight: 900;
+  color: var(--bh-blue);
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin: 1mm 0 1mm;
+  line-height: 1;
+}
+.bh-cert-tagline {
+  font-family: var(--bh-sans);
+  color: var(--bh-muted);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+  text-transform: uppercase;
+}
+
+.bh-cert-signature-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20mm;
+  width: 100%;
+  align-items: flex-end;
+  padding: 4mm 8mm 2mm;
+  max-width: 240mm;
+}
+.bh-cert-sig-cell {
+  display: flex; flex-direction: column; gap: 2mm;
+  align-items: flex-start;
+  min-width: 0;
+}
+.bh-cert-sig-cell-right { align-items: flex-end; text-align: right; }
+.bh-cert-sig-line { height: 2px; background: var(--bh-black); margin-bottom: 2mm; width: 100%; }
+.bh-cert-sig-cell .bh-eyebrow { font-size: 9.5px; letter-spacing: 0.22em; padding-left: 0.22em; }
+.bh-cert-sig-img {
+  display: block;
+  max-width: 44mm; max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+.bh-cert-seal-wrap {
+  display: flex; justify-content: center; align-items: center;
+  padding-bottom: 1mm;
+}
+.bh-cert-seal {
+  width: 15mm; height: 15mm;
+  background: var(--bh-yellow);
+  border-radius: 50%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 0;
+}
+.bh-cert-seal-line {
+  font-family: var(--bh-sans);
+  font-weight: 800;
+  color: var(--bh-black);
+  font-size: 6.5px;
+  letter-spacing: 0.10em;
+  padding-left: 0.10em;
+  text-transform: uppercase;
+  line-height: 1.15;
+}

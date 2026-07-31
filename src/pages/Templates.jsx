@@ -50,6 +50,14 @@ const STYLE_VARIANTS = [
     description: 'Burgundy→red→orange gradient headers with diagonal-cut edges on cream. Bebas Neue heavy condensed titles + Manrope. Ember-red "01" "02" numbered steps, three-tone meta chips, filled black bars — bold and industrial.' },
   { key: 'flour-ink',   name: 'Flour & Ink',
     description: 'Single-ink minimalism, tracked capitals, 1px hairlines — no accent colour at all.' },
+  { key: 'tessellate',  name: 'Tessellate',
+    description: 'Rust×cream checkerboards, diagonal stripe bands, navy dot-square rules and a 2×2 quadrant logo mark on warm cream.' },
+  { key: 'aurora',      name: 'Aurora',
+    description: 'Purple→teal→pink gradient bands everywhere — full-bleed on Delivery + Social, rounded gradient pill chips, gradient bar chart on the Cost Sheet.' },
+  { key: 'bauhaus',     name: 'Bauhaus',
+    description: 'Primary blue / yellow / red geometric shapes on cream. Archivo Black caps titles, solid filled chips, sharp modernist grid.' },
+  { key: 'patisserie',  name: 'Patisserie',
+    description: 'Dusty pink and deep burgundy on ivory. Cormorant serif titles, Roman-numeral method steps, thin gold hairline frames — refined and romantic.' },
 ]
 
 export default function Templates() {

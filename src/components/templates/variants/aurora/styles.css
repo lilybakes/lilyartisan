@@ -1,0 +1,1505 @@
+/* =============================================================================
+   AURORA VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   Signature: a four-stop aurora gradient (deep purple → purple → teal → pink)
+   used as full-width bands, chip fills, method chips, bar fills, and even the
+   Certificate border. Manrope extrabold titles, purple letter-tracked
+   eyebrows, soft lavender paper. Two accents:
+     — Method: FINAL step chip is solid hot pink (--au-pink-hot)
+     — Wholesale: WHOLESALE column cell is solid hot pink on the header
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, primitives
+   ============================================================================= */
+
+.au-tpl {
+  --au-paper: #F5F4FB;
+  --au-purple: #6C5CE7;
+  --au-purple-deep: #4B3FBA;
+  --au-teal: #34C77B;
+  --au-teal-mid: #48C9B0;
+  --au-pink: #E44FCE;
+  --au-pink-hot: #F5527A;
+  --au-ink: #1A1D3A;
+  --au-body: #3A3A55;
+  --au-muted: #7A7A9A;
+  --au-glass: rgba(108, 92, 231, 0.08);
+  --au-hair: rgba(26, 29, 58, 0.12);
+  --au-hair-strong: rgba(26, 29, 58, 0.25);
+
+  --au-gradient: linear-gradient(135deg, #4B3FBA 0%, #6C5CE7 30%, #48C9B0 65%, #E44FCE 100%);
+  --au-gradient-h: linear-gradient(90deg, #4B3FBA 0%, #6C5CE7 25%, #48C9B0 55%, #E44FCE 100%);
+  --au-gradient-purple-pink: linear-gradient(90deg, #6C5CE7 0%, #E44FCE 100%);
+
+  --au-sans: 'Manrope', 'Plus Jakarta Sans', -apple-system, sans-serif;
+
+  background: var(--au-paper);
+  color: var(--au-body);
+  font-family: var(--au-sans);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(75, 63, 186, 0.12);
+  box-sizing: border-box;
+}
+.au-tpl * { box-sizing: border-box; }
+
+/* --- Logo circle ------------------------------------------------------- */
+.au-logo {
+  border-radius: 50%;
+  border: 1.5px solid var(--au-purple);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--au-purple);
+  background: transparent;
+  flex-shrink: 0;
+  aspect-ratio: 1;
+}
+.au-logo-cream {
+  border-color: rgba(255, 255, 255, 0.85);
+  color: #ffffff;
+}
+.au-logo-initials {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  font-size: 0.32em;   /* scales with parent width via em */
+}
+.au-logo-sm { width: 34px; height: 34px; font-size: 34px; }
+.au-logo-md { width: 50px; height: 50px; font-size: 50px; }
+.au-logo-lg { width: 64px; height: 64px; font-size: 64px; }
+
+.au-logo-img { width: 74%; height: 74%; object-fit: contain; border-radius: 50%; }
+
+/* --- Brand lockup ------------------------------------------------------- */
+.au-brand-lockup { display: flex; gap: 12px; }
+.au-brand-lockup-inline { flex-direction: row; align-items: center; }
+.au-brand-lockup-stacked { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.au-brand-lockup-textonly { flex-direction: column; align-items: flex-start; gap: 2px; }
+.au-brand-text { display: flex; flex-direction: column; gap: 3px; }
+
+.au-brand-name {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  color: var(--au-ink);
+  margin: 0;
+  line-height: 1.1;
+  font-size: 15px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+.au-brand-ink   { color: var(--au-ink); }
+.au-brand-cream { color: #ffffff; }
+
+.au-brand-tagline {
+  font-family: var(--au-sans);
+  color: var(--au-muted);
+  margin: 0;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.au-brand-tagline-ink   { color: var(--au-muted); }
+.au-brand-tagline-cream { color: rgba(255, 255, 255, 0.85); }
+
+/* --- Title (Manrope extrabold, uppercase) ------------------------------- */
+.au-title {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  color: var(--au-ink);
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+/* --- Small-caps eyebrow — purple by default ---------------------------- */
+.au-eyebrow {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--au-purple);
+}
+.au-eyebrow-ink    { color: var(--au-ink); }
+.au-eyebrow-purple { color: var(--au-purple); }
+.au-eyebrow-muted  { color: var(--au-muted); }
+.au-eyebrow-cream  { color: rgba(255, 255, 255, 0.9); }
+
+.au-muted { color: var(--au-muted); }
+
+/* --- Rules ------------------------------------------------------------- */
+.au-rule { border: none; padding: 0; margin: 0; display: block; width: 100%; }
+.au-rule-hair       { height: 1px; background: var(--au-hair); }
+.au-rule-ink        { height: 1px; background: var(--au-ink); }
+.au-rule-gradient   { height: 2px; background: var(--au-gradient-h); border-radius: 1px; }
+.au-rule-cream      { height: 1px; background: rgba(255, 255, 255, 0.35); }
+
+.au-rule-short {
+  display: block;
+  width: 30mm;
+  height: 2px;
+  background: var(--au-gradient-h);
+  border-radius: 1px;
+  margin: 4mm 0;
+}
+.au-rule-short-cream { background: rgba(255, 255, 255, 0.5); }
+
+/* --- Numeric cells ---------------------------------------------------- */
+.au-num {
+  text-align: right;
+  font-family: var(--au-sans);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* --- Numbered method chip --------------------------------------------- */
+.au-method-chip {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--au-sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1;
+  color: #ffffff;
+}
+.au-method-chip-normal {
+  background: var(--au-gradient-h);
+}
+.au-method-chip-accent {
+  background: var(--au-pink-hot);
+  font-weight: 800;
+}
+
+/* --- Gradient pill chip (allergens, meta, category badges) ------------- */
+.au-chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 2.2mm 4mm;
+  border-radius: 999px;
+  font-family: var(--au-sans);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+  line-height: 1;
+  white-space: nowrap;
+}
+.au-chip-fill {
+  background: var(--au-gradient-h);
+}
+/* Outline chip — white pill on gradient bands, gradient-colored border
+   (achieved via double-layer background trick that also works if the
+   parent already has a gradient behind it) */
+.au-chip-outline {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* --- Gradient circle mark (Certificate) ------------------------------- */
+.au-grad-circle {
+  border-radius: 50%;
+  background: var(--au-gradient);
+  display: flex; align-items: center; justify-content: center;
+  color: #ffffff;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(108, 92, 231, 0.35);
+}
+.au-grad-circle-inner {
+  display: flex; flex-direction: column; align-items: center;
+  font-family: var(--au-sans);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 8.5px;
+  text-align: center;
+  line-height: 1.35;
+  color: #ffffff;
+}
+
+/* --- Empty-state ------------------------------------------------------ */
+.au-empty {
+  color: var(--au-muted);
+  font-family: var(--au-sans);
+  font-style: italic;
+  font-size: 12px;
+  margin: 3mm 0 0;
+  font-weight: 500;
+}
+
+/* --- Footer ----------------------------------------------------------- */
+.au-footer {
+  font-family: var(--au-sans);
+  color: var(--au-muted);
+  font-size: 9.5px;
+  line-height: 1.55;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.au-footer-ink   { color: var(--au-muted); }
+.au-footer-cream { color: rgba(255, 255, 255, 0.85); }
+
+.au-footer-split {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12mm;
+}
+.au-footer-split .au-footer-right { text-align: right; }
+.au-footer-centered {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 1.5mm;
+}
+.au-footer-minimal { text-align: center; }
+.au-footer-line { font-size: 9.5px; }
+
+/* --- Method sub-group heading ----------------------------------------- */
+.au-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--au-sans);
+  font-weight: 700;
+  color: var(--au-purple);
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  font-size: 10px;
+  margin: 5mm 0 3mm;
+  display: block;
+}
+.au-method-group::before { content: '' !important; }
+
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.au-recipe {
+  width: 148mm; min-height: 210mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.au-recipe-header {
+  background: var(--au-gradient);
+  color: #ffffff;
+  padding: 14mm 12mm 12mm;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 3mm;
+  position: relative;
+  overflow: hidden;
+}
+.au-recipe-brand-name {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+}
+.au-recipe-brand-tag {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 1mm;
+}
+.au-recipe-title {
+  font-size: 34px;
+  line-height: 1.05;
+  margin-top: 8mm;
+  color: #ffffff;
+  max-width: 130mm;
+  letter-spacing: 0;
+}
+.au-recipe-chip-row {
+  display: flex; flex-wrap: wrap; gap: 3mm; justify-content: center;
+  margin-top: 8mm;
+}
+
+.au-recipe-body {
+  display: grid; grid-template-columns: 50mm 1fr;
+  gap: 10mm;
+  flex: 1;
+  padding: 10mm 12mm 6mm;
+}
+.au-recipe-ingredients > .au-eyebrow,
+.au-recipe-method > .au-eyebrow {
+  margin-bottom: 5mm;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+}
+
+.au-recipe-ing-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+}
+.au-recipe-ing-list li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 2.5mm 0;
+  border-bottom: 1px solid var(--au-hair);
+  font-family: var(--au-sans);
+  font-size: 10.5px;
+  color: var(--au-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  gap: 3mm;
+}
+.au-recipe-ing-name { color: var(--au-body); flex: 1; min-width: 0; }
+.au-recipe-ing-qty {
+  color: var(--au-purple);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.au-recipe-method-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 4mm;
+  font-family: var(--au-sans);
+  font-size: 11.5px;
+  color: var(--au-body);
+  line-height: 1.5;
+  font-weight: 500;
+}
+.au-recipe-method-list li {
+  display: grid;
+  grid-template-columns: 10mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.au-recipe-method-step { padding-top: 1mm; }
+.au-recipe-method-step-final { color: var(--au-ink); }
+.au-recipe-method-step-final strong { font-weight: 800; color: var(--au-pink-hot); }
+
+.au-recipe-footer-wrap {
+  margin-top: auto;
+  padding: 4mm 12mm 10mm;
+  border-top: 1px solid var(--au-hair);
+}
+
+
+/* =============================================================================
+   02 — COST SHEET  (A4 portrait, 210×297mm) — INTERNAL
+   ============================================================================= */
+.au-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.au-cost-header {
+  background: var(--au-gradient);
+  color: #ffffff;
+  padding: 6mm 18mm;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  min-height: 15mm;
+}
+.au-cost-header-right {
+  font-family: var(--au-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.au-cost-body {
+  flex: 1;
+  padding: 12mm 18mm 12mm;
+  display: flex; flex-direction: column;
+}
+
+.au-cost-top-row {
+  display: grid; grid-template-columns: 1fr 62mm;
+  gap: 10mm;
+  align-items: flex-start;
+  margin-bottom: 8mm;
+}
+.au-cost-title-block { min-width: 0; }
+.au-cost-eyebrow { font-size: 10.5px; letter-spacing: 0.22em; margin-bottom: 3mm; }
+.au-cost-title {
+  font-size: 34px;
+  line-height: 1.05;
+  margin: 0;
+  max-width: 130mm;
+}
+.au-cost-meta {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  color: var(--au-muted);
+  margin-top: 4mm;
+  display: flex; gap: 3mm; align-items: center;
+  text-transform: uppercase;
+}
+.au-cost-meta-sep { color: var(--au-purple); }
+
+.au-cost-price-card {
+  background: var(--au-gradient);
+  border-radius: 4mm;
+  padding: 6mm 6mm 5mm;
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.28);
+  display: flex; flex-direction: column;
+}
+.au-cost-price-eyebrow {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 3mm;
+}
+.au-cost-price-val {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  font-size: 30px;
+  color: #ffffff;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.au-cost-price-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.35);
+  margin: 4mm 0 3mm;
+}
+.au-cost-price-line {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--au-sans);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 1mm 0;
+}
+.au-cost-price-line span:first-child {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 8.5px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.au-cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4mm;
+  font-family: var(--au-sans);
+  font-size: 10.5px;
+  color: var(--au-body);
+  font-weight: 500;
+}
+.au-cost-table thead th {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  color: var(--au-purple);
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  padding: 3mm 4mm 4mm;
+  font-size: 9.5px;
+  text-align: left;
+  border-bottom: 2px solid var(--au-purple);
+}
+.au-cost-table thead th.au-num { text-align: right; padding-right: 4mm; }
+.au-cost-table td {
+  padding: 3.5mm 4mm;
+  border-bottom: 1px solid var(--au-hair);
+  letter-spacing: 0.04em;
+}
+.au-cost-table td.au-num { padding-right: 4mm; padding-left: 4mm; }
+.au-cost-td-name { color: var(--au-ink); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+.au-cost-td-val  { color: var(--au-ink); font-weight: 800; }
+.au-cost-empty {
+  padding: 8mm 0 !important;
+  color: var(--au-muted);
+  font-style: italic;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.au-cost-batch-row td {
+  padding: 5mm 4mm 4mm;
+  border-bottom: none;
+  border-top: 2px solid var(--au-ink);
+  font-family: var(--au-sans);
+  font-weight: 800;
+  color: var(--au-ink);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+.au-cost-batch-row td.au-num {
+  color: var(--au-purple-deep);
+  letter-spacing: 0.02em;
+}
+
+.au-cost-chart { margin-top: 10mm; }
+.au-cost-chart-eyebrow { font-size: 10.5px; letter-spacing: 0.22em; margin-bottom: 5mm; }
+.au-cost-bars {
+  display: flex; flex-direction: column; gap: 4mm;
+}
+.au-cost-bar-row {
+  display: grid;
+  grid-template-columns: 42mm 1fr 22mm;
+  gap: 5mm;
+  align-items: center;
+}
+.au-cost-bar-name {
+  font-family: var(--au-sans);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--au-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.au-cost-bar-track {
+  height: 7mm;
+  background: rgba(108, 92, 231, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.au-cost-bar-fill {
+  height: 100%;
+  background: var(--au-gradient-purple-pink);
+  border-radius: 999px;
+  min-width: 4mm;
+}
+.au-cost-bar-val {
+  font-family: var(--au-sans);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--au-purple-deep);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.au-cost-caution {
+  margin-top: 10mm;
+  font-family: var(--au-sans);
+  font-size: 11px;
+  color: var(--au-body);
+  font-weight: 500;
+  line-height: 1.5;
+  padding: 4mm 5mm;
+  background: var(--au-glass);
+  border-radius: 3mm;
+  border-left: 3px solid var(--au-pink-hot);
+}
+.au-cost-caution strong { color: var(--au-pink-hot); font-weight: 800; }
+
+.au-cost-footer-wrap { margin-top: auto; padding-top: 10mm; }
+
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, 105×148mm)
+   ============================================================================= */
+.au-care {
+  width: 105mm; min-height: 148mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.au-care-header {
+  background: var(--au-gradient);
+  color: #ffffff;
+  padding: 8mm 9mm 10mm;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 3mm;
+  min-height: 50mm;
+}
+.au-care-eyebrow {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 8.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 3mm;
+}
+.au-care-product {
+  font-size: 22px;
+  line-height: 1.1;
+  color: #ffffff;
+  max-width: 85mm;
+}
+
+.au-care-body {
+  flex: 1;
+  padding: 6mm 9mm 4mm;
+  display: flex; flex-direction: column; gap: 5mm;
+}
+.au-care-glass {
+  background: var(--au-glass);
+  border-radius: 3mm;
+  padding: 4mm 5mm;
+  display: flex; flex-direction: column; gap: 2mm;
+}
+.au-care-glass > .au-eyebrow { font-size: 9px; letter-spacing: 0.22em; }
+.au-care-section > .au-eyebrow { margin-bottom: 3mm; font-size: 9px; letter-spacing: 0.22em; }
+.au-care-text {
+  font-family: var(--au-sans);
+  color: var(--au-body);
+  font-size: 10.5px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 500;
+}
+.au-care-allergen-chips {
+  display: flex; flex-wrap: wrap; gap: 2mm;
+  margin-top: 1mm;
+}
+
+.au-care-footer-wrap {
+  margin-top: auto;
+  padding: 4mm 9mm 6mm;
+  border-top: 1px solid var(--au-hair);
+}
+.au-care-footer-wrap .au-footer-line { font-size: 8px; letter-spacing: 0.22em; }
+
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.au-label {
+  width: 74mm; min-height: 105mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.au-label-header {
+  background: var(--au-gradient);
+  color: #ffffff;
+  padding: 5mm 6mm 6mm;
+  min-height: 25mm;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 1.5mm;
+}
+.au-label-brand-name {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.au-label-brand-city {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 7.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.au-label-title-block { padding: 6mm 6mm 3mm; }
+.au-label-product {
+  font-size: 17px;
+  line-height: 1.1;
+  max-width: 60mm;
+}
+
+.au-label-section { padding: 3mm 6mm; }
+.au-label-section > .au-eyebrow { margin-bottom: 2mm; font-size: 8.5px; letter-spacing: 0.22em; }
+.au-label-body {
+  font-family: var(--au-sans);
+  color: var(--au-body);
+  font-size: 9.5px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 500;
+}
+.au-label-glass {
+  margin: 3mm 6mm;
+  padding: 3mm 4mm;
+  background: var(--au-glass);
+  border-radius: 2.5mm;
+}
+.au-label-glass > .au-eyebrow { font-size: 8.5px; letter-spacing: 0.22em; margin-bottom: 2mm; }
+.au-label-allergen-chips {
+  display: flex; flex-wrap: wrap; gap: 1.5mm;
+}
+.au-label-allergen-chips .au-chip {
+  padding: 1.5mm 3mm;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
+.au-label-footer-wrap { margin-top: auto; padding: 0 6mm 5mm; }
+.au-label-footer {
+  font-family: var(--au-sans);
+  color: var(--au-muted);
+  font-size: 8px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.au-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.au-menu-header {
+  background: var(--au-gradient);
+  color: #ffffff;
+  padding: 12mm 12mm 12mm;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 8mm;
+  min-height: 50mm;
+}
+.au-menu-brand-name {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: #ffffff;
+  line-height: 1;
+  max-width: 80mm;
+}
+.au-menu-header-right {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.au-menu-body { padding: 10mm 14mm 6mm; flex: 1; }
+.au-menu-empty {
+  text-align: center; color: var(--au-muted);
+  font-style: italic;
+  margin-top: 20mm;
+}
+
+.au-menu-cat-block { margin-bottom: 10mm; }
+.au-menu-cat-badge { margin-bottom: 5mm; }
+
+.au-menu-cat-items {
+  display: flex; flex-direction: column; gap: 6mm;
+}
+.au-menu-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8mm;
+}
+.au-menu-item-body { flex: 1; min-width: 0; }
+.au-menu-item-name {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  color: var(--au-ink);
+  font-size: 15px;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.au-menu-item-desc {
+  font-family: var(--au-sans);
+  color: var(--au-muted);
+  font-size: 10.5px;
+  margin-top: 1.5mm;
+  line-height: 1.45;
+  font-weight: 500;
+}
+.au-menu-item-price {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  color: var(--au-purple);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  padding-top: 1mm;
+  letter-spacing: 0.02em;
+}
+
+.au-menu-footer-wrap { margin-top: auto; padding: 0 14mm 8mm; }
+.au-menu-footer-wrap .au-footer-line { font-size: 8.5px; letter-spacing: 0.22em; }
+
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.au-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.au-wholesale-header {
+  background: var(--au-gradient);
+  color: #ffffff;
+  padding: 8mm 18mm;
+  min-height: 25mm;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+}
+.au-wholesale-header-right {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.au-wholesale-body {
+  flex: 1;
+  padding: 12mm 18mm 12mm;
+  display: flex; flex-direction: column;
+}
+
+.au-wholesale-title-block { padding: 0 0 4mm; }
+.au-wholesale-title-block > .au-eyebrow { margin-bottom: 3mm; }
+.au-wholesale-title {
+  font-size: 32px; line-height: 1.05; margin: 0;
+  text-transform: uppercase;
+}
+.au-wholesale-desc {
+  font-family: var(--au-sans);
+  color: var(--au-body);
+  font-size: 12px;
+  margin: 4mm 0 0;
+  max-width: 140mm;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.au-wholesale-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 8mm;
+  font-family: var(--au-sans);
+  font-size: 10.5px;
+  color: var(--au-body);
+  font-weight: 500;
+  border-radius: 3mm;
+  overflow: hidden;
+}
+.au-wholesale-table thead th {
+  background: var(--au-gradient-h);
+  font-family: var(--au-sans);
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 4mm 5mm;
+  font-size: 9.5px;
+  text-align: left;
+}
+.au-wholesale-table thead th.au-num { text-align: right; padding-right: 5mm; }
+.au-wholesale-th-hot {
+  background: var(--au-pink-hot) !important;
+  background-image: linear-gradient(180deg, #F5527A 0%, #E44FCE 100%) !important;
+  font-weight: 800 !important;
+}
+.au-wholesale-table td {
+  padding: 4mm 5mm;
+  border-bottom: 1px solid var(--au-hair);
+  letter-spacing: 0.06em;
+}
+.au-wholesale-table tbody tr:last-child td { border-bottom: 1px solid var(--au-hair-strong); }
+.au-wholesale-table td.au-num { padding-left: 5mm; padding-right: 5mm; }
+.au-wholesale-td-name { color: var(--au-ink); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.au-wholesale-td-price {
+  color: var(--au-pink-hot);
+  font-weight: 800;
+}
+
+.au-wholesale-currency {
+  margin-top: 4mm;
+  font-family: var(--au-sans);
+  font-weight: 700;
+  color: var(--au-muted);
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.au-wholesale-terms-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 12mm;
+}
+.au-wholesale-terms-col > .au-eyebrow { margin-bottom: 4mm; font-size: 10.5px; letter-spacing: 0.22em; }
+.au-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--au-sans);
+  color: var(--au-body);
+  font-size: 11px;
+  line-height: 1.55;
+  font-weight: 500;
+}
+.au-wholesale-terms-list li {
+  padding-left: 5mm;
+  position: relative;
+}
+.au-wholesale-terms-list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px;
+  width: 3mm; height: 1.2mm;
+  background: var(--au-gradient-h);
+  border-radius: 1mm;
+}
+.au-wholesale-order-lines {
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--au-sans);
+  color: var(--au-ink);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.au-wholesale-sig-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 10mm;
+}
+.au-wholesale-sig-cell { display: flex; flex-direction: column; gap: 2mm; }
+.au-wholesale-sig-line { height: 1px; background: var(--au-ink); margin-bottom: 2mm; width: 100%; }
+.au-wholesale-sig-cell .au-eyebrow { font-size: 9.5px; letter-spacing: 0.22em; }
+
+.au-wholesale-footer-wrap { margin-top: auto; padding-top: 10mm; }
+
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, 74×105mm)
+   ENTIRE PAGE is the aurora gradient
+   ============================================================================= */
+.au-tpl.au-delivery {
+  width: 74mm; min-height: 105mm;
+  background: var(--au-gradient);
+  color: #ffffff;
+  padding: 4mm 7mm 5mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.au-delivery-hole {
+  width: 5mm; height: 5mm;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  margin: 2mm 0 5mm;
+}
+.au-delivery-brand-name {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 5mm;
+}
+.au-delivery-eyebrow {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 8px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 3mm;
+}
+.au-delivery-product {
+  font-size: 18px;
+  line-height: 1.1;
+  color: #ffffff;
+  max-width: 60mm;
+  margin-bottom: 5mm;
+}
+
+.au-delivery-glass {
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 2.5mm;
+  padding: 3mm 4mm;
+  width: 100%;
+  display: flex; flex-direction: column; gap: 1.5mm;
+}
+.au-delivery-glass-label {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  font-size: 8px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+.au-delivery-care-body {
+  font-family: var(--au-sans);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 9px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 500;
+  text-align: left;
+}
+
+.au-delivery-footer {
+  margin-top: auto;
+  padding-top: 6mm;
+}
+.au-delivery-footer-line {
+  font-family: var(--au-sans);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+
+/* =============================================================================
+   08 — SOCIAL MEDIA CARD  (1080×1080 = 148×148mm)
+   ENTIRE PAGE is the aurora gradient
+   ============================================================================= */
+.au-tpl.au-social {
+  width: 148mm; height: 148mm;
+  background: var(--au-gradient);
+  color: #ffffff;
+  padding: 12mm 12mm 10mm;
+  display: flex; flex-direction: column;
+}
+.au-social-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 10mm;
+}
+.au-social-brand-block { display: flex; flex-direction: column; gap: 2mm; }
+.au-social-brand-name {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  color: #ffffff;
+  font-size: 16px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.au-social-brand-tag {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+.au-social-mark {
+  width: 12mm; height: 12mm;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.au-social-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 6mm 0;
+}
+.au-social-eyebrow {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 6mm;
+}
+.au-social-title {
+  font-size: 48px;
+  color: #ffffff;
+  margin: 0 0 5mm;
+  max-width: 118mm;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+.au-social-desc {
+  font-family: var(--au-sans);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 5mm 0 8mm;
+  max-width: 108mm;
+  font-weight: 500;
+}
+.au-social-cta {
+  display: inline-flex;
+  background: #ffffff;
+  color: var(--au-purple);
+  padding: 4mm 8mm;
+  border-radius: 999px;
+  font-family: var(--au-sans);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  align-self: flex-start;
+  box-shadow: 0 6px 20px rgba(75, 63, 186, 0.35);
+}
+
+.au-social-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 5mm;
+  font-family: var(--au-sans);
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.22em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.au-social-website { color: rgba(255, 255, 255, 0.7); }
+
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait)
+   ============================================================================= */
+.au-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 0;
+  display: flex;
+  position: relative;
+}
+.au-binder-stripe {
+  width: 8mm;
+  min-height: 297mm;
+  background: var(--au-gradient);
+  flex-shrink: 0;
+}
+.au-binder-inner {
+  flex: 1;
+  padding: 14mm 16mm 12mm;
+  display: flex; flex-direction: column;
+  min-width: 0;
+}
+
+.au-binder-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  padding-bottom: 4mm;
+}
+.au-binder-brand-lockup { display: flex; align-items: center; gap: 10px; }
+.au-binder-brand-text { display: flex; flex-direction: column; gap: 1.5mm; }
+.au-binder-brand-name {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--au-ink);
+}
+.au-binder-brand-tag {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--au-muted);
+}
+.au-binder-header-right {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--au-purple);
+}
+
+.au-binder-title-row {
+  display: flex; gap: 12mm; align-items: flex-start;
+  padding: 10mm 0 4mm;
+}
+.au-binder-title-left { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3mm; }
+.au-binder-title { font-size: 30px; line-height: 1.05; margin: 0; }
+.au-binder-desc {
+  font-family: var(--au-sans);
+  color: var(--au-body);
+  font-size: 11.5px;
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.au-binder-photo {
+  width: 54mm; height: 44mm; flex-shrink: 0;
+  background: var(--au-glass);
+  border: 1px dashed rgba(108, 92, 231, 0.35);
+  border-radius: 3mm;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  gap: 1mm;
+}
+.au-binder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.au-binder-photo-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 1mm;
+}
+.au-binder-photo-label {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  font-size: 8.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--au-purple);
+}
+
+.au-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8mm;
+  padding: 4mm 0;
+}
+.au-binder-meta-cell { display: flex; flex-direction: column; gap: 2mm; }
+.au-binder-meta-cell > .au-eyebrow { font-size: 9px; letter-spacing: 0.20em; }
+.au-binder-meta-val {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  color: var(--au-ink);
+  font-size: 16px;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.au-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12mm;
+  flex: 1;
+}
+.au-binder-section > .au-eyebrow { margin-bottom: 5mm; font-size: 10.5px; letter-spacing: 0.22em; }
+
+.au-binder-ing-list { display: flex; flex-direction: column; }
+.au-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 2.5mm 0;
+  border-bottom: 1px solid var(--au-hair);
+  font-family: var(--au-sans);
+  font-size: 10.5px;
+  color: var(--au-body);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  align-items: baseline;
+}
+.au-binder-ing-name { color: var(--au-body); }
+.au-binder-ing-qty {
+  color: var(--au-purple);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+  font-weight: 800;
+}
+.au-binder-ing-cost {
+  color: var(--au-ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+  font-weight: 700;
+}
+.au-binder-batch-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 3mm 0 2mm;
+  border-top: 2px solid var(--au-ink);
+  font-family: var(--au-sans);
+  font-size: 11px;
+  color: var(--au-ink);
+  font-weight: 800;
+  margin-top: 2mm;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+.au-binder-batch-row > span:last-child {
+  color: var(--au-purple-deep);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.au-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3.5mm;
+  font-family: var(--au-sans);
+  font-size: 11px;
+  color: var(--au-body);
+  line-height: 1.5;
+  font-weight: 500;
+}
+.au-binder-method li {
+  display: grid;
+  grid-template-columns: 10mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.au-binder-method-step { padding-top: 1mm; }
+.au-binder-method-step-final { color: var(--au-ink); }
+.au-binder-method-step-final strong { font-weight: 800; color: var(--au-pink-hot); }
+
+.au-binder-notes { margin-top: 8mm; }
+.au-binder-notes > .au-eyebrow { margin-bottom: 3mm; font-size: 10.5px; letter-spacing: 0.22em; }
+.au-binder-notes-lines { display: flex; flex-direction: column; gap: 7px; }
+.au-binder-notes-line { border-bottom: 1px solid var(--au-hair); height: 5mm; }
+
+.au-binder-footer-wrap { margin-top: auto; padding-top: 6mm; }
+
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, 297×210mm)
+   ============================================================================= */
+.au-tpl.au-cert {
+  width: 297mm; height: 210mm;
+  padding: 8mm;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+/* Radial glow accents in opposing corners */
+.au-cert-glow {
+  position: absolute;
+  width: 140mm; height: 140mm;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+.au-cert-glow-tl {
+  top: -60mm; left: -50mm;
+  background: radial-gradient(circle, #6C5CE7 0%, transparent 60%);
+}
+.au-cert-glow-br {
+  bottom: -60mm; right: -50mm;
+  background: radial-gradient(circle, #E44FCE 0%, transparent 60%);
+}
+
+/* Gradient border via background-clip trick */
+.au-cert-border {
+  flex: 1;
+  padding: 2mm;
+  border-radius: 4mm;
+  background: var(--au-gradient);
+  position: relative;
+  z-index: 1;
+}
+.au-cert-border-inner {
+  width: 100%; height: 100%;
+  background: var(--au-paper);
+  border-radius: 3mm;
+  padding: 10mm 24mm 10mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+
+.au-cert-top {
+  display: flex; flex-direction: column; align-items: center; gap: 5mm;
+  padding-top: 2mm;
+}
+.au-cert-title-label { font-size: 11px; letter-spacing: 0.30em; }
+
+.au-cert-body {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 5mm;
+  max-width: 240mm;
+}
+.au-cert-intro {
+  font-family: var(--au-sans);
+  color: var(--au-muted);
+  font-size: 12.5px;
+  margin: 0;
+  font-weight: 500;
+  font-style: italic;
+}
+.au-cert-product {
+  font-size: 48px;
+  margin: 3mm 0;
+  line-height: 1.05;
+  max-width: 240mm;
+  color: var(--au-ink);
+}
+
+.au-cert-attribution {
+  display: flex; flex-direction: column; align-items: center; gap: 2mm;
+  padding-bottom: 3mm;
+}
+.au-cert-outro {
+  font-family: var(--au-sans);
+  color: var(--au-muted);
+  font-size: 12.5px;
+  margin: 0;
+  font-weight: 500;
+  font-style: italic;
+}
+.au-cert-brand-name {
+  font-family: var(--au-sans);
+  font-weight: 800;
+  color: var(--au-purple);
+  font-size: 20px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 1mm 0 0;
+}
+.au-cert-tagline {
+  font-family: var(--au-sans);
+  font-weight: 700;
+  color: var(--au-muted);
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.au-cert-signature-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20mm;
+  width: 100%;
+  align-items: flex-end;
+  padding: 4mm 8mm 4mm;
+  max-width: 260mm;
+}
+.au-cert-sig-cell {
+  display: flex; flex-direction: column; gap: 2mm;
+  align-items: flex-start;
+  min-width: 0;
+}
+.au-cert-sig-cell-right { align-items: flex-end; text-align: right; }
+.au-cert-sig-line { height: 1px; background: var(--au-ink); margin-bottom: 2mm; width: 100%; }
+.au-cert-sig-cell .au-eyebrow { font-size: 10px; letter-spacing: 0.20em; }
+.au-cert-sig-img {
+  display: block;
+  max-width: 44mm; max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+.au-cert-seal-wrap {
+  display: flex; justify-content: center; align-items: center;
+  padding-bottom: 2mm;
+}
+
+.au-cert-footer {
+  padding-top: 5mm;
+  font-family: var(--au-sans);
+  color: var(--au-muted);
+  font-size: 9.5px;
+  line-height: 1.6;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.au-cert-footer-line { color: var(--au-muted); }

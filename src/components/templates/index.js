@@ -21,6 +21,10 @@ import { QUIET_MINIMAL_TEMPLATES } from './variants/quiet-minimal/index.js'
 import { VERDANT_TEMPLATES } from './variants/verdant/index.js'
 import { EMBER_TEMPLATES } from './variants/ember/index.js'
 import { FLOUR_INK_TEMPLATES } from './variants/flour-ink/index.js'
+import { TESSELLATE_TEMPLATES } from './variants/tessellate/index.js'
+import { AURORA_TEMPLATES } from './variants/aurora/index.js'
+import { BAUHAUS_TEMPLATES } from './variants/bauhaus/index.js'
+import { PATISSERIE_TEMPLATES } from './variants/patisserie/index.js'
 
 /**
  * Registry of the 10 shared templates. Each entry is the DEFAULT (non-variant)
@@ -54,6 +58,10 @@ const VARIANT_MAP = {
   verdant: VERDANT_TEMPLATES,
   ember: EMBER_TEMPLATES,
   'flour-ink': FLOUR_INK_TEMPLATES,
+  tessellate: TESSELLATE_TEMPLATES,
+  aurora: AURORA_TEMPLATES,
+  bauhaus: BAUHAUS_TEMPLATES,
+  patisserie: PATISSERIE_TEMPLATES,
 }
 
 export function getTemplate(key) {

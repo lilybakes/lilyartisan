@@ -61,6 +61,30 @@ export const STYLE_VARIANTS = [
     description: 'Single-ink minimalism. Jost only (weights 200–500), three colors (ink · paper · stone), tracked capitals, 1px hairlines, no accent, no gradients. Delivery tag on stone; social card on ink. Reads as a print artifact.',
     accent: '#1A1A18',
   },
+  {
+    key: 'tessellate',
+    name: 'Tessellate',
+    description: 'Warm cream paper with rust×cream and navy×cream checkerboard bands, three-tone diagonal stripes, small navy dot-square rules, and a four-quadrant 2×2 logo mark. Manrope body + JetBrains Mono meta throughout. Playful, retro-graphic, warm.',
+    accent: '#C74A22',
+  },
+  {
+    key: 'aurora',
+    name: 'Aurora',
+    description: 'Purple → teal → pink gradient bands power every header; Delivery Tag and Social Card wear the full aurora. Rounded gradient pill chips for allergens and meta, gradient bar chart on the Cost Sheet, hot-pink final method step. Manrope 800 titles on soft lavender paper.',
+    accent: '#6C5CE7',
+  },
+  {
+    key: 'bauhaus',
+    name: 'Bauhaus',
+    description: 'Primary-color modernism: cobalt blue, marigold yellow, vermillion red, and near-black on warm cream. Archivo Black caps titles, solid geometric quarter-circles and squares hugging the page edges, sharp filled chips for meta and allergens. Bold, structured, high-contrast.',
+    accent: '#2A4BE0',
+  },
+  {
+    key: 'patisserie',
+    name: 'Patisserie',
+    description: 'Dusty pink and deep burgundy on ivory. Cormorant Garamond serif titles, mauve section eyebrows, Roman-numeral method steps (I · II · III), thin gold hairline frames on every portrait. Care Card and Delivery Tag on soft pink; Social Card on deep burgundy. Refined, romantic, restrained.',
+    accent: '#7A2E3B',
+  },
 ]
 
 export function getStyleVariant(key) {

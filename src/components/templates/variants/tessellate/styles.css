@@ -1,0 +1,1508 @@
+/* =============================================================================
+   TESSELLATE VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   Warm cream paper, deep navy ink, ember-rust primary accent, warm brown
+   secondary. Manrope throughout (300 light / 400 regular / 700 bold). All
+   meta labels in JetBrains Mono, uppercase, wide-tracked.
+
+   The signature marks:
+     • Rust×cream & navy×cream CHECKERBOARDS (the tessellating pattern)
+     • Rust+brown+cream & navy+cream DIAGONAL STRIPES
+     • Small-squares DOT RULES (~2mm navy squares along a line)
+     • 2×2 QUADRANT logo mark (brown / rust / cream / navy)
+     • SQUARE method chips (not circles) with mono step numbers
+
+   Palette:
+     Paper       #F5EFE3   warm cream
+     Rust        #C74A22   ember/rust orange — eyebrows, prices, accents
+     Ink         #1A1D2E   deep near-black navy — titles, borders
+     Brown       #8B4A2B   warm brown — secondary, third checker colour
+     Body        #3A3A3A   softer body text
+     Muted       #7A7570   meta labels
+     Cream-tile  #E8DDC7   soft tile colour for checkerboards
+     Hair        rgba(26,29,46,0.15)
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, primitives
+   ============================================================================= */
+
+.te-tpl {
+  --te-paper: #F5EFE3;
+  --te-rust: #C74A22;
+  --te-ink: #1A1D2E;
+  --te-brown: #8B4A2B;
+  --te-body: #3A3A3A;
+  --te-muted: #7A7570;
+  --te-cream-tile: #E8DDC7;
+  --te-cream-on-ink: #F5EFE3;
+  --te-hair: rgba(26, 29, 46, 0.15);
+  --te-hair-strong: rgba(26, 29, 46, 0.35);
+
+  --te-sans: 'Manrope', 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --te-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+
+  background: var(--te-paper);
+  color: var(--te-body);
+  font-family: var(--te-sans);
+  font-weight: 400;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(26, 29, 46, 0.10);
+  box-sizing: border-box;
+}
+.te-tpl * { box-sizing: border-box; }
+
+/* --- 2×2 quadrant brand mark ------------------------------------------- */
+.te-logo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+  overflow: hidden;
+  flex-shrink: 0;
+  aspect-ratio: 1;
+  background: var(--te-cream-tile);
+}
+.te-logo-q { display: block; }
+.te-logo-q-tl { background: var(--te-brown); }
+.te-logo-q-tr { background: var(--te-rust); }
+.te-logo-q-bl { background: var(--te-cream-tile); }
+.te-logo-q-br { background: var(--te-ink); }
+
+.te-logo-sm { width: 9mm;  height: 9mm; }
+.te-logo-md { width: 12mm; height: 12mm; }
+.te-logo-lg { width: 16mm; height: 16mm; }
+
+.te-logo-image {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--te-cream-tile);
+}
+.te-logo-image .te-logo-q { display: none; }
+.te-logo-img { width: 82%; height: 82%; object-fit: contain; }
+
+/* When drawn on a dark surface, keep the quadrant palette but the
+   surrounding image container flips to a cream tile so the mark still
+   reads. Nothing to override for the quadrant mark itself — the four
+   colours are the mark. */
+.te-logo-cream.te-logo-image { background: var(--te-cream-on-ink); }
+
+/* --- Brand lockup ------------------------------------------------------- */
+.te-brand-lockup { display: flex; gap: 12px; }
+.te-brand-lockup-inline { flex-direction: row; align-items: center; }
+.te-brand-lockup-stacked { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.te-brand-lockup-textonly { flex-direction: column; align-items: flex-start; gap: 2px; }
+.te-brand-text { display: flex; flex-direction: column; gap: 3px; }
+
+.te-brand-name {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  color: var(--te-ink);
+  margin: 0;
+  line-height: 1.1;
+  font-size: 15px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+.te-brand-ink   { color: var(--te-ink); }
+.te-brand-cream { color: var(--te-cream-on-ink); }
+
+.te-brand-tagline {
+  font-family: var(--te-mono);
+  color: var(--te-muted);
+  margin: 0;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.te-brand-tagline-ink   { color: var(--te-muted); }
+.te-brand-tagline-cream { color: var(--te-cream-on-ink); opacity: 0.70; }
+
+/* --- Title (bold Manrope) ---------------------------------------------- */
+.te-title {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  color: var(--te-ink);
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* --- Mono eyebrow — JetBrains Mono, wide-tracked ----------------------- */
+.te-eyebrow {
+  font-family: var(--te-mono);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.te-eyebrow-ink   { color: var(--te-ink); }
+.te-eyebrow-rust  { color: var(--te-rust); }
+.te-eyebrow-muted { color: var(--te-muted); }
+.te-eyebrow-cream { color: var(--te-cream-on-ink); opacity: 0.75; }
+.te-eyebrow-cream-strong { color: var(--te-cream-on-ink); opacity: 1; }
+
+.te-muted { color: var(--te-muted); }
+
+/* --- Rules ------------------------------------------------------------- */
+.te-rule { border: none; padding: 0; margin: 0; display: block; width: 100%; }
+.te-rule-hair       { height: 1px; background: var(--te-hair); }
+.te-rule-ink        { height: 1px; background: var(--te-ink); }
+.te-rule-ink-thick  { height: 2px; background: var(--te-ink); }
+.te-rule-cream      { height: 1px; background: rgba(245, 239, 227, 0.35); }
+
+.te-rule-short {
+  display: block;
+  width: 36mm;
+  height: 1px;
+  background: var(--te-hair-strong);
+  margin: 4mm 0;
+}
+.te-rule-short-ink   { background: var(--te-hair-strong); }
+.te-rule-short-cream { background: rgba(245, 239, 227, 0.4); }
+
+/* --- Small-squares dot rule ------------------------------------------- */
+.te-dot-rule {
+  display: block;
+  width: 100%;
+  height: 2mm;
+  background-repeat: repeat-x;
+  background-position: 0 center;
+}
+.te-dot-rule-ink {
+  background-image: linear-gradient(90deg, var(--te-ink) 2mm, transparent 2mm);
+  background-size: 5mm 2mm;
+}
+.te-dot-rule-rust {
+  background-image: linear-gradient(90deg, var(--te-rust) 2mm, transparent 2mm);
+  background-size: 5mm 2mm;
+}
+
+/* --- Numeric cells (mono, tabular) ------------------------------------ */
+.te-num {
+  text-align: right;
+  font-family: var(--te-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+/* --- Numbered method chip — SQUARE with mono number ------------------- */
+.te-method-chip {
+  width: 6mm; height: 6mm;
+  border-radius: 1px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--te-mono);
+  font-size: 8.5px;
+  font-weight: 500;
+  flex-shrink: 0;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.te-method-chip-normal {
+  border: 1px solid var(--te-ink);
+  color: var(--te-ink);
+  background: var(--te-cream-tile);
+}
+.te-method-chip-accent {
+  background: var(--te-rust);
+  color: var(--te-cream-on-ink);
+  border: 1px solid var(--te-rust);
+}
+
+/* --- Method sub-group heading (mono muted) ---------------------------- */
+.te-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--te-mono);
+  font-weight: 400;
+  color: var(--te-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 9.5px;
+  margin: 5mm 0 3mm;
+  display: block;
+}
+.te-method-group::before { content: '' !important; }
+
+/* --- MADE BY HAND seal — checkerboard border around cream inner ------- */
+.te-seal {
+  position: relative;
+  background:
+    conic-gradient(
+      var(--te-rust) 25%,
+      var(--te-ink) 25% 50%,
+      var(--te-rust) 50% 75%,
+      var(--te-ink) 75%
+    );
+  background-size: 4mm 4mm;
+  padding: 4mm;
+  display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+.te-seal-inner {
+  width: 100%; height: 100%;
+  background: var(--te-cream-tile);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: var(--te-mono);
+  font-weight: 500;
+  color: var(--te-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 9px;
+  text-align: center;
+  line-height: 1.4;
+  gap: 0.5mm;
+}
+
+/* --- Empty-state ------------------------------------------------------ */
+.te-empty {
+  color: var(--te-muted);
+  font-family: var(--te-sans);
+  font-style: italic;
+  font-size: 12px;
+  margin: 3mm 0 0;
+  font-weight: 300;
+}
+
+/* --- Footer (mono, wide-tracked) --------------------------------------- */
+.te-footer {
+  font-family: var(--te-mono);
+  color: var(--te-body);
+  font-size: 9px;
+  line-height: 1.55;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.te-footer-split {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12mm;
+}
+.te-footer-split .te-footer-right { text-align: right; }
+.te-footer-centered {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 2mm;
+}
+.te-footer-minimal { text-align: center; }
+.te-footer-line { font-size: 9px; color: var(--te-body); }
+
+
+/* =============================================================================
+   CHECKERBOARD PATTERNS — the signature tessellating marks
+   ============================================================================= */
+
+/* Rust squares × cream tiles — CareCard top band, DeliveryTag middle band */
+.te-check-rust-cream {
+  background-color: var(--te-cream-tile);
+  background-image: conic-gradient(
+    var(--te-rust) 25%,
+    var(--te-cream-tile) 25% 50%,
+    var(--te-rust) 50% 75%,
+    var(--te-cream-tile) 75%
+  );
+  background-size: 14mm 14mm;   /* 7mm × 7mm squares */
+  background-position: 0 0;
+}
+
+/* Navy × cream — MenuInsert top band (small tiles) */
+.te-check-navy-cream {
+  background-color: var(--te-cream-tile);
+  background-image: conic-gradient(
+    var(--te-ink) 25%,
+    var(--te-cream-tile) 25% 50%,
+    var(--te-ink) 50% 75%,
+    var(--te-cream-tile) 75%
+  );
+  background-size: 10mm 10mm;   /* 5mm × 5mm squares */
+}
+
+/* Tiny 3-row cream / lighter-cream tessellation — Recipe Card ornament */
+.te-check-cream-tile {
+  background-color: var(--te-cream-tile);
+  background-image: conic-gradient(
+    var(--te-paper) 25%,
+    var(--te-cream-tile) 25% 50%,
+    var(--te-paper) 50% 75%,
+    var(--te-cream-tile) 75%
+  );
+  background-size: 12mm 12mm;   /* 6mm × 6mm squares */
+}
+
+
+/* =============================================================================
+   DIAGONAL STRIPE PATTERNS
+   ============================================================================= */
+
+/* Full-width horizontal band (default) */
+.te-stripe-band {
+  display: block;
+  position: absolute;
+  left: 0; right: 0;
+  z-index: 0;
+}
+
+/* Vertical variant for SocialCard right edge */
+.te-stripe-band-v {
+  display: block;
+  position: absolute;
+  top: 0; bottom: 0;
+  z-index: 0;
+}
+
+/* Rust + brown + cream — used on Recipe, Cost, Wholesale, SocialCard side */
+.te-stripe-rust-brown-cream {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--te-rust)        0        6mm,
+    var(--te-brown)       6mm     12mm,
+    var(--te-cream-tile) 12mm     18mm
+  );
+}
+
+/* Navy + cream — sharper angles for ProductLabel + DeliveryTag bottom */
+.te-stripe-navy-cream {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--te-ink)          0      5mm,
+    var(--te-cream-tile)  5mm    10mm
+  );
+}
+
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.te-recipe {
+  width: 148mm; min-height: 210mm;
+  padding: 12mm 12mm 12mm;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.te-recipe-stripe {
+  top: 0; height: 15mm;
+}
+.te-recipe-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 3mm;
+  padding: 20mm 0 6mm;    /* clear the stripe band */
+  position: relative;
+  z-index: 1;
+}
+.te-recipe-brand-name {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--te-ink);
+  margin: 3mm 0 0;
+}
+.te-recipe-brand-tag { font-size: 9px; letter-spacing: 0.22em; margin-top: 1mm; }
+.te-recipe-eyebrow { font-size: 10px; letter-spacing: 0.24em; margin-top: 4mm; }
+
+.te-recipe-title {
+  font-size: 30px;
+  line-height: 1.1;
+  margin-top: 4mm;
+  max-width: 122mm;
+}
+.te-recipe .te-rule-short { margin: 3mm auto 3mm; }
+.te-recipe-meta {
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  margin-top: 2mm;
+}
+
+.te-recipe-body {
+  display: grid; grid-template-columns: 52mm 1fr;
+  gap: 10mm;
+  flex: 1;
+  padding-top: 6mm;
+  position: relative;
+  z-index: 1;
+}
+.te-recipe-ingredients {
+  display: flex; flex-direction: column;
+  gap: 5mm;
+}
+.te-recipe-ingredients > .te-eyebrow,
+.te-recipe-method > .te-eyebrow {
+  margin-bottom: 4mm;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+}
+
+.te-recipe-ing-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+}
+.te-recipe-ing-list li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 2.4mm 0;
+  border-bottom: 1px solid var(--te-hair);
+  font-family: var(--te-sans);
+  font-size: 10.5px;
+  color: var(--te-body);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.te-recipe-ing-list li:last-child { border-bottom: 1px solid var(--te-hair); }
+.te-recipe-ing-name { color: var(--te-body); }
+.te-recipe-ing-qty {
+  color: var(--te-ink);
+  font-family: var(--te-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  font-size: 10px;
+}
+
+.te-recipe-ornament {
+  width: 42mm; height: 18mm;
+  margin-top: 4mm;
+  opacity: 0.95;
+}
+
+.te-recipe-method-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3.5mm;
+  font-family: var(--te-sans);
+  font-size: 11px;
+  color: var(--te-body);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.te-recipe-method-list li {
+  display: grid;
+  grid-template-columns: 8mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.te-recipe-method-step { padding-top: 0.5mm; }
+.te-recipe-method-step-final { color: var(--te-ink); }
+.te-recipe-method-step-final strong { font-weight: 700; color: var(--te-rust); }
+
+.te-recipe-footer-wrap { margin-top: auto; padding-top: 6mm; position: relative; z-index: 1; }
+
+
+/* =============================================================================
+   02 — COST SHEET  (A4 portrait, 210×297mm) — INTERNAL
+   ============================================================================= */
+.te-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 18mm 12mm;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.te-cost-stripe { top: 0; height: 10mm; }
+
+.te-cost-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  padding: 10mm 0 6mm;   /* clear the stripe */
+  position: relative; z-index: 1;
+}
+.te-cost-header-right { font-size: 10px; letter-spacing: 0.22em; }
+
+.te-cost-title-row {
+  display: grid; grid-template-columns: 1fr 60mm;
+  gap: 10mm;
+  padding: 6mm 0 8mm;
+  align-items: stretch;
+}
+.te-cost-title-block { display: flex; flex-direction: column; }
+.te-cost-title {
+  font-size: 30px;
+  line-height: 1.1;
+  margin: 0;
+  max-width: 110mm;
+}
+.te-cost-meta { font-size: 10px; letter-spacing: 0.20em; margin-top: 4mm; }
+
+/* SUGGESTED PRICE card — navy filled with subtle checker texture */
+.te-cost-suggested-card {
+  position: relative;
+  background: var(--te-ink);
+  color: var(--te-cream-on-ink);
+  padding: 8mm;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  min-height: 46mm;
+}
+.te-cost-suggested-tex {
+  position: absolute; inset: 0;
+  background-image: conic-gradient(
+    rgba(255,255,255,0.06) 25%,
+    transparent 25% 50%,
+    rgba(255,255,255,0.06) 50% 75%,
+    transparent 75%
+  );
+  background-size: 6mm 6mm;
+  pointer-events: none;
+}
+.te-cost-suggested-inner {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 3mm;
+}
+.te-cost-suggested-label { color: var(--te-rust); font-size: 9.5px; letter-spacing: 0.24em; }
+.te-cost-suggested-price {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  font-size: 30px;
+  color: var(--te-cream-on-ink);
+  letter-spacing: 0;
+  line-height: 1;
+  margin: 2mm 0 3mm;
+}
+.te-cost-suggested-divider {
+  height: 1px;
+  background: rgba(245, 239, 227, 0.25);
+  margin-bottom: 2mm;
+}
+.te-cost-suggested-line {
+  display: flex; justify-content: space-between;
+  font-family: var(--te-mono);
+  font-size: 10px;
+  color: var(--te-cream-on-ink);
+  opacity: 0.85;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.te-cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4mm;
+  font-family: var(--te-sans);
+  font-size: 11px;
+  color: var(--te-body);
+  font-weight: 400;
+}
+.te-cost-table thead th {
+  font-family: var(--te-mono);
+  font-weight: 400;
+  color: var(--te-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  padding: 3mm 4mm 4mm;
+  font-size: 9.5px;
+  text-align: left;
+  border-bottom: 1px solid var(--te-ink);
+}
+.te-cost-table thead th.te-num { text-align: right; padding-right: 4mm; }
+.te-cost-table td {
+  padding: 3.4mm 4mm;
+  border-bottom: 1px solid var(--te-hair);
+  letter-spacing: 0.04em;
+}
+.te-cost-table td.te-num { padding-right: 4mm; padding-left: 4mm; }
+.te-cost-td-name { color: var(--te-ink); font-weight: 500; }
+.te-cost-td-val  { color: var(--te-ink); font-weight: 500; }
+.te-cost-empty {
+  padding: 8mm 0 !important;
+  color: var(--te-muted);
+  font-style: italic;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.te-cost-batch-row td {
+  padding: 5mm 4mm 4mm;
+  border-bottom: none;
+  border-top: 1.5px solid var(--te-ink);
+  font-family: var(--te-sans);
+  font-weight: 700;
+  color: var(--te-ink);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+.te-cost-batch-row td.te-num {
+  font-family: var(--te-mono);
+  font-weight: 700;
+  padding-left: 4mm;
+  letter-spacing: 0.04em;
+}
+
+.te-cost-stats-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 6mm;
+  margin-top: 12mm;
+}
+.te-cost-stat {
+  border: 1px solid var(--te-ink);
+  padding: 10mm 10mm;
+  display: flex; flex-direction: column; gap: 5mm;
+  background: var(--te-paper);
+}
+.te-cost-stat .te-eyebrow { font-size: 9.5px; letter-spacing: 0.22em; }
+.te-cost-stat-val {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  color: var(--te-ink);
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.te-cost-stat-accent {
+  background: var(--te-rust);
+  border-color: var(--te-rust);
+  padding: 12mm 12mm;
+}
+.te-cost-stat-accent .te-eyebrow {
+  color: var(--te-cream-on-ink);
+  opacity: 0.85;
+}
+.te-cost-stat-accent .te-cost-stat-val { color: var(--te-cream-on-ink); }
+
+.te-cost-caution {
+  margin-top: 8mm;
+  font-family: var(--te-sans);
+  font-size: 11.5px;
+  color: var(--te-body);
+  font-weight: 400;
+  line-height: 1.5;
+}
+.te-cost-caution strong { color: var(--te-rust); font-weight: 700; }
+
+.te-cost-footer-wrap { margin-top: auto; padding-top: 10mm; }
+
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, 105×148mm)
+   ============================================================================= */
+.te-tpl.te-care {
+  width: 105mm; min-height: 148mm;
+  background: var(--te-paper);
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.te-care-band {
+  width: 100%; height: 50mm;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.te-care-band-logo-tile {
+  background: var(--te-cream-tile);
+  padding: 4mm;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--te-ink);
+}
+
+.te-care-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 2mm;
+  padding: 6mm 10mm 4mm;
+}
+.te-care-brand-name {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--te-ink);
+}
+.te-care-brand-tag { font-size: 8.5px; letter-spacing: 0.22em; }
+
+.te-care-title-block {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  padding: 3mm 10mm 5mm;
+  gap: 3mm;
+}
+.te-care-product {
+  font-size: 20px;
+  line-height: 1.1;
+  max-width: 80mm;
+}
+.te-care-eyebrow { font-size: 10px; letter-spacing: 0.26em; margin-top: 2mm; }
+
+.te-care-body {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 5mm;
+  padding: 3mm 10mm;
+}
+.te-care-section > .te-eyebrow { margin-bottom: 2mm; font-size: 9.5px; letter-spacing: 0.22em; }
+.te-care-text {
+  font-family: var(--te-sans);
+  color: var(--te-body);
+  font-size: 10.5px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 400;
+}
+
+.te-care-allergen-chips {
+  display: flex; flex-wrap: wrap;
+  gap: 2mm;
+  padding-top: 1mm;
+}
+.te-care-allergen-chip {
+  font-family: var(--te-mono);
+  font-weight: 500;
+  color: var(--te-ink);
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 1.5mm 2.5mm;
+  border: 1px solid var(--te-ink);
+  background: var(--te-cream-tile);
+  border-radius: 1px;
+}
+
+.te-care-footer-wrap { margin-top: auto; padding: 4mm 10mm 6mm; }
+.te-care-footer-wrap .te-footer-line { font-size: 8px; letter-spacing: 0.22em; }
+
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.te-label {
+  width: 74mm; min-height: 105mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.te-label-stripe {
+  top: 0; height: 14mm; position: relative; flex-shrink: 0;
+}
+.te-label-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 4mm;
+  padding: 4mm 7mm 0;
+}
+.te-label-brand-block { display: flex; flex-direction: column; gap: 1.5mm; }
+.te-label-brand-name {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--te-ink);
+}
+.te-label-brand-city { font-size: 8px; letter-spacing: 0.26em; }
+
+.te-label-title-block {
+  padding: 5mm 7mm 3mm;
+  display: flex; flex-direction: column; gap: 3mm;
+}
+.te-label-product {
+  font-size: 17px;
+  line-height: 1.1;
+  max-width: 60mm;
+}
+.te-label-dots { width: 44mm; }
+
+.te-label-section {
+  margin: 0 0 3.5mm;
+  padding: 0 7mm;
+}
+.te-label-section > .te-eyebrow { margin-bottom: 2mm; font-size: 9px; letter-spacing: 0.22em; }
+.te-label-body {
+  font-family: var(--te-sans);
+  color: var(--te-body);
+  font-size: 10px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 400;
+}
+.te-label-allergen-box {
+  font-family: var(--te-sans);
+  font-weight: 600;
+  color: var(--te-ink);
+  font-size: 9.5px;
+  line-height: 1.5;
+  border: 1px solid var(--te-ink);
+  padding: 2mm 3mm;
+  background: var(--te-cream-tile);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.te-label-footer-wrap { margin-top: auto; padding: 0 7mm 6mm; }
+.te-label-footer {
+  font-family: var(--te-mono);
+  color: var(--te-body);
+  font-size: 8.5px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.te-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.te-menu-band {
+  width: 100%; height: 15mm;
+  flex-shrink: 0;
+}
+.te-menu-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 3mm;
+  padding: 10mm 14mm 8mm;
+}
+.te-menu-brand-name {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--te-ink);
+}
+.te-menu-header .te-rule-short { margin: 3mm auto; }
+.te-menu-header .te-eyebrow { font-size: 10.5px; letter-spacing: 0.28em; }
+
+.te-menu-body { padding: 2mm 14mm 4mm; }
+.te-menu-empty {
+  text-align: center; color: var(--te-muted);
+  font-style: italic;
+  margin-top: 20mm;
+}
+
+.te-menu-cat-block { margin-bottom: 8mm; }
+.te-menu-cat-label {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--te-rust);
+  margin-bottom: 2mm;
+}
+.te-menu-cat-dots { width: 60mm; margin-bottom: 5mm; }
+
+.te-menu-cat-items {
+  display: flex; flex-direction: column; gap: 5mm;
+}
+.te-menu-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8mm;
+}
+.te-menu-item-body { flex: 1; min-width: 0; }
+.te-menu-item-name {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  color: var(--te-ink);
+  font-size: 15px;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.te-menu-item-desc {
+  font-family: var(--te-sans);
+  color: var(--te-muted);
+  font-size: 10.5px;
+  margin-top: 1.5mm;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.te-menu-item-price {
+  font-family: var(--te-mono);
+  font-weight: 500;
+  color: var(--te-rust);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  padding-top: 1mm;
+  letter-spacing: 0;
+}
+
+.te-menu-footer-wrap { margin-top: auto; padding: 0 14mm 8mm; }
+.te-menu-footer-wrap .te-footer-line { font-size: 8.5px; letter-spacing: 0.22em; }
+
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.te-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 18mm 12mm;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.te-wholesale-stripe { top: 0; height: 12mm; }
+
+.te-wholesale-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  padding: 10mm 0 6mm;
+  position: relative; z-index: 1;
+}
+.te-wholesale-header-right { font-size: 10px; letter-spacing: 0.22em; }
+
+.te-wholesale-title-block { padding: 6mm 0 8mm; }
+.te-wholesale-title { font-size: 30px; line-height: 1.1; margin: 0; }
+.te-wholesale-desc {
+  font-family: var(--te-sans);
+  color: var(--te-body);
+  font-size: 12px;
+  margin: 4mm 0 0;
+  max-width: 140mm;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.te-wholesale-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6mm;
+  font-family: var(--te-sans);
+  font-size: 11px;
+  color: var(--te-body);
+  font-weight: 400;
+}
+.te-wholesale-th {
+  font-family: var(--te-mono);
+  font-weight: 500;
+  color: var(--te-cream-on-ink);
+  background: var(--te-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 4mm 5mm;
+  font-size: 9.5px;
+  text-align: left;
+}
+.te-wholesale-th.te-num { text-align: right; }
+.te-wholesale-th-accent {
+  background: var(--te-rust);
+  color: var(--te-cream-on-ink);
+}
+.te-wholesale-table td {
+  padding: 4mm 5mm;
+  border-bottom: 1px solid var(--te-hair);
+  letter-spacing: 0.06em;
+}
+.te-wholesale-table tbody tr:last-child td { border-bottom: 1px solid var(--te-hair-strong); }
+.te-wholesale-td-name {
+  color: var(--te-ink);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.te-wholesale-td-price {
+  color: var(--te-rust);
+  font-family: var(--te-mono);
+  font-weight: 700;
+  background: rgba(199, 74, 34, 0.06);
+}
+
+.te-wholesale-currency {
+  margin-top: 3mm; font-size: 9.5px; letter-spacing: 0.22em;
+}
+
+.te-wholesale-terms-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 10mm;
+}
+.te-wholesale-terms-col > .te-eyebrow { margin-bottom: 4mm; font-size: 10.5px; letter-spacing: 0.24em; }
+.te-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--te-sans);
+  color: var(--te-body);
+  font-size: 11.5px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+.te-wholesale-order-lines {
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--te-mono);
+  color: var(--te-ink);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.te-wholesale-sig-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 10mm;
+}
+.te-wholesale-sig-cell { display: flex; flex-direction: column; gap: 2mm; }
+.te-wholesale-sig-line { height: 1px; background: var(--te-ink); margin-bottom: 2mm; width: 100%; }
+.te-wholesale-sig-cell .te-eyebrow { font-size: 9.5px; letter-spacing: 0.24em; }
+
+.te-wholesale-footer-wrap { margin-top: auto; padding-top: 10mm; }
+
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.te-tpl.te-delivery {
+  width: 74mm; min-height: 105mm;
+  background: var(--te-paper);
+  color: var(--te-ink);
+  padding: 0;
+  display: flex; flex-direction: column;
+  align-items: stretch;
+  position: relative;
+}
+.te-delivery-hole {
+  width: 5mm; height: 5mm;
+  border: 1px solid var(--te-ink);
+  border-radius: 50%;
+  margin: 3mm auto 3mm;
+  opacity: 0.65;
+}
+.te-delivery-brand {
+  display: flex; flex-direction: column; align-items: center; gap: 2mm;
+  padding: 0 7mm 4mm;
+}
+.te-delivery-brand-name {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--te-ink);
+  text-align: center;
+}
+
+.te-delivery-check {
+  width: 100%; height: 22mm;
+  flex-shrink: 0;
+}
+
+.te-delivery-body {
+  padding: 4mm 7mm 3mm;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+}
+.te-delivery-eyebrow {
+  font-size: 8.5px;
+  letter-spacing: 0.28em;
+  margin-bottom: 2mm;
+}
+.te-delivery-product {
+  font-size: 17px;
+  line-height: 1.1;
+  max-width: 60mm;
+}
+.te-delivery .te-rule-short {
+  width: 22mm;
+  margin: 2mm auto 3mm;
+}
+.te-delivery-care-body {
+  font-family: var(--te-sans);
+  color: var(--te-body);
+  font-size: 10px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 400;
+}
+
+.te-delivery-footer {
+  padding: 4mm 7mm 4mm;
+  text-align: center;
+  margin-top: auto;
+}
+.te-delivery-footer-line {
+  font-family: var(--te-mono);
+  color: var(--te-body);
+  font-size: 7.5px;
+  letter-spacing: 0.22em;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.te-delivery-stripe {
+  position: relative;
+  left: 0; right: 0;
+  height: 12mm;
+  flex-shrink: 0;
+}
+
+
+/* =============================================================================
+   08 — SOCIAL MEDIA CARD  (1080×1080 = 148×148mm)
+   ============================================================================= */
+.te-tpl.te-social {
+  width: 148mm; height: 148mm;
+  background: var(--te-ink);
+  color: var(--te-cream-on-ink);
+  padding: 0;
+  display: flex; flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.te-social-tex {
+  position: absolute; inset: 0;
+  background-image: conic-gradient(
+    rgba(245, 239, 227, 0.05) 25%,
+    transparent 25% 50%,
+    rgba(245, 239, 227, 0.05) 50% 75%,
+    transparent 75%
+  );
+  background-size: 8mm 8mm;
+  pointer-events: none;
+  z-index: 0;
+}
+.te-social-stripe {
+  top: 0; bottom: 0; right: 0;
+  width: 28mm;
+  z-index: 0;
+}
+.te-social-inner {
+  position: relative; z-index: 1;
+  flex: 1;
+  padding: 12mm 40mm 10mm 12mm;   /* leave clearance on the right for stripe */
+  display: flex; flex-direction: column;
+}
+.te-social-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 10mm;
+}
+.te-social-brand-block { display: flex; flex-direction: column; gap: 2mm; }
+.te-social-brand-name {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  color: var(--te-cream-on-ink);
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.te-social-brand-tag { font-size: 9px; letter-spacing: 0.22em; }
+
+.te-social-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 6mm 0;
+}
+.te-social-eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.28em;
+  margin-bottom: 5mm;
+}
+.te-social-title {
+  font-size: 42px;
+  color: var(--te-cream-on-ink);
+  margin: 0 0 5mm;
+  max-width: 96mm;
+  line-height: 1.02;
+  letter-spacing: -0.005em;
+  font-weight: 700;
+}
+.te-social-rule {
+  height: 1px;
+  background: rgba(245, 239, 227, 0.35);
+  width: 30mm;
+  margin: 3mm 0 5mm;
+}
+.te-social-desc {
+  font-family: var(--te-sans);
+  color: var(--te-cream-on-ink);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0 0 6mm;
+  max-width: 92mm;
+  opacity: 0.88;
+  font-weight: 400;
+}
+
+.te-social-bottom {
+  display: flex; flex-direction: column; gap: 5mm;
+}
+.te-social-cta {
+  display: inline-block;
+  background: var(--te-rust);
+  color: var(--te-cream-on-ink);
+  padding: 3.5mm 6mm;
+  align-self: flex-start;
+  font-family: var(--te-mono);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.te-social-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 2mm;
+  gap: 4mm;
+  font-family: var(--te-mono);
+  font-size: 9px;
+  color: var(--te-cream-on-ink);
+  letter-spacing: 0.22em;
+  font-weight: 400;
+}
+.te-social-website { opacity: 0.65; }
+
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait)
+   ============================================================================= */
+.te-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 16mm 12mm;
+  display: flex; flex-direction: column;
+}
+.te-binder-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  padding-bottom: 4mm;
+}
+.te-binder-brand-lockup { display: flex; align-items: center; gap: 10px; }
+.te-binder-brand-text { display: flex; flex-direction: column; gap: 2mm; }
+.te-binder-brand-name {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--te-ink);
+}
+.te-binder-header-right { font-size: 10px; letter-spacing: 0.22em; }
+
+.te-binder-title-row {
+  display: flex; gap: 12mm; align-items: flex-start;
+  padding: 10mm 0 4mm;
+}
+.te-binder-title-left { flex: 1; min-width: 0; }
+.te-binder-title { font-size: 28px; line-height: 1.1; margin: 0; }
+.te-binder .te-rule-short { margin: 3mm 0 4mm; }
+.te-binder-desc {
+  font-family: var(--te-sans);
+  color: var(--te-body);
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.te-binder-photo {
+  width: 52mm; height: 42mm; flex-shrink: 0;
+  background: var(--te-cream-tile);
+  border: 1px solid var(--te-hair-strong);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 4mm;
+}
+.te-binder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.te-binder-photo-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 1mm;
+}
+.te-binder-photo-placeholder .te-eyebrow { font-size: 9px; letter-spacing: 0.22em; color: var(--te-body); opacity: 0.65; }
+
+.te-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8mm;
+  padding: 4mm 0;
+}
+.te-binder-meta-cell { display: flex; flex-direction: column; gap: 3mm; }
+.te-binder-meta-cell > .te-eyebrow { font-size: 9.5px; letter-spacing: 0.22em; }
+.te-binder-meta-val {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  color: var(--te-ink);
+  font-size: 16px;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.te-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12mm;
+  flex: 1;
+}
+.te-binder-section > .te-eyebrow { margin-bottom: 5mm; font-size: 10.5px; letter-spacing: 0.24em; }
+
+.te-binder-ing-list { display: flex; flex-direction: column; }
+.te-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 2.4mm 0;
+  border-bottom: 1px solid var(--te-hair);
+  font-family: var(--te-sans);
+  font-size: 10.5px;
+  color: var(--te-body);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 500;
+  align-items: baseline;
+}
+.te-binder-ing-name { color: var(--te-body); }
+.te-binder-ing-qty {
+  color: var(--te-body);
+  font-family: var(--te-mono);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+}
+.te-binder-ing-cost {
+  color: var(--te-ink);
+  font-family: var(--te-mono);
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+}
+.te-binder-batch-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 3mm 0 2mm;
+  border-top: 1.5px solid var(--te-ink);
+  font-family: var(--te-sans);
+  font-size: 11px;
+  color: var(--te-ink);
+  font-weight: 700;
+  margin-top: 2mm;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+}
+.te-binder-batch-row > span:last-child {
+  font-family: var(--te-mono);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.te-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3.5mm;
+  font-family: var(--te-sans);
+  font-size: 11px;
+  color: var(--te-body);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.te-binder-method li {
+  display: grid;
+  grid-template-columns: 8mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.te-binder-method-step { padding-top: 0.5mm; }
+.te-binder-method-step-final { color: var(--te-ink); }
+.te-binder-method-step-final strong { font-weight: 700; color: var(--te-rust); }
+
+.te-binder-notes { margin-top: 8mm; }
+.te-binder-notes > .te-eyebrow { margin-bottom: 3mm; font-size: 10.5px; letter-spacing: 0.24em; }
+.te-binder-notes-lines { display: flex; flex-direction: column; gap: 7px; }
+.te-binder-notes-line { border-bottom: 1px solid var(--te-hair); height: 5mm; }
+
+.te-binder-footer-wrap { margin-top: auto; padding-top: 6mm; }
+
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, 297×210mm)
+   ============================================================================= */
+.te-tpl.te-cert {
+  width: 297mm;
+  height: 210mm;   /* fixed — don't elongate */
+  background: var(--te-paper);
+  padding: 6mm;
+  display: flex;
+}
+.te-cert-border {
+  flex: 1;
+  border: 1px solid var(--te-ink);
+  padding: 10mm 24mm 8mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.te-cert-top {
+  display: flex; flex-direction: column; align-items: center; gap: 4mm;
+  padding-top: 2mm;
+}
+.te-cert-title-label { font-size: 11px; letter-spacing: 0.32em; }
+
+.te-cert-body {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4mm;
+  max-width: 240mm;
+}
+.te-cert-intro {
+  font-family: var(--te-sans);
+  color: var(--te-muted);
+  font-size: 12.5px;
+  margin: 0;
+  font-weight: 400;
+  font-style: italic;
+}
+.te-cert-product {
+  font-size: 44px;
+  margin: 3mm 0;
+  line-height: 1.05;
+  max-width: 240mm;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+
+.te-cert-attribution {
+  display: flex; flex-direction: column; align-items: center; gap: 2mm;
+  padding-bottom: 2mm;
+}
+.te-cert-outro {
+  font-family: var(--te-sans);
+  color: var(--te-muted);
+  font-size: 12.5px;
+  margin: 0;
+  font-weight: 400;
+  font-style: italic;
+}
+.te-cert-brand-name {
+  font-family: var(--te-sans);
+  font-weight: 700;
+  color: var(--te-ink);
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 2mm 0 0;
+}
+.te-cert-tagline { font-size: 10px; letter-spacing: 0.26em; }
+
+.te-cert-signature-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20mm;
+  width: 100%;
+  align-items: flex-end;
+  padding: 4mm 8mm 2mm;
+  max-width: 260mm;
+}
+.te-cert-sig-cell {
+  display: flex; flex-direction: column; gap: 2mm;
+  align-items: flex-start;
+  min-width: 0;
+}
+.te-cert-sig-cell-right { align-items: flex-end; text-align: right; }
+.te-cert-sig-line { height: 1px; background: var(--te-ink); margin-bottom: 2mm; width: 100%; }
+.te-cert-sig-cell .te-eyebrow { font-size: 10px; letter-spacing: 0.22em; }
+.te-cert-sig-img {
+  display: block;
+  max-width: 44mm; max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+.te-cert-seal-wrap {
+  display: flex; justify-content: center; align-items: center;
+  padding-bottom: 2mm;
+}
+
+.te-cert-footer {
+  padding-top: 4mm;
+  font-family: var(--te-mono);
+  color: var(--te-muted);
+  font-size: 9.5px;
+  line-height: 1.6;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.te-cert-footer-line { color: var(--te-muted); }
