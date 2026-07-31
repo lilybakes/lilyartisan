@@ -1,5 +1,5 @@
 /**
- * The 6 style variants a template can be rendered in.
+ * The 7 style variants a template can be rendered in.
  *
  * Every variant overrides `--brand` with `!important` and applies substantial
  * per-variant type + color + rule treatment. CSS in `styles.css` handles the
@@ -12,6 +12,12 @@ export const STYLE_VARIANTS = [
     description: 'White paper, Plus Jakarta Sans + JetBrains Mono numerals, hairline rules, violet app-brand accent. Neutral and precise.',
     isDefault: true,
     accent: '#6C5CE7',
+  },
+  {
+    key: 'crisp',
+    name: 'Crisp',
+    description: 'Polished modern layout with warm brown accents on white. Plus Jakarta Sans body + JetBrains Mono numerals, thin gray rules with brown accent overlays, cream-background allergen notices, small square DC-style logo box. Designed to look like a finished printed sheet.',
+    accent: '#8B4A2B',
   },
   {
     key: 'kraft',

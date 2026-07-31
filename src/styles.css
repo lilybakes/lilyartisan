@@ -6325,3 +6325,710 @@ button.ghost.small:hover{
   box-shadow:none !important;
   text-shadow:none !important;
 }
+
+/* ============================================================
+   7. CRISP — polished modern with warm brown accents on white
+   ------------------------------------------------------------
+   Palette:
+     Navy ink       #1F2440   product names, main text
+     Body           #4A5068   secondary text
+     Muted gray     #8590A5   descriptions, taglines
+     Warm brown     #8B4A2B   brand, section labels, key prices
+     Success green  #28C76F   margin percentage
+     Cream          #FBEDD3   allergen notice background
+     Hairline gray  #E9E7EB   rules
+   Fonts:
+     Body           Plus Jakarta Sans (400/700/800)
+     Numbers        JetBrains Mono (400/500/700)
+   ============================================================ */
+
+.tpl.variant-crisp{
+  --brand:#8B4A2B !important;
+  background:#FFFFFF !important;
+  color:#1F2440;
+  font-family:'Plus Jakarta Sans', sans-serif;
+  font-weight:400;
+}
+
+/* --- Brand header — logo box + brand + tagline + partial rule --- */
+.tpl.variant-crisp .tpl-brand-header{
+  flex-direction:row !important;
+  align-items:center !important;
+  gap:14px !important;
+  padding-bottom:16px !important;
+  border-bottom:1px solid #E9E7EB !important;
+  background:transparent !important;
+  position:relative;
+}
+.tpl.variant-crisp .tpl-brand-header::after{
+  content:'';
+  position:absolute;
+  bottom:-1.5px;
+  left:0;
+  width:45%;
+  height:2.5px;
+  background:#8B4A2B;
+}
+.tpl.variant-crisp .tpl-brand-text{
+  flex:1 !important;
+  text-align:left !important;
+}
+
+/* Logo — small square with brown border */
+.tpl.variant-crisp .tpl-brand-logo{
+  width:42px !important;
+  height:42px !important;
+  border:1.5px solid #8B4A2B !important;
+  border-radius:3px !important;
+  padding:5px !important;
+  background:#FFFFFF !important;
+  object-fit:contain !important;
+  opacity:1 !important;
+}
+.tpl.variant-crisp .tpl-brand-header-compact .tpl-brand-logo{
+  width:36px !important;
+  height:36px !important;
+  padding:4px !important;
+}
+
+/* Brand name — brown semibold */
+.tpl.variant-crisp .tpl-brand-name{
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:800 !important;
+  color:#8B4A2B !important;
+  font-size:17px !important;
+  letter-spacing:-0.01em !important;
+  text-transform:none !important;
+  padding-left:0 !important;
+  line-height:1.2 !important;
+}
+
+/* Tagline — muted gray */
+.tpl.variant-crisp .tpl-brand-tagline,
+.tpl.variant-crisp .tpl-brand-tagline-small,
+.tpl.variant-crisp [class*="-tagline"]{
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  color:#8590A5 !important;
+  font-style:normal !important;
+  font-weight:400 !important;
+  letter-spacing:0 !important;
+  padding-left:0 !important;
+  font-size:12.5px !important;
+  line-height:1.35 !important;
+  margin-top:2px !important;
+}
+
+/* --- Product / recipe names — bold navy ------------------- */
+.tpl.variant-crisp [class*="-recipe-name"],
+.tpl.variant-crisp [class*="-care-product"],
+.tpl.variant-crisp [class*="-wholesale-title"],
+.tpl.variant-crisp [class*="-menu-title"],
+.tpl.variant-crisp h1,
+.tpl.variant-crisp h2{
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:800 !important;
+  color:#1F2440 !important;
+  letter-spacing:-0.02em !important;
+  text-transform:none !important;
+  padding-left:0 !important;
+  font-size:32px !important;
+  line-height:1.15 !important;
+}
+.tpl.variant-crisp [class*="-product"]:not([class*="-product-eyebrow"]):not([class*="-cert-product"]){
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:800 !important;
+  color:#1F2440 !important;
+  letter-spacing:-0.02em !important;
+  text-transform:none !important;
+  padding-left:0 !important;
+  line-height:1.15 !important;
+}
+
+/* Certificate name — near-black, uppercase, largest */
+.tpl.variant-crisp [class*="-cert-product"]{
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:900 !important;
+  color:#1A1A18 !important;
+  text-transform:uppercase !important;
+  font-size:44px !important;
+  letter-spacing:0.01em !important;
+  padding-left:0 !important;
+  line-height:1.1 !important;
+}
+
+/* Social card name — largest for square canvas */
+.tpl.variant-crisp .tpl-social-name{
+  font-size:44px !important;
+  font-weight:800 !important;
+  color:#1F2440 !important;
+  text-transform:none !important;
+  letter-spacing:-0.03em !important;
+  padding-left:0 !important;
+  line-height:1.05 !important;
+}
+
+/* Care card / delivery — slightly smaller for size */
+.tpl.variant-crisp .tpl-care-product{ font-size:34px !important; }
+.tpl.variant-crisp .tpl-delivery-product{ font-size:26px !important; }
+.tpl.variant-crisp .tpl-label-product{ font-size:22px !important; }
+
+/* --- Section titles — brown small caps + gray hairline ---- */
+.tpl.variant-crisp [class*="-section-title"],
+.tpl.variant-crisp [class*="-eyebrow"]{
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:700 !important;
+  color:#8B4A2B !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.15em !important;
+  font-size:10.5px !important;
+  padding-bottom:8px !important;
+  border-bottom:1px solid #E9E7EB !important;
+  padding-left:0 !important;
+  margin-bottom:12px !important;
+}
+
+/* --- Body text / descriptions / methods ------------------- */
+.tpl.variant-crisp p,
+.tpl.variant-crisp [class*="-desc"]:not([class*="-tagline"]):not([class*="-menu-item-desc"]),
+.tpl.variant-crisp [class*="-method"],
+.tpl.variant-crisp [class*="-body"]{
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:400 !important;
+  color:#4A5068 !important;
+  line-height:1.6 !important;
+  text-transform:none !important;
+  font-style:normal !important;
+  letter-spacing:0 !important;
+}
+
+/* Descriptions under recipe name — italic muted */
+.tpl.variant-crisp [class*="-recipe-desc"],
+.tpl.variant-crisp [class*="-menu-item-desc"],
+.tpl.variant-crisp .tpl-social-desc{
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-style:italic !important;
+  color:#8590A5 !important;
+  font-weight:400 !important;
+}
+
+/* --- Meta chips — brown small caps, no fill --------------- */
+.tpl.variant-crisp [class*="-meta-chip"],
+.tpl.variant-crisp [class*="-chip"]{
+  background:transparent !important;
+  color:#8B4A2B !important;
+  border:1px solid #E9E7EB !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:700 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.14em !important;
+  padding:5px 12px !important;
+  border-radius:3px !important;
+  font-size:10px !important;
+}
+
+/* --- Numbers / prices — JetBrains Mono -------------------- */
+.tpl.variant-crisp [class*="-qty"],
+.tpl.variant-crisp [class*="-price"],
+.tpl.variant-crisp [class*="-cost"]:not([class*="-cost-stat"]):not([class*="-cost-headline"]):not([class*="-cost-recipe"]):not([class*="-cost-body"]):not([class*="-cost-warning"]),
+.tpl.variant-crisp [class*="-total"],
+.tpl.variant-crisp [class*="-headline-val"],
+.tpl.variant-crisp [class*="-stat-val"],
+.tpl.variant-crisp [class*="-ing-qty"],
+.tpl.variant-crisp [class*="-ing-unit"],
+.tpl.variant-crisp [class*="-ing-line"],
+.tpl.variant-crisp [class*="-batch-total"]{
+  font-family:'JetBrains Mono', monospace !important;
+  font-variant-numeric:tabular-nums;
+  text-transform:none !important;
+  letter-spacing:0 !important;
+  padding-left:0 !important;
+  font-style:normal !important;
+}
+
+/* Recipe meta values (like "Yield 10 slices · target food cost 30%") — mono muted */
+.tpl.variant-crisp [class*="-recipe-meta"],
+.tpl.variant-crisp [class*="-yield"]{
+  font-family:'JetBrains Mono', monospace !important;
+  color:#8590A5 !important;
+  font-size:12px !important;
+}
+
+/* --- Tables — clean, brown underline on header ------------ */
+.tpl.variant-crisp th{
+  background:transparent !important;
+  color:#8B4A2B !important;
+  border-bottom:1.5px solid #8B4A2B !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:700 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.14em !important;
+  font-size:10px !important;
+  padding:10px 8px !important;
+  text-align:left !important;
+}
+.tpl.variant-crisp td{
+  border-bottom:1px solid #F0EEF2 !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  color:#1F2440 !important;
+  padding:12px 8px !important;
+  font-weight:400 !important;
+}
+.tpl.variant-crisp tr:nth-child(even) td{ background:transparent !important; }
+
+/* Wholesale table — filled brown header row */
+.tpl.variant-crisp.tpl-wholesale th{
+  background:#8B4A2B !important;
+  color:#FFFFFF !important;
+  border-bottom:none !important;
+  padding:14px 16px !important;
+  font-weight:700 !important;
+}
+/* Wholesale price column emphasized brown */
+.tpl.variant-crisp .tpl-wholesale-price,
+.tpl.variant-crisp [class*="-wholesale-price"]{
+  color:#8B4A2B !important;
+  font-weight:700 !important;
+  font-family:'JetBrains Mono', monospace !important;
+}
+
+/* --- Ingredient rows -------------------------------------- */
+.tpl.variant-crisp [class*="-ing-name"]{
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:400 !important;
+  color:#1F2440 !important;
+  text-transform:none !important;
+  letter-spacing:0 !important;
+  padding-left:0 !important;
+  font-size:13px !important;
+}
+.tpl.variant-crisp [class*="-ing-qty"]{
+  color:#8590A5 !important;
+  font-weight:400 !important;
+}
+.tpl.variant-crisp [class*="-ing-line-cost"],
+.tpl.variant-crisp [class*="-ing-cost"]{
+  color:#4A5068 !important;
+  font-weight:500 !important;
+}
+.tpl.variant-crisp [class*="-batch-total-lbl"]{
+  color:#1F2440 !important;
+  font-weight:800 !important;
+  text-transform:none !important;
+  letter-spacing:0 !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+}
+.tpl.variant-crisp [class*="-batch-total-val"]{
+  color:#8B4A2B !important;
+  font-weight:700 !important;
+  font-family:'JetBrains Mono', monospace !important;
+}
+
+/* --- Cost stat boxes (three bordered rectangles) ---------- */
+.tpl.variant-crisp [class*="-cost-stat"]{
+  border:1.5px solid #E9E7EB !important;
+  border-radius:4px !important;
+  background:transparent !important;
+  padding:16px 20px !important;
+}
+.tpl.variant-crisp [class*="-cost-stat-lbl"]{
+  color:#8B4A2B !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.14em !important;
+  font-size:10px !important;
+  font-weight:700 !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  margin-bottom:6px !important;
+}
+.tpl.variant-crisp [class*="-cost-stat-val"]{
+  color:#1F2440 !important;
+  font-family:'JetBrains Mono', monospace !important;
+  font-weight:500 !important;
+  font-size:22px !important;
+}
+/* Margin cell — green */
+.tpl.variant-crisp [class*="margin"] [class*="-cost-stat-val"],
+.tpl.variant-crisp [class*="-margin-val"]{
+  color:#28C76F !important;
+}
+/* Suggested price cell — brown */
+.tpl.variant-crisp [class*="suggested"] [class*="-cost-stat-val"],
+.tpl.variant-crisp [class*="-suggested-val"]{
+  color:#8B4A2B !important;
+}
+
+/* Suggested/Portion headline (top-right of cost sheet) */
+.tpl.variant-crisp [class*="-cost-headline"]{
+  border:none !important;
+  border-left:2.5px solid #8B4A2B !important;
+  background:transparent !important;
+  padding-left:18px !important;
+  border-radius:0 !important;
+}
+.tpl.variant-crisp [class*="-cost-headline-lbl"]{
+  color:#8B4A2B !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.16em !important;
+  font-size:10px !important;
+  font-weight:700 !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+}
+.tpl.variant-crisp [class*="-cost-headline-val"]{
+  color:#8B4A2B !important;
+  font-family:'JetBrains Mono', monospace !important;
+  font-size:26px !important;
+  font-weight:500 !important;
+}
+
+/* "INTERNAL USE ONLY" warning — brown caps */
+.tpl.variant-crisp [class*="-cost-warning"],
+.tpl.variant-crisp [class*="-internal-only"]{
+  color:#8B4A2B !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.14em !important;
+  font-size:10px !important;
+  font-weight:700 !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  opacity:0.7;
+}
+
+/* --- Care Card storage block — cream background ----------- */
+.tpl.variant-crisp [class*="-care-storage"],
+.tpl.variant-crisp [class*="-storage-block"],
+.tpl.variant-crisp [class*="-care-body"]{
+  background:#FBEDD3 !important;
+  padding:18px 20px !important;
+  border-radius:3px !important;
+  border:none !important;
+  margin:20px 0 !important;
+}
+.tpl.variant-crisp [class*="-care-storage-title"],
+.tpl.variant-crisp [class*="-storage-title"]{
+  color:#8B4A2B !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.15em !important;
+  font-size:10.5px !important;
+  font-weight:700 !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  margin-bottom:8px !important;
+  border:none !important;
+}
+.tpl.variant-crisp [class*="-care-thank"],
+.tpl.variant-crisp [class*="-care-outro"]{
+  font-style:italic !important;
+  color:#8590A5 !important;
+  margin-top:20px !important;
+}
+
+/* --- Product Label allergen notice — cream with left bar -- */
+.tpl.variant-crisp [class*="-label-allergen"],
+.tpl.variant-crisp [class*="-allergen-notice"],
+.tpl.variant-crisp [class*="-allergen-block"]{
+  background:#FBEDD3 !important;
+  border-left:3px solid #8B4A2B !important;
+  padding:14px 18px !important;
+  border-radius:0 !important;
+  margin-top:16px !important;
+}
+.tpl.variant-crisp [class*="-allergen-title"]{
+  color:#8B4A2B !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.14em !important;
+  font-size:10px !important;
+  font-weight:700 !important;
+  margin-bottom:6px !important;
+  border:none !important;
+}
+
+/* --- Menu Insert — category with extending rule ----------- */
+.tpl.variant-crisp [class*="-menu-cat"],
+.tpl.variant-crisp [class*="-menu-category"]{
+  color:#8B4A2B !important;
+  font-weight:700 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.18em !important;
+  font-size:11px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:14px !important;
+  margin:24px 0 12px !important;
+  border:none !important;
+}
+.tpl.variant-crisp [class*="-menu-cat"]::after,
+.tpl.variant-crisp [class*="-menu-category"]::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:#E9E7EB;
+}
+.tpl.variant-crisp [class*="-menu-item-name"]{
+  color:#1F2440 !important;
+  font-weight:700 !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  text-transform:none !important;
+  letter-spacing:-0.01em !important;
+  padding-left:0 !important;
+  font-size:17px !important;
+}
+.tpl.variant-crisp [class*="-menu-item-price"]{
+  color:#8B4A2B !important;
+  font-family:'JetBrains Mono', monospace !important;
+  font-weight:700 !important;
+  font-size:14px !important;
+}
+
+/* --- Delivery Tag ----------------------------------------- */
+.tpl.variant-crisp.tpl-delivery{
+  background:#FFFFFF !important;
+}
+.tpl.variant-crisp .tpl-delivery-brand{
+  color:#8B4A2B !important;
+  font-weight:800 !important;
+}
+.tpl.variant-crisp .tpl-delivery-tagline{
+  color:#8590A5 !important;
+}
+.tpl.variant-crisp .tpl-delivery-product{
+  color:#1F2440 !important;
+  font-weight:800 !important;
+}
+.tpl.variant-crisp .tpl-delivery-eyebrow,
+.tpl.variant-crisp .tpl-delivery-care-title{
+  color:#8B4A2B !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.18em !important;
+  font-size:10.5px !important;
+  font-weight:700 !important;
+}
+.tpl.variant-crisp .tpl-delivery-care{
+  color:#4A5068 !important;
+  font-style:italic;
+}
+.tpl.variant-crisp .tpl-delivery-price{
+  border:1.5px solid #8B4A2B !important;
+  background:transparent !important;
+  color:#8B4A2B !important;
+  padding:10px 14px !important;
+  border-radius:3px !important;
+  font-family:'JetBrains Mono', monospace !important;
+  display:inline-block;
+}
+.tpl.variant-crisp .tpl-delivery-footer{
+  color:#8590A5 !important;
+}
+.tpl.variant-crisp .tpl-delivery-social,
+.tpl.variant-crisp .tpl-delivery-handles > span{
+  color:#8B4A2B !important;
+  font-weight:600 !important;
+}
+
+/* --- Social Media Card ------------------------------------ */
+.tpl.variant-crisp .tpl-social-bg{
+  background:#FFFFFF !important;
+}
+.tpl.variant-crisp.tpl-social{
+  position:relative;
+}
+.tpl.variant-crisp.tpl-social::before{
+  content:'';
+  position:absolute;
+  top:22px; right:22px;
+  width:58px; height:6px;
+  background:#8B4A2B;
+  z-index:5;
+  border-radius:1px;
+}
+.tpl.variant-crisp .tpl-social-brand{
+  color:#8B4A2B !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:800 !important;
+  text-transform:none !important;
+  letter-spacing:-0.01em !important;
+  padding-left:0 !important;
+  font-size:17px !important;
+}
+.tpl.variant-crisp .tpl-social-tagline{
+  color:#8590A5 !important;
+  font-style:normal !important;
+  font-weight:400 !important;
+  letter-spacing:0 !important;
+  padding-left:0 !important;
+  font-size:12.5px !important;
+}
+.tpl.variant-crisp .tpl-social-eyebrow{
+  color:#8B4A2B !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:700 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.2em !important;
+  padding-left:0 !important;
+  border:none !important;
+  padding-bottom:0 !important;
+  padding-top:0 !important;
+  font-size:11px !important;
+  margin-bottom:16px !important;
+}
+.tpl.variant-crisp .tpl-social-desc{
+  color:#8590A5 !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-style:italic !important;
+  font-weight:400 !important;
+  font-size:15px !important;
+}
+.tpl.variant-crisp .tpl-social-price{
+  background:transparent !important;
+  border:1.5px solid #8B4A2B !important;
+  backdrop-filter:none !important;
+  border-radius:3px !important;
+  color:#8B4A2B !important;
+  padding:12px 20px !important;
+}
+.tpl.variant-crisp .tpl-social-price-label{
+  color:#8B4A2B !important;
+  font-family:'JetBrains Mono', monospace !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.1em !important;
+  font-weight:400 !important;
+  font-size:11px !important;
+  padding-left:0 !important;
+}
+.tpl.variant-crisp .tpl-social-price-value{
+  color:#8B4A2B !important;
+  font-family:'JetBrains Mono', monospace !important;
+  font-weight:700 !important;
+}
+.tpl.variant-crisp .tpl-social-footer,
+.tpl.variant-crisp .tpl-social-handles > span{
+  color:#8B4A2B !important;
+  font-weight:700 !important;
+}
+.tpl.variant-crisp .tpl-social-web{
+  color:#8590A5 !important;
+  font-weight:400 !important;
+}
+.tpl.variant-crisp .tpl-social-logo{
+  width:36px !important;
+  height:36px !important;
+  border:1.5px solid #8B4A2B !important;
+  border-radius:3px !important;
+  padding:4px !important;
+  background:#FFFFFF !important;
+  opacity:1 !important;
+}
+
+/* --- Recipe Photo placeholder ----------------------------- */
+.tpl.variant-crisp [class*="-photo-slot"],
+.tpl.variant-crisp [class*="-photo-placeholder"]{
+  border:1.5px dashed #DDDCE3 !important;
+  background:transparent !important;
+  color:#8590A5 !important;
+  border-radius:3px !important;
+  padding:20px !important;
+  text-align:center;
+  font-size:11px !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.14em !important;
+  font-weight:600 !important;
+}
+
+/* --- Chef's Notes ruled lines ----------------------------- */
+.tpl.variant-crisp [class*="-notes-line"],
+.tpl.variant-crisp [class*="-chef-notes-line"]{
+  border-bottom:1px solid #E9E7EB !important;
+  height:24px;
+  margin-bottom:0;
+}
+
+/* --- Certificate ------------------------------------------- */
+.tpl.variant-crisp [class*="-cert-frame"],
+.tpl.variant-crisp [class*="-cert-inner"]{
+  border:1.5px solid #8B4A2B !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  padding:32px !important;
+}
+.tpl.variant-crisp [class*="-cert-eyebrow"],
+.tpl.variant-crisp [class*="-cert-title"]{
+  color:#8B4A2B !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.24em !important;
+  font-size:12px !important;
+  font-weight:700 !important;
+  border:none !important;
+  padding-left:0 !important;
+}
+.tpl.variant-crisp [class*="-cert-intro"],
+.tpl.variant-crisp [class*="-cert-outro"]{
+  font-style:italic !important;
+  color:#8590A5 !important;
+  font-weight:400 !important;
+}
+.tpl.variant-crisp [class*="-cert-brand"]{
+  color:#8B4A2B !important;
+  font-weight:800 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.12em !important;
+  font-size:20px !important;
+  padding-left:0 !important;
+}
+.tpl.variant-crisp [class*="-cert-tagline"]{
+  color:#8590A5 !important;
+  font-style:italic !important;
+  font-size:12px !important;
+}
+.tpl.variant-crisp [class*="-cert-seal"]{
+  border:2px solid #8B4A2B !important;
+  border-radius:50% !important;
+  color:#8B4A2B !important;
+  background:transparent !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:700 !important;
+  letter-spacing:0.2em !important;
+  text-transform:uppercase !important;
+  font-size:9px !important;
+  padding:8px !important;
+}
+.tpl.variant-crisp [class*="-cert-signature"],
+.tpl.variant-crisp [class*="-cert-date"]{
+  color:#8590A5 !important;
+  font-size:12px !important;
+  border-top:1px solid #E9E7EB !important;
+  padding-top:6px !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+}
+.tpl.variant-crisp [class*="-cert-date"]{
+  font-family:'JetBrains Mono', monospace !important;
+}
+
+/* --- Footer — clean gray with brown social handles -------- */
+.tpl.variant-crisp .tpl-brand-footer{
+  background:transparent !important;
+  border-top:1px solid #E9E7EB !important;
+  color:#8590A5 !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:400 !important;
+  padding-top:14px !important;
+  font-size:12px !important;
+}
+.tpl.variant-crisp .tpl-brand-social,
+.tpl.variant-crisp .tpl-brand-social a,
+.tpl.variant-crisp [class*="-footer-social"]{
+  color:#8B4A2B !important;
+  font-weight:700 !important;
+}
+.tpl.variant-crisp .tpl-brand-address,
+.tpl.variant-crisp .tpl-brand-contact{
+  color:#8590A5 !important;
+}
+
+/* --- Kill inherited variant chip/badge fills for this look - */
+.tpl.variant-crisp [class*="-badge"]:not([class*="-soon-badge"]){
+  background:transparent !important;
+  color:#8B4A2B !important;
+  border:1px solid #E9E7EB !important;
+  border-radius:3px !important;
+  font-family:'Plus Jakarta Sans', sans-serif !important;
+  font-weight:700 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.14em !important;
+  font-size:10px !important;
+}

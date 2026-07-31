@@ -1,80 +1,78 @@
-# Flour & Ink — 6th Style Variant
+# Crisp — 7th Style Variant
 
-Adds the "Flour & Ink" single-ink minimalism direction as the 6th style variant. It applies to all 10 templates through the existing style-picker dropdown — nothing else changes.
+Adds "Crisp" as the 7th style variant per the image handoff. Registered as the 2nd option in the picker (right after the app-brand Clean Modern default) since it will likely be a heavily-used option.
 
 ## Files
 
 ```
 src/
-  lib/template-styles.js       # OVERWRITE — adds flour-ink to registry (6 variants now)
-  styles.css                   # OVERWRITE (full file) — Jost added to fonts, comprehensive variant block appended
+  lib/template-styles.js       # OVERWRITE — adds crisp to registry (7 variants now)
+  styles.css                   # OVERWRITE (full file) — comprehensive variant block appended
 ```
 
 Two files.
 
-## The design language, mapped to CSS
+## Design language (read from the images)
 
-Per the handoff:
-
-**One font — Jost** (weights 200 / 300 / 400 / 500) added to the Google Fonts import.
-
-**Three colors, no accent, no gradients:**
-| Role | Hex | Where used |
+**Color palette:**
+| Role | Hex | Where it appears |
 |---|---|---|
-| Ink | `#1A1A18` | type, rules, dark grounds (Social Card, Cost Sheet suggested-price panel, Certificate seal) |
-| Paper | `#FDFCFA` | default background for 8 of 10 sheets |
-| Stone | `#CBBFAE` | Delivery Tag's full field |
+| Navy ink | `#1F2440` | Product/recipe names, ingredient names, main text |
+| Body | `#4A5068` | Method steps, descriptions in body |
+| Muted gray | `#8590A5` | Taglines, description italics, secondary values |
+| Warm brown | `#8B4A2B` | Brand name, section labels, key prices, suggested price, wholesale prices, "internal use" warning, care storage title, allergen title, social handles, DC logo box border, brown accent bar overlay |
+| Success green | `#28C76F` | Margin % on cost sheet only |
+| Cream | `#FBEDD3` | Care storage block background, product-label allergen notice background |
+| Hairline gray | `#E9E7EB` | Thin dividers and rules |
 
-Text greys are ink at reduced strength — body `#3A3733`, muted `#6A635B`, taglines. No new hues.
+**Typography:**
+- **Body/titles**: Plus Jakarta Sans (weight 400 for body, 700 for section labels, 800 for names/products)
+- **Numbers/prices/tables**: JetBrains Mono (weight 400/500/700) — every quantity, unit price, cost, batch total, suggested price, wholesale price, date, and address number
+- **Section titles**: uppercase Plus Jakarta Sans 700, letter-spacing 0.15em, brown, 10.5px, with a 1px gray underline
+- **Product names**: Plus Jakarta Sans 800, navy `#1F2440`, letter-spacing -0.02em, size varies per template (22px on labels → 44px on social/certificate)
+- **Certificate name**: uppercase Plus Jakarta Sans 900, near-black `#1A1A18`, 44px
 
-**Rules:** 1px hairlines at `rgba(26,26,24,0.3)` on paper, `rgba(253,252,250,0.4)` on ink, `rgba(26,26,24,0.35)` on stone. No thick rules anywhere.
+## Signature elements
 
-**Radii:** only 0 or 50%. Every chip, pill, badge, card corner forced to `border-radius: 0`. Every logo, monogram, certificate seal forced to `border-radius: 50%`.
+**Brand header** — small 42×42 white square with a 1.5px warm-brown border containing the logo (or DC monogram when I add JSX later). Brand name in warm brown to the right, muted-gray tagline underneath. Below sits a 1px hairline gray rule with a **2.5px warm-brown accent** overlaid on the left 45% — the visual signature you can see on every image with a header.
 
-**Type ladder** — every tracked-caps block includes matching `padding-left` so centered text stays on optical centre:
+**Meta chips** — subtle gray outline pills, uppercase brown small caps text, 3px radius.
 
-| Weight | Tracking | Padding-left | Where |
-|---|---|---|---|
-| 200 | 0.24em | 0.24em | Recipe / product / cert titles (biggest) |
-| 400 | 0.26em | 0.26em | Brand name |
-| 400 | 0.30em | 0.30em | Facts, chips, table headers |
-| 400 | 0.34em | 0.34em | Eyebrows, section titles |
-| 300 | — | — | Sentences, descriptions, methods (line-height 1.7) |
+**Cost stats** — three bordered rectangles side by side (1.5px gray border, 4px radius, transparent fill). Small brown label uppercase; large mono value. Margin cell uses success green; suggested-price cell uses warm brown.
 
-Casing rule enforced: titles/names/facts uppercase; sentences remain sentence case.
+**Suggested/Portion headline** (cost sheet top-right) — no border, just a 2.5px warm-brown vertical bar on the left with a small uppercase brown label above the large mono brown number.
 
-## Per-sheet behavior
+**Care card storage** — cream `#FBEDD3` block with brown uppercase label + navy body text. Italic muted-gray "Thank you for supporting a small kitchen" outro below.
 
-Since we apply this as CSS on shared JSX (not new components), some of the handoff's structural touches (numbered hairline circles for method steps, punch-hole on delivery tag, monogram initials as a fallback SVG) can't come from CSS alone. What DOES come through:
+**Product-label allergen** — cream `#FBEDD3` block with a 3px warm-brown left accent bar and brown uppercase title.
 
-- **Recipe Card** — centred brand lockup, tracked-caps title, hairline rule between sections
-- **Cost Sheet** — filled ink panel behind suggested price + margin (the one inversion), hairline outline on other stat panels
-- **Care Card** — everything centre-aligned
-- **Product Label** — tracked-caps ingredients, centred header
-- **Menu Insert** — tracked-caps category eyebrows, sentence descriptions
-- **Wholesale Price List** — hairline rules only, no fills, tracked-caps headers
-- **Delivery Tag** — **full stone field** (`#CBBFAE`), ink text throughout, centered
-- **Social Card** — **full ink field** (`#1A1A18`), paper text at 0.8 opacity, hairline-bordered price rectangle (no fill), monogram outline in paper
-- **Recipe Binder** — hairline rules, stone-colored note fields where applicable
-- **Certificate of Craft** — hairline frame, 6px circular ink seal, no ornaments
+**Menu category header** — brown uppercase label with letter-spacing 0.18em followed by a flex-fill 1px gray rule extending to the right edge (the `── ` pattern from Image 9).
 
-## What flour-ink DELIBERATELY doesn't do
+**Wholesale table** — solid warm-brown header row with white uppercase text; wholesale-price column emphasized in warm-brown bold mono, retail column in muted gray mono.
 
-Per the handoff's anti-patterns:
+**Certificate** — 1.5px warm-brown inner frame, large uppercase near-black product name, 2px circular warm-brown seal ("BAKED WITH CARE"), signature and date lines with hairline gray dividers.
 
-- No accent color (all other variants have one — this one has none)
-- No gradients (Editorial, Kraft, Letterpress all have gradient headers/mastheads — this one is flat)
-- No rounded corners between 0 and 50%
-- No shadows anywhere (a global `box-shadow: none !important` override on this variant kills any inherited)
-- No filled buttons or pills
-- No emojis, no unicode dingbats
+**Social card** — white background, 58×6px warm-brown accent bar in the top-right corner (per Image 2), all the same typography rules as the paper templates.
+
+**Delivery tag** — white background, bordered brown price rectangle, matching header pattern.
+
+## Where CSS-only stops short
+
+Some structural touches in the images would need small JSX additions to be pixel-perfect. I've styled around them so the templates look coherent, but the deviations from the images are:
+
+| Template | What's ideal but needs JSX | Current CSS approach |
+|---|---|---|
+| **Recipe Card** (Image 5) | 2-column grid of ingredients (`500g Bread flour` / `5g Instant yeast` side by side) | Renders as the existing single-column list |
+| **Care Card** (Image 7) | Filled/outlined brown circle bullets before STORAGE and ALLERGENS | Section titles use the standard gray underline |
+| **Recipe Binder** (Image 3) | Subgrouped methods (`CUPCAKES` / `BUTTERCREAM` labels between numbered steps), ingredients with mono cost column | Renders as single ingredient list + single method list |
+| **Wholesale** (Image 10) | Bulleted `ORDERING TERMS` list with brown label | Wraps existing markup |
+| **Certificate** (Image 4) | Circle with `BAKED WITH CARE` inside as an actual circle | Styled to be close but depends on current cert seal markup |
+| **Cost Sheet** (Image 6) | Left brown vertical bar next to "SUGGESTED / PORTION" headline | Applied via border-left; may need JSX position adjustment |
+
+If any of these visibly-off spots matter enough to fix, I can rework the specific template's JSX in a follow-up delta — one template at a time so you can review each.
 
 ## Deploy
 
-Overwrite the 2 files, push, hard-refresh. Style picker on any template now shows 6 options — "Flour & Ink" appears at the bottom. Selecting it should produce a visibly quieter, single-ink sheet that survives greyscale printing.
+Overwrite the 2 files, push, hard-refresh. Style picker on any template now shows 7 options — **Crisp** appears second (right below Clean Modern). Pick it and cycle through the templates.
 
-## Later touch-ups (not shipped, but noted)
-
-- **Numbered hairline circles for method steps** — needs a small JSX addition to Classic Recipe Card and Binder to emit `<div className="tpl-method-circle">01</div>` per step; a couple lines of CSS renders them as circles with the final step reversed to filled ink
-- **Circular monogram fallback when no logo** — 2-letter initials rendered in a hairline circle; the handoff's data contract expects `brand.monogram` — could compute in `BrandHeader.jsx` from `businessName.split(' ').map(w => w[0]).slice(0,2).join('')`
-- **Delivery Tag punch-hole** — small `::before` circle at the top with the paper color, easy CSS-only add if desired
+The Crisp variant reuses fonts already loaded (Plus Jakarta Sans + JetBrains Mono), so first load isn't heavier than before.
