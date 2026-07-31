@@ -1,0 +1,983 @@
+/* =============================================================================
+   KRAFT VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   All 10 kraft templates share this file. Section 1 defines the palette +
+   shared primitives (monogram, seal, rules, footer). Sections 01–10 each
+   own their template's layout, spacing, and margins.
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, fonts, primitives used by all 10 templates
+   ============================================================================= */
+
+.k-tpl {
+  --k-paper: #EEDBBE;             /* main kraft cream ground */
+  --k-paper-deep: #E6CFAA;        /* slightly deeper kraft (label header band bg contrast) */
+  --k-paper-lighter: #F5EAD3;     /* lighter cream (stat box bg) */
+  --k-paper-warm: #E8D3AF;        /* warmer kraft (delivery tag / care card ground) */
+  --k-brown: #8B4A2B;             /* primary brown — brand, section titles, prices */
+  --k-brown-dark: #5C2E15;        /* darker brown — big product titles */
+  --k-brown-mid: #A66038;         /* mid brown — subtle emphasis */
+  --k-ink: #3A2718;               /* main ink for body */
+  --k-body: #4E3A28;              /* body text */
+  --k-muted: #7A6851;             /* muted brown-gray for taglines, italics */
+  --k-rule: rgba(139, 74, 43, 0.55);
+  --k-rule-soft: rgba(139, 74, 43, 0.30);
+  --k-green: #4A7A3E;             /* margin cell */
+  --k-cream-on-brown: #F5EAD3;    /* text on dark brown backgrounds */
+
+  --k-serif: 'Bitter', 'Roboto Slab', Georgia, serif;
+  --k-body-font: 'Karla', 'Inter', -apple-system, sans-serif;
+
+  background: var(--k-paper);
+  color: var(--k-ink);
+  font-family: var(--k-body-font);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(43, 27, 15, 0.10);
+  box-sizing: border-box;
+}
+.k-tpl * { box-sizing: border-box; }
+
+/* --- Monogram (circular dashed) --------------------------------------- */
+.k-monogram {
+  border-radius: 50%;
+  border: 1.5px dashed var(--k-brown);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--k-brown);
+  font-family: var(--k-serif);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: transparent;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.k-monogram-img { width: 82%; height: 82%; object-fit: contain; border-radius: 50%; }
+.k-monogram-sm { width: 40px; height: 40px; font-size: 12px; }
+.k-monogram-md { width: 58px; height: 58px; font-size: 17px; }
+.k-monogram-lg { width: 78px; height: 78px; font-size: 22px; }
+.k-monogram-xl { width: 100px; height: 100px; font-size: 30px; }
+
+/* --- Brand lockup ----------------------------------------------------- */
+.k-brand-lockup { display: flex; align-items: center; }
+.k-brand-lockup-row { flex-direction: row; gap: 14px; }
+.k-brand-lockup-column { flex-direction: column; text-align: center; gap: 10px; }
+.k-brand-text { display: flex; flex-direction: column; gap: 2px; }
+.k-brand-lockup-column .k-brand-text { align-items: center; }
+.k-brand-name {
+  font-family: var(--k-serif);
+  font-weight: 800;
+  color: var(--k-brown);
+  letter-spacing: -0.005em;
+  margin: 0;
+  line-height: 1.1;
+  font-size: 20px;
+}
+.k-brand-tagline {
+  font-family: var(--k-serif);
+  font-style: italic;
+  color: var(--k-muted);
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+/* --- Rules ------------------------------------------------------------ */
+.k-rule-double {
+  border-top: 2px solid var(--k-brown);
+  border-bottom: 1px solid var(--k-brown);
+  height: 3px;
+  padding: 0;
+  margin: 0;
+}
+.k-rule-single { border: none; border-top: 1.5px solid var(--k-brown); margin: 0; }
+.k-rule-dashed { border: none; border-top: 1.5px dashed var(--k-rule); margin: 0; }
+.k-rule-dotted { border: none; border-top: 1.5px dotted var(--k-rule); margin: 0; }
+
+/* --- Eyebrow (small caps letter-spaced brown) ------------------------- */
+.k-eyebrow {
+  font-family: var(--k-body-font);
+  font-weight: 700;
+  color: var(--k-brown);
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  font-size: 10px;
+  padding-left: 0.20em;
+}
+
+/* --- Seal (circular dashed with tracked-caps lines) ------------------- */
+.k-seal {
+  border-radius: 50%;
+  border: 1.5px dashed var(--k-brown);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--k-brown);
+  aspect-ratio: 1;
+  background: transparent;
+}
+.k-seal-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-family: var(--k-body-font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 9.5px;
+  padding-left: 0.24em;
+  text-align: center;
+  line-height: 1;
+  color: var(--k-brown);
+}
+
+/* --- Footer ----------------------------------------------------------- */
+.k-footer { margin-top: auto; }
+.k-footer .k-rule-dashed { margin-bottom: 10px; }
+.k-footer-content {
+  font-size: 11px;
+  color: var(--k-muted);
+  font-family: var(--k-body-font);
+  line-height: 1.5;
+}
+.k-footer-split .k-footer-content {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 14px;
+}
+.k-footer-split .k-footer-right { text-align: right; }
+.k-footer-centered .k-footer-content {
+  display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center;
+}
+.k-footer-social { color: var(--k-brown); font-weight: 700; }
+.k-footer-social span { color: inherit; }
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait)  — /variants/kraft/RecipeCard.jsx
+   ============================================================================= */
+.k-recipe-card {
+  width: 148mm; min-height: 210mm;
+  padding: 15mm 14mm 12mm;
+  display: flex; flex-direction: column;
+}
+.k-recipe-card .k-recipe-header {
+  padding-bottom: 8mm;
+}
+.k-recipe-card .k-recipe-body {
+  display: flex; flex-direction: column; gap: 6mm; margin-top: 6mm; flex: 1;
+}
+.k-recipe-title {
+  font-family: var(--k-serif);
+  font-weight: 800;
+  color: var(--k-brown-dark);
+  font-size: 30px;
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.k-recipe-meta {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--k-brown);
+  font-family: var(--k-body-font);
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding-left: 0.20em;
+  margin-top: 3mm;
+}
+.k-recipe-meta-sep { color: var(--k-muted); font-weight: 400; }
+.k-recipe-section-head {
+  display: flex; align-items: center; gap: 12px;
+}
+.k-recipe-section-head h3 {
+  font-family: var(--k-serif);
+  font-weight: 700;
+  color: var(--k-brown);
+  font-size: 20px;
+  margin: 0;
+  flex-shrink: 0;
+}
+.k-recipe-section-head .k-rule-single { flex: 1; }
+.k-recipe-ingredients {
+  display: grid;
+  grid-template-columns: 18mm 1fr;
+  gap: 8px 14px;
+  margin-top: 4mm;
+  font-size: 13px;
+}
+.k-recipe-ing-qty {
+  font-family: var(--k-serif);
+  font-weight: 800;
+  color: var(--k-brown-dark);
+}
+.k-recipe-ing-name {
+  color: var(--k-body);
+  font-family: var(--k-body-font);
+  font-weight: 400;
+}
+.k-recipe-method {
+  list-style: none; padding: 0; margin: 4mm 0 0;
+  counter-reset: kstep;
+  display: flex; flex-direction: column; gap: 10px;
+  font-size: 13px;
+  color: var(--k-body);
+  line-height: 1.55;
+}
+.k-recipe-method li {
+  counter-increment: kstep;
+  padding-left: 22px;
+  position: relative;
+}
+.k-recipe-method li::before {
+  content: counter(kstep) ".";
+  position: absolute; left: 0;
+  color: var(--k-brown);
+  font-weight: 700;
+  font-family: var(--k-serif);
+}
+.k-recipe-seal-wrap {
+  position: absolute; bottom: 26mm; right: 12mm;
+}
+
+/* =============================================================================
+   02 — COST BREAKDOWN  (A4 portrait)  — /variants/kraft/CostBreakdown.jsx
+   ============================================================================= */
+.k-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 16mm 16mm 14mm;
+  display: flex; flex-direction: column;
+}
+.k-cost-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 8mm;
+}
+.k-cost-header-right {
+  color: var(--k-brown);
+  font-family: var(--k-body-font);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 10px;
+  font-weight: 700;
+  padding-left: 0.22em;
+}
+.k-cost-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 20mm; margin-top: 8mm;
+}
+.k-cost-title-left h2 {
+  font-family: var(--k-serif);
+  font-weight: 800;
+  color: var(--k-brown-dark);
+  font-size: 32px;
+  margin: 0 0 4mm;
+  line-height: 1.05;
+}
+.k-cost-title-left .k-cost-meta {
+  font-style: italic;
+  color: var(--k-muted);
+  font-size: 12.5px;
+  font-family: var(--k-serif);
+}
+.k-cost-suggested-box {
+  border: 1.5px solid var(--k-brown);
+  padding: 4mm 8mm;
+  text-align: center;
+  min-width: 60mm;
+}
+.k-cost-suggested-box .k-eyebrow {
+  font-size: 9.5px; letter-spacing: 0.24em; padding-left: 0.24em;
+}
+.k-cost-suggested-value {
+  font-family: var(--k-serif);
+  font-weight: 800;
+  color: var(--k-brown);
+  font-size: 30px;
+  margin-top: 3mm;
+  line-height: 1;
+}
+.k-cost-table {
+  width: 100%; border-collapse: collapse; margin-top: 10mm; font-size: 12px;
+}
+.k-cost-table thead th {
+  font-family: var(--k-body-font);
+  font-weight: 700;
+  color: var(--k-brown);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 0 0 4mm;
+  border-bottom: 1.5px solid var(--k-brown);
+  font-size: 10px;
+}
+.k-cost-table thead th.k-num { text-align: right; }
+.k-cost-table td {
+  padding: 4mm 0;
+  border-bottom: 1.5px dotted var(--k-rule-soft);
+  font-family: var(--k-body-font);
+  color: var(--k-body);
+}
+.k-cost-table td.k-num { text-align: right; font-family: var(--k-body-font); color: var(--k-body); }
+.k-cost-table td.k-cost-val { font-weight: 700; color: var(--k-ink); }
+.k-cost-batch-row td {
+  padding-top: 4mm; padding-bottom: 3mm;
+  font-family: var(--k-serif); font-weight: 800; color: var(--k-ink);
+  border-bottom: none;
+}
+.k-cost-batch-row td.k-num { color: var(--k-brown); font-size: 15px; }
+.k-cost-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm;
+  margin-top: 8mm;
+}
+.k-cost-stat {
+  background: var(--k-paper-lighter);
+  padding: 5mm 6mm;
+  border-radius: 2px;
+}
+.k-cost-stat-lbl { font-size: 9.5px; letter-spacing: 0.22em; padding-left: 0.22em; margin-bottom: 3mm; }
+.k-cost-stat-val {
+  font-family: var(--k-serif);
+  font-weight: 800;
+  color: var(--k-ink);
+  font-size: 22px;
+  line-height: 1;
+}
+.k-cost-stat.k-cost-stat-suggested .k-cost-stat-val { color: var(--k-brown); }
+.k-cost-stat.k-cost-stat-margin .k-cost-stat-val { color: var(--k-green); }
+.k-cost-warning {
+  margin-top: 8mm;
+  font-style: italic;
+  color: var(--k-muted);
+  font-size: 11px;
+  font-family: var(--k-body-font);
+}
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, dashed border, everything centered)
+   ============================================================================= */
+.k-care {
+  width: 105mm; min-height: 148mm;
+  background: var(--k-paper-warm);
+  padding: 4mm;
+  display: flex;
+}
+.k-care-inner {
+  border: 1.5px dashed var(--k-brown);
+  flex: 1;
+  padding: 10mm 8mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  gap: 4mm;
+}
+.k-care-inner .k-brand-lockup { align-items: center; }
+.k-care-thanks {
+  font-family: var(--k-serif);
+  font-style: italic;
+  color: var(--k-brown-dark);
+  font-size: 15px;
+  margin-top: 4mm;
+}
+.k-care-product {
+  font-family: var(--k-serif);
+  font-weight: 800;
+  color: var(--k-brown-dark);
+  font-size: 24px;
+  line-height: 1.1;
+  margin: 0;
+}
+.k-care-short-rule {
+  width: 24mm; height: 1.5px; background: var(--k-brown); margin: 2mm auto 3mm;
+}
+.k-care-section-lbl {
+  font-family: var(--k-body-font);
+  font-weight: 700; color: var(--k-brown);
+  text-transform: uppercase; letter-spacing: 0.22em;
+  padding-left: 0.22em; font-size: 10px;
+  margin-top: 4mm; margin-bottom: 2mm;
+}
+.k-care-body-text {
+  font-family: var(--k-body-font);
+  color: var(--k-body);
+  font-size: 12px; line-height: 1.55;
+  max-width: 78mm;
+}
+.k-care .k-footer { width: 100%; margin-top: auto; padding-top: 4mm; }
+.k-care .k-footer-content { font-size: 10px; }
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, dark brown band)
+   ============================================================================= */
+.k-label {
+  width: 74mm; min-height: 105mm;
+  padding: 6mm 6mm 7mm;
+  display: flex; flex-direction: column;
+}
+.k-label-top {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 8px; margin-bottom: 5mm;
+}
+.k-label-top .k-brand-lockup { flex: 1; }
+.k-label-top .k-brand-name { font-size: 14px; }
+.k-label-top .k-brand-tagline { font-size: 9.5px; }
+.k-label-city {
+  font-family: var(--k-body-font);
+  font-weight: 700; color: var(--k-brown);
+  text-transform: uppercase; letter-spacing: 0.32em;
+  padding-left: 0.32em;
+  font-size: 9.5px;
+  align-self: flex-start;
+  padding-top: 2mm;
+}
+.k-label-band {
+  background: var(--k-brown);
+  color: var(--k-cream-on-brown);
+  padding: 5mm 6mm;
+  margin-bottom: 5mm;
+}
+.k-label-band-eyebrow {
+  font-family: var(--k-body-font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  padding-left: 0.28em;
+  font-size: 9.5px;
+  color: var(--k-cream-on-brown);
+  opacity: 0.85;
+  margin-bottom: 2mm;
+}
+.k-label-band-name {
+  font-family: var(--k-serif);
+  font-weight: 800;
+  color: var(--k-cream-on-brown);
+  font-size: 20px;
+  line-height: 1.1;
+  margin: 0;
+}
+.k-label-section-title {
+  font-family: var(--k-body-font);
+  font-weight: 700; color: var(--k-brown);
+  text-transform: uppercase; letter-spacing: 0.22em;
+  padding-left: 0.22em; font-size: 9.5px;
+  margin-bottom: 2mm;
+}
+.k-label-ingredients {
+  font-size: 11px;
+  color: var(--k-body);
+  line-height: 1.5;
+  margin-bottom: 5mm;
+}
+.k-label-allergen {
+  border: 1.5px solid var(--k-brown);
+  padding: 4mm;
+}
+.k-label-allergen-body {
+  font-size: 11px;
+  color: var(--k-body);
+  line-height: 1.5;
+}
+.k-label .k-footer { margin-top: auto; padding-top: 4mm; }
+.k-label .k-footer-content { font-size: 9.5px; }
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, centered, dotted leaders)
+   ============================================================================= */
+.k-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 16mm 16mm 12mm;
+  display: flex; flex-direction: column;
+}
+.k-menu-header {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 6mm; margin-bottom: 6mm;
+}
+.k-menu-header .k-brand-name { font-size: 32px; line-height: 1.05; }
+.k-menu-header .k-brand-tagline { font-size: 13px; }
+.k-menu-body { flex: 1; padding-top: 10mm; }
+.k-menu-cat {
+  font-family: var(--k-body-font);
+  font-weight: 700; color: var(--k-brown);
+  text-transform: uppercase; letter-spacing: 0.32em;
+  padding-left: 0.32em;
+  text-align: center; font-size: 10.5px;
+  margin: 10mm 0 5mm;
+}
+.k-menu-cat:first-child { margin-top: 0; }
+.k-menu-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 5mm; }
+.k-menu-item-body { flex: 1; }
+.k-menu-item-line {
+  display: flex; align-items: baseline; gap: 6px;
+}
+.k-menu-item-name {
+  font-family: var(--k-serif);
+  font-weight: 800; color: var(--k-brown-dark);
+  font-size: 15.5px;
+  flex-shrink: 0;
+}
+.k-menu-item-leader {
+  flex: 1;
+  border-bottom: 1.5px dotted var(--k-rule-soft);
+  height: 1px;
+  transform: translateY(-4px);
+}
+.k-menu-item-price {
+  font-family: var(--k-serif);
+  font-weight: 800; color: var(--k-brown);
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.k-menu-item-desc {
+  font-family: var(--k-body-font);
+  font-style: italic;
+  color: var(--k-muted);
+  font-size: 11.5px;
+  margin-top: 1mm;
+  line-height: 1.4;
+}
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, table + seal)
+   ============================================================================= */
+.k-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 16mm 18mm 14mm;
+  display: flex; flex-direction: column;
+}
+.k-wholesale-header {
+  padding-bottom: 6mm;
+}
+.k-wholesale-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-top: 8mm; gap: 18mm;
+}
+.k-wholesale-title-left h2 {
+  font-family: var(--k-serif);
+  font-weight: 800; color: var(--k-brown-dark);
+  font-size: 32px; margin: 0 0 3mm; line-height: 1.05;
+}
+.k-wholesale-effective {
+  font-family: var(--k-serif);
+  font-style: italic;
+  color: var(--k-muted);
+  font-size: 12.5px;
+}
+.k-wholesale-terms-box {
+  border: 1.5px solid var(--k-brown);
+  padding: 4mm 6mm;
+  min-width: 66mm;
+}
+.k-wholesale-terms-box .k-eyebrow { margin-bottom: 2mm; }
+.k-wholesale-terms-body {
+  font-size: 13px;
+  color: var(--k-body);
+  font-family: var(--k-body-font);
+  line-height: 1.5;
+}
+.k-wholesale-terms-body b { color: var(--k-brown-dark); font-weight: 700; }
+.k-wholesale-table {
+  width: 100%; border-collapse: collapse; margin-top: 10mm; font-size: 12px;
+}
+.k-wholesale-table thead th {
+  font-family: var(--k-body-font);
+  font-weight: 700; color: var(--k-brown);
+  text-transform: uppercase; letter-spacing: 0.20em;
+  padding: 0 0 4mm;
+  border-bottom: 1.5px solid var(--k-brown);
+  font-size: 10.5px;
+  text-align: left;
+}
+.k-wholesale-table thead th.k-num,
+.k-wholesale-table td.k-num { text-align: right; }
+.k-wholesale-table td {
+  padding: 4mm 0;
+  border-bottom: 1.5px dotted var(--k-rule-soft);
+  font-family: var(--k-body-font);
+  color: var(--k-body);
+}
+.k-wholesale-table td.k-wprice { color: var(--k-brown); font-weight: 800; font-family: var(--k-serif); }
+.k-wholesale-table td.k-name { font-family: var(--k-body-font); font-weight: 700; color: var(--k-ink); }
+.k-wholesale-caption {
+  margin-top: 6mm;
+  font-style: italic; color: var(--k-muted); font-size: 11.5px;
+  font-family: var(--k-serif);
+}
+.k-wholesale-terms-title {
+  margin-top: 12mm; margin-bottom: 4mm;
+  font-size: 11px; letter-spacing: 0.22em; padding-left: 0.22em;
+}
+.k-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  font-family: var(--k-body-font);
+  color: var(--k-body); font-size: 12px; line-height: 1.9;
+}
+.k-wholesale-terms-list li {
+  padding-left: 16px; position: relative;
+}
+.k-wholesale-terms-list li::before {
+  content: '•';
+  position: absolute; left: 4px;
+  color: var(--k-brown);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.k-wholesale-seal-wrap {
+  position: absolute; bottom: 40mm; right: 20mm;
+}
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, dashed border, hang-tag hole)
+   ============================================================================= */
+.k-delivery {
+  width: 74mm; min-height: 105mm;
+  padding: 3mm;
+  background: var(--k-paper-warm);
+  display: flex;
+}
+.k-delivery-inner {
+  flex: 1;
+  padding: 10mm 6mm 5mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 3mm;
+  position: relative;
+}
+/* Punch hole at the top */
+.k-delivery-hole {
+  width: 8mm; height: 8mm;
+  border-radius: 50%;
+  border: 1px solid var(--k-brown-mid);
+  background: var(--k-paper);
+  margin: 0 auto 3mm;
+  opacity: 0.6;
+}
+.k-delivery-eyebrow {
+  margin-top: 3mm;
+  font-size: 9px; letter-spacing: 0.28em; padding-left: 0.28em;
+}
+.k-delivery-product {
+  font-family: var(--k-serif);
+  font-weight: 800; color: var(--k-brown-dark);
+  font-size: 20px; line-height: 1.05;
+  margin: 0;
+}
+.k-delivery-care-box {
+  width: 100%;
+  border: 1.5px dashed var(--k-brown);
+  padding: 4mm 5mm;
+  margin: 3mm 0;
+}
+.k-delivery-care-title {
+  font-family: var(--k-body-font);
+  font-weight: 700; color: var(--k-brown);
+  text-transform: uppercase; letter-spacing: 0.24em;
+  padding-left: 0.24em;
+  font-size: 9px;
+  margin-bottom: 2mm;
+}
+.k-delivery-care-body {
+  font-family: var(--k-body-font);
+  font-size: 10.5px;
+  color: var(--k-body);
+  line-height: 1.55;
+}
+.k-delivery-thanks {
+  font-family: var(--k-serif);
+  font-style: italic;
+  color: var(--k-muted);
+  font-size: 11px;
+  margin-top: 3mm;
+}
+.k-delivery-social {
+  font-family: var(--k-body-font);
+  color: var(--k-brown);
+  font-weight: 700;
+  font-size: 10px;
+  margin-top: 4mm;
+}
+
+/* =============================================================================
+   08 — SOCIAL CARD  (1080×1080 drawn 148×148mm)
+   ============================================================================= */
+.k-social {
+  width: 148mm; height: 148mm;
+  padding: 12mm 14mm;
+  background: var(--k-paper-warm);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: space-between;
+  text-align: center;
+}
+.k-social-top {
+  display: flex; flex-direction: column; align-items: center; gap: 4mm;
+}
+.k-social-top .k-brand-lockup { align-items: center; }
+.k-social-top .k-brand-name { font-size: 22px; }
+.k-social-top .k-brand-tagline { font-size: 12px; }
+.k-social-center {
+  display: flex; flex-direction: column; align-items: center; gap: 4mm;
+}
+.k-social-eyebrow {
+  font-size: 11px; letter-spacing: 0.28em; padding-left: 0.28em;
+}
+.k-social-name {
+  font-family: var(--k-serif);
+  font-weight: 800; color: var(--k-brown-dark);
+  font-size: 42px; line-height: 1.02;
+  margin: 0; letter-spacing: -0.01em;
+  max-width: 80%;
+}
+.k-social-desc {
+  font-family: var(--k-serif);
+  font-style: italic; color: var(--k-muted);
+  font-size: 15px; line-height: 1.4;
+  max-width: 78%;
+}
+.k-social-price-pill {
+  display: inline-block;
+  border: 1.5px solid var(--k-brown);
+  border-radius: 40px;
+  padding: 3mm 10mm;
+  color: var(--k-brown);
+  font-family: var(--k-serif);
+  font-weight: 800;
+  font-size: 18px;
+  margin-top: 2mm;
+}
+.k-social-bottom {
+  width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px;
+  color: var(--k-muted);
+  font-family: var(--k-body-font);
+}
+.k-social-handles { color: var(--k-brown); font-weight: 700; }
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait, comprehensive)
+   ============================================================================= */
+.k-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 14mm 12mm;
+  display: flex; flex-direction: column;
+}
+.k-binder-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 5mm;
+}
+.k-binder-header-right {
+  font-family: var(--k-body-font);
+  font-weight: 700; color: var(--k-brown);
+  text-transform: uppercase; letter-spacing: 0.22em;
+  padding-left: 0.22em; font-size: 10px;
+}
+.k-binder-title-block {
+  display: flex; gap: 10mm; margin-top: 8mm; align-items: flex-start;
+}
+.k-binder-title-left { flex: 1; }
+.k-binder-title-left h2 {
+  font-family: var(--k-serif);
+  font-weight: 800; color: var(--k-brown-dark);
+  font-size: 30px; line-height: 1.05; margin: 0;
+}
+.k-binder-title-desc {
+  font-family: var(--k-serif);
+  font-style: italic; color: var(--k-muted);
+  font-size: 13px; margin-top: 2mm;
+}
+.k-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 4mm 0;
+  margin-top: 5mm;
+  border-top: 1.5px dotted var(--k-rule-soft);
+  border-bottom: 1.5px dotted var(--k-rule-soft);
+}
+.k-binder-meta-cell-lbl {
+  font-size: 8.5px;
+  color: var(--k-brown);
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  font-family: var(--k-body-font);
+  font-weight: 700;
+  margin-bottom: 1mm;
+}
+.k-binder-meta-cell-val {
+  font-family: var(--k-serif); font-weight: 800; color: var(--k-ink);
+  font-size: 14px;
+}
+.k-binder-meta-cell-val.k-brown { color: var(--k-brown); }
+/* Photo box (right side) */
+.k-binder-photo {
+  width: 62mm; height: 46mm; flex-shrink: 0;
+  background: var(--k-paper-lighter);
+  border: 1.5px solid var(--k-brown-mid);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  color: var(--k-muted);
+  font-size: 10px;
+  font-family: var(--k-body-font);
+  transform: rotate(1.5deg);
+  overflow: hidden;
+}
+.k-binder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.k-binder-photo-placeholder {
+  padding: 4mm; line-height: 1.45;
+}
+
+.k-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14mm;
+  margin-top: 8mm; flex: 1;
+}
+.k-binder-section-head {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 4mm;
+}
+.k-binder-section-head h3 {
+  font-family: var(--k-serif);
+  font-weight: 700; color: var(--k-brown);
+  font-size: 19px; margin: 0;
+}
+.k-binder-section-head .k-rule-single { flex: 1; }
+
+.k-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 10px; padding: 2.5mm 0;
+  border-bottom: 1.5px dotted var(--k-rule-soft);
+  font-size: 12px;
+}
+.k-binder-ing-row .k-ing-name { color: var(--k-body); font-family: var(--k-body-font); }
+.k-binder-ing-row .k-ing-qty { color: var(--k-muted); font-family: var(--k-body-font); text-align: right; }
+.k-binder-ing-row .k-ing-cost {
+  color: var(--k-body); font-family: var(--k-body-font); text-align: right; min-width: 10mm;
+}
+.k-binder-batch {
+  display: flex; justify-content: space-between;
+  margin-top: 3mm;
+  font-family: var(--k-serif); font-weight: 800; color: var(--k-ink);
+  font-size: 13px;
+}
+.k-binder-batch-val { color: var(--k-brown); }
+
+.k-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  counter-reset: kbstep;
+  display: flex; flex-direction: column; gap: 8px;
+  font-size: 12px; color: var(--k-body); line-height: 1.55;
+}
+.k-binder-method li {
+  counter-increment: kbstep;
+  padding-left: 20px; position: relative;
+}
+.k-binder-method li::before {
+  content: counter(kbstep) ".";
+  position: absolute; left: 0; top: 0;
+  color: var(--k-brown); font-weight: 700; font-family: var(--k-serif);
+}
+.k-binder-method-group {
+  font-family: var(--k-body-font);
+  font-weight: 700; color: var(--k-brown);
+  text-transform: uppercase; letter-spacing: 0.22em;
+  padding-left: 0.22em; font-size: 9.5px;
+  margin: 3mm 0 2mm;
+}
+
+.k-binder-notes {
+  margin-top: 8mm;
+}
+.k-binder-notes-title {
+  font-family: var(--k-serif);
+  font-weight: 700; color: var(--k-brown);
+  font-size: 18px; margin: 0 0 3mm;
+}
+.k-binder-notes-lines {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.k-binder-notes-line {
+  border-bottom: 1.5px dotted var(--k-rule-soft);
+  height: 6mm;
+}
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, double border, seal)
+   ============================================================================= */
+.k-cert {
+  width: 297mm; height: 210mm;
+  padding: 4mm;
+  display: flex;
+}
+.k-cert-outer-border {
+  flex: 1;
+  border: 1.5px solid var(--k-brown);
+  padding: 3mm;
+  display: flex;
+}
+.k-cert-inner-border {
+  flex: 1;
+  border: 1px solid var(--k-brown);
+  padding: 10mm 14mm 8mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.k-cert-monogram-wrap { margin-bottom: 4mm; }
+.k-cert-title {
+  font-family: var(--k-serif);
+  font-style: italic;
+  font-weight: 700;
+  color: var(--k-brown);
+  font-size: 26px;
+  margin: 0 0 8mm;
+}
+.k-cert-intro,
+.k-cert-outro {
+  font-family: var(--k-serif);
+  font-style: italic;
+  color: var(--k-muted);
+  font-size: 13px;
+}
+.k-cert-product {
+  font-family: var(--k-serif);
+  font-weight: 900;
+  color: var(--k-brown-dark);
+  text-transform: uppercase;
+  font-size: 44px;
+  margin: 5mm 0;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.k-cert-brand {
+  font-family: var(--k-serif);
+  font-weight: 800;
+  color: var(--k-brown);
+  text-transform: uppercase;
+  font-size: 24px;
+  margin: 5mm 0 2mm;
+  letter-spacing: 0.02em;
+}
+.k-cert-tagline {
+  font-family: var(--k-serif);
+  font-style: italic;
+  color: var(--k-muted);
+  font-size: 12px;
+  margin: 0;
+}
+.k-cert-signature-row {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 15mm;
+  gap: 8mm;
+}
+.k-cert-sig-block {
+  flex: 1;
+  border-top: 1px solid var(--k-brown);
+  padding-top: 2mm;
+  font-family: var(--k-serif);
+  color: var(--k-muted);
+  font-size: 12px;
+  font-style: italic;
+}
+.k-cert-sig-block.k-right { text-align: right; }
+.k-cert-seal-center {
+  flex-shrink: 0;
+}
+.k-cert-footer {
+  margin-top: 6mm;
+  font-family: var(--k-body-font);
+  color: var(--k-muted);
+  font-size: 10.5px;
+  text-align: center;
+  line-height: 1.55;
+  padding-bottom: 2mm;
+}
+.k-cert-footer .k-brown { color: var(--k-brown); font-weight: 700; }

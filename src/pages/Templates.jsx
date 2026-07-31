@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useSettings } from '../lib/settings.jsx'
-import { TEMPLATES, getTemplate } from '../components/templates/index.js'
+import { TEMPLATES, getTemplate, getTemplateComponent } from '../components/templates/index.js'
 import { STYLE_VARIANTS, DEFAULT_STYLE_KEY } from '../lib/template-styles.js'
 
 /* ============================================================
@@ -225,7 +225,8 @@ export default function Templates() {
   }), [settings])
 
   const template = getTemplate(templateKey)
-  const TemplateComponent = template?.ready ? template.component : null
+  const { Component: TemplateComponent, dedicated: isDedicatedVariant } =
+    getTemplateComponent(templateKey, currentStyle)
   const isMulti = !!template?.multi
 
   const readyCount = availableTemplates.filter(t => t.ready).length
@@ -334,12 +335,22 @@ export default function Templates() {
 
         {canPreview && (
           <div className="templates-preview">
-            <TemplateComponent
-              recipe={enrichedRecipe}
-              recipes={enrichedRecipes}
-              brand={brand}
-              styleVariant={currentStyle}
-            />
+            {isDedicatedVariant ? (
+              // Dedicated variant component — styles itself, no styleVariant prop needed
+              <TemplateComponent
+                recipe={enrichedRecipe}
+                recipes={enrichedRecipes}
+                brand={brand}
+              />
+            ) : (
+              // Fallback shared component — uses variant-* CSS class overrides
+              <TemplateComponent
+                recipe={enrichedRecipe}
+                recipes={enrichedRecipes}
+                brand={brand}
+                styleVariant={currentStyle}
+              />
+            )}
           </div>
         )}
       </main>
