@@ -1,45 +1,51 @@
-# Logo Variety per Variant
+# Distinct Color Palettes per Variant + Font-Size Variety
 
-One file: `src/styles.css` — append only.
+One file: `src/styles.css`.
 
-Adds distinctive logo treatment for every variant across every template's logo class. No JSX changes — pure CSS overrides.
+Every variant now owns its own accent palette instead of all sharing warm brown. Plus recipe-name font sizes now vary across variants for real hierarchy differentiation.
 
-## The 5 logo treatments
+## The 5 palettes
 
-| Variant | Full BrandHeader | Compact | Signature |
+| # | Variant | Primary accent | Rationale |
 |---|---|---|---|
-| **Clean Modern** | 52×52 | 40×40 | Baseline. No decorative treatment — clean and neutral. |
-| **Rustic Kraft** | **64×64** | 46×46 | **Circular dashed brown frame** around the logo — like a hand-stamped mark on kraft paper. Padded so the logo sits inside the ring. |
-| **Vintage Letterpress** | **42×42, centered above name** | 32×32 | Small, formal, symmetrical. Header switches to column layout — logo stacks above the centered business name. |
-| **Editorial Magazine** | **68×68 with 2px black frame** | 50×50 | Big, prominent, magazine-masthead treatment. Hard black square border with white paper backing — bold visual anchor. |
-| **Quiet Minimal** | **34×34, 90% opacity** | 26×26 | Very small, slightly muted. Doesn't fight the recipe name for attention. |
+| 1 | **Clean Modern** | `#6C5CE7` app violet | On-brand with the app itself — this is the "default" variant, so it reads as the BakeOnomics-native aesthetic |
+| 2 | **Rustic Kraft** | `#8B4A2B` warm brown | Native to kraft paper, feels hand-stamped and organic |
+| 3 | **Vintage Letterpress** | `#7A2E3B` deep burgundy | Patisserie / heritage / premium gifting — classical formality |
+| 4 | **Editorial Magazine** | `#1A1A18` near-black with `#C41E3A` cherry-red pop | Magazine masthead + one small pop color for social handles, per editorial convention |
+| 5 | **Quiet Minimal** | `#5B6874` slate blue-grey | Quiet, sophisticated, restrained — Aesop/Byredo territory |
 
-## Also covered
+**Kraft is the only variant that keeps warm brown** — it's baked into the aesthetic.
 
-Same treatment logic flows through to the templates that don't use BrandHeader:
+## Recipe name font sizes now vary
 
-- **Social Media Card** logo (`.tpl-social-logo`)
-- **Delivery Tag** logo (`.tpl-delivery-logo`)
-- **Product Label** logo (`.tpl-label-logo`)
-- **Certificate of Craft** logo (`.tpl-cert-logo`)
+| Variant | Recipe name size | Line height | Weight |
+|---|---|---|---|
+| Clean Modern | 26px (default) | 1.1 | 800 |
+| Rustic Kraft | **29px** | 1.15 | 800 (Bitter serif) |
+| Vintage Letterpress | **32px** | 1.1 | 700 (Playfair Display) |
+| Editorial Magazine | **36px** | 1.0 | 400 (DM Serif Display, biggest) |
+| Quiet Minimal | **22px** | 1.2 | **400 light** (smallest, most restrained) |
 
-Every one of these scales, frames, and repositions per variant:
+## What actually changed
 
-- Kraft wraps them all in dashed circular frames
-- Letterpress makes their parent headers column-oriented and centers everything
-- Editorial gives them hard black square frames (or white on the dark Social masthead)
-- Minimal makes them small and 85–90% opacity
+**Block-aware color remap**: a Python pass walked the CSS, detected which variant block each line belonged to (by tracking `.tpl.variant-{key}` selector prefixes), and swapped `#8B4A2B` → variant-specific accent within each block only.
 
-## Layout changes (not just size)
+- Clean Modern: 8 replacements
+- Kraft: 0 (intentional)
+- Letterpress: 12
+- Editorial: 2 (mostly used `#1A1A18` explicitly already; also swapped social `#C9A88A` → `#C41E3A`)
+- Minimal: 3
 
-**Rustic Kraft** doesn't change header layout — the ring around the logo is what carries the identity.
+RGBA brown-tinted values (like `rgba(139,74,43,0.4)` on kraft dashed borders) were also remapped per variant — so Letterpress dashed dividers use burgundy tints, Minimal uses slate tints, etc.
 
-**Vintage Letterpress** restructures every header — SocialMediaCard's `.tpl-social-mark`, DeliveryTag's `.tpl-delivery-header`, ProductLabel's `.tpl-label-header`, and the shared BrandHeader — all become `flex-direction: column` with `align-items: center`. Logo sits above centered business name.
+**Font-size overrides**: added at the end of the file, targeting `[class*="-recipe-name"]` and its siblings (`-care-product`, `-wholesale-title`, `-cert-product`, `-social-name`) so every template's main title scales per variant.
 
-**Editorial Magazine** keeps row layout but the black frame around the logo changes the whole visual weight. On the Social card, the frame is white (against the brand-color gradient background) so the mark still reads as a bold lockup.
+## What stayed uniform (within each style)
 
-**Quiet Minimal** keeps default row layout but everything is smaller and lighter — the logo intentionally recedes.
+All 10 templates rendered in a given style share the same palette + font scale. So Classic Card in Letterpress, and Care Card in Letterpress, and Certificate in Letterpress — all use burgundy, all use the Playfair/Cormorant pairing, all have the 32px recipe name.
+
+The variation is **between** styles, not within a style. Which is what you asked for.
 
 ## Deploy
 
-Overwrite `src/styles.css`, push, hard-refresh. Cycle any template through the 5 variants — the logo should look distinctively different each time (dashed circle, centered above, hard black frame, small and muted, or neutral baseline).
+Overwrite the file, push, hard-refresh. Cycle any template through all 5 variants and each should feel like a distinct piece of design — different accent color, different type scale, different rule treatment, different paper.
