@@ -246,11 +246,12 @@
 /* =============================================================================
    01 — RECIPE CARD  (A5 portrait, 148×210mm)
    ============================================================================= */
-.e-recipe-card {
+.e-tpl.e-recipe-card {
   width: 148mm; min-height: 210mm;
   padding: 0;
   display: flex;
   flex-direction: row;
+  align-items: stretch;
 }
 .e-recipe-sideband {
   width: 22mm;
@@ -844,11 +845,12 @@
 /* =============================================================================
    07 — DELIVERY TAG  (A7 portrait, 74×105mm)
    ============================================================================= */
-.e-delivery {
+.e-tpl.e-delivery {
   width: 74mm; min-height: 105mm;
   padding: 0;
   display: flex;
   flex-direction: row;
+  align-items: stretch;
 }
 .e-delivery-sideband {
   width: 8mm;
@@ -972,11 +974,12 @@
 /* =============================================================================
    09 — RECIPE BINDER PAGE  (A4 portrait)
    ============================================================================= */
-.e-binder {
+.e-tpl.e-binder {
   width: 210mm; min-height: 297mm;
   padding: 0;
   display: flex;
   flex-direction: row;
+  align-items: stretch;
 }
 .e-binder-sidebar {
   width: 62mm;
@@ -1121,11 +1124,12 @@
 /* =============================================================================
    10 — CERTIFICATE OF CRAFT  (A4 landscape, 297×210mm)
    ============================================================================= */
-.e-cert {
+.e-tpl.e-cert {
   width: 297mm; height: 210mm;
   padding: 0;
   display: flex;
   flex-direction: row;
+  align-items: stretch;
   position: relative;
 }
 .e-cert-sideband {
