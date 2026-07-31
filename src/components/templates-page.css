@@ -1,0 +1,321 @@
+/* =============================================================================
+   Recipe Templates page — scoped two-column layout
+   =============================================================================
+   .tpl-page       — 320px sidebar | 1fr main
+   .tpl-sidebar    — sticky vertical list of 10 template items
+   .tpl-main       — controls panel + style hint + preview
+   All classes prefixed .tpl-* — no globals touched.
+   ============================================================================= */
+
+/* ==== Colour tokens (safe fallbacks if your global vars aren't set) =========*/
+.tpl-page {
+  --tpl-ink:      #1E1B4B;
+  --tpl-ink-soft: #4B4869;
+  --tpl-muted:    #6B7288;
+  --tpl-line:     #E5E5EC;
+  --tpl-accent:   #6C5CE7;
+  --tpl-accent-dark: #5A4BD1;
+  --tpl-bg:       #FAFAFC;
+
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+/* ==== SIDEBAR =============================================================*/
+.tpl-sidebar {
+  background: #fff;
+  border: 1px solid var(--tpl-line);
+  border-radius: 14px;
+  padding: 14px;
+  position: sticky;
+  top: 16px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  box-shadow: 0 1px 3px rgba(43, 43, 68, 0.04);
+}
+.tpl-sidebar-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 2px 6px 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--tpl-line);
+}
+.tpl-sidebar-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tpl-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.tpl-sidebar-count {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 9px;
+  background: rgba(52, 199, 123, 0.13);
+  color: #1E9B5F;
+  border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+}
+.tpl-status-dot {
+  width: 6px; height: 6px;
+  background: #34C77B;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.tpl-list {
+  display: flex; flex-direction: column;
+  gap: 4px;
+}
+
+.tpl-item {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 8px;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 120ms, border-color 120ms;
+  color: inherit;
+  min-width: 0;
+}
+.tpl-item:hover {
+  background: #FAFAFC;
+}
+.tpl-item.active {
+  background: #F5F3FF;
+  border-color: var(--tpl-accent);
+}
+.tpl-item.soon {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.tpl-item.soon:hover { background: transparent; }
+
+.tpl-item-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #7B93AF, #5B7592);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.tpl-item-icon svg { display: block; }
+.tpl-item.soon .tpl-item-icon {
+  background: #E5E5EC !important;
+  color: var(--tpl-muted);
+}
+
+.tpl-item-body {
+  min-width: 0;
+}
+.tpl-item-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.tpl-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tpl-ink);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
+}
+.tpl-item-size {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: #F5F5FA;
+  color: var(--tpl-muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.tpl-item-soon {
+  font-size: 9.5px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: #FEF3C7;
+  color: #92400E;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+.tpl-item-desc {
+  font-size: 11.5px;
+  color: var(--tpl-ink-soft);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ==== MAIN ================================================================*/
+.tpl-main {
+  background: #fff;
+  border: 1px solid var(--tpl-line);
+  border-radius: 14px;
+  padding: 22px 24px 24px;
+  min-width: 0;   /* prevents preview from overflowing */
+  box-shadow: 0 1px 3px rgba(43, 43, 68, 0.04);
+}
+.tpl-main-head {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--tpl-line);
+  margin-bottom: 18px;
+}
+.tpl-main-head h3 {
+  margin: 0 0 4px;
+  font-size: 20px; font-weight: 700;
+  color: var(--tpl-ink);
+  letter-spacing: -0.02em;
+}
+.tpl-main-head .sub {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--tpl-ink-soft);
+  line-height: 1.5;
+}
+.tpl-main-head .sub a {
+  color: var(--tpl-accent-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+.tpl-main-head .sub a:hover { text-decoration: underline; }
+
+/* Combined controls panel */
+.tpl-controls-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 14px;
+  align-items: end;
+  padding: 14px;
+  background: var(--tpl-bg);
+  border: 1px solid var(--tpl-line);
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+.tpl-controls-panel:has(.tpl-control:only-child),
+.tpl-controls-panel > .tpl-control:only-of-type ~ .tpl-print-btn {
+  /* When Recipe is hidden (multi-recipe templates), collapse to 2 cols */
+}
+
+.tpl-control {
+  display: flex; flex-direction: column; gap: 6px;
+  min-width: 0;
+}
+.tpl-control label {
+  font-size: 10.5px; font-weight: 700;
+  color: var(--tpl-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.tpl-control select {
+  padding: 10px 14px;
+  padding-right: 36px;
+  border: 1px solid var(--tpl-line);
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--tpl-ink);
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  min-width: 0;
+  width: 100%;
+}
+.tpl-control select:hover  { border-color: var(--tpl-accent); }
+.tpl-control select:focus  {
+  outline: none;
+  border-color: var(--tpl-accent);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.12);
+}
+
+.tpl-print-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 16px;
+  height: 40px;
+  background: var(--tpl-accent);
+  color: white;
+  border: none;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: background 120ms;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.tpl-print-btn:hover:not(:disabled)  { background: var(--tpl-accent-dark); }
+.tpl-print-btn:disabled              { opacity: 0.5; cursor: not-allowed; }
+.tpl-print-btn svg                    { flex-shrink: 0; }
+
+.tpl-style-hint {
+  padding: 4px 14px 14px;
+  font-size: 12px;
+  color: var(--tpl-ink-soft);
+  line-height: 1.5;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+.tpl-multi-notice {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: #F5F3FF;
+  border: 1px solid #DDD6FE;
+  border-radius: 10px;
+  color: #5B21B6;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+.tpl-multi-badge {
+  background: var(--tpl-accent);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.tpl-main .templates-preview {
+  margin-top: 14px;
+}
+
+/* ==== Responsive ==========================================================*/
+@media (max-width: 900px) {
+  .tpl-page {
+    grid-template-columns: 1fr;
+  }
+  .tpl-sidebar {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+  .tpl-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .tpl-controls-panel {
+    grid-template-columns: 1fr;
+  }
+  .tpl-print-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+@media (max-width: 520px) {
+  .tpl-list { grid-template-columns: 1fr; }
+}

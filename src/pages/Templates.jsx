@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useSettings } from '../lib/settings.jsx'
 import { TEMPLATES, getTemplate, getTemplateComponent } from '../components/templates/index.js'
-import TemplatePreviewGlyph from '../components/TemplatePreviewGlyph.jsx'
-import '../components/templates-picker.css'
+import TemplateIcon from '../components/TemplateIcon.jsx'
+import PrinterIcon from '../components/PrinterIcon.jsx'
+import '../components/templates-page.css'
 
 // Enrich a raw recipe with BOM + costs
 function enrich(recipe, bomLines, ingredients, defaultTargetPct) {
@@ -29,13 +31,20 @@ function enrich(recipe, bomLines, ingredients, defaultTargetPct) {
 }
 
 const STYLE_VARIANTS = [
-  { key: 'kraft',       name: 'Rustic Kraft & Stamp' },
-  { key: 'clean',       name: 'Clean Modern' },
-  { key: 'crisp',       name: 'Crisp' },
-  { key: 'letterpress', name: 'Vintage Letterpress' },
-  { key: 'editorial',   name: 'Editorial Magazine' },
-  { key: 'minimal',     name: 'Quiet Minimal' },
-  { key: 'flour-ink',   name: 'Flour & Ink' },
+  { key: 'kraft',       name: 'Rustic Kraft & Stamp',    isDefault: true,
+    description: 'Warm brown ink on kraft paper. Dashed seals, hand-stamped feel — reads like the small-batch bakery down the road.' },
+  { key: 'clean',       name: 'Clean Modern',
+    description: 'Purple accents, generous whitespace, sans-serif — polished and app-like.' },
+  { key: 'crisp',       name: 'Crisp',
+    description: 'White paper, thin gray rules with brown accents, JetBrains-Mono numbers — precise and clinical.' },
+  { key: 'letterpress', name: 'Vintage Letterpress',
+    description: 'Deep burgundy on cream, formal serif typography, restrained ornament.' },
+  { key: 'editorial',   name: 'Editorial Magazine',
+    description: 'Bold black + cherry-red accents, magazine layout — high-contrast and confident.' },
+  { key: 'minimal',     name: 'Quiet Minimal',
+    description: 'Slate blue-grey, hairline marks, lots of breathing room — modernist restraint.' },
+  { key: 'flour-ink',   name: 'Flour & Ink',
+    description: 'Single-ink minimalism, tracked capitals, 1px hairlines — no accent colour at all.' },
 ]
 
 export default function Templates() {
@@ -117,111 +126,138 @@ export default function Templates() {
 
   const isMulti = !!template?.multi
   const canPreview = !!TemplateComponent && (isMulti || enrichedRecipe)
-  const brandComplete = !!(settings.business_name && settings.logo_data_url)
+  const readyCount = TEMPLATES.filter(t => t.ready !== false).length
   const currentCustomization = customizations[templateKey] || {}
+  const currentStyleMeta = STYLE_VARIANTS.find(s => s.key === currentStyle)
 
   return (
-    <>
-      <div className="panel no-print">
-        <div className="panel-head">
-          <div>
-            <h3>Recipe Templates</h3>
-            <p className="sub">
-              Generate personalized sheets. Content pulls from Recipe Master and Settings —
-              tweak per-template snippets in <a href="/app/settings/template-customization">Template Customization</a>.
-            </p>
-          </div>
+    <div className="tpl-page">
+      {/* ===== LEFT SIDEBAR — Template list ===== */}
+      <aside className="tpl-sidebar no-print">
+        <div className="tpl-sidebar-head">
+          <div className="tpl-sidebar-title">Templates</div>
+          <span className="tpl-sidebar-count">
+            <span className="tpl-status-dot"/> {readyCount}
+          </span>
+        </div>
+        <div className="tpl-list">
+          {TEMPLATES.map(t => {
+            const isReady = t.ready !== false
+            return (
+              <button
+                key={t.key}
+                type="button"
+                className={
+                  'tpl-item' +
+                  (templateKey === t.key ? ' active' : '') +
+                  (!isReady ? ' soon' : '')
+                }
+                onClick={() => isReady && setTemplateKey(t.key)}
+                disabled={!isReady}
+                title={t.description}
+              >
+                <div
+                  className="tpl-item-icon"
+                  style={isReady ? { background: t.gradient } : {}}
+                >
+                  <TemplateIcon type={t.preview}/>
+                </div>
+                <div className="tpl-item-body">
+                  <div className="tpl-item-header">
+                    <span className="tpl-item-name">{t.name}</span>
+                    {isReady
+                      ? <span className="tpl-item-size">{t.pageSize}</span>
+                      : <span className="tpl-item-soon">SOON</span>}
+                  </div>
+                  <div className="tpl-item-desc">{t.description}</div>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </aside>
+
+      {/* ===== RIGHT MAIN — Controls + Preview ===== */}
+      <main className="tpl-main">
+        <div className="tpl-main-head no-print">
+          <h3>{template?.name || 'Recipe Templates'}</h3>
+          <p className="sub">
+            Content pulls from Recipe Master and Settings — tweak per-template snippets in{' '}
+            <Link to="/app/template-customization">Template Customization</Link>.
+          </p>
         </div>
 
-        {!brandComplete && (
-          <div className="conv-box" style={{marginBottom:16}}>
-            <div className="conv-icon">💡</div>
-            <div>
-              <b>Set up your brand first.</b> Add your logo and business name in <a href="/app/settings">Settings</a> to make templates look personalized.
-            </div>
-          </div>
-        )}
-
-        {!isMulti && (
-          <div className="tpl-controls">
-            <div className="field">
+        <div className="tpl-controls-panel no-print">
+          {!isMulti && (
+            <div className="tpl-control">
               <label>Recipe</label>
-              <select value={recipeId} onChange={e => setRecipeId(e.target.value)} disabled={loading || recipes.length === 0}>
+              <select
+                value={recipeId}
+                onChange={e => setRecipeId(e.target.value)}
+                disabled={loading || recipes.length === 0}
+              >
                 {loading && <option>Loading…</option>}
                 {!loading && recipes.length === 0 && <option>No recipes yet — create one first</option>}
                 {recipes.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
               </select>
             </div>
-            <div className="field">
-              <label>Style</label>
-              <select value={currentStyle} onChange={e => setCurrentStyle(e.target.value)}>
-                {STYLE_VARIANTS.map(s => <option key={s.key} value={s.key}>{s.name}</option>)}
-              </select>
-            </div>
+          )}
+
+          <div className="tpl-control">
+            <label>Style</label>
+            <select value={currentStyle} onChange={e => setCurrentStyle(e.target.value)}>
+              {STYLE_VARIANTS.map(s => (
+                <option key={s.key} value={s.key}>
+                  {s.name}{s.isDefault ? ' (default)' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            className="tpl-print-btn"
+            onClick={() => window.print()}
+            disabled={!canPreview}
+          >
+            <PrinterIcon/>
+            <span>Print / Save as PDF</span>
+          </button>
+        </div>
+
+        {currentStyleMeta?.description && (
+          <div className="tpl-style-hint no-print">
+            {currentStyleMeta.description}
           </div>
         )}
 
         {isMulti && (
-          <div className="tpl-multi-notice">
-            <span className="tpl-multi-badge">Multi-recipe</span>
-            This template renders <strong>all your recipes</strong> ({enrichedRecipes.length} total).
+          <div className="tpl-multi-notice no-print">
+            <span className="tpl-multi-badge">MULTI</span>
+            This template renders all {enrichedRecipes.length} recipes.
           </div>
         )}
-
-        <div className="tpl-picker-grid">
-          {TEMPLATES.map(t => (
-            <button
-              key={t.key}
-              type="button"
-              className={'tpl-card' + (templateKey === t.key ? ' active' : '')}
-              onClick={() => setTemplateKey(t.key)}
-              style={{ '--tpl-accent': t.gradient || 'linear-gradient(135deg,#6C5CE7,#8478F5)' }}
-            >
-              <div className="tpl-card-glyph" aria-hidden>
-                <TemplatePreviewGlyph shape={t.preview} pageSize={t.pageSize}/>
-              </div>
-              <div className="tpl-card-body">
-                <div className="tpl-card-name">{t.name}</div>
-                <div className="tpl-card-desc">{t.description}</div>
-              </div>
-              <div className="tpl-card-badges">
-                {t.pageSize && <span className="tpl-card-size">{t.pageSize}</span>}
-                {t.multi && <span className="tpl-card-multi">ALL</span>}
-              </div>
-            </button>
-          ))}
-        </div>
 
         {canPreview && (
-          <div className="tpl-actions">
-            <button className="primary" onClick={() => window.print()}>
-              🖨️  Print / Save as PDF
-            </button>
-            <div className="hint">Uses your browser's print dialog — pick "Save as PDF" for a downloadable version.</div>
+          <div className="templates-preview">
+            {isDedicatedVariant ? (
+              <TemplateComponent
+                recipe={enrichedRecipe}
+                recipes={enrichedRecipes}
+                brand={brand}
+                customization={currentCustomization}
+              />
+            ) : (
+              <TemplateComponent
+                recipe={enrichedRecipe}
+                recipes={enrichedRecipes}
+                brand={brand}
+                styleVariant={currentStyle}
+                customization={currentCustomization}
+              />
+            )}
           </div>
         )}
-      </div>
-
-      {canPreview && (
-        <div className="templates-preview">
-          {isDedicatedVariant ? (
-            <TemplateComponent
-              recipe={enrichedRecipe}
-              recipes={enrichedRecipes}
-              brand={brand}
-              customization={currentCustomization}
-            />
-          ) : (
-            <TemplateComponent
-              recipe={enrichedRecipe}
-              recipes={enrichedRecipes}
-              brand={brand}
-              styleVariant={currentStyle}
-              customization={currentCustomization}
-            />
-          )}
-        </div>
-      )}
-    </>
+      </main>
+    </div>
   )
 }
