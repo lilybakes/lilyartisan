@@ -1,72 +1,91 @@
-# Multi-tenancy leak fix
+# Default filler recipe for new signups
 
-## What actually happened
+## What ships
 
-Nothing was shared or duplicated. The RLS policy on user data tables was:
+Replaces `seed_starter_recipes()` with a single, polished "hello world" recipe — a **Moist Chocolate Ganache Cake** — with every content field populated. Every one of the 10 Kraft templates renders correctly out of the box the moment a new user finishes signup.
 
-```sql
-USING (user_id = auth.uid() OR is_sysadmin())
+Also fixes a latent bug: an earlier migration added `recipes.method` as **text**, and my later Kraft-content migration was written assuming **jsonb**. Because `ADD COLUMN IF NOT EXISTS` is a no-op when the column exists, on your database `method` is still text — which is why the 6 starter recipes didn't render method properly on the Kraft templates either. This delta converts it to jsonb, preserving existing content by splitting on newlines.
+
+## The recipe
+
+**Moist Chocolate Ganache Cake** — 10 slices, target 30% food cost, ~RM 2.74/portion, suggested RM 10.
+
+Fields populated for every template that needs them:
+
+| Field | Used by |
+|---|---|
+| `name`, `category` | all |
+| `yield_portions`, `target_food_cost_pct` | Cost Breakdown, Binder Page |
+| `description` | Social Card, Binder Page, Menu Insert |
+| `method` (jsonb array with CAKE / GANACHE sub-groups) | Recipe Card, Binder Page |
+| `storage_text` | Care Card, Delivery Tag |
+| `care_text` | Care Card |
+| `allergens_text` | Care Card |
+| `label_ingredients_text` | Product Label |
+| `label_allergens_text` | Product Label |
+| `show_in_menu` = true | Menu Insert, Wholesale Price List |
+| `image_url` | Binder Page (NULL for now — see below) |
+
+Method has proper sub-group labels so it renders as:
+
+```
+CAKE
+  1. Preheat oven to 175°C…
+  2. Whisk flour, cocoa…
+  …
+GANACHE
+  9. Finely chop the dark chocolate…
+  10. Warm the cream…
 ```
 
-That `OR is_sysadmin()` means when you're signed in as `anthony2211@gmail.com` (sysadmin), the Recipe Master page pulls every user's recipes into a single view with no visual difference between yours and theirs. "Blueberry bagel" was Lily's recipe from the start — never yours. When you added a photo, you edited *her* row through your sysadmin privilege. She sees it because it was always her recipe.
+## 12 ingredients seeded
 
-This was a design flaw in Delta 1: sysadmin was given automatic cross-user visibility on normal data tables, but the UI has no indication of whose data is being displayed. Impossible for a sysadmin to tell what's theirs.
+Everything the recipe references, priced realistically:
 
-## The fix
-
-Tighten the policies to `own only`. Sysadmin gets no automatic access to other users' data through the normal UI. What still works:
-
-- **The sysadmin panel** (`/app/sysadmin/*` — Users, Orders, Template Access, Audit Log, Content, etc.) all use SECURITY DEFINER RPCs (`sysadmin_list_users`, `sysadmin_list_orders`, etc.) which run with elevated privilege independently of RLS. Unaffected.
-- **Impersonation** — when you need to actually browse a specific user's data, go to the Users page and use the existing Impersonate button. That swaps your session to be that user; RLS then naturally shows their data, and the topbar shows an "IMPERSONATING" indicator so you can't confuse it with your own.
+| Ingredient | Unit | Purchase qty | Price (RM) |
+|---|---|---|---|
+| All-purpose flour | g | 1000 | 4.50 |
+| Granulated sugar | g | 1000 | 3.50 |
+| Cocoa powder | g | 500 | 22.00 |
+| Baking powder | g | 500 | 12.00 |
+| Baking soda | g | 500 | 8.00 |
+| Sea salt | g | 500 | 6.00 |
+| Large eggs | pcs | 30 | 15.00 |
+| Whole milk | ml | 1000 | 7.50 |
+| Vegetable oil | ml | 1000 | 8.00 |
+| Vanilla extract | ml | 100 | 25.00 |
+| Dark chocolate 70% | g | 500 | 28.00 |
+| Heavy cream | ml | 1000 | 22.00 |
 
 ## Files
 
 ```
 supabase/
-  rls-tenancy-fix.sql        # NEW — drops OR is_sysadmin() from all user data tables
+  filler-seed.sql        # NEW — method column type fix + new seed_starter_recipes
 ```
 
-One file. Safe to re-run.
-
-## What the SQL does
-
-1. Drops the `own or sysadmin` policy on `ingredients`, `recipes`, `bom_lines`, `inventory`, `header_links`, `settings`.
-2. Recreates each as strict `USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid())`.
-3. Verifies no policy still references `is_sysadmin()` on any of those six tables — raises an exception if it finds one, so you'll know immediately if the migration didn't take.
-4. Runs `seed_starter_recipes()` for `anthony2211@gmail.com` if that function exists and Anthony has no recipes of his own. Idempotent — no-op if he already has any.
-
-## Existing data
-
-Left alone. Rows you edited under the old policy remain with whichever user owns them:
-
-- The photo you added to Lily's Blueberry bagel stays on Lily's row. She keeps it.
-- Any recipe you saw and edited in the last few days was almost certainly Lily's. After this migration you'll no longer see them from your sysadmin account.
-- After the migration, Anthony's Recipe Master will show ONLY his own starter recipes (freshly seeded by step 4 above).
-
-If you want to clean up any specific rows (say, remove the Blueberry bagel photo you accidentally added), impersonate Lily on the Users page and edit it from her account.
+Safe to re-run.
 
 ## Deploy
 
-Supabase SQL editor → paste `supabase/rls-tenancy-fix.sql` → Run. Sign out and back in on both accounts. Anthony sees only his own data; Lily sees only hers.
+Supabase SQL editor → paste `supabase/filler-seed.sql` → Run. Existing users are unaffected (function is idempotent per user). Every new signup from now on gets this one recipe.
 
-## Sanity check
-
-Run this in the SQL editor after:
+If you want your own account reset to just this recipe: delete your existing recipes/ingredients in Recipe Master, then in SQL editor run:
 
 ```sql
-SELECT tablename, policyname, qual
-  FROM pg_policies
-  WHERE tablename IN ('ingredients','recipes','bom_lines','inventory','header_links','settings')
-  ORDER BY tablename;
+SELECT seed_starter_recipes((SELECT id FROM auth.users WHERE email = 'anthony2211@gmail.com'));
 ```
 
-Every `qual` should be `(user_id = auth.uid())`. No `OR is_sysadmin()` anywhere.
+## The image
 
-## What still uses `is_sysadmin()` legitimately
+`image_url` is NULL in the seed for now. I can't generate images. If you send me a chocolate cake photo you're OK with using as the default across every new signup, I'll:
 
-For reference — these keep it because they're the sysadmin's *actual* domain, not user data:
+1. Upload it to your `lilyartisan-images` bucket at a stable path (probably `starter/moist-chocolate-cake.jpg`)
+2. Update the seed to set `image_url` to that URL
+3. Ship as a two-line SQL follow-up
 
-- `profiles` — sysadmin needs to see all profiles to manage users
-- `platform_settings`, `audit_log`, `impersonation_sessions`, `orders`, `email_templates`, `content_blocks`, `hero_gallery`, `template_visibility`, `template_grants` — sysadmin-only tables
+Anything from a phone camera works fine. Ideally landscape or square, well-lit, cake visible. If you have a photo Lily's already taken of one of her real cakes, even better — makes the default feel authentic instead of stocky. Otherwise a stock photo you've licensed also works.
 
-Those all remain as they were. Only the six user-data tables above changed.
+## What about the earlier 6-recipe starter?
+
+Overwritten. The old function that seeded Sourdough, Chocolate Chip Cookies, Vanilla Cupcakes, Chocolate Fudge Cake, Blueberry Muffins, and Almond Biscotti is gone. If you signed users up under the old function, they keep those 6 recipes — this only affects future signups.
