@@ -1,58 +1,43 @@
-# Fix: "column reference 'user_id' is ambiguous" on Invite New User
+# Picker Fix + Ask
 
-## What you're seeing
+## What was wrong
 
-`sysadmin_invite_user()` is declared with:
+Two commits ago (kraft-pilot) I replaced the `icon` field on each entry in `TEMPLATES` with a `preview` shape hint and a `gradient` string. Templates.jsx still rendered `{t.icon}` — which is now undefined — and I never shipped picker CSS for the new shape. That's why every card looks flat and empty in your screenshot: the old CSS was designed around an icon that no longer exists.
 
-```sql
-RETURNS TABLE (user_id uuid, email text, temp_password text)
-```
+## What this delta ships
 
-so `user_id` becomes a name in scope inside the function body. Then near the end it runs:
-
-```sql
-UPDATE profiles SET ...
-WHERE user_id = v_user_id;   -- ambiguous
-```
-
-PostgreSQL sees two things called `user_id` (the RETURNS TABLE output column and `profiles.user_id`) and refuses to guess which one you meant. The whole invite aborts and Supabase surfaces the raw error in the modal.
-
-Exactly the same class of bug as the `sysadmin_users_for_grant` empty-dropdown one from earlier today — a name collision between a `RETURNS TABLE` column and a real table column.
-
-## Two fixes in this delta, not just one
-
-`sysadmin_approve_order()` (the checkout-order approval RPC in Delta 4) has the identical shape:
-
-```sql
-RETURNS TABLE (user_id uuid, email text, temp_password text, invoice_number text)
-...
-UPDATE profiles SET ... WHERE user_id = v_user_id;
-```
-
-It hasn't fired yet because you haven't approved a real order through the queue. It would blow up the first time you tried. Fixing it now in the same file so you don't hit this again.
-
-## The fix
-
-Both `UPDATE profiles ... WHERE user_id = v_user_id` clauses become:
-
-```sql
-UPDATE profiles AS p SET ...
-WHERE p.user_id = v_user_id;
-```
-
-Now `p.user_id` is unambiguously the table column. Also added `SET search_path = public, auth` to both functions for consistency with the earlier fix.
-
-Everything else about both functions — the auth.users insert, the auth.identities insert, the invoice numbering, the audit log — is unchanged.
-
-## Files
+Three self-contained files. Drop-in only, no globals touched.
 
 ```
-supabase/
-  invite-and-approve-fix.sql     # NEW — drops and re-creates both RPCs
+src/
+  pages/Templates.jsx                    # OVERWRITE — uses inline SVG glyphs, imports scoped CSS
+  components/
+    TemplatePreviewGlyph.jsx             # NEW — inline SVG shapes for each preview kind
+    templates-picker.css                 # NEW — scoped .tpl-* styling
 ```
 
-One file. Safe to re-run.
+The picker now renders each card with:
+- A colored square containing an inline SVG that visually hints the template layout (lines for recipes, bars for costing, dashed border for care, tag hole for delivery, seal for certificate, etc)
+- The template name + wrapped 2-line description
+- A gray pill for page size (A4, A5, A7, 1:1) and an amber ALL pill for multi-recipe templates
+- A gradient left-edge accent on hover, and the full gradient as a border when selected
+
+No dependency on your global styles.css. No dependency on the `Icon` component (avoids the "no icon" case entirely).
 
 ## Deploy
 
-Supabase SQL editor → paste `supabase/invite-and-approve-fix.sql` → Run. Then retry Invite New User with `anthony2211+test@gmail.com` — should succeed and show you the temp password.
+Drop the 3 files in, hard-refresh Recipe Templates. Cards should look like proper picker cards immediately.
+
+---
+
+# The bigger honest ask
+
+You said "I prefer full file and the zip with the repo structure." You're right, and I've been shipping partial because I only have the *files I've written* — I don't have the current source for the files that already exist in your repo. Specifically for the last few deltas I've been blind to:
+
+1. **`src/App.jsx`** — I've been telling you to hand-add routes, which is exactly the anti-pattern in your user memory
+2. **`src/components/Sidebar.jsx`** — same problem for nav links
+3. **`src/styles.css`** — I've been shipping scoped CSS files as workarounds (rcd-styles.css, templates-picker.css) instead of maintaining the master. This works but drifts over time, and it's a big reason things end up looking half-styled.
+
+If you paste the current contents of those three files as your next reply (or attach the files), the next delta can be a true "unzip and go" with proper full replacements — App.jsx with all routes, Sidebar.jsx with all nav items in the right order, and one consolidated styles.css that absorbs the scoped CSS I've been shipping piecemeal.
+
+Once I have those three, everything future ships in the shape you want.

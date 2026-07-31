@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useSettings } from '../lib/settings.jsx'
 import { TEMPLATES, getTemplate, getTemplateComponent } from '../components/templates/index.js'
+import TemplatePreviewGlyph from '../components/TemplatePreviewGlyph.jsx'
+import '../components/templates-picker.css'
 
-// Enrich a raw recipe with BOM + costs (same logic as before)
+// Enrich a raw recipe with BOM + costs
 function enrich(recipe, bomLines, ingredients, defaultTargetPct) {
   const lines = (bomLines[recipe.id] || []).map(l => {
     const ing = ingredients[l.ingredient_id]
@@ -26,17 +28,27 @@ function enrich(recipe, bomLines, ingredients, defaultTargetPct) {
   }
 }
 
+const STYLE_VARIANTS = [
+  { key: 'kraft',       name: 'Rustic Kraft & Stamp' },
+  { key: 'clean',       name: 'Clean Modern' },
+  { key: 'crisp',       name: 'Crisp' },
+  { key: 'letterpress', name: 'Vintage Letterpress' },
+  { key: 'editorial',   name: 'Editorial Magazine' },
+  { key: 'minimal',     name: 'Quiet Minimal' },
+  { key: 'flour-ink',   name: 'Flour & Ink' },
+]
+
 export default function Templates() {
   const settingsCtx = useSettings() || {}
   const settings = settingsCtx.settings || {}
-  const [recipes, setRecipes]         = useState([])
-  const [ingredients, setIngredients] = useState({})
-  const [bomLines, setBomLines]       = useState({})
-  const [recipeId, setRecipeId]       = useState('')
-  const [templateKey, setTemplateKey] = useState('classic')
-  const [currentStyle, setCurrentStyle] = useState('kraft')  // default to kraft variant for pilot
-  const [customizations, setCustomizations] = useState({})
-  const [loading, setLoading]         = useState(true)
+  const [recipes, setRecipes]           = useState([])
+  const [ingredients, setIngredients]   = useState({})
+  const [bomLines, setBomLines]         = useState({})
+  const [recipeId, setRecipeId]         = useState('')
+  const [templateKey, setTemplateKey]   = useState('classic')
+  const [currentStyle, setCurrentStyle] = useState('kraft')
+  const [customizations, setCustoms]    = useState({})
+  const [loading, setLoading]           = useState(true)
 
   useEffect(() => {
     ;(async () => {
@@ -59,15 +71,15 @@ export default function Templates() {
       setRecipes(recs || [])
       setIngredients(ingMap)
       setBomLines(bomMap)
-      setCustomizations(customMap)
+      setCustoms(customMap)
       if (recs?.length) setRecipeId(prev => prev || recs[0].id)
       setLoading(false)
     })()
   }, [])
 
-  const enrichedRecipes = useMemo(() => {
-    return recipes.map(r => enrich(r, bomLines, ingredients, settings.default_target_food_cost_pct))
-  }, [recipes, bomLines, ingredients, settings.default_target_food_cost_pct])
+  const enrichedRecipes = useMemo(() => (
+    recipes.map(r => enrich(r, bomLines, ingredients, settings.default_target_food_cost_pct))
+  ), [recipes, bomLines, ingredients, settings.default_target_food_cost_pct])
 
   const enrichedRecipe = enrichedRecipes.find(r => r.id === recipeId) || null
 
@@ -79,9 +91,9 @@ export default function Templates() {
     brand_color:              settings.brand_color || '#6C5CE7',
     currency:                 settings.currency || 'RM',
     contact_phone:            settings.contact_phone || '',
-    phone:                    settings.contact_phone || '',       // alias
+    phone:                    settings.contact_phone || '',
     contact_email:            settings.contact_email || '',
-    email:                    settings.contact_email || '',       // alias
+    email:                    settings.contact_email || '',
     website:                  settings.website || '',
     address:                  settings.address || '',
     address_line1:            settings.address_line1 || settings.address || '',
@@ -89,14 +101,11 @@ export default function Templates() {
     city:                     settings.city || '',
     instagram:                settings.instagram || '',
     facebook:                 settings.facebook || '',
-    // Recipe defaults
     default_storage_notes:    settings.default_storage_notes || '',
     default_care_text:        settings.default_care_text || '',
     default_allergen_notice:  settings.default_allergen_notice || '',
-    // Head baker
     head_baker_name:          settings.head_baker_name || '',
     head_baker_signature_url: settings.head_baker_signature_url || '',
-    // Wholesale
     wholesale_discount_pct:   settings.wholesale_discount_pct ?? 30,
     wholesale_moq:            settings.wholesale_moq ?? 10,
     wholesale_terms_text:     settings.wholesale_terms_text || '',
@@ -118,7 +127,7 @@ export default function Templates() {
           <div>
             <h3>Recipe Templates</h3>
             <p className="sub">
-              Generate personalized sheets for customers or your kitchen. Content pulled from Recipe Master and Settings —
+              Generate personalized sheets. Content pulls from Recipe Master and Settings —
               tweak per-template snippets in <a href="/app/settings/template-customization">Template Customization</a>.
             </p>
           </div>
@@ -134,7 +143,7 @@ export default function Templates() {
         )}
 
         {!isMulti && (
-          <div className="templates-controls">
+          <div className="tpl-controls">
             <div className="field">
               <label>Recipe</label>
               <select value={recipeId} onChange={e => setRecipeId(e.target.value)} disabled={loading || recipes.length === 0}>
@@ -146,48 +155,47 @@ export default function Templates() {
             <div className="field">
               <label>Style</label>
               <select value={currentStyle} onChange={e => setCurrentStyle(e.target.value)}>
-                <option value="kraft">Rustic Kraft &amp; Stamp</option>
-                <option value="clean">Clean Modern</option>
-                <option value="crisp">Crisp</option>
-                <option value="letterpress">Vintage Letterpress</option>
-                <option value="editorial">Editorial Magazine</option>
-                <option value="minimal">Quiet Minimal</option>
-                <option value="flour-ink">Flour &amp; Ink</option>
+                {STYLE_VARIANTS.map(s => <option key={s.key} value={s.key}>{s.name}</option>)}
               </select>
             </div>
           </div>
         )}
 
         {isMulti && (
-          <div className="templates-multi-notice">
-            <span className="templates-multi-badge">Multi-recipe</span>
-            This template renders <strong>all your recipes</strong> ({enrichedRecipes.length} total). Pick a template below.
+          <div className="tpl-multi-notice">
+            <span className="tpl-multi-badge">Multi-recipe</span>
+            This template renders <strong>all your recipes</strong> ({enrichedRecipes.length} total).
           </div>
         )}
 
-        <div className="template-picker">
+        <div className="tpl-picker-grid">
           {TEMPLATES.map(t => (
             <button
               key={t.key}
               type="button"
-              className={'template-pick' + (templateKey === t.key ? ' active' : '')}
+              className={'tpl-card' + (templateKey === t.key ? ' active' : '')}
               onClick={() => setTemplateKey(t.key)}
+              style={{ '--tpl-accent': t.gradient || 'linear-gradient(135deg,#6C5CE7,#8478F5)' }}
             >
-              <div className="template-pick-icon">{t.icon}</div>
-              <div className="template-pick-body">
-                <div className="template-pick-name">{t.name}</div>
-                <div className="template-pick-desc">{t.description}</div>
+              <div className="tpl-card-glyph" aria-hidden>
+                <TemplatePreviewGlyph shape={t.preview} pageSize={t.pageSize}/>
               </div>
-              <div className="template-pick-size">{t.pageSize}</div>
-              {t.multi && <div className="template-pick-multi">ALL</div>}
+              <div className="tpl-card-body">
+                <div className="tpl-card-name">{t.name}</div>
+                <div className="tpl-card-desc">{t.description}</div>
+              </div>
+              <div className="tpl-card-badges">
+                {t.pageSize && <span className="tpl-card-size">{t.pageSize}</span>}
+                {t.multi && <span className="tpl-card-multi">ALL</span>}
+              </div>
             </button>
           ))}
         </div>
 
         {canPreview && (
-          <div className="templates-actions">
+          <div className="tpl-actions">
             <button className="primary" onClick={() => window.print()}>
-              🖨️ Print / Save as PDF
+              🖨️  Print / Save as PDF
             </button>
             <div className="hint">Uses your browser's print dialog — pick "Save as PDF" for a downloadable version.</div>
           </div>
