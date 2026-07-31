@@ -17,7 +17,6 @@ export function CareCard({ recipe, brand, styleVariant = 'clean-modern' }) {
         <div className="tpl-care-tagline">Freshly baked with care in small batches</div>
 
         <div className="tpl-care-section">
-          <div className="tpl-care-section-icon">🌡️</div>
           <div>
             <div className="tpl-care-section-title">Storage</div>
             <div className="tpl-care-section-body">{storage}</div>
@@ -26,7 +25,6 @@ export function CareCard({ recipe, brand, styleVariant = 'clean-modern' }) {
 
         {(recipe.allergen_notice || brand.default_allergen_notice) && (
           <div className="tpl-care-section">
-            <div className="tpl-care-section-icon">⚠️</div>
             <div>
               <div className="tpl-care-section-title">Allergen notice</div>
               <div className="tpl-care-section-body">{recipe.allergen_notice || brand.default_allergen_notice}</div>

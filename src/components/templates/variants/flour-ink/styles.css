@@ -432,8 +432,8 @@
 }
 .fi-cost-stat {
   border: 1px solid var(--fi-hair-strong);
-  padding: 8mm 8mm;
-  display: flex; flex-direction: column; gap: 4mm;
+  padding: 12mm 12mm;
+  display: flex; flex-direction: column; gap: 5mm;
 }
 .fi-cost-stat .fi-eyebrow { font-size: 10px; letter-spacing: 0.22em; }
 .fi-cost-stat-val {
@@ -447,6 +447,7 @@
 .fi-cost-stat-accent {
   background: var(--fi-ink);
   border-color: var(--fi-ink);
+  padding: 14mm 14mm;
 }
 .fi-cost-stat-accent .fi-eyebrow { color: var(--fi-cream-on-ink); opacity: 0.75; }
 .fi-cost-stat-accent .fi-cost-stat-val { color: var(--fi-cream-on-ink); }
