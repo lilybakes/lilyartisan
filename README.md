@@ -1,43 +1,72 @@
-# Picker Fix + Ask
+# Multi-tenancy leak fix
 
-## What was wrong
+## What actually happened
 
-Two commits ago (kraft-pilot) I replaced the `icon` field on each entry in `TEMPLATES` with a `preview` shape hint and a `gradient` string. Templates.jsx still rendered `{t.icon}` — which is now undefined — and I never shipped picker CSS for the new shape. That's why every card looks flat and empty in your screenshot: the old CSS was designed around an icon that no longer exists.
+Nothing was shared or duplicated. The RLS policy on user data tables was:
 
-## What this delta ships
-
-Three self-contained files. Drop-in only, no globals touched.
-
-```
-src/
-  pages/Templates.jsx                    # OVERWRITE — uses inline SVG glyphs, imports scoped CSS
-  components/
-    TemplatePreviewGlyph.jsx             # NEW — inline SVG shapes for each preview kind
-    templates-picker.css                 # NEW — scoped .tpl-* styling
+```sql
+USING (user_id = auth.uid() OR is_sysadmin())
 ```
 
-The picker now renders each card with:
-- A colored square containing an inline SVG that visually hints the template layout (lines for recipes, bars for costing, dashed border for care, tag hole for delivery, seal for certificate, etc)
-- The template name + wrapped 2-line description
-- A gray pill for page size (A4, A5, A7, 1:1) and an amber ALL pill for multi-recipe templates
-- A gradient left-edge accent on hover, and the full gradient as a border when selected
+That `OR is_sysadmin()` means when you're signed in as `anthony2211@gmail.com` (sysadmin), the Recipe Master page pulls every user's recipes into a single view with no visual difference between yours and theirs. "Blueberry bagel" was Lily's recipe from the start — never yours. When you added a photo, you edited *her* row through your sysadmin privilege. She sees it because it was always her recipe.
 
-No dependency on your global styles.css. No dependency on the `Icon` component (avoids the "no icon" case entirely).
+This was a design flaw in Delta 1: sysadmin was given automatic cross-user visibility on normal data tables, but the UI has no indication of whose data is being displayed. Impossible for a sysadmin to tell what's theirs.
+
+## The fix
+
+Tighten the policies to `own only`. Sysadmin gets no automatic access to other users' data through the normal UI. What still works:
+
+- **The sysadmin panel** (`/app/sysadmin/*` — Users, Orders, Template Access, Audit Log, Content, etc.) all use SECURITY DEFINER RPCs (`sysadmin_list_users`, `sysadmin_list_orders`, etc.) which run with elevated privilege independently of RLS. Unaffected.
+- **Impersonation** — when you need to actually browse a specific user's data, go to the Users page and use the existing Impersonate button. That swaps your session to be that user; RLS then naturally shows their data, and the topbar shows an "IMPERSONATING" indicator so you can't confuse it with your own.
+
+## Files
+
+```
+supabase/
+  rls-tenancy-fix.sql        # NEW — drops OR is_sysadmin() from all user data tables
+```
+
+One file. Safe to re-run.
+
+## What the SQL does
+
+1. Drops the `own or sysadmin` policy on `ingredients`, `recipes`, `bom_lines`, `inventory`, `header_links`, `settings`.
+2. Recreates each as strict `USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid())`.
+3. Verifies no policy still references `is_sysadmin()` on any of those six tables — raises an exception if it finds one, so you'll know immediately if the migration didn't take.
+4. Runs `seed_starter_recipes()` for `anthony2211@gmail.com` if that function exists and Anthony has no recipes of his own. Idempotent — no-op if he already has any.
+
+## Existing data
+
+Left alone. Rows you edited under the old policy remain with whichever user owns them:
+
+- The photo you added to Lily's Blueberry bagel stays on Lily's row. She keeps it.
+- Any recipe you saw and edited in the last few days was almost certainly Lily's. After this migration you'll no longer see them from your sysadmin account.
+- After the migration, Anthony's Recipe Master will show ONLY his own starter recipes (freshly seeded by step 4 above).
+
+If you want to clean up any specific rows (say, remove the Blueberry bagel photo you accidentally added), impersonate Lily on the Users page and edit it from her account.
 
 ## Deploy
 
-Drop the 3 files in, hard-refresh Recipe Templates. Cards should look like proper picker cards immediately.
+Supabase SQL editor → paste `supabase/rls-tenancy-fix.sql` → Run. Sign out and back in on both accounts. Anthony sees only his own data; Lily sees only hers.
 
----
+## Sanity check
 
-# The bigger honest ask
+Run this in the SQL editor after:
 
-You said "I prefer full file and the zip with the repo structure." You're right, and I've been shipping partial because I only have the *files I've written* — I don't have the current source for the files that already exist in your repo. Specifically for the last few deltas I've been blind to:
+```sql
+SELECT tablename, policyname, qual
+  FROM pg_policies
+  WHERE tablename IN ('ingredients','recipes','bom_lines','inventory','header_links','settings')
+  ORDER BY tablename;
+```
 
-1. **`src/App.jsx`** — I've been telling you to hand-add routes, which is exactly the anti-pattern in your user memory
-2. **`src/components/Sidebar.jsx`** — same problem for nav links
-3. **`src/styles.css`** — I've been shipping scoped CSS files as workarounds (rcd-styles.css, templates-picker.css) instead of maintaining the master. This works but drifts over time, and it's a big reason things end up looking half-styled.
+Every `qual` should be `(user_id = auth.uid())`. No `OR is_sysadmin()` anywhere.
 
-If you paste the current contents of those three files as your next reply (or attach the files), the next delta can be a true "unzip and go" with proper full replacements — App.jsx with all routes, Sidebar.jsx with all nav items in the right order, and one consolidated styles.css that absorbs the scoped CSS I've been shipping piecemeal.
+## What still uses `is_sysadmin()` legitimately
 
-Once I have those three, everything future ships in the shape you want.
+For reference — these keep it because they're the sysadmin's *actual* domain, not user data:
+
+- `profiles` — sysadmin needs to see all profiles to manage users
+- `platform_settings`, `audit_log`, `impersonation_sessions`, `orders`, `email_templates`, `content_blocks`, `hero_gallery`, `template_visibility`, `template_grants` — sysadmin-only tables
+
+Those all remain as they were. Only the six user-data tables above changed.
