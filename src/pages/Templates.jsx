@@ -96,15 +96,6 @@ function TemplateIcon({ type }) {
   }
 }
 
-function CheckBadge() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" fill="currentColor" opacity="0.15"/>
-      <circle cx="12" cy="12" r="4" fill="currentColor"/>
-    </svg>
-  )
-}
-
 function PrinterIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -205,49 +196,20 @@ export default function Templates() {
   const TemplateComponent = template?.ready ? template.component : null
   const isMulti = !!template?.multi
 
-  const brandComplete = !!(settings.business_name && settings.logo_data_url)
   const readyCount = TEMPLATES.filter(t => t.ready).length
-  const soonCount  = TEMPLATES.length - readyCount
+
+  const canPreview = !!TemplateComponent && (isMulti || enrichedRecipe)
 
   return (
-    <>
-      <div className="panel no-print">
-        <div className="panel-head">
-          <div>
-            <h3>Recipe Templates</h3>
-            <p className="sub">Generate personalized recipe and care sheets for your customers or kitchen. Pick a recipe and a template — everything uses the brand info from your <Link to="/app/settings">Settings page</Link>.</p>
-          </div>
+    <div className="tpl-page">
+      {/* LEFT SIDEBAR — Template list */}
+      <aside className="tpl-sidebar no-print">
+        <div className="tpl-sidebar-head">
+          <div className="tpl-sidebar-title">Templates</div>
+          <span className="tpl-sidebar-count">
+            <span className="tpl-status-dot"/> {readyCount}
+          </span>
         </div>
-
-        {!brandComplete && (
-          <div className="tpl-nudge">
-            <div className="tpl-nudge-icon"><CheckBadge/></div>
-            <div>
-              <b>Set up your brand first.</b> Add your logo and business name in <Link to="/app/settings">Settings</Link> to make templates look personalized. Right now they'll use fallback text.
-            </div>
-          </div>
-        )}
-
-        <div className="tpl-controls-row">
-          <div className="tpl-recipe-field">
-            <label>Recipe</label>
-            <select value={recipeId} onChange={e => setRecipeId(e.target.value)} disabled={loading || recipes.length === 0}>
-              {loading && <option>Loading…</option>}
-              {!loading && recipes.length === 0 && <option>No recipes yet — create one first</option>}
-              {recipes.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
-            </select>
-          </div>
-          <div className="tpl-status">
-            <span className="tpl-status-ready">
-              <span className="tpl-status-dot"/>
-              {readyCount} templates ready
-            </span>
-            {soonCount > 0 && (
-              <span className="tpl-status-soon">· {soonCount} in the works</span>
-            )}
-          </div>
-        </div>
-
         <div className="tpl-list">
           {TEMPLATES.map(t => (
             <button
@@ -280,27 +242,34 @@ export default function Templates() {
             </button>
           ))}
         </div>
+      </aside>
 
-        <div className="tpl-actions-row">
-          <button
-            className="tpl-print-btn"
-            onClick={() => window.print()}
-            disabled={!TemplateComponent || (!isMulti && !enrichedRecipe)}
-          >
-            <PrinterIcon/>
-            Print / Save as PDF
-          </button>
-          <span className="tpl-actions-hint">
-            Uses your browser's print dialog — choose "Save as PDF" for a downloadable version.
-          </span>
+      {/* RIGHT MAIN — Controls + Preview */}
+      <main className="tpl-main">
+        <div className="tpl-main-head no-print">
+          <h3>{template?.name || 'Recipe Templates'}</h3>
+          <p className="sub">
+            Generate personalized recipe and care sheets. Everything uses the brand info from your <Link to="/app/settings">Settings page</Link>.
+          </p>
         </div>
-      </div>
 
-      {TemplateComponent && (isMulti || enrichedRecipe) && (
-        <>
-          <div className="tpl-style-row no-print">
-            <div className="tpl-style-field">
-              <label>Style for {template.name}</label>
+        <div className="tpl-controls-panel no-print">
+          <div className="tpl-control">
+            <label>Recipe</label>
+            <select
+              value={recipeId}
+              onChange={e => setRecipeId(e.target.value)}
+              disabled={loading || recipes.length === 0}
+            >
+              {loading && <option>Loading…</option>}
+              {!loading && recipes.length === 0 && <option>No recipes yet — create one first</option>}
+              {recipes.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+            </select>
+          </div>
+
+          {template && (
+            <div className="tpl-control">
+              <label>Style</label>
               <select value={currentStyle} onChange={e => setCurrentStyle(e.target.value)}>
                 {STYLE_VARIANTS.map(s => (
                   <option key={s.key} value={s.key}>
@@ -309,11 +278,25 @@ export default function Templates() {
                 ))}
               </select>
             </div>
-            <div className="tpl-style-desc">
-              {STYLE_VARIANTS.find(s => s.key === currentStyle)?.description}
-            </div>
-          </div>
+          )}
 
+          <button
+            className="tpl-print-btn"
+            onClick={() => window.print()}
+            disabled={!canPreview}
+          >
+            <PrinterIcon/>
+            Print / Save as PDF
+          </button>
+        </div>
+
+        {template && (
+          <div className="tpl-style-hint no-print">
+            {STYLE_VARIANTS.find(s => s.key === currentStyle)?.description}
+          </div>
+        )}
+
+        {canPreview && (
           <div className="templates-preview">
             <TemplateComponent
               recipe={enrichedRecipe}
@@ -322,8 +305,8 @@ export default function Templates() {
               styleVariant={currentStyle}
             />
           </div>
-        </>
-      )}
-    </>
+        )}
+      </main>
+    </div>
   )
 }

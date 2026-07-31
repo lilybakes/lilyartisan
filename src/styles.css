@@ -3393,12 +3393,10 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
 
 /* Compact icon list — 2 columns, tight rows */
 .tpl-list{
-  display:grid;
-  grid-template-columns:repeat(2, 1fr);
-  gap:8px;
-  margin-bottom:22px;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
 }
-@media(max-width:720px){ .tpl-list{ grid-template-columns:1fr; } }
 
 .tpl-item{
   display:flex; align-items:center; gap:12px;
@@ -4846,4 +4844,154 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   border:0.5px solid #D8D8D2 !important;
   font-family:'IBM Plex Mono', monospace !important;
   font-weight:400 !important;
+}
+
+/* ============================================================
+   Templates page — two-column layout (sidebar + main)
+   ============================================================ */
+.tpl-page{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:18px;
+  align-items:start;
+}
+
+.tpl-sidebar{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+  position:sticky;
+  top:16px;
+  max-height:calc(100vh - 32px);
+  overflow-y:auto;
+  box-shadow:0 1px 3px rgba(43,43,68,.04);
+}
+.tpl-sidebar-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:2px 6px 10px;
+  margin-bottom:8px;
+  border-bottom:1px solid var(--line);
+}
+.tpl-sidebar-title{
+  font-size:11px; font-weight:700;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.tpl-sidebar-count{
+  display:inline-flex; align-items:center; gap:5px;
+  padding:2px 9px;
+  background:rgba(52,199,123,0.13);
+  color:#1E9B5F;
+  border-radius:999px;
+  font-size:11px; font-weight:700;
+}
+
+.tpl-main{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:22px 24px 24px;
+  min-width:0;   /* prevents overflow of preview inside */
+  box-shadow:0 1px 3px rgba(43,43,68,.04);
+}
+.tpl-main-head{
+  padding-bottom:16px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:18px;
+}
+.tpl-main-head h3{
+  margin:0 0 4px;
+  font-size:20px; font-weight:700;
+  color:var(--ink);
+  letter-spacing:-0.02em;
+}
+.tpl-main-head .sub{
+  margin:0;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  line-height:1.5;
+}
+.tpl-main-head .sub a{ color:var(--accent-dark); font-weight:600; text-decoration:none; }
+.tpl-main-head .sub a:hover{ text-decoration:underline; }
+
+/* Combined controls panel — recipe + style + print in one horizontal row */
+.tpl-controls-panel{
+  display:grid;
+  grid-template-columns:1fr 1fr auto;
+  gap:14px;
+  align-items:end;
+  padding:14px;
+  background:#FAFAFC;
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin-bottom:14px;
+}
+.tpl-control{
+  display:flex; flex-direction:column; gap:6px;
+  min-width:0;
+}
+.tpl-control label{
+  font-size:10.5px; font-weight:700;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.tpl-control select{
+  padding:10px 14px; padding-right:36px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  font-family:inherit;
+  font-size:13.5px;
+  color:var(--ink);
+  background:#fff;
+  cursor:pointer;
+  transition:border-color 0.15s;
+  min-width:0;
+  width:100%;
+}
+.tpl-control select:hover{ border-color:var(--accent); }
+.tpl-control select:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(115,103,240,0.12); }
+
+.tpl-controls-panel .tpl-print-btn{
+  padding:10px 16px;
+  height:38px;
+}
+
+.tpl-style-hint{
+  padding:8px 14px 14px;
+  font-size:12px;
+  color:var(--ink-soft);
+  line-height:1.5;
+  font-style:italic;
+  margin-bottom:6px;
+}
+
+/* Preview stays as it was */
+.tpl-main .templates-preview{
+  margin-top:14px;
+}
+
+/* Responsive — stack sidebar above main on narrow screens */
+@media(max-width:900px){
+  .tpl-page{
+    grid-template-columns:1fr;
+  }
+  .tpl-sidebar{
+    position:static;
+    max-height:none;
+    overflow-y:visible;
+  }
+  .tpl-list{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:6px;
+  }
+  .tpl-controls-panel{
+    grid-template-columns:1fr;
+  }
+}
+@media(max-width:520px){
+  .tpl-list{ grid-template-columns:1fr; }
 }

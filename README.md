@@ -1,34 +1,70 @@
-# Fix: All 10 Templates Active + Default as a Style Variant
+# Templates Page — Two-Column Layout
 
-Two-file fix for two things:
-
-1. **The 6 hidden templates are ready again.** The style-variants delta accidentally overwrote the all-ready registry with the old "4 ready + 6 soon" version. Restored — all 10 templates are `ready: true` with their own gradient colors.
-
-2. **Default is now a proper style variant.** The picker previously had 5 options (Clean Modern was the "default"). Now it has 6, and Default (App Brand) — the current clean-purple app style — is the first option, separate from Clean Modern (which is the warm-brown Plus Jakarta Sans + JetBrains Mono treatment from the handoff).
+Restructures the Templates page into a sidebar-left / main-right layout. Removes the "Set up your brand first" nudge.
 
 ## Files
 
 ```
 src/
-  components/templates/index.js       # OVERWRITE — all 10 ready with gradients
-  lib/template-styles.js              # OVERWRITE — 6 variants, Default first
+  pages/Templates.jsx    # OVERWRITE — restructured JSX, no nudge, sidebar + main
+  styles.css             # OVERWRITE (full file) — new layout classes, single-column list
 ```
 
-## The 6 variants
+Two files.
 
-| Order | Key | Name | Look |
-|---|---|---|---|
-| 1 | `default` | Default (App Brand) | Current clean-purple, uses your brand color |
-| 2 | `clean-modern` | Clean Modern | Warm brown, Plus Jakarta Sans + JetBrains Mono, hairlines |
-| 3 | `kraft` | Rustic Kraft & Stamp | Kraft paper, Bitter serif, dashed dividers, rubber stamps |
-| 4 | `letterpress` | Vintage Letterpress | Playfair + Cormorant, everything centered, fleurons |
-| 5 | `editorial` | Editorial Magazine | DM Serif Display + Archivo, thick black rules |
-| 6 | `minimal` | Quiet Minimal | Manrope 300 + IBM Plex Mono, 0.5px hairlines |
+## What the layout looks like now
 
-## Why no CSS changes needed
+```
+┌─────────────────┬─────────────────────────────────────┐
+│  Templates      │  Classic Recipe Card                │
+│  ● 10           │  Generate personalized recipe...    │
+│  ─────────────  │  ─────────────────────────────────  │
+│  📄 Classic     │  ┌───────────────────────────────┐  │
+│     A5          │  │ RECIPE   STYLE     [Print]    │  │
+│  📊 Cost        │  │ [▼]      [▼]                  │  │
+│     A4          │  └───────────────────────────────┘  │
+│  📇 Care        │                                     │
+│     A6          │  Style description text here...    │
+│  🏷 Label       │                                     │
+│     A7          │  ┌───────────────────────────────┐  │
+│  📋 Menu        │  │                               │  │
+│     A5          │  │      TEMPLATE PREVIEW         │  │
+│  📑 Wholesale   │  │                               │  │
+│     A4          │  │                               │  │
+│  📦 Delivery    │  │                               │  │
+│     A7          │  └───────────────────────────────┘  │
+│  📱 Social      │                                     │
+│     1:1         │                                     │
+│  📖 Binder      │                                     │
+│     A4          │                                     │
+│  🎖 Certificate │                                     │
+│     A4          │                                     │
+└─────────────────┴─────────────────────────────────────┘
+```
 
-The `variant-default` class doesn't have any CSS rules targeting it — it intentionally falls through to the base `.tpl` styles, which are the current clean-purple app aesthetic. The 5 iteration variants (`.tpl.variant-kraft` etc.) have their own CSS overrides that were shipped in the `style-variants` delta.
+## Layout details
+
+**Left sidebar** — 320px wide, sticky-positioned (stays visible on scroll), max-height = viewport height, internally scrolls if needed. Contains just the 10 template items in a single vertical list. Header row shows "TEMPLATES" label + a green "10" pill for the ready count.
+
+**Right main** — flexes to fill remaining width. Contains:
+- Header (shows the currently-selected template's name as the h3, so it's clear which template you're configuring)
+- Combined controls panel (Recipe · Style · Print button in one horizontal strip on a soft grey background)
+- Style description hint (small italic subtitle explaining what the currently-picked style looks like)
+- Template preview canvas
+
+**Removed:**
+- "Set up your brand first" nudge banner
+- The `tpl-controls-row` (recipe dropdown + status counter — status now shown as small pill next to "Templates" title in sidebar)
+- The separate `tpl-actions-row` (print button + hint — print now integrated into controls panel)
+- The separate `tpl-style-row` (style dropdown — now inline with recipe dropdown)
+- `CheckBadge` component (was only used by the removed nudge)
+
+## Responsive
+
+- **≥900px** — two-column layout as above
+- **<900px** — sidebar stacks on top of main, template list becomes a 2-column grid
+- **<520px** — everything single-column
 
 ## Deploy
 
-Overwrite the 2 files, push, hard-refresh. All 10 templates in the picker are active. The Style dropdown next to the preview shows 6 options starting with "Default (App Brand)".
+Overwrite the 2 files, push, hard-refresh. Templates page now uses the whole width efficiently — sidebar for browsing, main for configuring + previewing.
