@@ -11,6 +11,7 @@ export const CONTENT_KEYS = [
   'landing.faq',
   'landing.cta',
   'coming_soon',
+  'dashboard.greeting',
 ]
 
 export const HERO_DEFAULT = {
@@ -83,6 +84,17 @@ export const CTA_DEFAULT = {
 
 export const COMING_SOON_DEFAULT = []
 
+/**
+ * Dashboard "Welcome back" hero — the greeting + body text at the top of the
+ * signed-in Dashboard. `{name}` in the title is substituted with the user's
+ * owner_name from their settings. Emoji is safe to include.
+ */
+export const DASHBOARD_GREETING_DEFAULT = {
+  title:    'Welcome back, {name} 👋',
+  body:     'Your bakery costing dashboard. Change any ingredient price and it ripples through every recipe and suggested selling price automatically.',
+  cta:      'Manage Recipes →',
+}
+
 export const CONTENT_DEFAULTS = {
   'landing.hero':          HERO_DEFAULT,
   'landing.features_head': FEATURES_HEAD_DEFAULT,
@@ -93,6 +105,7 @@ export const CONTENT_DEFAULTS = {
   'landing.faq':           FAQ_DEFAULT,
   'landing.cta':           CTA_DEFAULT,
   'coming_soon':           COMING_SOON_DEFAULT,
+  'dashboard.greeting':    DASHBOARD_GREETING_DEFAULT,
 }
 
 // ---------- Feature icon presets (used by editor dropdown + Landing render) ----------

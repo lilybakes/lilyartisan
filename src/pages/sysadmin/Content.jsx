@@ -4,7 +4,7 @@ import {
   CONTENT_DEFAULTS,
   HERO_DEFAULT, FEATURES_HEAD_DEFAULT, FEATURES_DEFAULT,
   PRICING_HEAD_DEFAULT, PRICING_DEFAULT, FAQ_HEAD_DEFAULT, FAQ_DEFAULT,
-  CTA_DEFAULT, COMING_SOON_DEFAULT,
+  CTA_DEFAULT, COMING_SOON_DEFAULT, DASHBOARD_GREETING_DEFAULT,
   FEATURE_ICON_OPTIONS, FEATURE_TONE_OPTIONS,
 } from '../../lib/content-defaults'
 
@@ -15,6 +15,7 @@ const TABS = [
   { key: 'faq',         label: 'FAQ' },
   { key: 'cta',         label: 'Final CTA' },
   { key: 'coming_soon', label: 'Coming Soon' },
+  { key: 'dashboard',   label: 'Dashboard' },
 ]
 
 export default function Content() {
@@ -84,6 +85,7 @@ export default function Content() {
                                                     onReset={() => { resetToDefault('landing.faq_head'); resetToDefault('landing.faq') }}/>}
       {tab === 'cta'         && <CtaEditor         value={content['landing.cta']}           onSave={v => save('landing.cta', v)}           onReset={() => resetToDefault('landing.cta')}/>}
       {tab === 'coming_soon' && <ComingSoonEditor  items={content['coming_soon']}           onSave={v => save('coming_soon', v)}           onReset={() => resetToDefault('coming_soon')}/>}
+      {tab === 'dashboard'   && <DashboardGreetingEditor value={content['dashboard.greeting']} onSave={v => save('dashboard.greeting', v)} onReset={() => resetToDefault('dashboard.greeting')}/>}
     </div>
   )
 }
@@ -452,6 +454,34 @@ function ComingSoonEditor({ items, onSave, onReset }) {
         </button>
       </div>
 
+      <FormFooter onReset={onReset}/>
+    </form>
+  )
+}
+
+
+// ============================================================
+// DASHBOARD GREETING — signed-in home hero
+// ============================================================
+function DashboardGreetingEditor({ value, onSave, onReset }) {
+  const [f, setF] = useState({ ...DASHBOARD_GREETING_DEFAULT, ...value })
+  return (
+    <form className="admin-form" onSubmit={(e) => { e.preventDefault(); onSave(f) }}>
+      <p className="hint" style={{margin:'0 0 16px'}}>
+        Shown at the top of the signed-in Dashboard. Use <code>{'{name}'}</code> in the title where the user's name should appear.
+      </p>
+      <label className="field"><span>Greeting title</span>
+        <input value={f.title || ''} onChange={e => setF({...f, title: e.target.value})}
+          placeholder="Welcome back, {name} 👋"/>
+      </label>
+      <label className="field"><span>Body paragraph</span>
+        <textarea rows="3" value={f.body || ''} onChange={e => setF({...f, body: e.target.value})}
+          placeholder="Your bakery costing dashboard. Change any ingredient price…"/>
+      </label>
+      <label className="field"><span>Primary CTA button</span>
+        <input value={f.cta || ''} onChange={e => setF({...f, cta: e.target.value})}
+          placeholder="Manage Recipes →"/>
+      </label>
       <FormFooter onReset={onReset}/>
     </form>
   )

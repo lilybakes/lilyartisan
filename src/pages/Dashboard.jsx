@@ -6,6 +6,8 @@ import { supabase } from '../lib/supabase'
 import { Icon } from '../lib/icons.jsx'
 import Chip from '../components/Chip.jsx'
 import ComingSoonStrip from '../components/ComingSoonStrip.jsx'
+import HeroImage from '../components/HeroImage.jsx'
+import { DASHBOARD_GREETING_DEFAULT } from '../lib/content-defaults.js'
 import {
   costPerPortion, suggestedPrice, recipeCostTotal, lineCost,
   money, CHIP_COLORS,
@@ -17,8 +19,17 @@ export default function Dashboard() {
   const { rows: recipes } = useTable('recipes', 'name')
   const { rows: ingredients } = useTable('ingredients', 'name')
   const [allBom, setAllBom] = useState([])
+  const [greeting, setGreeting] = useState(DASHBOARD_GREETING_DEFAULT)
 
   useEffect(() => { supabase.from('bom_lines').select('*').then(({data}) => setAllBom(data || [])) }, [])
+  useEffect(() => {
+    // Read the sysadmin-editable greeting. Public SELECT policy on content_blocks
+    // means any signed-in user can read it, but only sysadmins can write.
+    supabase.from('content_blocks').select('content').eq('key', 'dashboard.greeting').maybeSingle()
+      .then(({ data }) => {
+        if (data?.content) setGreeting({ ...DASHBOARD_GREETING_DEFAULT, ...data.content })
+      })
+  }, [])
 
   const ingById = useMemo(() => Object.fromEntries(ingredients.map(i => [i.id, i])), [ingredients])
   const bomByRecipe = useMemo(() => {
@@ -57,19 +68,15 @@ export default function Dashboard() {
     <>
       <div className="hero">
         <div className="hero-text">
-          <h2 className="greet">Welcome back, {settings.owner_name} <span>👋</span></h2>
-          <p>Your bakery costing dashboard. Change any ingredient price and it ripples through every recipe and suggested selling price automatically.</p>
+          <h2 className="greet">
+            {renderGreetingTitle(greeting.title, settings.owner_name)}
+          </h2>
+          <p>{greeting.body}</p>
           <div style={{paddingTop:6}}>
-            <button className="cta" onClick={() => nav('/recipes')}>Manage Recipes →</button>
+            <button className="cta" onClick={() => nav('/recipes')}>{greeting.cta || 'Manage Recipes →'}</button>
           </div>
         </div>
-        <div className="hero-art">
-          <div className="hero-halo" aria-hidden="true"/>
-          <div className="hero-confetti c1" aria-hidden="true"/>
-          <div className="hero-confetti c2" aria-hidden="true"/>
-          <div className="hero-confetti c3" aria-hidden="true"/>
-          <img className="hero-portrait-img" src="/assets/lily-portrait.png" alt="Lily" loading="eager"/>
-        </div>
+        <HeroImage/>
       </div>
 
       <div className="stat-row">
@@ -199,4 +206,18 @@ export default function Dashboard() {
       <ComingSoonStrip/>
     </>
   )
+}
+
+/**
+ * Render the greeting title with {name} substituted, and — if the resulting
+ * string ends with an emoji-ish token — wrap that final token in a <span>
+ * so the existing `.hero .greet span` wave animation still fires.
+ */
+function renderGreetingTitle(template, name) {
+  const filled = String(template || '').replace('{name}', name || '')
+  // Extended-pictographic-emoji-ish match at end of string: any non-ASCII
+  // char cluster (covers 👋, 🎂, etc.) optionally preceded by a space.
+  const m = filled.match(/^(.*?)(\s+)([^\x00-\x7F][\uFE00-\uFE0F\u200D\uFE0E]*[\u{1F3FB}-\u{1F3FF}]?[^\x00-\x7F]*)$/u)
+  if (!m) return filled
+  return <>{m[1]}{m[2]}<span>{m[3]}</span></>
 }
