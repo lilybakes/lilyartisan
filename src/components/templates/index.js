@@ -20,6 +20,7 @@ import { EDITORIAL_TEMPLATES } from './variants/editorial/index.js'
 import { QUIET_MINIMAL_TEMPLATES } from './variants/quiet-minimal/index.js'
 import { VERDANT_TEMPLATES } from './variants/verdant/index.js'
 import { EMBER_TEMPLATES } from './variants/ember/index.js'
+import { FLOUR_INK_TEMPLATES } from './variants/flour-ink/index.js'
 
 /**
  * Registry of the 10 shared templates. Each entry is the DEFAULT (non-variant)
@@ -52,6 +53,7 @@ const VARIANT_MAP = {
   minimal: QUIET_MINIMAL_TEMPLATES,
   verdant: VERDANT_TEMPLATES,
   ember: EMBER_TEMPLATES,
+  'flour-ink': FLOUR_INK_TEMPLATES,
 }
 
 export function getTemplate(key) {

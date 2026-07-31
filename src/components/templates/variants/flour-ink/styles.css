@@ -1,0 +1,1202 @@
+/* =============================================================================
+   FLOUR & INK VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   The most restrained variant in the set: cream paper, near-black ink,
+   stone-tan for the Delivery Tag and photo placeholder. That's it. No
+   other colour anywhere. Jost throughout with wide letter-tracking. The
+   only dark accents are the filled-black FINAL method step chip and the
+   Cost Sheet's "SUGGESTED PRICE" rectangle.
+
+   Palette:
+     Paper       #FBF8F3   warm cream
+     Ink         #1A1A18   near-black — titles, table borders, accent chip
+     Body        #3A3835   softer body text
+     Muted       #8B8580   meta labels, subtitles, section eyebrows
+     Stone       #C4B8AA   Delivery Tag background + Binder photo placeholder
+     Cream-on-ink #FBF8F3  text on the Social Card's dark background
+     Hair        rgba(26,26,24,0.18) — the only divider colour
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, primitives
+   ============================================================================= */
+
+.fi-tpl {
+  --fi-paper: #FBF8F3;
+  --fi-ink: #1A1A18;
+  --fi-body: #3A3835;
+  --fi-muted: #8B8580;
+  --fi-stone: #C4B8AA;
+  --fi-cream-on-ink: #FBF8F3;
+  --fi-hair: rgba(26, 26, 24, 0.18);
+  --fi-hair-strong: rgba(26, 26, 24, 0.35);
+
+  --fi-sans: 'Jost', 'Manrope', 'Plus Jakarta Sans', -apple-system, sans-serif;
+
+  background: var(--fi-paper);
+  color: var(--fi-body);
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(26, 26, 24, 0.08);
+  box-sizing: border-box;
+}
+.fi-tpl * { box-sizing: border-box; }
+
+/* --- Thin outlined DC circle logo --------------------------------------- */
+.fi-logo {
+  border-radius: 50%;
+  border: 1px solid var(--fi-ink);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--fi-ink);
+  background: transparent;
+  flex-shrink: 0;
+  aspect-ratio: 1;
+}
+.fi-logo-cream {
+  border-color: var(--fi-cream-on-ink);
+  color: var(--fi-cream-on-ink);
+}
+.fi-logo-initials {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;   /* nudge back for optical centering */
+  font-size: 0.36em;      /* scales with parent width via em */
+}
+.fi-logo-sm { width: 34px; height: 34px; font-size: 34px; }
+.fi-logo-md { width: 50px; height: 50px; font-size: 50px; }
+.fi-logo-lg { width: 64px; height: 64px; font-size: 64px; }
+
+.fi-logo-img { width: 74%; height: 74%; object-fit: contain; }
+
+/* --- Brand lockup ------------------------------------------------------- */
+.fi-brand-lockup { display: flex; gap: 14px; }
+.fi-brand-lockup-inline { flex-direction: row; align-items: center; }
+.fi-brand-lockup-stacked { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.fi-brand-lockup-textonly { flex-direction: column; align-items: flex-start; gap: 2px; }
+.fi-brand-text { display: flex; flex-direction: column; gap: 3px; }
+
+.fi-brand-name {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  color: var(--fi-ink);
+  margin: 0;
+  line-height: 1.1;
+  font-size: 15px;
+  letter-spacing: 0.15em;
+  padding-left: 0.15em;
+  text-transform: uppercase;
+}
+.fi-brand-ink   { color: var(--fi-ink); }
+.fi-brand-cream { color: var(--fi-cream-on-ink); }
+
+.fi-brand-tagline {
+  font-family: var(--fi-sans);
+  color: var(--fi-muted);
+  margin: 0;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.fi-brand-tagline-ink   { color: var(--fi-muted); }
+.fi-brand-tagline-cream { color: var(--fi-cream-on-ink); opacity: 0.65; }
+
+/* --- Title (wide-tracked light Jost) ----------------------------------- */
+.fi-title {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  color: var(--fi-ink);
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: 0.10em;
+  padding-left: 0.10em;
+  text-transform: uppercase;
+}
+
+/* --- Small-caps eyebrow — wide-tracked ---------------------------------- */
+.fi-eyebrow {
+  font-family: var(--fi-sans);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 10.5px;
+  padding-left: 0.22em;
+  line-height: 1.4;
+}
+.fi-eyebrow-ink { color: var(--fi-ink); }
+.fi-eyebrow-muted { color: var(--fi-muted); }
+.fi-eyebrow-cream { color: var(--fi-cream-on-ink); opacity: 0.75; }
+
+.fi-muted { color: var(--fi-muted); }
+
+/* --- Rules ------------------------------------------------------------- */
+.fi-rule { border: none; padding: 0; margin: 0; display: block; width: 100%; }
+.fi-rule-hair       { height: 1px; background: var(--fi-hair); }
+.fi-rule-ink        { height: 1px; background: var(--fi-ink); }
+.fi-rule-ink-thick  { height: 2px; background: var(--fi-ink); }
+.fi-rule-cream      { height: 1px; background: rgba(251, 248, 243, 0.35); }
+
+.fi-rule-short {
+  display: block;
+  width: 36mm;
+  height: 1px;
+  background: var(--fi-hair-strong);
+  margin: 4mm 0;
+}
+.fi-rule-short-ink   { background: var(--fi-hair-strong); }
+.fi-rule-short-cream { background: rgba(251, 248, 243, 0.4); }
+
+/* --- Numeric cells ---------------------------------------------------- */
+.fi-num {
+  text-align: right;
+  font-family: var(--fi-sans);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+/* --- Numbered method chip --------------------------------------------- */
+.fi-method-chip {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--fi-sans);
+  font-size: 10.5px;
+  font-weight: 400;
+  flex-shrink: 0;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.fi-method-chip-normal {
+  border: 1px solid var(--fi-hair-strong);
+  color: var(--fi-muted);
+  background: transparent;
+}
+.fi-method-chip-accent {
+  background: var(--fi-ink);
+  color: var(--fi-cream-on-ink);
+  border: 1px solid var(--fi-ink);
+}
+
+/* --- Heavy outlined seal (Certificate MADE BY HAND) ------------------- */
+.fi-seal {
+  border-radius: 50%;
+  border: 2.5px solid var(--fi-ink);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--fi-ink);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+.fi-seal-inner {
+  display: flex; flex-direction: column; align-items: center;
+  font-family: var(--fi-sans);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  font-size: 9.5px;
+  text-align: center;
+  line-height: 1.35;
+}
+
+/* --- Empty-state ------------------------------------------------------ */
+.fi-empty {
+  color: var(--fi-muted);
+  font-family: var(--fi-sans);
+  font-style: italic;
+  font-size: 12px;
+  margin: 3mm 0 0;
+}
+
+/* --- Footer ----------------------------------------------------------- */
+.fi-footer {
+  font-family: var(--fi-sans);
+  color: var(--fi-body);
+  font-size: 10px;
+  line-height: 1.55;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding-left: 0.18em;
+  font-weight: 400;
+}
+.fi-footer-split {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12mm;
+}
+.fi-footer-split .fi-footer-right { text-align: right; }
+.fi-footer-centered {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 2mm;
+}
+.fi-footer-minimal { text-align: center; }
+.fi-footer-line { font-size: 10px; color: var(--fi-body); }
+
+/* --- Method sub-group heading ----------------------------------------- */
+.fi-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--fi-sans);
+  font-weight: 400;
+  color: var(--fi-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  font-size: 10px;
+  margin: 5mm 0 3mm;
+  display: block;
+}
+.fi-method-group::before { content: '' !important; }
+
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.fi-recipe {
+  width: 148mm; min-height: 210mm;
+  padding: 16mm 12mm 12mm;
+  display: flex; flex-direction: column;
+}
+.fi-recipe-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 3mm;
+  padding-bottom: 8mm;
+}
+.fi-recipe-brand-name {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  font-size: 15px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  color: var(--fi-ink);
+  margin: 4mm 0 0;
+}
+.fi-recipe-brand-tag { font-size: 9.5px; letter-spacing: 0.22em; margin-top: 1mm; }
+.fi-recipe-eyebrow { font-size: 10.5px; letter-spacing: 0.28em; margin-top: 5mm; }
+
+.fi-recipe-title {
+  font-size: 32px;
+  line-height: 1.15;
+  margin-top: 5mm;
+  max-width: 120mm;
+}
+.fi-recipe .fi-rule-short { margin: 4mm auto 3mm; }
+.fi-recipe-meta { font-size: 10px; letter-spacing: 0.28em; margin-top: 2mm; }
+
+.fi-recipe-body {
+  display: grid; grid-template-columns: 50mm 1fr;
+  gap: 10mm;
+  flex: 1;
+  padding-top: 6mm;
+}
+.fi-recipe-ingredients > .fi-eyebrow,
+.fi-recipe-method > .fi-eyebrow {
+  margin-bottom: 5mm;
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+}
+
+.fi-recipe-ing-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+}
+.fi-recipe-ing-list li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 2.5mm 0;
+  border-bottom: 1px solid var(--fi-hair);
+  font-family: var(--fi-sans);
+  font-size: 11px;
+  color: var(--fi-body);
+  letter-spacing: 0.10em;
+  padding-left: 0.10em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.fi-recipe-ing-list li:last-child { border-bottom: 1px solid var(--fi-hair); }
+.fi-recipe-ing-name { color: var(--fi-body); }
+.fi-recipe-ing-qty {
+  color: var(--fi-ink);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+
+.fi-recipe-method-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 4mm;
+  font-family: var(--fi-sans);
+  font-size: 12px;
+  color: var(--fi-body);
+  line-height: 1.5;
+  font-weight: 300;
+}
+.fi-recipe-method-list li {
+  display: grid;
+  grid-template-columns: 10mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.fi-recipe-method-step { padding-top: 1mm; }
+.fi-recipe-method-step-final { color: var(--fi-ink); }
+.fi-recipe-method-step-final strong { font-weight: 600; }
+
+.fi-recipe-footer-wrap { margin-top: auto; padding-top: 6mm; }
+
+
+/* =============================================================================
+   02 — COST SHEET  (A4 portrait, 210×297mm) — INTERNAL
+   ============================================================================= */
+.fi-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 18mm 12mm;
+  display: flex; flex-direction: column;
+}
+.fi-cost-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  padding-bottom: 8mm;
+}
+.fi-cost-header-right { font-size: 10.5px; letter-spacing: 0.22em; }
+
+.fi-cost-title-block { padding: 12mm 0 8mm; }
+.fi-cost-title { font-size: 32px; line-height: 1.15; margin: 0; max-width: 160mm; }
+.fi-cost-meta { font-size: 10.5px; letter-spacing: 0.22em; margin-top: 3mm; }
+
+.fi-cost-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6mm;
+  font-family: var(--fi-sans);
+  font-size: 11px;
+  color: var(--fi-body);
+  font-weight: 400;
+}
+.fi-cost-table thead th {
+  font-family: var(--fi-sans);
+  font-weight: 400;
+  color: var(--fi-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  padding: 3mm 4mm 4mm;
+  padding-left: calc(4mm + 0.22em);
+  font-size: 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--fi-hair-strong);
+}
+.fi-cost-table thead th.fi-num { text-align: right; padding-right: 4mm; }
+.fi-cost-table td {
+  padding: 3.5mm 4mm;
+  border-bottom: 1px solid var(--fi-hair);
+  letter-spacing: 0.08em;
+  padding-left: calc(4mm + 0.08em);
+}
+.fi-cost-table td.fi-num { padding-right: 4mm; padding-left: 4mm; }
+.fi-cost-td-name { color: var(--fi-ink); }
+.fi-cost-td-val  { color: var(--fi-ink); font-weight: 400; }
+.fi-cost-empty {
+  padding: 8mm 0 !important;
+  color: var(--fi-muted);
+  font-style: italic;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.fi-cost-batch-row td {
+  padding: 5mm 4mm 4mm;
+  border-bottom: none;
+  border-top: 1px solid var(--fi-ink);
+  font-family: var(--fi-sans);
+  font-weight: 400;
+  color: var(--fi-ink);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  padding-left: calc(4mm + 0.20em);
+}
+.fi-cost-batch-row td.fi-num {
+  font-weight: 400;
+  padding-left: 4mm;
+  letter-spacing: 0.06em;
+}
+
+.fi-cost-stats-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 6mm;
+  margin-top: 12mm;
+}
+.fi-cost-stat {
+  border: 1px solid var(--fi-hair-strong);
+  padding: 8mm 8mm;
+  display: flex; flex-direction: column; gap: 4mm;
+}
+.fi-cost-stat .fi-eyebrow { font-size: 10px; letter-spacing: 0.22em; }
+.fi-cost-stat-val {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  color: var(--fi-ink);
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+.fi-cost-stat-accent {
+  background: var(--fi-ink);
+  border-color: var(--fi-ink);
+}
+.fi-cost-stat-accent .fi-eyebrow { color: var(--fi-cream-on-ink); opacity: 0.75; }
+.fi-cost-stat-accent .fi-cost-stat-val { color: var(--fi-cream-on-ink); }
+
+.fi-cost-caution {
+  margin-top: 8mm;
+  font-family: var(--fi-sans);
+  font-size: 11.5px;
+  color: var(--fi-body);
+  font-weight: 300;
+  line-height: 1.5;
+}
+.fi-cost-caution strong { color: var(--fi-ink); font-weight: 600; }
+
+.fi-cost-footer-wrap { margin-top: auto; padding-top: 10mm; }
+
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, 105×148mm)
+   ============================================================================= */
+.fi-care {
+  width: 105mm; min-height: 148mm;
+  padding: 10mm 10mm 8mm;
+  display: flex; flex-direction: column;
+}
+.fi-care-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 2mm;
+  padding-bottom: 6mm;
+}
+.fi-care-brand-name {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  color: var(--fi-ink);
+  margin-top: 4mm;
+}
+.fi-care-brand-tag { font-size: 8.5px; letter-spacing: 0.24em; }
+
+.fi-care-title-block {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  padding: 6mm 0 6mm;
+  gap: 5mm;
+}
+.fi-care-product {
+  font-size: 20px;
+  line-height: 1.2;
+  max-width: 80mm;
+}
+.fi-care-eyebrow { font-size: 10px; letter-spacing: 0.28em; margin-top: 3mm; }
+
+.fi-care-body {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 5mm;
+  padding: 4mm 0;
+}
+.fi-care-section > .fi-eyebrow { margin-bottom: 2mm; font-size: 10px; letter-spacing: 0.24em; }
+.fi-care-text {
+  font-family: var(--fi-sans);
+  color: var(--fi-body);
+  font-size: 11px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 300;
+}
+.fi-care-allergens {
+  font-family: var(--fi-sans);
+  font-weight: 500;
+  color: var(--fi-ink);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  padding-left: 0.16em;
+  text-transform: uppercase;
+  padding-bottom: 2mm;
+}
+
+.fi-care-footer-wrap { margin-top: auto; padding-top: 6mm; }
+.fi-care-footer-wrap .fi-footer-line { font-size: 8.5px; letter-spacing: 0.24em; }
+
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.fi-label {
+  width: 74mm; min-height: 105mm;
+  padding: 8mm 7mm 6mm;
+  display: flex; flex-direction: column;
+}
+.fi-label-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 5mm;
+}
+.fi-label-brand-block { display: flex; flex-direction: column; gap: 2mm; }
+.fi-label-brand-name {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  color: var(--fi-ink);
+}
+.fi-label-brand-city { font-size: 8.5px; letter-spacing: 0.28em; }
+
+.fi-label-title-block { padding: 8mm 0 4mm; }
+.fi-label-product {
+  font-size: 18px;
+  line-height: 1.2;
+  max-width: 60mm;
+}
+.fi-label .fi-rule-short { width: 20mm; margin: 3mm 0; }
+
+.fi-label-section { margin-bottom: 4mm; }
+.fi-label-section > .fi-eyebrow { margin-bottom: 2mm; font-size: 9px; letter-spacing: 0.24em; }
+.fi-label-body {
+  font-family: var(--fi-sans);
+  color: var(--fi-body);
+  font-size: 10.5px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 300;
+}
+.fi-label-allergens {
+  font-family: var(--fi-sans);
+  font-weight: 500;
+  color: var(--fi-ink);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  text-transform: uppercase;
+}
+
+.fi-label-footer-wrap { margin-top: auto; }
+.fi-label-footer {
+  font-family: var(--fi-sans);
+  color: var(--fi-body);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.fi-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 16mm 14mm 10mm;
+  display: flex; flex-direction: column;
+}
+.fi-menu-header {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 3mm;
+  padding-bottom: 10mm;
+}
+.fi-menu-brand-name {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  font-size: 18px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  color: var(--fi-ink);
+}
+.fi-menu-header .fi-rule-short { margin: 3mm auto; }
+.fi-menu-header .fi-eyebrow { font-size: 10.5px; letter-spacing: 0.28em; }
+
+.fi-menu-body { padding: 4mm 0 6mm; }
+.fi-menu-empty {
+  text-align: center; color: var(--fi-muted);
+  font-style: italic;
+  margin-top: 20mm;
+}
+
+.fi-menu-cat-block { margin-bottom: 10mm; }
+.fi-menu-cat-label {
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  margin-bottom: 5mm;
+  color: var(--fi-muted);
+}
+
+.fi-menu-cat-items {
+  display: flex; flex-direction: column; gap: 6mm;
+}
+.fi-menu-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8mm;
+}
+.fi-menu-item-body { flex: 1; min-width: 0; }
+.fi-menu-item-name {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  color: var(--fi-ink);
+  font-size: 16px;
+  line-height: 1.15;
+  letter-spacing: 0.12em;
+  padding-left: 0.12em;
+  text-transform: uppercase;
+}
+.fi-menu-item-desc {
+  font-family: var(--fi-sans);
+  color: var(--fi-muted);
+  font-size: 11px;
+  margin-top: 2mm;
+  line-height: 1.4;
+  font-weight: 300;
+}
+.fi-menu-item-price {
+  font-family: var(--fi-sans);
+  font-weight: 400;
+  color: var(--fi-ink);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  padding-top: 1mm;
+  letter-spacing: 0.06em;
+}
+
+.fi-menu-footer-wrap { margin-top: auto; }
+.fi-menu-footer-wrap .fi-footer-line { font-size: 9px; letter-spacing: 0.24em; }
+
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.fi-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 18mm 12mm;
+  display: flex; flex-direction: column;
+}
+.fi-wholesale-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  padding-bottom: 6mm;
+}
+.fi-wholesale-header-right { font-size: 10.5px; letter-spacing: 0.22em; }
+
+.fi-wholesale-title-block { padding: 10mm 0 8mm; }
+.fi-wholesale-title { font-size: 28px; line-height: 1.15; margin: 0; }
+.fi-wholesale-desc {
+  font-family: var(--fi-sans);
+  color: var(--fi-body);
+  font-size: 12px;
+  margin: 4mm 0 0;
+  max-width: 130mm;
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+.fi-wholesale-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8mm;
+  font-family: var(--fi-sans);
+  font-size: 11px;
+  color: var(--fi-body);
+  font-weight: 400;
+}
+.fi-wholesale-table thead th {
+  font-family: var(--fi-sans);
+  font-weight: 400;
+  color: var(--fi-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  padding: 4mm 5mm;
+  padding-left: calc(5mm + 0.22em);
+  font-size: 9.5px;
+  text-align: left;
+  border-bottom: 1px solid var(--fi-hair-strong);
+}
+.fi-wholesale-table thead th.fi-num { text-align: right; padding-right: 5mm; }
+.fi-wholesale-table td {
+  padding: 4mm 5mm;
+  border-bottom: 1px solid var(--fi-hair);
+  letter-spacing: 0.10em;
+}
+.fi-wholesale-table tbody tr:last-child td { border-bottom: 1px solid var(--fi-hair-strong); }
+.fi-wholesale-table td.fi-num { padding-left: 5mm; padding-right: 5mm; }
+.fi-wholesale-td-name { color: var(--fi-ink); }
+.fi-wholesale-td-price { color: var(--fi-ink); font-weight: 500; }
+
+.fi-wholesale-currency {
+  margin-top: 4mm; font-size: 10px; letter-spacing: 0.24em;
+}
+
+.fi-wholesale-terms-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 12mm;
+}
+.fi-wholesale-terms-col > .fi-eyebrow { margin-bottom: 4mm; font-size: 10.5px; letter-spacing: 0.24em; }
+.fi-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--fi-sans);
+  color: var(--fi-body);
+  font-size: 11.5px;
+  line-height: 1.55;
+  font-weight: 300;
+}
+.fi-wholesale-order-lines {
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--fi-sans);
+  color: var(--fi-body);
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  padding-left: 0.12em;
+  text-transform: uppercase;
+}
+
+.fi-wholesale-sig-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 10mm;
+}
+.fi-wholesale-sig-cell { display: flex; flex-direction: column; gap: 2mm; }
+.fi-wholesale-sig-line { height: 1px; background: var(--fi-ink); margin-bottom: 2mm; width: 100%; }
+.fi-wholesale-sig-cell .fi-eyebrow { font-size: 9.5px; letter-spacing: 0.24em; }
+
+.fi-wholesale-footer-wrap { margin-top: auto; padding-top: 10mm; }
+
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.fi-delivery {
+  width: 74mm; min-height: 105mm;
+  background: var(--fi-stone);
+  color: var(--fi-ink);
+  padding: 4mm 7mm 5mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.fi-delivery-hole {
+  width: 5mm; height: 5mm;
+  border: 1px solid var(--fi-ink);
+  border-radius: 50%;
+  margin: 2mm 0 5mm;
+  opacity: 0.55;
+}
+.fi-delivery-brand {
+  display: flex; flex-direction: column; align-items: center; gap: 3mm;
+  margin-bottom: 6mm;
+}
+.fi-delivery-brand-name {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+  text-transform: uppercase;
+  color: var(--fi-ink);
+}
+/* On the Delivery Tag the DC circle is drawn in ink on stone — keeps
+   contrast without another palette shift */
+.fi-delivery .fi-logo { border-color: var(--fi-ink); color: var(--fi-ink); }
+
+.fi-delivery-eyebrow { font-size: 9px; letter-spacing: 0.28em; margin-bottom: 3mm; color: var(--fi-body); }
+.fi-delivery-product {
+  font-size: 18px;
+  line-height: 1.2;
+  max-width: 60mm;
+}
+.fi-delivery .fi-rule-short {
+  background: var(--fi-ink);
+  opacity: 0.35;
+  width: 22mm;
+  margin: 3mm auto 4mm;
+}
+.fi-delivery-care-body {
+  font-family: var(--fi-sans);
+  color: var(--fi-body);
+  font-size: 10.5px;
+  line-height: 1.55;
+  margin: 0;
+  font-weight: 300;
+}
+
+.fi-delivery-footer {
+  margin-top: auto;
+  padding-top: 6mm;
+}
+.fi-delivery-footer-line {
+  font-family: var(--fi-sans);
+  color: var(--fi-body);
+  font-size: 8.5px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+
+/* =============================================================================
+   08 — SOCIAL MEDIA CARD  (1080×1080 = 148×148mm)
+   ============================================================================= */
+.fi-social {
+  width: 148mm; height: 148mm;
+  background: var(--fi-ink);
+  color: var(--fi-cream-on-ink);
+  padding: 12mm 12mm 10mm;
+  display: flex; flex-direction: column;
+}
+.fi-social-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 10mm;
+}
+.fi-social-brand-block { display: flex; flex-direction: column; gap: 2mm; }
+.fi-social-brand-name {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  color: var(--fi-cream-on-ink);
+  font-size: 15px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+}
+.fi-social-brand-tag { font-size: 9.5px; letter-spacing: 0.24em; }
+
+.fi-social-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 6mm 0;
+}
+.fi-social-eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.28em;
+  margin-bottom: 6mm;
+}
+.fi-social-title {
+  font-size: 46px;
+  color: var(--fi-cream-on-ink);
+  margin: 0 0 5mm;
+  max-width: 118mm;
+  line-height: 1.08;
+  letter-spacing: 0.08em;
+  padding-left: 0.08em;
+}
+.fi-social-rule {
+  height: 1px;
+  background: rgba(251, 248, 243, 0.35);
+  width: 40mm;
+  margin: 3mm 0 5mm;
+}
+.fi-social-desc {
+  font-family: var(--fi-sans);
+  color: var(--fi-cream-on-ink);
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin: 0 0 8mm;
+  max-width: 108mm;
+  opacity: 0.85;
+  font-weight: 300;
+}
+.fi-social-cta {
+  display: inline-block;
+  border: 1px solid rgba(251, 248, 243, 0.5);
+  padding: 4mm 8mm;
+  align-self: flex-start;
+}
+.fi-social-cta .fi-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--fi-cream-on-ink);
+  opacity: 1;
+}
+
+.fi-social-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 5mm;
+  font-family: var(--fi-sans);
+  font-size: 10px;
+  color: var(--fi-cream-on-ink);
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  font-weight: 400;
+}
+.fi-social-website { opacity: 0.65; }
+
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait)
+   ============================================================================= */
+.fi-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 16mm 12mm;
+  display: flex; flex-direction: column;
+}
+.fi-binder-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  padding-bottom: 4mm;
+}
+.fi-binder-brand-lockup { display: flex; align-items: center; gap: 10px; }
+.fi-binder-brand-text { display: flex; flex-direction: column; gap: 2mm; }
+.fi-binder-brand-name {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  color: var(--fi-ink);
+}
+.fi-binder-header-right { font-size: 10.5px; letter-spacing: 0.22em; }
+
+.fi-binder-title-row {
+  display: flex; gap: 12mm; align-items: flex-start;
+  padding: 12mm 0 4mm;
+}
+.fi-binder-title-left { flex: 1; min-width: 0; }
+.fi-binder-title { font-size: 28px; line-height: 1.15; margin: 0; }
+.fi-binder .fi-rule-short { margin: 3mm 0 4mm; }
+.fi-binder-desc {
+  font-family: var(--fi-sans);
+  color: var(--fi-muted);
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 300;
+}
+.fi-binder-photo {
+  width: 52mm; height: 42mm; flex-shrink: 0;
+  background: var(--fi-stone);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 4mm;
+}
+.fi-binder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.fi-binder-photo-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 1mm;
+}
+.fi-binder-photo-placeholder .fi-eyebrow { font-size: 9px; letter-spacing: 0.22em; color: var(--fi-body); opacity: 0.65; }
+
+.fi-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8mm;
+  padding: 4mm 0;
+}
+.fi-binder-meta-cell { display: flex; flex-direction: column; gap: 3mm; }
+.fi-binder-meta-cell > .fi-eyebrow { font-size: 9.5px; letter-spacing: 0.22em; }
+.fi-binder-meta-val {
+  font-family: var(--fi-sans);
+  font-weight: 300;
+  color: var(--fi-ink);
+  font-size: 16px;
+  line-height: 1.1;
+  letter-spacing: 0.10em;
+  padding-left: 0.10em;
+  text-transform: uppercase;
+}
+
+.fi-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12mm;
+  flex: 1;
+}
+.fi-binder-section > .fi-eyebrow { margin-bottom: 5mm; font-size: 10.5px; letter-spacing: 0.24em; }
+
+.fi-binder-ing-list { display: flex; flex-direction: column; }
+.fi-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 2.5mm 0;
+  border-bottom: 1px solid var(--fi-hair);
+  font-family: var(--fi-sans);
+  font-size: 10.5px;
+  color: var(--fi-body);
+  letter-spacing: 0.10em;
+  padding-left: 0.10em;
+  text-transform: uppercase;
+  font-weight: 400;
+  align-items: baseline;
+}
+.fi-binder-ing-name { color: var(--fi-body); }
+.fi-binder-ing-qty {
+  color: var(--fi-body);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+}
+.fi-binder-ing-cost {
+  color: var(--fi-ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+}
+.fi-binder-batch-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 3mm 0 2mm;
+  border-top: 1px solid var(--fi-ink);
+  font-family: var(--fi-sans);
+  font-size: 11px;
+  color: var(--fi-ink);
+  font-weight: 500;
+  margin-top: 2mm;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+}
+.fi-binder-batch-row > span:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  padding-left: 0;
+  letter-spacing: 0.06em;
+}
+
+.fi-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3.5mm;
+  font-family: var(--fi-sans);
+  font-size: 11px;
+  color: var(--fi-body);
+  line-height: 1.5;
+  font-weight: 300;
+}
+.fi-binder-method li {
+  display: grid;
+  grid-template-columns: 10mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.fi-binder-method-step { padding-top: 1mm; }
+.fi-binder-method-step-final { color: var(--fi-ink); }
+.fi-binder-method-step-final strong { font-weight: 600; }
+
+.fi-binder-notes { margin-top: 8mm; }
+.fi-binder-notes > .fi-eyebrow { margin-bottom: 3mm; font-size: 10.5px; letter-spacing: 0.24em; }
+.fi-binder-notes-lines { display: flex; flex-direction: column; gap: 7px; }
+.fi-binder-notes-line { border-bottom: 1px solid var(--fi-hair); height: 5mm; }
+
+.fi-binder-footer-wrap { margin-top: auto; padding-top: 6mm; }
+
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, 297×210mm)
+   ============================================================================= */
+.fi-cert {
+  width: 297mm; height: 210mm;
+  padding: 6mm;
+  display: flex;
+}
+.fi-cert-border {
+  flex: 1;
+  border: 1px solid var(--fi-hair-strong);
+  padding: 12mm 24mm 10mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.fi-cert-top {
+  display: flex; flex-direction: column; align-items: center; gap: 5mm;
+  padding-top: 3mm;
+}
+.fi-cert-title-label { font-size: 11px; letter-spacing: 0.32em; }
+
+.fi-cert-body {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6mm;
+  max-width: 240mm;
+}
+.fi-cert-intro {
+  font-family: var(--fi-sans);
+  color: var(--fi-muted);
+  font-size: 13px;
+  margin: 0;
+  font-weight: 300;
+}
+.fi-cert-product {
+  font-size: 44px;
+  margin: 3mm 0;
+  line-height: 1.1;
+  max-width: 240mm;
+  letter-spacing: 0.12em;
+  padding-left: 0.12em;
+}
+
+.fi-cert-attribution {
+  display: flex; flex-direction: column; align-items: center; gap: 3mm;
+  padding-bottom: 4mm;
+}
+.fi-cert-outro {
+  font-family: var(--fi-sans);
+  color: var(--fi-muted);
+  font-size: 13px;
+  margin: 0;
+  font-weight: 300;
+}
+.fi-cert-brand-name {
+  font-family: var(--fi-sans);
+  font-weight: 500;
+  color: var(--fi-ink);
+  font-size: 18px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  margin: 2mm 0 0;
+}
+.fi-cert-tagline { font-size: 10px; letter-spacing: 0.28em; }
+
+.fi-cert-signature-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20mm;
+  width: 100%;
+  align-items: flex-end;
+  padding: 4mm 8mm 4mm;
+  max-width: 260mm;
+}
+.fi-cert-sig-cell {
+  display: flex; flex-direction: column; gap: 2mm;
+  align-items: flex-start;
+  min-width: 0;
+}
+.fi-cert-sig-cell-right { align-items: flex-end; text-align: right; }
+.fi-cert-sig-line { height: 1px; background: var(--fi-ink); margin-bottom: 2mm; width: 100%; }
+.fi-cert-sig-cell .fi-eyebrow { font-size: 10px; letter-spacing: 0.22em; }
+.fi-cert-sig-img {
+  display: block;
+  max-width: 44mm; max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+.fi-cert-seal-wrap {
+  display: flex; justify-content: center; align-items: center;
+  padding-bottom: 2mm;
+}
+
+.fi-cert-footer {
+  padding-top: 6mm;
+  font-family: var(--fi-sans);
+  color: var(--fi-muted);
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.fi-cert-footer-line { color: var(--fi-muted); }
