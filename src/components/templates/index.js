@@ -15,6 +15,7 @@ import { CertificateOfCraft } from './CertificateOfCraft.jsx'
 import { KRAFT_TEMPLATES } from './variants/kraft/index.js'
 import { CRISP_TEMPLATES } from './variants/crisp/index.js'
 import { BKO_TEMPLATES } from './variants/bko/index.js'
+import { LETTERPRESS_TEMPLATES } from './variants/letterpress/index.js'
 
 /**
  * Registry of the 10 shared templates. Each entry is the DEFAULT (non-variant)
@@ -42,7 +43,7 @@ const VARIANT_MAP = {
   bko: BKO_TEMPLATES,
   kraft: KRAFT_TEMPLATES,
   crisp: CRISP_TEMPLATES,
-  // Future: 'letterpress': LETTERPRESS_TEMPLATES, etc.
+  letterpress: LETTERPRESS_TEMPLATES,
 }
 
 export function getTemplate(key) {
