@@ -5753,3 +5753,185 @@ button.ghost.small:hover{
   background:#D4A017;
   border:1.5px solid #fff;
 }
+
+/* ============================================================
+   SOCIAL MEDIA CARD — variant-specific contrast + white bg fixes
+   ------------------------------------------------------------
+   Variants 1-3 (Clean Modern / Kraft / Letterpress) keep the
+   brand-color gradient background — need all text to stay
+   bright/white for contrast.
+
+   Variants 4-5 (Editorial / Minimal) switch to WHITE paper —
+   need text to switch to dark inks matching their palette.
+   ============================================================ */
+
+/* --- Variants keeping brand-color gradient: everything on top stays white --- */
+.tpl.variant-clean-modern .tpl-social-eyebrow,
+.tpl.variant-kraft .tpl-social-eyebrow,
+.tpl.variant-letterpress .tpl-social-eyebrow{
+  color:rgba(255,255,255,0.95) !important;
+  border-bottom:none !important;
+  padding-bottom:0 !important;
+  padding-top:0 !important;
+  letter-spacing:0.5em !important;
+}
+.tpl.variant-clean-modern .tpl-social-brand,
+.tpl.variant-clean-modern .tpl-social-name,
+.tpl.variant-clean-modern .tpl-social-footer,
+.tpl.variant-clean-modern .tpl-social-handles > span,
+.tpl.variant-clean-modern .tpl-social-web,
+.tpl.variant-kraft .tpl-social-brand,
+.tpl.variant-kraft .tpl-social-name,
+.tpl.variant-kraft .tpl-social-footer,
+.tpl.variant-kraft .tpl-social-handles > span,
+.tpl.variant-kraft .tpl-social-web,
+.tpl.variant-letterpress .tpl-social-brand,
+.tpl.variant-letterpress .tpl-social-name,
+.tpl.variant-letterpress .tpl-social-footer,
+.tpl.variant-letterpress .tpl-social-handles > span,
+.tpl.variant-letterpress .tpl-social-web{
+  color:rgba(255,255,255,0.95) !important;
+}
+.tpl.variant-clean-modern .tpl-social-tagline,
+.tpl.variant-kraft .tpl-social-tagline,
+.tpl.variant-letterpress .tpl-social-tagline{
+  color:rgba(255,255,255,0.75) !important;
+}
+.tpl.variant-clean-modern .tpl-social-desc,
+.tpl.variant-kraft .tpl-social-desc,
+.tpl.variant-letterpress .tpl-social-desc{
+  color:rgba(255,255,255,0.85) !important;
+}
+
+
+/* --- EDITORIAL: white paper social card, black type, cherry-red eyebrow pop --- */
+.tpl.variant-editorial .tpl-social-bg{
+  background:#FCFBF9 !important;
+}
+.tpl.variant-editorial .tpl-social-brand,
+.tpl.variant-editorial .tpl-social-name,
+.tpl.variant-editorial .tpl-social-footer,
+.tpl.variant-editorial .tpl-social-handles > span{
+  color:#1A1A18 !important;
+}
+.tpl.variant-editorial .tpl-social-tagline{
+  color:#666158 !important;
+}
+.tpl.variant-editorial .tpl-social-desc{
+  color:#3A382F !important;
+  font-style:italic;
+}
+.tpl.variant-editorial .tpl-social-eyebrow{
+  color:#C41E3A !important;
+  border-bottom:none !important;
+  padding-bottom:0 !important;
+  padding-top:0 !important;
+  letter-spacing:0.5em !important;
+}
+.tpl.variant-editorial .tpl-social-price{
+  background:#1A1A18 !important;
+  border:1px solid #1A1A18 !important;
+  backdrop-filter:none !important;
+}
+.tpl.variant-editorial .tpl-social-price-label{
+  color:rgba(252,251,249,0.7) !important;
+}
+.tpl.variant-editorial .tpl-social-price-value{
+  color:#FCFBF9 !important;
+}
+.tpl.variant-editorial .tpl-social-web{
+  color:#C41E3A !important;
+  font-weight:700 !important;
+}
+.tpl.variant-editorial .tpl-social-logo{
+  background:#FCFBF9 !important;
+  border-color:#1A1A18 !important;
+}
+
+
+/* --- MINIMAL: white paper social card, slate accents, thin outline pill --- */
+.tpl.variant-minimal .tpl-social-bg{
+  background:#FDFDFC !important;
+}
+.tpl.variant-minimal .tpl-social-brand,
+.tpl.variant-minimal .tpl-social-name,
+.tpl.variant-minimal .tpl-social-footer,
+.tpl.variant-minimal .tpl-social-handles > span{
+  color:#2B2B29 !important;
+}
+.tpl.variant-minimal .tpl-social-tagline{
+  color:#77776F !important;
+}
+.tpl.variant-minimal .tpl-social-desc{
+  color:#44443F !important;
+}
+.tpl.variant-minimal .tpl-social-eyebrow{
+  color:#77776F !important;
+  border-bottom:none !important;
+  padding-bottom:0 !important;
+  padding-top:0 !important;
+  letter-spacing:0.5em !important;
+}
+.tpl.variant-minimal .tpl-social-price{
+  background:transparent !important;
+  border:0.5px solid #2B2B29 !important;
+  backdrop-filter:none !important;
+}
+.tpl.variant-minimal .tpl-social-price-label{
+  color:#77776F !important;
+}
+.tpl.variant-minimal .tpl-social-price-value{
+  color:#2B2B29 !important;
+}
+.tpl.variant-minimal .tpl-social-web{
+  color:#5B6874 !important;
+}
+.tpl.variant-minimal .tpl-social-logo{
+  background:transparent !important;
+  opacity:0.9 !important;
+}
+
+/* ============================================================
+   Dashboard "Coming Soon" strip — compact, one-line, muted
+   ============================================================ */
+.coming-soon-strip{
+  display:flex; align-items:center; gap:14px;
+  padding:9px 16px;
+  background:linear-gradient(90deg, rgba(115,103,240,0.05) 0%, rgba(115,103,240,0.01) 100%);
+  border:1px solid rgba(115,103,240,0.14);
+  border-radius:10px;
+  margin-top:16px;
+  flex-wrap:wrap;
+  font-size:12px;
+}
+.coming-soon-strip-label{
+  display:inline-flex; align-items:center; gap:6px;
+  color:var(--accent-dark);
+  font-size:10.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  flex-shrink:0;
+  opacity:0.85;
+}
+.coming-soon-strip-label svg{ opacity:0.75; }
+.coming-soon-strip-items{
+  display:flex; gap:6px; align-items:center;
+  flex-wrap:wrap;
+  min-width:0;
+}
+.coming-soon-strip-item{
+  padding:3px 10px;
+  background:rgba(115,103,240,0.09);
+  color:var(--accent-dark);
+  border-radius:999px;
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:-0.005em;
+  cursor:default;
+  transition:background 0.15s;
+  white-space:nowrap;
+}
+.coming-soon-strip-item:hover{
+  background:rgba(115,103,240,0.16);
+}

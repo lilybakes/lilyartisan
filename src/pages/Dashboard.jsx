@@ -5,7 +5,7 @@ import { useSettings } from '../lib/settings.jsx'
 import { supabase } from '../lib/supabase'
 import { Icon } from '../lib/icons.jsx'
 import Chip from '../components/Chip.jsx'
-import HeroImage from '../components/HeroImage.jsx'
+import ComingSoonStrip from '../components/ComingSoonStrip.jsx'
 import {
   costPerPortion, suggestedPrice, recipeCostTotal, lineCost,
   money, CHIP_COLORS,
@@ -60,10 +60,16 @@ export default function Dashboard() {
           <h2 className="greet">Welcome back, {settings.owner_name} <span>👋</span></h2>
           <p>Your bakery costing dashboard. Change any ingredient price and it ripples through every recipe and suggested selling price automatically.</p>
           <div style={{paddingTop:6}}>
-            <button className="cta" onClick={() => nav('/app/recipes')}>Manage Recipes →</button>
+            <button className="cta" onClick={() => nav('/recipes')}>Manage Recipes →</button>
           </div>
         </div>
-        <HeroImage/>
+        <div className="hero-art">
+          <div className="hero-halo" aria-hidden="true"/>
+          <div className="hero-confetti c1" aria-hidden="true"/>
+          <div className="hero-confetti c2" aria-hidden="true"/>
+          <div className="hero-confetti c3" aria-hidden="true"/>
+          <img className="hero-portrait-img" src="/assets/lily-portrait.png" alt="Lily" loading="eager"/>
+        </div>
       </div>
 
       <div className="stat-row">
@@ -189,6 +195,8 @@ export default function Dashboard() {
           </tbody>
         </table>
       </div>
+
+      <ComingSoonStrip/>
     </>
   )
 }
