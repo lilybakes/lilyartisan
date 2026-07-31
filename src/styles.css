@@ -3416,6 +3416,9 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   margin-top:20px;
   padding:24px;
   background:#F5F6FA;
+  border-radius:14px;
+  display:flex; align-items:flex-start; justify-content:center;
+}
 
 /* ============================================================
    Template sheets v2 — redesigned per handoff
