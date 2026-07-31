@@ -1,97 +1,46 @@
-# Style Variants — 5 aesthetics per template
+# Templates Picker — Compact Icon List
 
-Delivers the picker-per-template style system from the handoff. Every one of the 10 templates can be rendered in any of 5 distinct aesthetics: Clean Modern (default), Rustic Kraft, Vintage Letterpress, Editorial Magazine, Quiet Minimal.
+Replaces the big preview-card grid with a compact 2-column icon list. Cuts the picker's vertical footprint by roughly 75%.
 
 ## Files
 
 ```
 src/
-  lib/
-    template-styles.js               # NEW — 5-variant registry with descriptions
-  pages/
-    Templates.jsx                    # OVERWRITE — style dropdown per template + per-template style memory
-  components/templates/
-    ClassicRecipeCard.jsx            # OVERWRITE — accepts styleVariant prop
-    CostBreakdown.jsx                # OVERWRITE — same
-    CareCard.jsx                     # OVERWRITE — same
-    ProductLabel.jsx                 # OVERWRITE — same
-    MenuInsert.jsx                   # OVERWRITE — same
-    WholesalePriceList.jsx           # OVERWRITE — same
-    DeliveryTag.jsx                  # OVERWRITE — same
-    SocialMediaCard.jsx              # OVERWRITE — same
-    RecipeBinderPage.jsx             # OVERWRITE — same
-    CertificateOfCraft.jsx           # OVERWRITE — same
-    index.js                         # OVERWRITE (unchanged, kept for completeness)
-    parts.jsx                        # OVERWRITE (unchanged, kept for completeness)
-  styles.css                         # OVERWRITE (full file) — adds Google Fonts + 5 variant CSS blocks + picker UI styles
+  pages/Templates.jsx     # OVERWRITE — big PreviewIllustration → small TemplateIcon, tpl-grid → tpl-list
+  styles.css              # OVERWRITE (full file) — tpl-card CSS replaced with tpl-item compact CSS
 ```
 
-14 files.
+Two files.
 
-## How the system works
+## What changed
 
-1. **Registry** (`template-styles.js`) — 5 variants with `key`, `name`, `description`. Add a 6th by editing this file.
+**Before** — 5-column grid of large cards. Each card had a 3:2 aspect-ratio gradient preview thumbnail (~120px tall) containing an abstract UI illustration, then the name and description underneath. On desktop, the picker took ~280px of vertical space just to show 10 templates.
 
-2. **State** (`Templates.jsx`) — `templateStyles` object keeps the chosen variant per template (`{ classic: 'kraft', cost: 'editorial', ... }`). Each template remembers its own choice. Default is `clean-modern`.
+**After** — 2-column list. Each row is one horizontal item: 38×38 gradient icon chip on the left (with a small monochrome line-icon inside), template name + size badge inline, description one line below. Total picker height ≈ 260px for all 10, but crucially only ~40px per row instead of ~180px per card.
 
-3. **UI** — When a template is selected, a **style picker row** appears above the preview: dropdown showing all 5 variants + a description of the current one. Changing it re-renders the preview instantly.
+## Layout details
 
-4. **Templates** — Every template accepts `styleVariant` prop and adds `variant-{key}` to its root className. No structural changes to the JSX.
+- **Icon chip:** 38×38 rounded square with the template's gradient background and a white line icon (18px SVG) inside. Icons per template:
+  - Classic Card: document with lines
+  - Cost Breakdown: bar chart
+  - Care & Storage: bulleted list
+  - Product Label: tag shape
+  - Menu Insert: 2×2 grid
+  - Wholesale: table rows
+  - Delivery Tag: tag with punch dot
+  - Social Media: framed square with lens
+  - Recipe Binder: (uses card-lines icon)
+  - Certificate: seal with ribbon
+- **Right side:** name (bold) + size badge (inline pill: A5, A4, A6, A7, 1:1), then description clipped to 1 line
+- **Active state:** purple border + soft violet background + subtle shadow
+- **Responsive:** 2 columns on desktop/tablet, 1 column below 720px
 
-5. **CSS** — 5 variant class modifiers override fonts, colors, borders, rule weights. Higher specificity than the base styles so `.tpl.variant-kraft` beats `.tpl-classic`.
+## Interactions preserved
 
-## The 5 variants
+- Click a row to select
+- All 10 templates still ready and functional
+- Style picker dropdown still appears below when a template is selected
+- Print button unchanged
+- Description shows on hover as tooltip via `title` attribute (in case the 1-line clip cuts something)
 
-Per the handoff document — all use warm brown `#8B4A2B` as accent (except default, which respects the user's brand color).
-
-| Key | Name | Signature |
-|---|---|---|
-| `clean-modern` | Clean Modern (default) | Plus Jakarta Sans + JetBrains Mono, hairline rules, humanist neutral |
-| `kraft` | Rustic Kraft & Stamp | Bitter + Karla on kraft paper, dashed dividers, rubber-stamp seal on cards |
-| `letterpress` | Vintage Letterpress | Playfair + Cormorant, everything centered, fleuron `❧` between sections |
-| `editorial` | Editorial Magazine | DM Serif Display + Archivo, thick black rules, filled dark footer |
-| `minimal` | Quiet Minimal | Manrope 300 + IBM Plex Mono, 0.5px hairlines, single accent dot marker |
-
-## What the delta delivers vs what needs follow-up
-
-**Delivered end-to-end:**
-- Style picker UI + state per template ✓
-- All 10 templates accept and apply the variant ✓
-- All 5 variants have distinct fonts + colors + rule styles ✓
-- All 5 variants visibly different when you switch between them ✓
-- Google Fonts loaded (all 10 font families in one import) ✓
-- Print behavior preserved (variant styles print correctly) ✓
-
-**Realistic caveat — pixel-perfect matches to the handoff need follow-up:**
-Each aesthetic in the handoff has signature ornaments that don't come out of a generic CSS override:
-- Kraft's per-template rubber stamps (BAKED SMALL BATCH, TRADE PRICES, BAKED WITH CARE)
-- Letterpress's fleuron section breaks and wax-seal disc
-- Editorial's cost-bar chart on Cost Breakdown and 46mm accent sidebar on Recipe Binder
-- Minimal's `01 02 03` mono step numbers
-
-I've implemented the shared aesthetic (fonts, colors, rules, general treatment) plus a few signature ornaments (kraft rubber stamp on Classic + Care, letterpress fleuron under headers, editorial black-inverted footer, minimal accent dot). The rest need template-specific JSX changes — one delta per (template × variant) as you iterate.
-
-## Deploy
-
-Overwrite the 14 files, push, hard-refresh. First load fetches ~10 Google Font families (~1MB); cached after that. Every template in the picker now has a Style dropdown next to its preview.
-
-## Extending
-
-**Add a signature ornament to a specific variant × template:**
-
-1. Open the template's JSX file
-2. Add the ornament element gated on `styleVariant === 'kraft'` (or whichever variant):
-   ```jsx
-   {styleVariant === 'kraft' && <div className="tpl-kraft-stamp">TRADE PRICES</div>}
-   ```
-3. Style it in `styles.css` under the variant block
-
-**Add a 6th style variant:**
-
-1. Add an entry to `STYLE_VARIANTS` in `template-styles.js`
-2. Add a `.tpl.variant-{yourkey}` CSS block in `styles.css`
-3. Import any new Google Font in the same `@import` at the top
-
-## Bug-safe
-
-The style picker row is `no-print` — it disappears in the print dialog. `variant-*` classes are on the printable element, so they persist through print. Certificate landscape print still works.
+Deploy: overwrite the 2 files, push, hard-refresh.

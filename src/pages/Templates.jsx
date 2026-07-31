@@ -6,94 +6,93 @@ import { TEMPLATES, getTemplate } from '../components/templates/index.js'
 import { STYLE_VARIANTS, DEFAULT_STYLE_KEY } from '../lib/template-styles.js'
 
 /* ============================================================
-   Preview thumbnail illustrations — abstract shapes hinting at layout
+   Compact template icons — small monochrome shapes on gradient chip
    ============================================================ */
-function PreviewIllustration({ type }) {
-  const white = 'rgba(255,255,255,0.96)'
-  const ink   = 'rgba(31,36,64,0.15)'
-  const inkStrong = 'rgba(31,36,64,0.30)'
-
+function TemplateIcon({ type }) {
+  const SW = 1.8
+  const props = {
+    width: 18, height: 18, viewBox: '0 0 24 24',
+    fill: 'none', stroke: 'currentColor',
+    strokeWidth: SW, strokeLinecap: 'round', strokeLinejoin: 'round',
+  }
   switch (type) {
-    case 'card-lines':  // Classic Recipe Card
+    case 'card-lines':  // Classic Recipe Card — document w/ lines
       return (
-        <svg viewBox="0 0 150 90" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-          <rect x="35" y="12" width="90" height="66" rx="6" fill={white}/>
-          <rect x="43" y="24" width="48" height="6" rx="3" fill={inkStrong}/>
-          <rect x="43" y="38" width="70" height="3" rx="1.5" fill={ink}/>
-          <rect x="43" y="47" width="60" height="3" rx="1.5" fill={ink}/>
-          <rect x="43" y="56" width="55" height="3" rx="1.5" fill={ink}/>
+        <svg {...props}>
+          <rect x="5" y="3" width="14" height="18" rx="2"/>
+          <line x1="8" y1="8" x2="16" y2="8"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+          <line x1="8" y1="16" x2="13" y2="16"/>
         </svg>
       )
     case 'card-bars':  // Cost Breakdown — bar chart
       return (
-        <svg viewBox="0 0 150 90" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-          <rect x="35" y="12" width="90" height="66" rx="6" fill={white}/>
-          <rect x="47" y="55" width="14" height="16" rx="2" fill={ink}/>
-          <rect x="66" y="45" width="14" height="26" rx="2" fill={inkStrong}/>
-          <rect x="85" y="35" width="14" height="36" rx="2" fill={ink}/>
-          <rect x="104" y="50" width="14" height="21" rx="2" fill={inkStrong}/>
+        <svg {...props}>
+          <line x1="4" y1="20" x2="20" y2="20"/>
+          <rect x="6"  y="12" width="3" height="8" fill="currentColor" stroke="none"/>
+          <rect x="11" y="8"  width="3" height="12" fill="currentColor" stroke="none"/>
+          <rect x="16" y="14" width="3" height="6" fill="currentColor" stroke="none"/>
         </svg>
       )
-    case 'card-dots':  // Care Card — bullet-list feel
+    case 'card-dots':  // Care Card — bulleted list
       return (
-        <svg viewBox="0 0 150 90" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-          <rect x="35" y="12" width="90" height="66" rx="6" fill={white}/>
-          <circle cx="47" cy="30" r="2.5" fill={inkStrong}/>
-          <rect x="55" y="27" width="55" height="6" rx="3" fill={inkStrong}/>
-          <circle cx="47" cy="45" r="2.5" fill={ink}/>
-          <rect x="55" y="42" width="65" height="6" rx="3" fill={ink}/>
-          <circle cx="47" cy="60" r="2.5" fill={ink}/>
-          <rect x="55" y="57" width="45" height="6" rx="3" fill={ink}/>
+        <svg {...props}>
+          <rect x="4" y="4" width="16" height="16" rx="2"/>
+          <circle cx="8" cy="9"  r="0.9" fill="currentColor" stroke="none"/>
+          <line   x1="11" y1="9" x2="17" y2="9"/>
+          <circle cx="8" cy="13" r="0.9" fill="currentColor" stroke="none"/>
+          <line   x1="11" y1="13" x2="17" y2="13"/>
+          <circle cx="8" cy="17" r="0.9" fill="currentColor" stroke="none"/>
+          <line   x1="11" y1="17" x2="15" y2="17"/>
         </svg>
       )
-    case 'card-tag':  // Product Label — highlighted bar
+    case 'card-tag':  // Product Label — tag shape
       return (
-        <svg viewBox="0 0 150 90" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-          <rect x="35" y="12" width="90" height="66" rx="6" fill={white}/>
-          <rect x="43" y="24" width="35" height="8" rx="2" fill={inkStrong}/>
-          <rect x="43" y="42" width="70" height="3" rx="1.5" fill={ink}/>
-          <rect x="43" y="51" width="55" height="3" rx="1.5" fill={ink}/>
-          <rect x="43" y="60" width="60" height="3" rx="1.5" fill={ink}/>
+        <svg {...props}>
+          <path d="M20.6 11.4 12 20 3 11V4h7l10.6 7.4z"/>
+          <circle cx="7" cy="8" r="1.4" fill="currentColor" stroke="none"/>
         </svg>
       )
-    case 'grid':
+    case 'grid':  // Menu Insert — 2x2 grid
       return (
-        <svg viewBox="0 0 150 90" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-          <rect x="42" y="18" width="30" height="24" rx="3" fill={white}/>
-          <rect x="78" y="18" width="30" height="24" rx="3" fill={white}/>
-          <rect x="42" y="48" width="30" height="24" rx="3" fill={white}/>
-          <rect x="78" y="48" width="30" height="24" rx="3" fill={white}/>
+        <svg {...props}>
+          <rect x="4"  y="4"  width="7" height="7" rx="1"/>
+          <rect x="13" y="4"  width="7" height="7" rx="1"/>
+          <rect x="4"  y="13" width="7" height="7" rx="1"/>
+          <rect x="13" y="13" width="7" height="7" rx="1"/>
         </svg>
       )
-    case 'table':
+    case 'table':  // Wholesale — table rows
       return (
-        <svg viewBox="0 0 150 90" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-          <rect x="35" y="16" width="90" height="58" rx="4" fill={white}/>
-          <line x1="45" y1="30" x2="115" y2="30" stroke={inkStrong} strokeWidth="1"/>
-          <line x1="45" y1="42" x2="115" y2="42" stroke={ink} strokeWidth="1"/>
-          <line x1="45" y1="54" x2="115" y2="54" stroke={ink} strokeWidth="1"/>
-          <line x1="45" y1="66" x2="115" y2="66" stroke={ink} strokeWidth="1"/>
+        <svg {...props}>
+          <rect x="3" y="5" width="18" height="14" rx="1.5"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+          <line x1="3" y1="14" x2="21" y2="14"/>
+          <line x1="10" y1="5" x2="10" y2="19"/>
         </svg>
       )
-    case 'square':
+    case 'square':  // Social Media — square with dot (camera-y)
       return (
-        <svg viewBox="0 0 150 90" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-          <rect x="53" y="15" width="52" height="60" rx="4" fill={white}/>
-          <rect x="60" y="22" width="38" height="30" rx="3" fill={ink}/>
-          <rect x="60" y="58" width="24" height="4" rx="2" fill={inkStrong}/>
-          <rect x="60" y="66" width="16" height="3" rx="1.5" fill={ink}/>
+        <svg {...props}>
+          <rect x="4" y="4" width="16" height="16" rx="2.5"/>
+          <circle cx="12" cy="12" r="3.5"/>
+          <circle cx="17" cy="7" r="0.9" fill="currentColor" stroke="none"/>
         </svg>
       )
-    case 'circle':
+    case 'circle':  // Certificate — seal
       return (
-        <svg viewBox="0 0 150 90" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
-          <rect x="30" y="14" width="90" height="62" rx="4" fill={white}/>
-          <circle cx="75" cy="45" r="16" fill="none" stroke={inkStrong} strokeWidth="2"/>
-          <circle cx="75" cy="45" r="7" fill={inkStrong}/>
+        <svg {...props}>
+          <circle cx="12" cy="10" r="6"/>
+          <circle cx="12" cy="10" r="2" fill="currentColor" stroke="none"/>
+          <path d="M9 15l-1.5 5 4.5-2 4.5 2L15 15"/>
         </svg>
       )
-    default:
-      return null
+    default:  // fallback
+      return (
+        <svg {...props}>
+          <rect x="5" y="3" width="14" height="18" rx="2"/>
+        </svg>
+      )
   }
 }
 
@@ -249,33 +248,34 @@ export default function Templates() {
           </div>
         </div>
 
-        <div className="tpl-grid">
+        <div className="tpl-list">
           {TEMPLATES.map(t => (
             <button
               key={t.key}
               type="button"
               className={
-                'tpl-card' +
+                'tpl-item' +
                 (templateKey === t.key ? ' active' : '') +
                 (!t.ready ? ' soon' : '')
               }
               onClick={() => t.ready && setTemplateKey(t.key)}
               disabled={!t.ready}
+              title={t.description}
             >
               <div
-                className="tpl-card-preview"
+                className="tpl-item-icon"
                 style={t.ready ? { background: t.gradient } : {}}
               >
-                <PreviewIllustration type={t.preview}/>
-                {t.ready ? (
-                  <span className="tpl-card-size">{t.pageSize}</span>
-                ) : (
-                  <span className="tpl-card-soon-badge">SOON</span>
-                )}
+                <TemplateIcon type={t.preview}/>
               </div>
-              <div className="tpl-card-body">
-                <div className="tpl-card-name">{t.name}</div>
-                <div className="tpl-card-desc">{t.description}</div>
+              <div className="tpl-item-body">
+                <div className="tpl-item-header">
+                  <span className="tpl-item-name">{t.name}</span>
+                  {t.ready
+                    ? <span className="tpl-item-size">{t.pageSize}</span>
+                    : <span className="tpl-item-soon">SOON</span>}
+                </div>
+                <div className="tpl-item-desc">{t.description}</div>
               </div>
             </button>
           ))}
