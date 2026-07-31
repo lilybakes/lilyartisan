@@ -1,65 +1,45 @@
-# Templates — Variant Rework
+# Logo Variety per Variant
 
-Addresses your three points:
+One file: `src/styles.css` — append only.
 
-1. **Merged Default into Clean Modern.** Down to 5 style variants total (matches the handoff exactly).
-2. **Killed the purple bleed.** Every variant now overrides `--brand` with `!important`, which beats the inline `style="--brand: #6C5CE7"` set by the user's brand color. All accents inside a template preview now use warm brown `#8B4A2B` per the handoff.
-3. **Substantially reworked the 5 variants for real distinction.** Each has a fully different feel — paper, ink, fonts, weights, letter-spacing, rules, table treatment, footer, meta-chip style.
+Adds distinctive logo treatment for every variant across every template's logo class. No JSX changes — pure CSS overrides.
 
-## Files
+## The 5 logo treatments
 
-```
-src/
-  lib/template-styles.js       # OVERWRITE — 5 variants, no more "default"
-  styles.css                   # OVERWRITE (full file) — comprehensive variant CSS
-```
+| Variant | Full BrandHeader | Compact | Signature |
+|---|---|---|---|
+| **Clean Modern** | 52×52 | 40×40 | Baseline. No decorative treatment — clean and neutral. |
+| **Rustic Kraft** | **64×64** | 46×46 | **Circular dashed brown frame** around the logo — like a hand-stamped mark on kraft paper. Padded so the logo sits inside the ring. |
+| **Vintage Letterpress** | **42×42, centered above name** | 32×32 | Small, formal, symmetrical. Header switches to column layout — logo stacks above the centered business name. |
+| **Editorial Magazine** | **68×68 with 2px black frame** | 50×50 | Big, prominent, magazine-masthead treatment. Hard black square border with white paper backing — bold visual anchor. |
+| **Quiet Minimal** | **34×34, 90% opacity** | 26×26 | Very small, slightly muted. Doesn't fight the recipe name for attention. |
 
-Two files.
+## Also covered
 
-## The 5 variants now
+Same treatment logic flows through to the templates that don't use BrandHeader:
 
-| # | Variant | Paper | Body font | Display font | Numbers/Meta | Signature |
-|---|---|---|---|---|---|---|
-| 1 | **Clean Modern** | `#FFFFFF` white | Plus Jakarta Sans | Plus Jakarta Sans 800 | JetBrains Mono | 1px hairline rules, uppercase 800-weight section labels with 0.14em tracking, mono numerals |
-| 2 | **Rustic Kraft & Stamp** | `#F5EADB` kraft | Karla | Bitter 800 serif | Karla bold | 3px double-rule header, dashed section dividers, dotted table borders, brown-tinted chips with dashed borders |
-| 3 | **Vintage Letterpress** | `#FBF7EF` cream | Cormorant italic | Playfair Display 700 | Karla small-caps | Everything centered, `❧` fleuron under header, `— SECTION —` rule-with-label headers, italic body throughout |
-| 4 | **Editorial Magazine** | `#FCFBF9` off-white | Archivo | DM Serif Display | Archivo 700–800 | 3px black rules, black masthead/footer with white type, black solid table headers, zebra rows, brown Instagram accents on dark footer |
-| 5 | **Quiet Minimal** | `#FDFDFC` barely off | Manrope 300 | Manrope 400 | IBM Plex Mono | 0.5px hairlines, single accent dot below header, no filled backgrounds anywhere, extreme font-weight 300 |
+- **Social Media Card** logo (`.tpl-social-logo`)
+- **Delivery Tag** logo (`.tpl-delivery-logo`)
+- **Product Label** logo (`.tpl-label-logo`)
+- **Certificate of Craft** logo (`.tpl-cert-logo`)
 
-## The purple fix — mechanics
+Every one of these scales, frames, and repositions per variant:
 
-Templates set `style={{ '--brand': brand.brand_color }}` inline on their root element. Previously, variant CSS defined `--brand` without `!important`, so the inline style won (inline > class specificity).
+- Kraft wraps them all in dashed circular frames
+- Letterpress makes their parent headers column-oriented and centers everything
+- Editorial gives them hard black square frames (or white on the dark Social masthead)
+- Minimal makes them small and 85–90% opacity
 
-Fix: every variant now uses `--brand: #8B4A2B !important;`. Per CSS spec, `!important` in a stylesheet DOES beat inline styles (unless the inline style is also `!important`, which we don't do). Result: every downstream `var(--brand)` reference inside a variant template resolves to warm brown, not the user's app brand color.
+## Layout changes (not just size)
 
-Verified purple gone from:
-- Section title colors
-- Recipe name accents
-- Table header underlines
-- Meta chips
-- Brand header underlines
-- Instagram/Facebook social links
-- Cost sheet price highlights
-- Care card storage section accents
+**Rustic Kraft** doesn't change header layout — the ring around the logo is what carries the identity.
 
-Your app UI still uses the user's brand color everywhere else — sidebar wordmark, buttons, focus rings. Only the template preview swaps to warm brown.
+**Vintage Letterpress** restructures every header — SocialMediaCard's `.tpl-social-mark`, DeliveryTag's `.tpl-delivery-header`, ProductLabel's `.tpl-label-header`, and the shared BrandHeader — all become `flex-direction: column` with `align-items: center`. Logo sits above centered business name.
 
-## Real distinctions between variants
+**Editorial Magazine** keeps row layout but the black frame around the logo changes the whole visual weight. On the Social card, the frame is white (against the brand-color gradient background) so the mark still reads as a bold lockup.
 
-Each variant now differs on **at least 5 major dimensions**, not just fonts:
-
-- **Layout alignment**: Letterpress is centered; the other 4 left-aligned
-- **Table treatment**: Editorial has zebra rows + black headers; Kraft has dotted borders; Letterpress has centered cells; Minimal has 0.5px hairlines; Clean has 1px + brown underline
-- **Rule weights**: Editorial 3px; Kraft 3px double; Clean 1–2px; Letterpress 1px; Minimal 0.5px
-- **Section title style**: Editorial has thick black underline; Clean has brown underline + uppercase; Kraft has dashed underline; Letterpress has fleuron-flanked centered label; Minimal has NO underline, just whitespace
-- **Meta chips**: Clean has soft brown fill; Kraft has dashed border; Letterpress has outline no fill; Editorial has solid black; Minimal has 0.5px outline transparent
-- **Footer**: Clean/Kraft/Minimal transparent with border-top; Editorial has full black background with white text; Letterpress has centered italic
-- **Body typography**: Letterpress italic Cormorant; Kraft/Editorial regular sans; Minimal weight-300 light; Clean Modern weight-400 humanist
+**Quiet Minimal** keeps default row layout but everything is smaller and lighter — the logo intentionally recedes.
 
 ## Deploy
 
-Overwrite the 2 files, push, hard-refresh. Then cycle through the 5 variants on any template — every switch should be visibly, structurally, unmistakably different.
-
-## If any variant still looks purple somewhere
-
-Screenshot the spot and I'll add the missing override. Some very specific inline styles (like the SocialMediaCard's `background: 'linear-gradient(135deg, var(--brand)...)'`) will already work because `--brand` is now overridden — but there might be a stubborn one I missed.
+Overwrite `src/styles.css`, push, hard-refresh. Cycle any template through the 5 variants — the logo should look distinctively different each time (dashed circle, centered above, hard black frame, small and muted, or neutral baseline).

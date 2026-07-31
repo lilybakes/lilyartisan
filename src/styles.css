@@ -5246,3 +5246,248 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
 @media(max-width:520px){
   .tpl-list{ grid-template-columns:1fr; }
 }
+
+/* ============================================================
+   LOGO VARIETY per variant — size, placement, decorative treatment
+   ------------------------------------------------------------
+   Overrides both the shared BrandHeader logo (.tpl-brand-logo) AND
+   the template-specific logo classes used by SocialMediaCard,
+   DeliveryTag, ProductLabel, CertificateOfCraft.
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   1. CLEAN MODERN — standard baseline (52px full, 40px compact)
+   ------------------------------------------------------------ */
+/* Uses default sizing — no overrides needed. This is the reference. */
+
+
+/* ------------------------------------------------------------
+   2. RUSTIC KRAFT — larger logo inside a dashed circular frame,
+      like a hand-stamped mark
+   ------------------------------------------------------------ */
+.tpl.variant-kraft .tpl-brand-logo{
+  width:64px !important;
+  height:64px !important;
+  padding:5px;
+  background:rgba(139,74,43,0.06);
+  border-radius:50%;
+  border:1.5px dashed rgba(139,74,43,0.55);
+  object-fit:contain;
+}
+.tpl.variant-kraft .tpl-brand-header-compact .tpl-brand-logo{
+  width:46px !important;
+  height:46px !important;
+  padding:3px;
+  border-width:1.2px;
+}
+.tpl.variant-kraft .tpl-brand-header{ gap:18px !important; align-items:center !important; }
+.tpl.variant-kraft .tpl-social-logo{
+  width:50px !important;
+  height:50px !important;
+  padding:4px;
+  background:rgba(255,255,255,0.94);
+  border:1.5px dashed rgba(255,255,255,0.6);
+  border-radius:50%;
+}
+.tpl.variant-kraft .tpl-delivery-logo{
+  width:28px !important;
+  height:28px !important;
+  padding:2px;
+  border:1px dashed rgba(245,235,216,0.6);
+  border-radius:50%;
+  background:rgba(93,68,45,0.25);
+  object-fit:contain;
+}
+.tpl.variant-kraft .tpl-label-logo{
+  width:36px !important;
+  height:36px !important;
+  padding:2px;
+  border:1px dashed rgba(139,74,43,0.5);
+  border-radius:50%;
+  object-fit:contain;
+}
+.tpl.variant-kraft .tpl-cert-logo{
+  width:76px !important;
+  height:76px !important;
+  padding:6px;
+  border:2px dashed #8B4A2B;
+  border-radius:50%;
+  background:rgba(139,74,43,0.05);
+  object-fit:contain;
+}
+
+
+/* ------------------------------------------------------------
+   3. VINTAGE LETTERPRESS — small logo stacked above centered name,
+      formal symmetry
+   ------------------------------------------------------------ */
+.tpl.variant-letterpress .tpl-brand-header{
+  flex-direction:column !important;
+  align-items:center !important;
+  gap:8px !important;
+  text-align:center !important;
+}
+.tpl.variant-letterpress .tpl-brand-text{
+  flex:0 auto !important;
+  text-align:center !important;
+}
+.tpl.variant-letterpress .tpl-brand-logo{
+  width:42px !important;
+  height:42px !important;
+  margin:0 auto !important;
+  object-fit:contain;
+}
+.tpl.variant-letterpress .tpl-brand-header-compact .tpl-brand-logo{
+  width:32px !important;
+  height:32px !important;
+}
+.tpl.variant-letterpress .tpl-social-mark{
+  flex-direction:column !important;
+  align-items:center !important;
+  text-align:center !important;
+  gap:4px !important;
+}
+.tpl.variant-letterpress .tpl-social-mark-text{
+  align-items:center !important;
+  text-align:center !important;
+}
+.tpl.variant-letterpress .tpl-social-logo{
+  width:40px !important;
+  height:40px !important;
+  margin:0 auto;
+}
+.tpl.variant-letterpress .tpl-delivery-header{
+  flex-direction:column !important;
+  align-items:center !important;
+  gap:4px !important;
+  text-align:center !important;
+}
+.tpl.variant-letterpress .tpl-delivery-brand-block{
+  align-items:center !important;
+  text-align:center !important;
+}
+.tpl.variant-letterpress .tpl-delivery-logo{
+  width:22px !important;
+  height:22px !important;
+  margin:0 auto;
+}
+.tpl.variant-letterpress .tpl-label-header{
+  flex-direction:column !important;
+  align-items:center !important;
+  gap:4px !important;
+  text-align:center !important;
+}
+.tpl.variant-letterpress .tpl-label-header-text{
+  align-items:center !important;
+  text-align:center !important;
+}
+.tpl.variant-letterpress .tpl-label-logo{
+  width:26px !important;
+  height:26px !important;
+  margin:0 auto;
+}
+.tpl.variant-letterpress .tpl-cert-logo{
+  width:50px !important;
+  height:50px !important;
+}
+
+
+/* ------------------------------------------------------------
+   4. EDITORIAL MAGAZINE — BIG bold logo with a hard black frame,
+      like a magazine masthead lockup
+   ------------------------------------------------------------ */
+.tpl.variant-editorial .tpl-brand-header{
+  gap:20px !important;
+  align-items:center !important;
+}
+.tpl.variant-editorial .tpl-brand-logo{
+  width:68px !important;
+  height:68px !important;
+  border:2px solid #1A1A18;
+  padding:4px;
+  background:#FCFBF9;
+  object-fit:contain;
+  border-radius:2px;
+}
+.tpl.variant-editorial .tpl-brand-header-compact .tpl-brand-logo{
+  width:50px !important;
+  height:50px !important;
+  border:1.5px solid #1A1A18;
+  padding:3px;
+  border-radius:2px;
+}
+.tpl.variant-editorial .tpl-social-logo{
+  width:58px !important;
+  height:58px !important;
+  border:2px solid #FCFBF9;
+  padding:3px;
+  background:#FCFBF9;
+  border-radius:2px !important;
+  object-fit:contain;
+}
+.tpl.variant-editorial .tpl-delivery-logo{
+  width:32px !important;
+  height:32px !important;
+  border:1.5px solid #F5EBD8;
+  padding:2px;
+  background:rgba(245,235,216,0.15);
+  border-radius:2px;
+  object-fit:contain;
+}
+.tpl.variant-editorial .tpl-label-logo{
+  width:40px !important;
+  height:40px !important;
+  border:1.5px solid #1A1A18;
+  padding:2px;
+  background:#FCFBF9;
+  border-radius:2px;
+  object-fit:contain;
+}
+.tpl.variant-editorial .tpl-cert-logo{
+  width:84px !important;
+  height:84px !important;
+  border:2.5px solid #1A1A18;
+  padding:6px;
+  background:#FCFBF9;
+  border-radius:2px;
+  object-fit:contain;
+}
+
+
+/* ------------------------------------------------------------
+   5. QUIET MINIMAL — very small, unobtrusive, slightly muted
+   ------------------------------------------------------------ */
+.tpl.variant-minimal .tpl-brand-logo{
+  width:34px !important;
+  height:34px !important;
+  opacity:0.9;
+  object-fit:contain;
+}
+.tpl.variant-minimal .tpl-brand-header-compact .tpl-brand-logo{
+  width:26px !important;
+  height:26px !important;
+}
+.tpl.variant-minimal .tpl-brand-header{ gap:14px !important; }
+.tpl.variant-minimal .tpl-social-logo{
+  width:30px !important;
+  height:30px !important;
+  opacity:0.9;
+  border-radius:6px !important;
+  padding:2px !important;
+}
+.tpl.variant-minimal .tpl-delivery-logo{
+  width:18px !important;
+  height:18px !important;
+  opacity:0.85;
+}
+.tpl.variant-minimal .tpl-label-logo{
+  width:22px !important;
+  height:22px !important;
+  opacity:0.9;
+}
+.tpl.variant-minimal .tpl-cert-logo{
+  width:42px !important;
+  height:42px !important;
+  opacity:0.85;
+}
