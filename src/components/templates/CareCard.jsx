@@ -1,75 +1,41 @@
-import { TwineArc, HeartDoodle, Sparkle } from './ornaments.jsx'
+import { BrandHeader, BrandFooter } from './parts.jsx'
 
 /**
- * Care & Storage Card — "Warm Handwritten"
- * A6 portrait, warm off-white paper, script + serif mix, twine arc at top.
+ * Customer-facing care card. Storage instructions, best-by, thank you.
+ * A6 sized when printed — 4 fit on an A4 sheet.
  */
 export function CareCard({ recipe, brand }) {
-  const storage   = recipe.storage_notes    || brand.default_storage_notes
-  const allergens = recipe.allergen_notice  || brand.default_allergen_notice
+  const storage = recipe.storage_notes || brand.default_storage_notes || 'Best enjoyed within 2–3 days. Keep in a cool, dry place.'
 
   return (
-    <div className="tpl tpl-care-v2 printable" style={{ '--brand': brand.brand_color }}>
-      {/* Twine at top */}
-      <div className="tpl-care-v2-twine">
-        <TwineArc width={200}/>
-      </div>
+    <div className="tpl tpl-care printable" style={{ '--brand': brand.brand_color }}>
+      <BrandHeader brand={brand} compact/>
 
-      {/* Brand mark */}
-      <div className="tpl-care-v2-brand">
-        {brand.logo_data_url && <img src={brand.logo_data_url} alt="" className="tpl-care-v2-logo"/>}
-        <div className="tpl-care-v2-brand-name">{brand.business_name || 'Your Bakery'}</div>
-        {brand.tagline && <div className="tpl-care-v2-brand-tag">{brand.tagline}</div>}
-      </div>
+      <div className="tpl-care-body">
+        <div className="tpl-care-thanks">Thank you for choosing us!</div>
+        <h1 className="tpl-care-product">{recipe.name}</h1>
+        <div className="tpl-care-tagline">Freshly baked with care in small batches</div>
 
-      {/* Thank you script */}
-      <div className="tpl-care-v2-thanks">
-        Thank you<br/>
-        <span className="tpl-care-v2-thanks-em">so much</span>
-      </div>
-
-      {/* Product name */}
-      <div className="tpl-care-v2-product-block">
-        <div className="tpl-care-v2-product-label">for choosing our</div>
-        <div className="tpl-care-v2-product">{recipe.name}</div>
-      </div>
-
-      <div className="tpl-care-v2-divider">
-        <span className="tpl-care-v2-divider-rule"/>
-        <HeartDoodle size={14}/>
-        <span className="tpl-care-v2-divider-rule"/>
-      </div>
-
-      {/* Storage */}
-      {storage && (
-        <div className="tpl-care-v2-section">
-          <div className="tpl-care-v2-section-label">Keep me happy</div>
-          <div className="tpl-care-v2-section-body">{storage}</div>
+        <div className="tpl-care-section">
+          <div className="tpl-care-section-icon">🌡️</div>
+          <div>
+            <div className="tpl-care-section-title">Storage</div>
+            <div className="tpl-care-section-body">{storage}</div>
+          </div>
         </div>
-      )}
 
-      {/* Allergen */}
-      {allergens && (
-        <div className="tpl-care-v2-section tpl-care-v2-section-warn">
-          <div className="tpl-care-v2-section-label">Allergen notice</div>
-          <div className="tpl-care-v2-section-body">{allergens}</div>
-        </div>
-      )}
+        {(recipe.allergen_notice || brand.default_allergen_notice) && (
+          <div className="tpl-care-section">
+            <div className="tpl-care-section-icon">⚠️</div>
+            <div>
+              <div className="tpl-care-section-title">Allergen notice</div>
+              <div className="tpl-care-section-body">{recipe.allergen_notice || brand.default_allergen_notice}</div>
+            </div>
+          </div>
+        )}
+      </div>
 
-      {/* Footer */}
-      <footer className="tpl-care-v2-footer">
-        <div className="tpl-care-v2-signoff">
-          Made with <HeartDoodle size={11}/> in a small kitchen
-        </div>
-        <div className="tpl-care-v2-handles">
-          {brand.instagram && <span>@{brand.instagram}</span>}
-          {brand.facebook  && <span>fb/{brand.facebook}</span>}
-          {brand.website   && <span>{brand.website}</span>}
-        </div>
-      </footer>
-
-      {/* Corner sparkle */}
-      <div className="tpl-care-v2-corner-sparkle"><Sparkle size={11}/></div>
+      <BrandFooter brand={brand}/>
     </div>
   )
 }

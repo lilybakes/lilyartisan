@@ -1,61 +1,45 @@
-import { WaxSeal } from './ornaments.jsx'
-
 /**
- * Product Label — "Apothecary Jar"
- * Compact, cream, serif, wax seal, oval border feel.
+ * Compact product label — allergens, ingredients, best-by. For packaging.
+ * A7 sized when printed — 8 fit on an A4 sheet.
  */
 export function ProductLabel({ recipe, brand }) {
   const allergens = recipe.allergen_notice || brand.default_allergen_notice
   const ingredientsList = recipe.lines
     .map(l => l.ingredient_name)
     .filter(Boolean)
-    .join(' · ')
+    .join(', ')
+
+  const contactBits = []
+  if (brand.contact_phone) contactBits.push(brand.contact_phone)
+  if (brand.website)       contactBits.push(brand.website)
+  if (brand.instagram)     contactBits.push('@' + brand.instagram)
 
   return (
-    <div className="tpl tpl-label-v2 printable" style={{ '--brand': brand.brand_color }}>
-      {/* Outer decorative frame */}
-      <div className="tpl-label-v2-frame">
-        {/* Wax seal top */}
-        <div className="tpl-label-v2-seal">
-          <WaxSeal size={44} initials={brand.business_name}/>
+    <div className="tpl tpl-label printable" style={{ '--brand': brand.brand_color }}>
+      <div className="tpl-label-header">
+        {brand.logo_data_url && <img src={brand.logo_data_url} alt="" className="tpl-label-logo"/>}
+        <div className="tpl-label-header-text">
+          <div className="tpl-label-brand">{brand.business_name || 'Your Bakery'}</div>
+          {brand.tagline && <div className="tpl-label-tagline">{brand.tagline}</div>}
         </div>
+      </div>
 
-        {/* Brand strip */}
-        <div className="tpl-label-v2-brand">
-          <div className="tpl-label-v2-brand-est">EST.</div>
-          <div className="tpl-label-v2-brand-name">{brand.business_name || 'Your Bakery'}</div>
-          {brand.tagline && <div className="tpl-label-v2-brand-tag">{brand.tagline}</div>}
+      <div className="tpl-label-product">{recipe.name}</div>
+
+      {ingredientsList && (
+        <div className="tpl-label-line">
+          <strong>Ingredients:</strong> {ingredientsList}
         </div>
+      )}
 
-        <div className="tpl-label-v2-rule"/>
-
-        {/* Product name */}
-        <div className="tpl-label-v2-product-eyebrow">Handcrafted</div>
-        <h1 className="tpl-label-v2-product">{recipe.name}</h1>
-
-        <div className="tpl-label-v2-rule"/>
-
-        {/* Ingredients */}
-        {ingredientsList && (
-          <div className="tpl-label-v2-ing">
-            <span className="tpl-label-v2-ing-label">Ingredients — </span>
-            {ingredientsList}
-          </div>
-        )}
-
-        {/* Allergens box */}
-        {allergens && (
-          <div className="tpl-label-v2-allergens">
-            {allergens}
-          </div>
-        )}
-
-        {/* Contact */}
-        <div className="tpl-label-v2-contact">
-          {brand.contact_phone && <span>{brand.contact_phone}</span>}
-          {brand.instagram     && <span>@{brand.instagram}</span>}
-          {brand.website       && <span>{brand.website}</span>}
+      {allergens && (
+        <div className="tpl-label-allergens">
+          {allergens}
         </div>
+      )}
+
+      <div className="tpl-label-footer">
+        {contactBits.map((c, i) => <span key={i}>{c}</span>)}
       </div>
     </div>
   )

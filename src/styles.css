@@ -1,6 +1,3 @@
-/* Template fonts — used by the redesigned Templates v2 sheets */
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Instrument+Serif:ital@0;1&family=Karla:wght@400;500;600;700&family=Marcellus&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-
 :root{
   --bg:#f5f5f9;
   --panel:#ffffff;
@@ -3317,100 +3314,192 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
 
 
 /* ============================================================
-   Templates page — picker + preview
+   Templates page — picker + preview  (v3, matches design)
    ============================================================ */
-.templates-controls{
-  margin-bottom:20px;
+
+/* Soft nudge card at top */
+.tpl-nudge{
+  display:flex; align-items:center; gap:14px;
+  padding:14px 18px;
+  background:var(--accent-soft);
+  border:1px solid #DEDAFC;
+  border-radius:12px;
+  margin-bottom:22px;
+  font-size:13.5px; line-height:1.5;
+  color:var(--ink-soft);
 }
-.templates-controls .field select{
-  width:100%; max-width:420px;
-  padding:11px 14px;
-  border:1px solid var(--line);
-  border-radius:8px;
-  font-family:inherit;
-  font-size:14px;
-  background:#fff;
+.tpl-nudge a{ color:var(--accent-dark); font-weight:600; text-decoration:none; }
+.tpl-nudge a:hover{ text-decoration:underline; }
+.tpl-nudge-icon{
+  width:36px; height:36px;
+  border-radius:9px;
+  background:var(--accent);
+  color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
 }
 
-.template-picker{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
-  gap:12px;
+/* Recipe dropdown + status row */
+.tpl-controls-row{
+  display:flex; align-items:end; gap:20px; flex-wrap:wrap;
   margin-bottom:20px;
 }
-.template-pick{
-  position:relative;
-  display:flex; align-items:flex-start; gap:12px;
-  padding:14px 16px 14px 14px;
+.tpl-recipe-field{ display:flex; flex-direction:column; gap:6px; }
+.tpl-recipe-field label{
+  font-size:10.5px;
+  font-weight:700;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.tpl-recipe-field select{
+  width:280px;
+  padding:11px 14px;
+  padding-right:36px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  font-family:inherit;
+  font-size:14px;
+  color:var(--ink);
   background:#fff;
-  border:2px solid var(--line);
-  border-radius:12px;
+  cursor:pointer;
+  transition:border-color 0.15s;
+}
+.tpl-recipe-field select:hover{ border-color:var(--accent); }
+.tpl-recipe-field select:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(115,103,240,0.12); }
+
+.tpl-status{ display:inline-flex; align-items:center; gap:6px; padding-bottom:8px; }
+.tpl-status-ready{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 12px;
+  background:rgba(52,199,123,0.13);
+  color:#1E9B5F;
+  border-radius:999px;
+  font-size:12px; font-weight:600;
+}
+.tpl-status-dot{
+  width:6px; height:6px;
+  border-radius:50%;
+  background:#34C77B;
+}
+.tpl-status-soon{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:500;
+}
+
+/* Card grid */
+.tpl-grid{
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  gap:14px;
+  margin-bottom:26px;
+}
+@media(max-width:1200px){ .tpl-grid{ grid-template-columns:repeat(4, 1fr); } }
+@media(max-width:960px){  .tpl-grid{ grid-template-columns:repeat(3, 1fr); } }
+@media(max-width:680px){  .tpl-grid{ grid-template-columns:repeat(2, 1fr); } }
+@media(max-width:420px){  .tpl-grid{ grid-template-columns:1fr; } }
+
+.tpl-card{
+  display:flex; flex-direction:column;
+  gap:12px;
+  padding:12px 12px 14px;
+  background:#fff;
+  border:2px solid transparent;
+  border-radius:16px;
   cursor:pointer;
   text-align:left;
   font-family:inherit;
-  transition:all 0.15s;
-  min-height:78px;
+  transition:all 0.18s ease;
+  outline:none;
 }
-.template-pick:hover:not(.disabled):not(.active){
+.tpl-card:hover:not(:disabled):not(.active){
+  border-color:var(--line);
+  background:#FAFAFC;
+}
+.tpl-card.active{
   border-color:var(--accent);
-  transform:translateY(-1px);
-  box-shadow:0 3px 10px rgba(115,103,240,0.15);
+  background:#fff;
+  box-shadow:0 6px 20px rgba(115,103,240,0.15);
 }
-.template-pick.active{
-  border-color:var(--accent);
-  background:var(--accent-soft);
-  box-shadow:0 3px 10px rgba(115,103,240,0.18);
-}
-.template-pick.disabled{
-  cursor:not-allowed;
-  opacity:0.65;
-}
-.template-pick-icon{
-  font-size:26px;
-  line-height:1;
-  flex-shrink:0;
-  margin-top:2px;
-}
-.template-pick-body{ flex:1; min-width:0; }
-.template-pick-name{
-  font-weight:700; font-size:14px;
-  color:var(--ink);
-  margin-bottom:4px;
-}
-.template-pick.active .template-pick-name{ color:var(--accent-dark); }
-.template-pick-desc{
-  font-size:12.5px;
-  color:var(--ink-soft);
-  line-height:1.45;
-}
-.template-pick-badge{
-  position:absolute; top:8px; right:8px;
-  padding:3px 8px;
-  background:#F0F1F7;
-  color:var(--muted);
-  border-radius:999px;
-  font-size:10px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:0.4px;
-}
-.template-pick-size{
-  position:absolute; top:8px; right:8px;
-  padding:3px 8px;
-  background:var(--accent-soft);
-  color:var(--accent-dark);
-  border-radius:999px;
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:0.4px;
+.tpl-card.soon{
+  cursor:default;
+  opacity:0.9;
 }
 
-.templates-actions{
-  display:flex; align-items:center; gap:14px;
-  padding-top:12px;
+.tpl-card-preview{
+  aspect-ratio:3/2;
+  border-radius:11px;
+  position:relative;
+  overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  background:#F0F1F7;
+}
+.tpl-card.soon .tpl-card-preview{ background:#F0F1F7; }
+
+.tpl-card-size{
+  position:absolute; top:9px; right:9px;
+  padding:3px 8px;
+  background:rgba(255,255,255,0.95);
+  border-radius:6px;
+  font-size:10px; font-weight:700;
+  color:rgba(31,36,64,0.7);
+  letter-spacing:0.03em;
+}
+.tpl-card-soon-badge{
+  position:absolute; top:9px; right:9px;
+  padding:3px 9px;
+  background:rgba(255,255,255,0.85);
+  border-radius:6px;
+  font-size:9.5px; font-weight:800;
+  color:#A5A3AE;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+}
+
+.tpl-card-body{
+  padding:0 4px;
+  display:flex; flex-direction:column; gap:4px;
+}
+.tpl-card-name{
+  font-size:14.5px; font-weight:700;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+  line-height:1.25;
+}
+.tpl-card.soon .tpl-card-name{ color:var(--ink-soft); }
+.tpl-card.active .tpl-card-name{ color:var(--accent-dark); }
+.tpl-card-desc{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+/* Actions row */
+.tpl-actions-row{
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  padding-top:20px;
   border-top:1px solid var(--line);
 }
-.templates-actions .hint{ margin:0; font-size:12px; }
+.tpl-print-btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:11px 18px;
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-family:inherit;
+  font-size:14px; font-weight:600;
+  cursor:pointer;
+  transition:background 0.15s;
+  box-shadow:0 3px 8px rgba(115,103,240,0.25);
+}
+.tpl-print-btn:hover:not(:disabled){ background:var(--accent-dark); }
+.tpl-print-btn:disabled{ opacity:0.5; cursor:not-allowed; box-shadow:none; }
+.tpl-actions-hint{
+  font-size:12.5px;
+  color:var(--muted);
+}
 
 .templates-preview{
   margin-top:20px;
@@ -3420,1331 +3509,315 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   display:flex; align-items:flex-start; justify-content:center;
 }
 
-/* ============================================================
-   Template sheets v2 — redesigned per handoff
-   ============================================================ */
 
-/* --- Base --- */
+/* ============================================================
+   Template sheets — the actual printable output
+   ============================================================ */
 .tpl{
+  /* Every template uses --brand as its accent color */
   --brand: #6C5CE7;
   background:#fff;
   color:#1F2440;
+  font-family:'Plus Jakarta Sans','Public Sans',-apple-system,sans-serif;
   box-shadow:0 8px 28px rgba(50,51,74,0.10);
   border-radius:8px;
   overflow:hidden;
   display:flex; flex-direction:column;
-  position:relative;
 }
 
-/* --- Shared BrandHeader / BrandFooter (kept, still used by some templates) --- */
+/* --- Shared brand header/footer --- */
 .tpl-brand-header{
   display:flex; align-items:center; gap:16px;
   padding:22px 28px;
   border-bottom:3px solid var(--brand);
 }
-.tpl-brand-header-compact{ padding:14px 22px; border-bottom-width:2px; }
-.tpl-brand-logo{ width:52px; height:52px; object-fit:contain; flex-shrink:0; }
+.tpl-brand-header-compact{
+  padding:14px 22px;
+  border-bottom-width:2px;
+}
+.tpl-brand-logo{
+  width:52px; height:52px;
+  object-fit:contain;
+  flex-shrink:0;
+}
 .tpl-brand-header-compact .tpl-brand-logo{ width:38px; height:38px; }
 .tpl-brand-text{ flex:1; min-width:0; }
-.tpl-brand-name{ font-family:'Inter',sans-serif; font-size:22px; font-weight:800; letter-spacing:-0.02em; color:var(--brand); }
+.tpl-brand-name{
+  font-size:22px; font-weight:800;
+  letter-spacing:-0.02em;
+  color:var(--brand);
+}
 .tpl-brand-header-compact .tpl-brand-name{ font-size:17px; }
-.tpl-brand-tagline{ font-family:'Inter',sans-serif; font-size:12px; color:#6E7490; margin-top:2px; }
-.tpl-brand-tagline-small{ font-size:10.5px; color:#8B8FA3; margin-top:1px; }
+.tpl-brand-tagline{
+  font-size:12px; color:#6E7490;
+  margin-top:2px;
+}
+
 .tpl-brand-footer{
   padding:14px 28px;
   background:#FAFAFC;
   border-top:1px solid #EDEEF6;
-  font-size:11px; color:#6E7490;
+  font-size:11px;
+  color:#6E7490;
   line-height:1.55;
   margin-top:auto;
-  font-family:'Inter',sans-serif;
 }
 .tpl-brand-address{ white-space:pre-line; margin-bottom:4px; }
 .tpl-brand-contact{ display:flex; flex-wrap:wrap; gap:14px; }
-.tpl-brand-contact span:not(:last-child)::after{ content:'·'; margin-left:14px; opacity:0.5; }
-.tpl-brand-social{ color:var(--brand); font-weight:700; }
-.tpl-empty{ color:#A5A3AE; font-size:12px; font-style:italic; }
+.tpl-brand-contact span:not(:last-child)::after{
+  content:'·';
+  margin-left:14px;
+  opacity:0.5;
+}
 
-/* ============================================================
-   1. Classic Recipe Card — Kraft Deli, Modern-Warm
-   ============================================================ */
-.tpl-classic-v2{
-  width:148mm; min-height:210mm;
-  background:#FCF6EA;
-  padding:40px 34px 28px;
-  font-family:'Inter',sans-serif;
-  color:#3A2E20;
-  gap:0;
-  position:relative;
-}
-.tpl-classic-v2-seal{
-  position:absolute; top:24px; left:24px;
-}
-.tpl-classic-v2-sparkle-tr{
-  position:absolute; top:28px; right:32px;
+/* --- Section styling --- */
+.tpl-section{ padding:20px 28px; }
+.tpl-section-title{
+  font-size:11px;
+  font-weight:700;
   color:var(--brand);
-}
-.tpl-classic-v2-brand{
-  display:flex; align-items:center; gap:12px;
-  padding-left:78px;
-  min-height:64px;
-  margin-bottom:20px;
-}
-.tpl-classic-v2-logo{ width:34px; height:34px; object-fit:contain; }
-.tpl-classic-v2-brand-text{ flex:1; min-width:0; }
-.tpl-classic-v2-brand-name{
-  font-family:'Playfair Display',serif;
-  font-size:18px; font-weight:700;
-  color:var(--brand);
-  letter-spacing:-0.01em;
-  line-height:1.1;
-}
-.tpl-classic-v2-brand-tag{
-  font-family:'Inter',sans-serif;
-  font-size:10.5px; color:#8B7355;
-  font-style:italic;
-  letter-spacing:0.02em;
-  margin-top:1px;
-}
-.tpl-classic-v2-ornament{
-  display:flex; align-items:center; gap:12px;
-  margin-bottom:24px;
-  color:var(--brand);
-}
-.tpl-classic-v2-rule{ flex:1; height:1px; background:currentColor; opacity:0.3; }
-
-.tpl-classic-v2-hero{ text-align:center; margin-bottom:32px; }
-.tpl-classic-v2-eyebrow{
-  font-family:'Inter',sans-serif;
-  font-size:10px; font-weight:700;
-  letter-spacing:0.36em;
   text-transform:uppercase;
-  color:var(--brand);
-  margin-bottom:12px;
+  letter-spacing:0.6px;
+  margin:0 0 12px;
+  padding-bottom:6px;
+  border-bottom:1px solid var(--line);
 }
-.tpl-classic-v2-name{
-  font-family:'Playfair Display',serif;
-  font-size:36px; font-weight:700;
+.tpl-recipe-name{
+  margin:0;
+  font-size:26px;
+  font-weight:800;
   letter-spacing:-0.02em;
-  line-height:1.1;
-  color:#3A2E20;
-  margin:0 0 10px;
+  color:#1F2440;
 }
-.tpl-classic-v2-meta{
-  font-family:'Inter',sans-serif;
-  font-size:11.5px; color:#8B7355;
-  letter-spacing:0.05em;
-}
-.tpl-classic-v2-dot{ margin:0 6px; opacity:0.5; }
-
-.tpl-classic-v2-section{ margin-bottom:22px; }
-.tpl-classic-v2-section-title{
-  display:flex; align-items:baseline; gap:10px;
-  font-family:'Playfair Display',serif;
-  font-size:15px; font-weight:700;
-  color:var(--brand);
-  margin-bottom:12px;
-  padding-bottom:4px;
-  border-bottom:1px solid rgba(139,115,85,0.25);
-}
-.tpl-classic-v2-count{
-  font-family:'Inter',sans-serif;
-  font-size:10px; font-weight:600;
-  color:#8B7355;
-  background:#F5EDDD;
-  padding:2px 8px; border-radius:999px;
-}
-.tpl-classic-v2-ing-grid{
-  display:grid; grid-template-columns:1fr 1fr;
-  column-gap:20px; row-gap:6px;
-}
-.tpl-classic-v2-ing{
-  display:flex; align-items:baseline; gap:6px;
+.tpl-recipe-meta{
+  margin-top:8px;
+  display:flex; gap:8px; flex-wrap:wrap;
   font-size:12px;
-  padding:3px 0;
+  color:#6E7490;
 }
-.tpl-classic-v2-ing-qty{
-  font-family:'IBM Plex Mono',monospace;
-  font-weight:600;
+.tpl-recipe-meta-chip{
+  padding:4px 10px;
+  background:var(--accent-soft, #EEECFE);
   color:var(--brand);
-  min-width:52px;
+  border-radius:999px;
+  font-weight:600;
+  font-size:11px;
+}
+.tpl-empty{ color:#A5A3AE; font-size:12.5px; font-style:italic; }
+
+/* --- Classic Recipe Card --- */
+.tpl-classic{ width:148mm; min-height:210mm; }  /* A5 portrait */
+.tpl-classic-body{ padding:22px 28px; flex:1; }
+.tpl-ingredients-list{ display:flex; flex-direction:column; gap:4px; }
+.tpl-ingredient-row{
+  display:grid; grid-template-columns:90px 1fr; gap:14px;
+  padding:8px 0;
+  border-bottom:1px dashed #E7E9F2;
+  font-size:13.5px;
+}
+.tpl-ing-qty{
+  font-weight:700;
+  color:var(--brand);
   font-variant-numeric:tabular-nums;
 }
-.tpl-classic-v2-ing-dot{
-  flex:1; height:1px;
-  border-bottom:1px dotted rgba(139,115,85,0.4);
+.tpl-ing-name{ color:#1F2440; }
+.tpl-method{
+  font-size:13px;
+  line-height:1.65;
+  white-space:pre-line;
+  color:#4A5068;
 }
-.tpl-classic-v2-ing-name{ color:#3A2E20; }
 
-.tpl-classic-v2-method{
-  font-family:'Inter',sans-serif;
-  font-size:11.5px;
-  line-height:1.75;
-  color:#4A3820;
-  white-space:pre-line;
+/* --- Cost Breakdown --- */
+.tpl-cost{ width:210mm; min-height:297mm; }  /* A4 portrait */
+.tpl-cost-title-row{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
+  padding:22px 28px 18px;
+  border-bottom:1px solid var(--line);
 }
-.tpl-classic-v2-note{
-  position:absolute; bottom:78px; left:24px;
-  transform:rotate(-3deg);
-  padding:8px 14px 8px 22px;
-  background:#F5E8D0;
-  border-left:2px solid #A88860;
-  font-family:'Caveat',cursive;
-  font-size:13px; color:#6B4A28;
-  box-shadow:2px 3px 6px rgba(0,0,0,0.06);
+.tpl-cost-headline{ text-align:right; flex-shrink:0; }
+.tpl-cost-headline-lbl{
+  font-size:10.5px; font-weight:700;
+  color:#6E7490;
+  text-transform:uppercase; letter-spacing:0.5px;
 }
-.tpl-classic-v2-note-tape{
-  position:absolute; top:-4px; left:6px;
-  width:24px; height:8px;
-  background:rgba(200,107,46,0.35);
-  transform:rotate(4deg);
+.tpl-cost-headline-val{
+  font-size:32px; font-weight:800;
+  letter-spacing:-0.02em;
+  color:var(--brand);
+  margin-top:2px;
 }
-.tpl-classic-v2-footer{
-  margin-top:auto;
-  display:flex; flex-direction:column; align-items:center; gap:10px;
-  padding-top:20px;
-  border-top:1px dashed rgba(139,115,85,0.35);
+.tpl-cost-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
 }
-.tpl-classic-v2-footer-contact{ text-align:center; }
-.tpl-classic-v2-footer-address{
-  font-size:9.5px; color:#8B7355;
-  white-space:pre-line;
-  line-height:1.4;
+.tpl-cost-table th{
+  padding:8px 10px;
+  border-bottom:2px solid var(--brand);
+  color:var(--brand);
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+  text-align:left;
+}
+.tpl-cost-table td{
+  padding:9px 10px;
+  border-bottom:1px solid #EDEEF6;
+  font-variant-numeric:tabular-nums;
+}
+.tpl-cost-table tfoot td{
+  border-bottom:none;
+  border-top:2px solid #1F2440;
+  padding-top:12px;
+}
+.tpl-cost-summary{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:14px;
+  padding:20px 28px;
+}
+.tpl-cost-stat{
+  padding:16px 18px;
+  background:#F8F9FC;
+  border-radius:10px;
+}
+.tpl-cost-stat-lbl{
+  font-size:10.5px; font-weight:700;
+  color:#6E7490;
+  text-transform:uppercase; letter-spacing:0.5px;
   margin-bottom:4px;
 }
-.tpl-classic-v2-footer-row{
-  display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
-  font-size:9.5px; color:#8B7355; font-weight:600;
+.tpl-cost-stat-val{
+  font-size:22px; font-weight:800;
+  letter-spacing:-0.02em;
+  color:#1F2440;
 }
-
-/* ============================================================
-   2. Cost Breakdown Sheet — Startup Dashboard
-   ============================================================ */
-.tpl-cost-v2{
-  width:210mm; min-height:297mm;
-  background:#F7F8FB;
-  padding:24px 28px;
-  font-family:'Inter',sans-serif;
-  color:#0F172A;
-}
-.tpl-cost-v2-top{
-  display:flex; align-items:center; justify-content:space-between;
-  padding-bottom:18px;
-  border-bottom:1px solid #E4E7EE;
-  margin-bottom:20px;
-}
-.tpl-cost-v2-top-brand{ display:flex; align-items:center; gap:12px; }
-.tpl-cost-v2-logo{ width:36px; height:36px; object-fit:contain; }
-.tpl-cost-v2-brand-name{ font-size:15px; font-weight:700; color:#0F172A; letter-spacing:-0.01em; }
-.tpl-cost-v2-report-label{ font-size:10.5px; color:#64748B; font-weight:500; text-transform:uppercase; letter-spacing:0.12em; }
-.tpl-cost-v2-report-meta{ text-align:right; }
-.tpl-cost-v2-report-date{ font-size:10.5px; color:#64748B; }
-.tpl-cost-v2-report-recipe{ font-size:15px; font-weight:700; color:#0F172A; margin-top:2px; letter-spacing:-0.01em; }
-
-.tpl-cost-v2-kpi-row{
-  display:grid; grid-template-columns:repeat(3, 1fr);
-  gap:14px;
-  margin-bottom:22px;
-}
-.tpl-cost-v2-kpi{
-  padding:18px 18px 16px;
-  background:#fff;
-  border:1px solid #E4E7EE;
-  border-radius:14px;
-  box-shadow:0 1px 2px rgba(15,23,42,0.03);
-}
-.tpl-cost-v2-kpi-a{ border-top:3px solid #64748B; }
-.tpl-cost-v2-kpi-b{ border-top:3px solid var(--brand); }
-.tpl-cost-v2-kpi-c{ border-top:3px solid #0EA968; }
-.tpl-cost-v2-kpi-label{
-  font-size:10.5px; font-weight:600;
-  color:#64748B;
-  text-transform:uppercase; letter-spacing:0.08em;
-  margin-bottom:6px;
-}
-.tpl-cost-v2-kpi-value{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:32px; font-weight:700;
-  color:#0F172A;
-  letter-spacing:-0.03em;
-  line-height:1;
-  font-variant-numeric:tabular-nums;
-}
-.tpl-cost-v2-kpi-sub{
-  font-size:10.5px; color:#94A3B8;
-  margin-top:6px;
-}
-
-.tpl-cost-v2-panel{
-  background:#fff;
-  border:1px solid #E4E7EE;
-  border-radius:14px;
-  padding:20px;
-  box-shadow:0 1px 2px rgba(15,23,42,0.03);
-  margin-bottom:16px;
-}
-.tpl-cost-v2-panel-head{
-  display:flex; align-items:baseline; justify-content:space-between;
-  margin-bottom:14px;
-}
-.tpl-cost-v2-panel-title{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:15px; font-weight:600;
-  color:#0F172A;
-  letter-spacing:-0.01em;
-}
-.tpl-cost-v2-panel-total{ font-size:12px; color:#64748B; }
-.tpl-cost-v2-panel-total strong{
-  font-family:'Space Grotesk',sans-serif;
-  color:#0F172A; font-size:14px; margin-left:4px;
-  font-variant-numeric:tabular-nums;
-}
-.tpl-cost-v2-lines{ display:flex; flex-direction:column; gap:6px; }
-.tpl-cost-v2-line{
-  display:grid; grid-template-columns:1.6fr 0.9fr 2fr 0.9fr 0.6fr;
-  align-items:center; gap:10px;
-  padding:8px 4px;
-  font-size:12px;
-  border-bottom:1px solid #F1F3F7;
-}
-.tpl-cost-v2-line:last-child{ border-bottom:none; }
-.tpl-cost-v2-line-name{ font-weight:500; color:#0F172A; }
-.tpl-cost-v2-line-qty{ color:#64748B; font-size:11px; font-variant-numeric:tabular-nums; }
-.tpl-cost-v2-line-bar{
-  height:6px; background:#F1F3F7; border-radius:999px; overflow:hidden;
-}
-.tpl-cost-v2-line-bar-fill{
-  height:100%;
-  background:linear-gradient(90deg, color-mix(in srgb, var(--brand) 55%, transparent) 0%, var(--brand) 100%);
-  border-radius:999px;
-}
-.tpl-cost-v2-line-cost{ font-weight:600; text-align:right; font-variant-numeric:tabular-nums; }
-.tpl-cost-v2-line-pct{ font-size:11px; color:#64748B; text-align:right; font-variant-numeric:tabular-nums; }
-
-.tpl-cost-v2-note{
+.tpl-cost-note{
+  margin:0 28px 20px;
   padding:12px 16px;
   background:#FFF8ED;
   border:1px solid #F5D9A8;
-  border-radius:10px;
-  font-size:10.5px; color:#8B6A20;
-  line-height:1.55;
-  margin-bottom:12px;
-}
-.tpl-cost-v2-footer{
-  margin-top:auto;
-  padding-top:14px;
-  border-top:1px solid #E4E7EE;
-  display:flex; gap:16px;
-  font-size:10.5px; color:#64748B;
-}
-
-/* ============================================================
-   3. Care & Storage Card — Warm Handwritten
-   ============================================================ */
-.tpl-care-v2{
-  width:105mm; min-height:148mm;
-  background:#FDF8EF;
-  padding:22px 20px 16px;
-  font-family:'Inter',sans-serif;
-  color:#4A3020;
-  position:relative;
-  gap:0;
-}
-.tpl-care-v2-twine{
-  position:absolute; top:6px; left:50%;
-  transform:translateX(-50%);
-  opacity:0.6;
-}
-.tpl-care-v2-brand{
-  display:flex; flex-direction:column; align-items:center;
-  gap:2px;
-  padding-top:12px;
-  margin-bottom:16px;
-}
-.tpl-care-v2-logo{ width:32px; height:32px; object-fit:contain; margin-bottom:4px; }
-.tpl-care-v2-brand-name{
-  font-family:'Playfair Display',serif;
-  font-size:14px; font-weight:700;
-  color:#7A3320;
-  letter-spacing:-0.01em;
-}
-.tpl-care-v2-brand-tag{
-  font-family:'Caveat',cursive;
-  font-size:11px; color:#8B7355;
-  font-style:italic;
-}
-
-.tpl-care-v2-thanks{
-  font-family:'Caveat',cursive;
-  font-size:38px; font-weight:600;
-  color:#7A3320;
-  line-height:0.95;
-  text-align:center;
-  margin-bottom:6px;
-  letter-spacing:-0.01em;
-}
-.tpl-care-v2-thanks-em{
-  font-family:'Playfair Display',serif;
-  font-style:italic; font-weight:400;
-  font-size:22px;
-  display:inline-block;
-  margin-top:2px;
-}
-.tpl-care-v2-product-block{
-  text-align:center;
-  margin:6px 0 18px;
-}
-.tpl-care-v2-product-label{
-  font-family:'Inter',sans-serif;
-  font-size:9px; font-weight:500;
-  letter-spacing:0.24em;
-  text-transform:uppercase;
-  color:#8B7355;
-  margin-bottom:4px;
-}
-.tpl-care-v2-product{
-  font-family:'Playfair Display',serif;
-  font-size:19px; font-weight:700;
-  color:#4A3020;
-  letter-spacing:-0.02em;
-  line-height:1.15;
-}
-.tpl-care-v2-divider{
-  display:flex; align-items:center; gap:10px;
-  margin-bottom:18px;
-  color:#7A3320;
-}
-.tpl-care-v2-divider-rule{ flex:1; height:1px; background:rgba(122,51,32,0.25); }
-
-.tpl-care-v2-section{ margin-bottom:14px; }
-.tpl-care-v2-section-label{
-  font-family:'Inter',sans-serif;
-  font-size:9px; font-weight:600;
-  color:#7A3320;
-  text-transform:uppercase; letter-spacing:0.18em;
-  margin-bottom:4px;
-}
-.tpl-care-v2-section-body{
-  font-size:10.5px;
-  line-height:1.55;
-  color:#4A3020;
-}
-.tpl-care-v2-section-warn{
-  padding:8px 10px;
-  background:#F5E8D0;
-  border-radius:6px;
-  border-left:3px solid #C86B2E;
-}
-
-.tpl-care-v2-footer{
-  margin-top:auto;
-  padding-top:12px;
-  border-top:1px dashed rgba(122,51,32,0.3);
-  text-align:center;
-}
-.tpl-care-v2-signoff{
-  font-family:'Caveat',cursive;
-  font-size:14px; color:#7A3320;
-  margin-bottom:6px;
-  display:flex; align-items:center; justify-content:center; gap:6px;
-}
-.tpl-care-v2-handles{
-  display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
-  font-size:9px; color:#8B7355; font-weight:600;
-}
-.tpl-care-v2-corner-sparkle{
-  position:absolute; top:34px; right:24px;
-  color:#C86B2E;
-  opacity:0.7;
-}
-
-/* ============================================================
-   4. Product Label — Apothecary Jar
-   ============================================================ */
-.tpl-label-v2{
-  width:60mm; min-height:90mm;
-  background:#FCF3E6;
-  padding:6px;
-  font-family:'Cormorant Garamond',serif;
-  color:#2A2018;
-  gap:0;
-}
-.tpl-label-v2-frame{
-  flex:1;
-  border:1.5px solid #7A5942;
-  border-radius:2px;
-  padding:14px 12px 10px;
-  display:flex; flex-direction:column;
-  position:relative;
-}
-.tpl-label-v2-frame::before{
-  content:'';
-  position:absolute; inset:3px;
-  border:0.5px solid #7A5942;
-  opacity:0.4;
-  pointer-events:none;
-}
-.tpl-label-v2-seal{
-  position:absolute; top:-8px; left:50%;
-  transform:translateX(-50%);
-}
-.tpl-label-v2-brand{
-  text-align:center;
-  margin-top:22px;
-  margin-bottom:8px;
-}
-.tpl-label-v2-brand-est{
-  font-family:'Inter',sans-serif;
-  font-size:7px; font-weight:600;
-  letter-spacing:0.4em;
-  color:#7A5942;
-}
-.tpl-label-v2-brand-name{
-  font-family:'Cormorant Garamond',serif;
-  font-size:15px; font-weight:700;
-  color:#3B5A3F;
-  letter-spacing:-0.01em;
-  line-height:1.15;
-  margin:2px 0;
-}
-.tpl-label-v2-brand-tag{
-  font-family:'Cormorant Garamond',serif;
-  font-size:8.5px; font-style:italic;
-  color:#7A5942;
-}
-.tpl-label-v2-rule{
-  height:0.5px; background:#7A5942; opacity:0.5;
-  margin:8px 0;
-}
-.tpl-label-v2-product-eyebrow{
-  font-family:'Inter',sans-serif;
-  font-size:6.5px; font-weight:600;
-  letter-spacing:0.35em;
-  color:#7A5942;
-  text-transform:uppercase;
-  text-align:center;
-}
-.tpl-label-v2-product{
-  font-family:'Cormorant Garamond',serif;
-  font-size:16px; font-weight:700;
-  color:#2A2018;
-  text-align:center;
-  letter-spacing:-0.01em;
-  line-height:1.1;
-  margin:2px 0;
-}
-.tpl-label-v2-ing{
-  font-family:'Cormorant Garamond',serif;
-  font-size:7.5px;
-  line-height:1.4;
-  color:#3A3020;
-  text-align:justify;
-}
-.tpl-label-v2-ing-label{ font-weight:700; }
-.tpl-label-v2-allergens{
-  margin-top:6px;
-  padding:5px 7px;
-  background:rgba(200,107,46,0.15);
-  border:0.5px solid rgba(200,107,46,0.4);
-  border-radius:2px;
-  font-family:'Inter',sans-serif;
-  font-size:6.5px; font-weight:600;
-  color:#7A4020;
-  line-height:1.4;
-}
-.tpl-label-v2-contact{
-  margin-top:auto;
-  padding-top:6px;
-  border-top:0.5px solid rgba(122,89,66,0.3);
-  display:flex; flex-wrap:wrap; gap:6px; justify-content:center;
-  font-family:'Inter',sans-serif;
-  font-size:6.5px;
-  color:#7A5942;
-}
-
-/* ============================================================
-   5. Menu Insert — Café Chalkboard
-   ============================================================ */
-.tpl-menu-v2{
-  width:148mm; min-height:210mm;
-  background:#1D1F1B;
-  padding:8px;
-  font-family:'Inter',sans-serif;
-  gap:0;
-}
-.tpl-menu-v2-frame{
-  flex:1;
-  border:3px solid #4A3826;
-  border-radius:3px;
-  padding:20px 18px;
-  display:flex; flex-direction:column;
-  background:#1D1F1B;
-  box-shadow:inset 0 0 60px rgba(0,0,0,0.4);
-  color:#F4F1E7;
-}
-.tpl-menu-v2-header{
-  text-align:center;
-  padding-bottom:18px;
-  border-bottom:1px dashed rgba(244,241,231,0.25);
-  margin-bottom:20px;
-}
-.tpl-menu-v2-logo-round{
-  width:44px; height:44px;
-  margin:0 auto 8px;
-  background:#F4F1E7;
-  border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  padding:4px;
-}
-.tpl-menu-v2-logo-round img{ max-width:100%; max-height:100%; object-fit:contain; }
-.tpl-menu-v2-brand-name{
-  font-family:'Caveat',cursive;
-  font-size:26px; font-weight:700;
-  color:#F4F1E7;
-  letter-spacing:0.02em;
-  line-height:1;
-}
-.tpl-menu-v2-brand-tag{
-  font-family:'Inter',sans-serif;
-  font-size:10px;
-  color:rgba(244,241,231,0.6);
-  font-style:italic;
-  margin-top:4px;
-}
-.tpl-menu-v2-title{
-  display:flex; align-items:center; justify-content:center; gap:12px;
-  margin-top:14px;
-  font-family:'Playfair Display',serif;
-  font-size:18px; font-style:italic;
-  color:#F4F1E7;
-  letter-spacing:0.02em;
-}
-
-.tpl-menu-v2-body{ flex:1; }
-.tpl-menu-v2-empty{
-  text-align:center;
-  color:rgba(244,241,231,0.5);
-  font-style:italic;
-  padding:40px 0;
-}
-.tpl-menu-v2-cat{ margin-bottom:22px; }
-.tpl-menu-v2-cat-title{
-  display:flex; align-items:center; justify-content:center; gap:12px;
-  margin-bottom:12px;
-}
-.tpl-menu-v2-cat-line{ flex:1; height:1px; background:rgba(244,241,231,0.3); }
-.tpl-menu-v2-cat-name{
-  font-family:'Caveat',cursive;
-  font-size:20px; font-weight:600;
-  color:#F4F1E7;
-  letter-spacing:0.03em;
-}
-.tpl-menu-v2-cat-items{ display:flex; flex-direction:column; gap:10px; }
-.tpl-menu-v2-item{
-  display:grid;
-  grid-template-areas: "name . price" "desc desc desc";
-  grid-template-columns: auto 1fr auto;
-  column-gap:8px;
-  align-items:baseline;
-}
-.tpl-menu-v2-item-name{
-  grid-area:name;
-  font-family:'Playfair Display',serif;
-  font-size:14px; font-weight:600;
-  color:#F4F1E7;
-  letter-spacing:-0.01em;
-}
-.tpl-menu-v2-item-leader{
-  border-bottom:1.5px dotted rgba(244,241,231,0.4);
-  height:0;
-  align-self:end;
-  margin-bottom:3px;
-  grid-column:2;
-  grid-row:1;
-}
-.tpl-menu-v2-item-price{
-  grid-area:price;
-  font-family:'Playfair Display',serif;
-  font-size:14px; font-weight:700;
-  color:#F4F1E7;
-  font-variant-numeric:tabular-nums;
-}
-.tpl-menu-v2-item-desc{
-  grid-area:desc;
-  font-family:'Inter',sans-serif;
-  font-size:9.5px;
-  color:rgba(244,241,231,0.65);
-  font-style:italic;
-  margin-top:2px;
-  line-height:1.4;
-}
-
-.tpl-menu-v2-footer{
-  margin-top:20px;
-  padding-top:18px;
-  border-top:1px dashed rgba(244,241,231,0.25);
-  display:flex; flex-direction:column; align-items:center; gap:8px;
-}
-.tpl-menu-v2-footer-contact{
-  display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
-  font-family:'Inter',sans-serif;
-  font-size:9px;
-  color:rgba(244,241,231,0.7);
-  font-weight:500;
-}
-
-/* ============================================================
-   6. Wholesale Price List — Corporate B2B
-   ============================================================ */
-.tpl-wholesale-v2{
-  width:210mm; min-height:297mm;
-  background:#FFFFFF;
-  padding:24px 28px;
-  font-family:'Inter',sans-serif;
-  color:#0F172A;
-}
-.tpl-wholesale-v2-top{
-  display:flex; align-items:center; justify-content:space-between;
-  padding-bottom:20px;
-  border-bottom:2px solid #0F172A;
-}
-.tpl-wholesale-v2-top-brand{ display:flex; align-items:center; gap:12px; }
-.tpl-wholesale-v2-logo{ width:44px; height:44px; object-fit:contain; }
-.tpl-wholesale-v2-brand-name{ font-size:17px; font-weight:700; color:#0F172A; letter-spacing:-0.01em; }
-.tpl-wholesale-v2-brand-tag{ font-size:10.5px; color:#64748B; margin-top:2px; }
-.tpl-wholesale-v2-top-meta{ text-align:right; }
-.tpl-wholesale-v2-doc-label{
-  font-family:'Inter',sans-serif;
-  font-size:9px; font-weight:700;
-  letter-spacing:0.36em;
-  color:#4B5B72;
-}
-.tpl-wholesale-v2-doc-num{
-  font-size:10.5px; color:#64748B; margin-top:3px;
-  font-variant-numeric:tabular-nums;
-}
-
-.tpl-wholesale-v2-title-block{
-  margin:24px 0 18px;
-}
-.tpl-wholesale-v2-title-block h1{
-  font-size:22px; font-weight:700;
-  color:#0F172A;
-  letter-spacing:-0.02em;
-  margin:0 0 10px;
-}
-.tpl-wholesale-v2-terms-line{
-  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-  font-size:10.5px; color:#4B5B72;
-}
-.tpl-wholesale-v2-terms-line strong{ color:#0F172A; font-weight:600; }
-.tpl-wholesale-v2-sep{
-  display:inline-block; width:3px; height:3px; background:#94A3B8; border-radius:50%;
-}
-
-.tpl-wholesale-v2-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:11.5px;
-  margin-bottom:22px;
-}
-.tpl-wholesale-v2-table th{
-  padding:10px 8px;
-  border-bottom:2px solid #0F172A;
-  color:#0F172A;
-  font-size:9.5px; font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:0.1em;
-  text-align:left;
-}
-.tpl-wholesale-v2-table td{
-  padding:11px 8px;
-  border-bottom:1px solid #E4E7EE;
-  font-variant-numeric:tabular-nums;
-}
-.tpl-wholesale-v2-table tr:nth-child(even) td{ background:#FAFBFD; }
-.tpl-wholesale-v2-ref{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:10px; color:#64748B;
-  font-weight:500;
-  letter-spacing:0.05em;
-}
-.tpl-wholesale-v2-name{ font-weight:600; color:#0F172A; }
-.tpl-wholesale-v2-desc{ font-size:10px; color:#64748B; margin-top:2px; }
-
-.tpl-wholesale-v2-terms-block{
-  padding:16px 20px;
-  background:#F7F8FB;
-  border-left:3px solid #4B5B72;
-  border-radius:2px;
-  margin-bottom:20px;
-}
-.tpl-wholesale-v2-terms-block h3{
-  font-size:10px; font-weight:700;
-  color:#0F172A;
-  text-transform:uppercase; letter-spacing:0.16em;
-  margin:0 0 12px;
-}
-.tpl-wholesale-v2-terms-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px 24px;
-  font-size:10.5px;
-  color:#4B5B72;
-  line-height:1.5;
-}
-.tpl-wholesale-v2-terms-label{
-  font-weight:700; color:#0F172A;
-  font-size:10px;
-  text-transform:uppercase; letter-spacing:0.06em;
-  margin-bottom:2px;
-}
-.tpl-wholesale-v2-footer{
-  margin-top:auto;
-  padding-top:16px;
-  border-top:1px solid #E4E7EE;
-  display:flex; justify-content:space-between; gap:20px;
-  font-size:10.5px; color:#4B5B72;
-  line-height:1.5;
-}
-.tpl-wholesale-v2-footer-right{ text-align:right; }
-
-/* ============================================================
-   7. Delivery Tag — Kraft Paper Stamp
-   ============================================================ */
-.tpl-delivery-v2{
-  width:74mm; min-height:105mm;
-  background:linear-gradient(135deg, #B08A5D 0%, #A87E4B 60%, #9E7345 100%);
-  padding:0;
-  font-family:'Inter',sans-serif;
-  color:#F5EBD8;
-  gap:0;
-  position:relative;
-  border-radius:3px;
-}
-.tpl-delivery-v2::before{
-  content:'';
-  position:absolute; inset:6px;
-  border:1px dashed rgba(245,235,216,0.35);
-  pointer-events:none;
-  border-radius:2px;
-}
-.tpl-delivery-v2-twine{
-  position:absolute; top:-2px; left:50%;
-  transform:translateX(-50%);
-  opacity:0.75;
-}
-.tpl-delivery-v2-grommet{
-  position:absolute; top:8px; left:50%;
-  transform:translateX(-50%);
-}
-.tpl-delivery-v2-body{
-  padding:26px 14px 16px;
-  flex:1;
-  display:flex; flex-direction:column;
-  gap:6px;
-}
-.tpl-delivery-v2-stamp{
-  align-self:center;
-  padding:5px 10px;
-  border:1.5px solid rgba(245,235,216,0.7);
-  border-radius:3px;
-  margin-bottom:10px;
-  text-align:center;
-  transform:rotate(-1deg);
-  background:rgba(93,68,45,0.15);
-}
-.tpl-delivery-v2-stamp-inner{ display:flex; flex-direction:column; align-items:center; gap:2px; }
-.tpl-delivery-v2-logo{ width:22px; height:22px; object-fit:contain; opacity:0.8; }
-.tpl-delivery-v2-stamp-name{
-  font-family:'Playfair Display',serif;
-  font-size:11px; font-weight:700;
-  color:#F5EBD8;
-  letter-spacing:0.02em;
-  line-height:1.1;
-}
-.tpl-delivery-v2-stamp-tag{
-  font-size:7px;
-  color:rgba(245,235,216,0.75);
-  font-style:italic;
-  line-height:1.3;
-  margin-top:1px;
-}
-.tpl-delivery-v2-eyebrow{
-  font-size:8.5px; font-weight:700;
-  color:rgba(245,235,216,0.7);
-  text-align:center;
-  letter-spacing:0.28em;
-  margin-top:4px;
-}
-.tpl-delivery-v2-product{
-  font-family:'Playfair Display',serif;
-  font-size:15px; font-weight:700;
-  color:#F5EBD8;
-  text-align:center;
-  letter-spacing:-0.01em;
-  line-height:1.15;
-  margin:2px 0 10px;
-  padding:0 4px;
-}
-.tpl-delivery-v2-storage{
-  padding:6px 8px;
-  background:rgba(93,68,45,0.28);
-  border-radius:3px;
-  font-size:8px;
-  color:rgba(245,235,216,0.9);
-  line-height:1.45;
-}
-.tpl-delivery-v2-storage-label{
-  font-size:7px; font-weight:700;
-  color:rgba(245,235,216,0.75);
-  text-transform:uppercase; letter-spacing:0.16em;
-  margin-bottom:2px;
-}
-.tpl-delivery-v2-signoff{
-  text-align:center;
-  font-family:'Caveat',cursive;
-  font-size:13px;
-  color:#F5EBD8;
-  margin-top:8px;
-}
-.tpl-delivery-v2-signoff-name{
-  font-family:'Caveat',cursive;
-  font-size:14px; font-weight:700;
-}
-.tpl-delivery-v2-footer{
-  margin-top:auto;
-  padding-top:6px;
-  border-top:1px dashed rgba(245,235,216,0.35);
-  display:flex; gap:6px; flex-wrap:wrap; justify-content:center;
-  font-size:7px;
-  color:rgba(245,235,216,0.75);
-  font-weight:600;
-}
-
-/* ============================================================
-   8. Social Media Card — Editorial Magazine
-   ============================================================ */
-.tpl-social-v2{
-  width:148mm; height:148mm;
-  background:#FBF7EF;
-  padding:20px 22px;
-  font-family:'Inter',sans-serif;
-  color:#1F2440;
-  gap:0;
-}
-.tpl-social-v2-masthead{
-  display:flex; align-items:center; gap:10px;
-  padding-bottom:12px;
-  border-bottom:0.8px solid #1F2440;
-  margin-bottom:auto;
-}
-.tpl-social-v2-logo{ width:32px; height:32px; object-fit:contain; }
-.tpl-social-v2-mast-text{ flex:1; min-width:0; }
-.tpl-social-v2-brand{
-  font-family:'Instrument Serif',serif;
-  font-size:16px; font-weight:400;
-  color:#1F2440;
-  letter-spacing:0.01em;
-  line-height:1;
-}
-.tpl-social-v2-issue{
-  font-size:9px; font-weight:500;
-  color:#6E7490;
-  text-transform:uppercase;
-  letter-spacing:0.28em;
-  margin-top:3px;
-  font-variant-numeric:tabular-nums;
-}
-
-.tpl-social-v2-body{
-  flex:1;
-  display:flex; flex-direction:column;
-  justify-content:center;
-  padding:12px 4px;
-}
-.tpl-social-v2-eyebrow{
-  font-size:9px; font-weight:600;
-  color:var(--brand);
-  text-transform:uppercase;
-  letter-spacing:0.36em;
-  margin-bottom:16px;
-}
-.tpl-social-v2-name{
-  font-family:'Instrument Serif',serif;
-  font-size:56px; font-weight:400;
-  font-style:italic;
-  color:#1F2440;
-  letter-spacing:-0.03em;
-  line-height:0.96;
-  margin:0 0 14px;
-  max-width:95%;
-}
-.tpl-social-v2-desc{
-  font-family:'Instrument Serif',serif;
-  font-size:14px; font-style:italic;
-  color:#4A5068;
-  line-height:1.45;
-  max-width:80%;
-  margin:0;
-}
-
-.tpl-social-v2-price{
-  display:flex; align-items:center; gap:12px;
-  margin:20px 0 16px;
-}
-.tpl-social-v2-price-rule{ flex:1; height:0.6px; background:#1F2440; }
-.tpl-social-v2-price-inner{ display:flex; align-items:baseline; gap:8px; }
-.tpl-social-v2-price-label{
-  font-family:'Inter',sans-serif;
-  font-size:9px; font-weight:600;
-  color:#6E7490;
-  text-transform:uppercase;
-  letter-spacing:0.3em;
-}
-.tpl-social-v2-price-value{
-  font-family:'Instrument Serif',serif;
-  font-size:22px; font-weight:400;
-  color:var(--brand);
-  letter-spacing:-0.02em;
-  font-variant-numeric:tabular-nums;
-}
-
-.tpl-social-v2-footer{
-  margin-top:auto;
-  padding-top:12px;
-  border-top:0.8px solid #1F2440;
-  display:flex; align-items:center; justify-content:space-between;
-  font-size:9.5px; font-weight:600;
-  color:#4A5068;
-  letter-spacing:0.06em;
-}
-.tpl-social-v2-handles{ display:flex; gap:12px; }
-.tpl-social-v2-web{ color:var(--brand); }
-
-/* ============================================================
-   9. Recipe Binder Page — Chef's Professional
-   ============================================================ */
-.tpl-binder-v2{
-  width:210mm; min-height:297mm;
-  display:grid !important;
-  grid-template-columns:70mm 1fr !important;
-  gap:0;
-  padding:0;
-  flex-direction:initial;
-  font-family:'Inter',sans-serif;
-  background:#fff;
-  overflow:hidden;
-}
-.tpl-binder-v2-side{
-  background:var(--brand);
-  color:#fff;
-  padding:24px 22px;
-  display:flex; flex-direction:column;
-  gap:20px;
-}
-.tpl-binder-v2-side-brand{ text-align:center; }
-.tpl-binder-v2-side-logo{
-  width:46px; height:46px; object-fit:contain;
-  background:#fff;
-  border-radius:10px;
-  padding:4px;
-  margin-bottom:8px;
-}
-.tpl-binder-v2-side-name{
-  font-size:17px; font-weight:800;
-  color:#fff;
-  letter-spacing:-0.01em;
-  line-height:1.15;
-}
-.tpl-binder-v2-side-tag{
-  font-size:10px;
-  color:rgba(255,255,255,0.75);
-  font-style:italic;
-  margin-top:3px;
-  line-height:1.4;
-}
-.tpl-binder-v2-side-rule{
-  height:1px; background:rgba(255,255,255,0.28);
-}
-.tpl-binder-v2-side-meta{ display:flex; flex-direction:column; gap:12px; }
-.tpl-binder-v2-side-meta-item{
-  padding-bottom:12px;
-  border-bottom:1px solid rgba(255,255,255,0.18);
-}
-.tpl-binder-v2-side-meta-item:last-child{ border-bottom:none; }
-.tpl-binder-v2-side-meta-label{
-  font-size:9.5px; font-weight:600;
-  color:rgba(255,255,255,0.68);
-  text-transform:uppercase;
-  letter-spacing:0.18em;
-  margin-bottom:4px;
-}
-.tpl-binder-v2-side-meta-value{
-  font-size:15px; font-weight:700;
-  color:#fff;
-  letter-spacing:-0.01em;
-  font-variant-numeric:tabular-nums;
-}
-.tpl-binder-v2-side-meta-hero .tpl-binder-v2-side-meta-value{
-  font-size:22px;
-  color:#fff;
-}
-
-.tpl-binder-v2-side-photo{
-  width:100%; aspect-ratio:1/1;
-  border:1px dashed rgba(255,255,255,0.35);
   border-radius:8px;
-  background:rgba(255,255,255,0.08);
-  overflow:hidden;
-  display:flex; align-items:center; justify-content:center;
-}
-.tpl-binder-v2-side-photo img{ width:100%; height:100%; object-fit:cover; }
-.tpl-binder-v2-side-photo-empty{
-  color:rgba(255,255,255,0.55);
-  text-align:center;
-  font-size:10px;
-}
-.tpl-binder-v2-side-photo-empty > div:first-child{ font-size:24px; margin-bottom:4px; }
-
-.tpl-binder-v2-side-contact{
-  margin-top:auto;
-  padding-top:14px;
-  border-top:1px solid rgba(255,255,255,0.28);
-  font-size:9.5px;
-  color:rgba(255,255,255,0.8);
-  line-height:1.7;
-}
-.tpl-binder-v2-side-addr{
-  white-space:pre-line;
-  margin-top:6px;
-  font-size:9px;
-  color:rgba(255,255,255,0.7);
-  line-height:1.4;
-}
-
-.tpl-binder-v2-main{
-  padding:26px 28px;
-  display:flex; flex-direction:column;
-  gap:20px;
-}
-.tpl-binder-v2-main-head{ margin-bottom:4px; }
-.tpl-binder-v2-eyebrow{
-  font-size:9.5px; font-weight:600;
-  color:#64748B;
-  text-transform:uppercase;
-  letter-spacing:0.24em;
-  margin-bottom:8px;
-  font-family:'IBM Plex Mono',monospace;
-}
-.tpl-binder-v2-name{
-  margin:0 0 8px;
-  font-size:28px; font-weight:800;
-  letter-spacing:-0.02em;
-  color:#0F172A;
-  line-height:1.1;
-}
-.tpl-binder-v2-desc{
-  margin:0;
-  font-size:12.5px;
-  color:#4B5B72;
-  line-height:1.55;
-  max-width:70ch;
-}
-.tpl-binder-v2-section h2{
-  margin:0 0 10px;
-  font-size:10.5px; font-weight:700;
-  color:var(--brand);
-  text-transform:uppercase;
-  letter-spacing:0.24em;
-  padding-bottom:6px;
-  border-bottom:1.5px solid var(--brand);
-}
-.tpl-binder-v2-ing{
-  width:100%;
-  border-collapse:collapse;
   font-size:11.5px;
+  color:#6E4B0F;
+  line-height:1.5;
 }
-.tpl-binder-v2-ing th{
-  padding:6px 8px;
-  border-bottom:1px solid #E4E7EE;
-  font-weight:600;
-  color:#64748B;
-  font-size:10px;
-  text-transform:uppercase; letter-spacing:0.1em;
-  text-align:left;
-}
-.tpl-binder-v2-ing td{
-  padding:7px 8px;
-  border-bottom:1px solid #F1F3F7;
-  font-variant-numeric:tabular-nums;
-}
-.tpl-binder-v2-ing tfoot td{
-  border-top:1.5px solid #0F172A;
-  border-bottom:none;
-  padding-top:9px;
-  font-weight:700;
-  font-size:13px;
-}
-.tpl-binder-v2-method{
+
+/* --- Care & Storage Card --- */
+.tpl-care{ width:105mm; min-height:148mm; }  /* A6 portrait */
+.tpl-care-body{ padding:20px 22px; flex:1; }
+.tpl-care-thanks{
   font-size:12px;
-  line-height:1.7;
-  color:#334155;
-  white-space:pre-line;
-}
-.tpl-binder-v2-notes{
-  display:flex; flex-direction:column; gap:10px;
-  padding-top:4px;
-}
-.tpl-binder-v2-notes-line{
-  height:1px; background:#DEE0EA;
-}
-
-/* ============================================================
-   10. Certificate of Craft — Traditional Botanical
-   ============================================================ */
-.tpl-cert-v2{
-  width:297mm; min-height:210mm;
-  background:#F9F5E9;
-  padding:14mm;
-  position:relative;
-  font-family:'EB Garamond',serif;
-  color:#2A2018;
-  gap:0;
-}
-.tpl-cert-v2-branch{
-  position:absolute;
   color:var(--brand);
-  opacity:0.6;
-  pointer-events:none;
-}
-.tpl-cert-v2-branch-tl{ top:8mm; left:8mm; }
-.tpl-cert-v2-branch-tr{ top:8mm; right:8mm; }
-.tpl-cert-v2-branch-bl{ bottom:8mm; left:8mm; }
-.tpl-cert-v2-branch-br{ bottom:8mm; right:8mm; }
-
-.tpl-cert-v2-frame{
-  flex:1;
-  border:1.5px solid var(--brand);
-  padding:22mm 30mm;
-  display:flex; align-items:center; justify-content:center;
-  position:relative;
-}
-.tpl-cert-v2-frame::before{
-  content:'';
-  position:absolute; inset:5px;
-  border:0.5px solid var(--brand);
-  opacity:0.5;
-  pointer-events:none;
-}
-.tpl-cert-v2-content{
-  text-align:center;
-  display:flex; flex-direction:column; align-items:center;
-  gap:12px;
-  max-width:180mm;
-}
-.tpl-cert-v2-logo{
-  width:56px; height:56px;
-  object-fit:contain;
-  margin-bottom:2px;
-}
-.tpl-cert-v2-eyebrow{
-  font-family:'Marcellus',serif;
-  font-size:28px; font-weight:400;
-  color:var(--brand);
-  letter-spacing:0.28em;
+  font-weight:700;
   text-transform:uppercase;
-}
-.tpl-cert-v2-eyebrow-rule{
-  width:60px; height:1px;
-  background:var(--brand);
-  margin:4px 0;
-}
-.tpl-cert-v2-line{
-  font-family:'EB Garamond',serif;
-  font-size:14px; font-style:italic;
-  color:#5A5040;
-  letter-spacing:0.02em;
-}
-.tpl-cert-v2-product{
-  font-family:'Playfair Display',serif;
-  font-size:44px; font-weight:700;
-  color:#2A2018;
-  letter-spacing:-0.02em;
-  line-height:1.1;
-  padding:6px 24px;
-  border-bottom:0.8px solid var(--brand);
-  margin:4px 0;
-}
-.tpl-cert-v2-brand{
-  font-family:'Marcellus',serif;
-  font-size:24px; font-weight:400;
-  color:var(--brand);
-  letter-spacing:0.02em;
-  margin-top:4px;
-}
-.tpl-cert-v2-tagline{
-  font-family:'EB Garamond',serif;
-  font-size:13px; font-style:italic;
-  color:#6E5B4A;
-  letter-spacing:0.08em;
+  letter-spacing:0.5px;
   margin-bottom:8px;
 }
-
-.tpl-cert-v2-signature-row{
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  gap:40px;
-  align-items:end;
-  width:100%;
-  margin-top:22px;
+.tpl-care-product{
+  margin:0;
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:-0.02em;
+  color:#1F2440;
 }
-.tpl-cert-v2-sig{ text-align:center; }
-.tpl-cert-v2-sig-line{
-  border-top:1px solid #5A5040;
-  margin-bottom:6px;
+.tpl-care-tagline{
+  margin-top:4px;
+  font-size:12.5px;
+  color:#6E7490;
+  font-style:italic;
+  margin-bottom:18px;
 }
-.tpl-cert-v2-sig-label{
-  font-family:'EB Garamond',serif;
-  font-size:11px; font-style:italic;
-  color:#6E5B4A;
+.tpl-care-section{
+  display:flex; gap:12px;
+  padding:12px 0;
+  border-top:1px dashed #E7E9F2;
 }
-.tpl-cert-v2-seal-holder{ padding:4px 0; }
-
-.tpl-cert-v2-address-block{
-  margin-top:18px;
-  padding-top:12px;
-  border-top:0.5px dashed rgba(46,92,66,0.35);
-  text-align:center;
+.tpl-care-section-icon{
+  font-size:22px;
+  flex-shrink:0;
+  line-height:1.2;
 }
-.tpl-cert-v2-address{
-  font-family:'EB Garamond',serif;
-  font-size:11px; color:#6E5B4A;
-  white-space:pre-line;
-  line-height:1.4;
+.tpl-care-section-title{
+  font-size:11px;
+  font-weight:700;
+  color:var(--brand);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
   margin-bottom:4px;
 }
-.tpl-cert-v2-contact{
-  display:flex; justify-content:center; flex-wrap:wrap;
-  gap:10px;
-  font-family:'Inter',sans-serif;
-  font-size:10px; color:var(--brand);
-  font-weight:600;
-  letter-spacing:0.02em;
+.tpl-care-section-body{
+  font-size:12.5px;
+  line-height:1.55;
+  color:#4A5068;
 }
-.tpl-cert-v2-contact-sep{ opacity:0.5; }
+
+/* --- Product Label --- */
+.tpl-label{
+  width:74mm; min-height:105mm;   /* A7 portrait */
+  padding:14px 16px;
+  gap:10px;
+  border-top:4px solid var(--brand);
+}
+.tpl-label-header{
+  display:flex; align-items:center; gap:10px;
+  padding-bottom:8px;
+  border-bottom:1px solid #EDEEF6;
+}
+.tpl-label-logo{ width:30px; height:30px; object-fit:contain; }
+.tpl-label-brand{
+  font-size:13px;
+  font-weight:800;
+  color:var(--brand);
+  letter-spacing:-0.01em;
+}
+.tpl-label-product{
+  font-size:15px;
+  font-weight:800;
+  color:#1F2440;
+  letter-spacing:-0.02em;
+}
+.tpl-label-line{
+  font-size:9.5px;
+  line-height:1.5;
+  color:#4A5068;
+}
+.tpl-label-allergens{
+  padding:8px 10px;
+  background:#FFF3E0;
+  border:1px solid #F5D9A8;
+  border-radius:6px;
+  font-size:9.5px;
+  font-weight:600;
+  color:#6E4B0F;
+  line-height:1.4;
+}
+.tpl-label-footer{
+  margin-top:auto;
+  padding-top:8px;
+  border-top:1px solid #EDEEF6;
+  display:flex; flex-wrap:wrap; gap:10px;
+  font-size:9px;
+  color:#6E7490;
+}
+
 
 /* ============================================================
-   Print — hide chrome, show only the printable
+   Print styles — the template becomes the whole page
    ============================================================ */
 @media print {
   @page { size: A4 portrait; margin: 12mm; }
 
+  /* Hide app chrome */
   aside, .topbar, .templates-controls, .no-print, .bottom-nav,
   .impersonation-banner, .announcement-banner, .templates-actions,
-  .template-picker, .panel-head, .panel > .conv-box, .templates-multi-notice{
+  .template-picker, .panel-head, .panel > .conv-box{
     display:none !important;
   }
+
+  /* Reset layout for print */
   html, body{ background:#fff !important; }
   .app, .content, .panel, .templates-preview{
     display:block !important;
@@ -4753,12 +3826,624 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
     box-shadow:none !important;
     border:none !important;
   }
+
   .printable{
     box-shadow:none !important;
     border-radius:0 !important;
     page-break-inside:avoid;
     break-inside:avoid;
   }
-  .tpl-cert-v2{ page: cert-landscape; }
-  @page cert-landscape { size: A4 landscape; margin: 8mm; }
+}
+
+/* ============================================================
+   6 new templates: Menu, Wholesale, Delivery, Social, Binder, Cert
+   ============================================================ */
+
+/* Multi-recipe notice on picker */
+.templates-multi-notice{
+  padding:12px 16px;
+  margin-bottom:20px;
+  background:var(--accent-soft);
+  border:1px solid #dedafc;
+  border-radius:10px;
+  font-size:13px;
+  color:var(--ink-soft);
+}
+.templates-multi-badge{
+  display:inline-block;
+  padding:3px 9px;
+  background:var(--accent);
+  color:#fff;
+  border-radius:999px;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:0.4px;
+  text-transform:uppercase;
+  margin-right:8px;
+}
+.template-pick-multi{
+  position:absolute; top:8px; right:8px;
+  padding:2px 7px;
+  background:var(--accent);
+  color:#fff;
+  border-radius:999px;
+  font-size:9.5px;
+  font-weight:700;
+  letter-spacing:0.5px;
+  transform:translateY(-22px);
+}
+
+/* --- Menu Insert (A5) --- */
+.tpl-menu{ width:148mm; min-height:210mm; }
+.tpl-menu-body{ padding:20px 28px; flex:1; }
+.tpl-menu-category{ margin-bottom:20px; }
+.tpl-menu-category-title{
+  font-size:11px; font-weight:700;
+  color:var(--brand);
+  text-transform:uppercase;
+  letter-spacing:0.8px;
+  padding-bottom:6px;
+  margin-bottom:10px;
+  border-bottom:2px solid var(--brand);
+}
+.tpl-menu-items{ display:flex; flex-direction:column; gap:10px; }
+.tpl-menu-item{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+  padding:4px 0;
+}
+.tpl-menu-item-info{ flex:1; min-width:0; }
+.tpl-menu-item-name{
+  font-size:14px; font-weight:700;
+  color:#1F2440;
+  margin-bottom:2px;
+}
+.tpl-menu-item-desc{
+  font-size:11.5px;
+  color:#6E7490;
+  line-height:1.4;
+}
+.tpl-menu-item-price{
+  font-size:14px; font-weight:800;
+  color:var(--brand);
+  font-variant-numeric:tabular-nums;
+  flex-shrink:0;
+}
+
+/* --- Wholesale Price List (A4) --- */
+.tpl-wholesale{ width:210mm; min-height:297mm; }
+.tpl-wholesale-title-row{
+  display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
+  padding:22px 28px 16px;
+  border-bottom:1px solid var(--line);
+}
+.tpl-wholesale-title{
+  margin:0;
+  font-size:26px; font-weight:800;
+  letter-spacing:-0.02em;
+  color:#1F2440;
+}
+.tpl-wholesale-effective{
+  margin-top:4px;
+  font-size:12px;
+  color:#6E7490;
+}
+.tpl-wholesale-terms-badge{
+  padding:10px 14px;
+  background:var(--accent-soft);
+  color:var(--brand);
+  border-radius:8px;
+  font-size:11px; font-weight:600;
+  line-height:1.5;
+  text-align:right;
+}
+.tpl-wholesale-table{
+  width:100%;
+  border-collapse:collapse;
+  margin:16px 28px 20px;
+  width:calc(100% - 56px);
+  font-size:12.5px;
+}
+.tpl-wholesale-table th{
+  padding:8px 10px;
+  background:var(--brand);
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+  text-align:left;
+}
+.tpl-wholesale-table td{
+  padding:11px 10px;
+  border-bottom:1px solid #EDEEF6;
+  font-variant-numeric:tabular-nums;
+}
+.tpl-wholesale-name{ font-weight:700; color:#1F2440; }
+.tpl-wholesale-desc{
+  font-size:11px; color:#6E7490;
+  margin-top:2px;
+}
+.tpl-wholesale-terms{
+  padding:0 28px 20px;
+  font-size:11.5px;
+  color:#4A5068;
+}
+.tpl-wholesale-terms h3{
+  font-size:11px; font-weight:700;
+  color:var(--brand);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin:0 0 8px;
+}
+.tpl-wholesale-terms ul{
+  margin:0; padding-left:18px;
+  line-height:1.6;
+}
+
+/* --- Delivery Tag (A7 vertical) --- */
+.tpl-delivery{
+  width:74mm; min-height:105mm;
+  padding:16px 14px;
+  gap:8px;
+  border-top:5px solid var(--brand);
+  position:relative;
+}
+.tpl-delivery-punch{
+  position:absolute; top:8px; left:50%;
+  transform:translateX(-50%);
+  width:5px; height:5px;
+  background:#F5F6FA;
+  border:1px solid var(--line);
+  border-radius:50%;
+}
+.tpl-delivery-header{
+  display:flex; align-items:center; gap:8px;
+  margin-top:6px;
+  padding-bottom:8px;
+  border-bottom:1px dashed var(--line);
+}
+.tpl-delivery-logo{ width:24px; height:24px; object-fit:contain; }
+.tpl-delivery-brand{
+  font-size:11px; font-weight:800;
+  color:var(--brand);
+  letter-spacing:-0.01em;
+}
+.tpl-delivery-hand{
+  margin-top:4px;
+  font-size:10px; font-weight:700;
+  color:#A5A3AE;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.tpl-delivery-product{
+  font-size:15px; font-weight:800;
+  color:#1F2440;
+  letter-spacing:-0.02em;
+  line-height:1.15;
+  margin:2px 0 8px;
+}
+.tpl-delivery-storage{
+  padding:8px 10px;
+  background:var(--accent-soft);
+  border-radius:6px;
+  font-size:9.5px;
+  color:#4A5068;
+  line-height:1.4;
+}
+.tpl-delivery-storage-label{
+  font-size:8.5px; font-weight:700;
+  color:var(--brand);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin-bottom:3px;
+}
+.tpl-delivery-thanks{
+  margin-top:auto;
+  padding-top:8px;
+  border-top:1px dashed var(--line);
+  font-size:10.5px;
+  color:#4A5068;
+  font-style:italic;
+  text-align:center;
+  line-height:1.4;
+}
+.tpl-delivery-contact{
+  display:flex; flex-wrap:wrap; gap:8px;
+  justify-content:center;
+  font-size:9px; font-weight:600;
+  color:#6E7490;
+}
+
+/* --- Social Media Card (square) --- */
+.tpl-social{
+  width:148mm; height:148mm;   /* 1:1 square, prints on A4 nicely */
+  position:relative;
+  overflow:hidden;
+  padding:26px 30px;
+  display:flex; flex-direction:column;
+  background:none;
+}
+.tpl-social-bg{
+  position:absolute; inset:0;
+  background:linear-gradient(135deg, var(--brand) 0%, color-mix(in srgb, var(--brand) 60%, #000) 100%);
+  z-index:0;
+}
+.tpl-social-mark{
+  position:relative; z-index:2;
+  display:flex; align-items:center; gap:10px;
+}
+.tpl-social-logo{
+  width:44px; height:44px;
+  object-fit:contain;
+  background:#fff;
+  border-radius:12px;
+  padding:4px;
+}
+.tpl-social-brand{
+  color:#fff;
+  font-size:16px; font-weight:800;
+  letter-spacing:-0.02em;
+}
+.tpl-social-center{
+  position:relative; z-index:2;
+  flex:1;
+  display:flex; flex-direction:column; justify-content:center;
+  color:#fff;
+  text-align:center;
+}
+.tpl-social-eyebrow{
+  font-size:12px; font-weight:700;
+  letter-spacing:0.4em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.85);
+  margin-bottom:14px;
+}
+.tpl-social-name{
+  font-size:38px; font-weight:800;
+  letter-spacing:-0.03em;
+  line-height:1.05;
+  color:#fff;
+  margin-bottom:14px;
+}
+.tpl-social-desc{
+  font-size:14px; line-height:1.5;
+  color:rgba(255,255,255,0.85);
+  max-width:80%;
+  margin:0 auto 20px;
+}
+.tpl-social-price{
+  display:inline-flex; align-items:baseline; gap:6px;
+  padding:10px 18px;
+  background:rgba(255,255,255,0.14);
+  backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,0.28);
+  border-radius:999px;
+  align-self:center;
+}
+.tpl-social-price-label{
+  font-size:10.5px; font-weight:700;
+  letter-spacing:0.6px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.75);
+}
+.tpl-social-price-value{
+  font-size:20px; font-weight:800;
+  color:#fff;
+  letter-spacing:-0.02em;
+}
+.tpl-social-footer{
+  position:relative; z-index:2;
+  display:flex; justify-content:space-between; align-items:center;
+  color:rgba(255,255,255,0.85);
+  font-size:11.5px; font-weight:600;
+}
+
+/* --- Recipe Binder Page (A4) --- */
+.tpl-binder{ width:210mm; min-height:297mm; }
+.tpl-binder-title-row{
+  display:flex; gap:22px; align-items:flex-start;
+  padding:22px 28px;
+  border-bottom:2px solid var(--brand);
+}
+.tpl-binder-title-row > div:first-child{ flex:1; min-width:0; }
+.tpl-binder-name{
+  margin:0;
+  font-size:24px; font-weight:800;
+  letter-spacing:-0.02em;
+  color:#1F2440;
+}
+.tpl-binder-desc{
+  margin:6px 0 12px;
+  font-size:13px;
+  color:#4A5068;
+  line-height:1.5;
+}
+.tpl-binder-meta{
+  display:flex; flex-wrap:wrap; gap:14px;
+  font-size:11.5px;
+  color:#4A5068;
+}
+.tpl-binder-meta strong{
+  display:block;
+  font-size:9.5px;
+  color:#A5A3AE;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin-bottom:2px;
+}
+.tpl-binder-photo{
+  width:120px; height:120px;
+  border:1px dashed var(--line);
+  border-radius:10px;
+  background:#FAFAFC;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.tpl-binder-photo img{ width:100%; height:100%; object-fit:cover; }
+.tpl-binder-photo-empty{
+  color:#A5A3AE;
+  font-size:10.5px;
+  text-align:center;
+  line-height:1.4;
+}
+.tpl-binder-photo-empty span{ font-size:9px; }
+.tpl-binder-columns{
+  display:grid;
+  grid-template-columns:1fr 1.4fr;
+  gap:20px;
+  padding:20px 28px;
+}
+.tpl-binder-col h2{ margin-top:0; }
+.tpl-binder-ing-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:11.5px;
+}
+.tpl-binder-ing-table th{
+  padding:6px 8px;
+  border-bottom:1.5px solid var(--brand);
+  color:var(--brand);
+  font-size:10px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+  text-align:left;
+}
+.tpl-binder-ing-table td{
+  padding:6px 8px;
+  border-bottom:1px solid #EDEEF6;
+  font-variant-numeric:tabular-nums;
+}
+.tpl-binder-ing-table tfoot td{
+  border-top:1.5px solid #1F2440;
+  border-bottom:none;
+  padding-top:8px;
+}
+.tpl-binder-method{
+  font-size:12px;
+  line-height:1.65;
+  white-space:pre-line;
+  color:#4A5068;
+}
+.tpl-binder-notes{
+  padding:16px 28px 20px;
+  border-top:1px solid var(--line);
+}
+.tpl-binder-notes-lines{
+  display:flex; flex-direction:column; gap:8px;
+  margin-top:8px;
+}
+.tpl-binder-notes-line{
+  height:1px;
+  background:#DEE0EA;
+}
+
+/* --- Certificate of Craft (A4 landscape) --- */
+.tpl-cert{
+  width:297mm; min-height:210mm;
+  padding:14mm;
+  background:
+    radial-gradient(ellipse at top left,    color-mix(in srgb, var(--brand) 8%, #fff) 0%, #fff 40%),
+    radial-gradient(ellipse at bottom right, color-mix(in srgb, var(--brand) 6%, #fff) 0%, #fff 40%),
+    #fff;
+}
+.tpl-cert-inner{
+  position:relative;
+  height:100%;
+  min-height:calc(210mm - 28mm);
+  border:2px solid var(--brand);
+  padding:24mm 30mm;
+  display:flex; align-items:center; justify-content:center;
+}
+.tpl-cert-inner::before{
+  content:'';
+  position:absolute;
+  inset:5px;
+  border:1px solid var(--brand);
+  opacity:0.4;
+  pointer-events:none;
+}
+.tpl-cert-corner{
+  position:absolute;
+  width:36px; height:36px;
+  border:3px solid var(--brand);
+}
+.tpl-cert-corner-tl{ top:-3px; left:-3px;  border-right:none; border-bottom:none; }
+.tpl-cert-corner-tr{ top:-3px; right:-3px; border-left:none;  border-bottom:none; }
+.tpl-cert-corner-bl{ bottom:-3px; left:-3px;  border-right:none; border-top:none; }
+.tpl-cert-corner-br{ bottom:-3px; right:-3px; border-left:none;  border-top:none; }
+
+.tpl-cert-content{
+  text-align:center;
+  display:flex; flex-direction:column; align-items:center;
+  gap:14px;
+  max-width:180mm;
+}
+.tpl-cert-logo{
+  width:60px; height:60px;
+  object-fit:contain;
+  margin-bottom:6px;
+}
+.tpl-cert-eyebrow{
+  font-family:'Georgia', 'Playfair Display', serif;
+  font-size:32px; font-weight:400; font-style:italic;
+  color:var(--brand);
+  letter-spacing:0.02em;
+}
+.tpl-cert-body{
+  font-size:13px;
+  color:#4A5068;
+  font-style:italic;
+}
+.tpl-cert-product{
+  font-family:'Georgia', 'Playfair Display', serif;
+  font-size:44px; font-weight:700;
+  color:#1F2440;
+  letter-spacing:-0.02em;
+  line-height:1.1;
+  padding:0 20px;
+  border-bottom:1px solid var(--brand);
+  padding-bottom:10px;
+  margin:4px 0;
+}
+.tpl-cert-brand{
+  font-size:22px; font-weight:800;
+  color:var(--brand);
+  letter-spacing:-0.02em;
+}
+.tpl-cert-tagline{
+  font-size:12px;
+  color:#6E7490;
+  font-style:italic;
+  letter-spacing:0.05em;
+}
+.tpl-cert-signature-row{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:40px;
+  align-items:end;
+  width:100%;
+  margin-top:24px;
+}
+.tpl-cert-signature{ text-align:center; }
+.tpl-cert-signature-line{
+  border-top:1px solid #4A5068;
+  margin-bottom:6px;
+}
+.tpl-cert-signature-label{
+  font-size:11px;
+  color:#6E7490;
+  font-style:italic;
+}
+.tpl-cert-seal{
+  padding:6px 0;
+}
+.tpl-cert-seal-ring{
+  width:72px; height:72px;
+  border-radius:50%;
+  background:var(--brand);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff;
+  box-shadow:0 3px 8px color-mix(in srgb, var(--brand) 30%, transparent);
+}
+.tpl-cert-seal-inner{
+  text-align:center;
+  padding:2px;
+}
+.tpl-cert-seal-label{
+  font-size:8px; font-weight:700;
+  letter-spacing:0.3px;
+  text-transform:uppercase;
+  line-height:1;
+}
+.tpl-cert-seal-heart{
+  font-size:16px;
+  line-height:1;
+  margin:2px 0;
+}
+
+/* Landscape print for certificate */
+@media print {
+  .tpl-cert{
+    page: landscape;
+  }
+  @page landscape { size: A4 landscape; margin: 8mm; }
+}
+
+/* ============================================================
+   Brand coverage improvements
+   ============================================================ */
+
+/* Compact header now shows a small tagline */
+.tpl-brand-tagline-small{
+  font-size:10.5px;
+  color:#8B8FA3;
+  margin-top:1px;
+}
+
+/* Social handles get their own visual weight */
+.tpl-brand-social{ color:var(--brand); font-weight:700; }
+
+/* Delivery Tag — add brand tagline block */
+.tpl-delivery-brand-block{ display:flex; flex-direction:column; gap:1px; min-width:0; }
+.tpl-delivery-tagline{
+  font-size:8px;
+  color:#6E7490;
+  font-style:italic;
+  letter-spacing:0.02em;
+  line-height:1.3;
+}
+
+/* Social Media Card — restructured header + expanded footer */
+.tpl-social-mark-text{
+  display:flex; flex-direction:column;
+  min-width:0;
+  gap:1px;
+}
+.tpl-social-tagline{
+  font-size:11px;
+  color:rgba(255,255,255,0.72);
+  font-style:italic;
+  letter-spacing:0.01em;
+}
+.tpl-social-handles{
+  display:flex; gap:14px;
+  flex-wrap:wrap;
+}
+
+/* Product Label — header restructured for brand + tagline */
+.tpl-label-header-text{
+  display:flex; flex-direction:column;
+  min-width:0;
+  gap:1px;
+}
+.tpl-label-tagline{
+  font-size:7.5px;
+  color:#6E7490;
+  font-style:italic;
+  letter-spacing:0.02em;
+  line-height:1.3;
+}
+
+/* Certificate of Craft — address + contact block at bottom */
+.tpl-cert-address-block{
+  margin-top:22px;
+  padding-top:16px;
+  border-top:1px dashed color-mix(in srgb, var(--brand) 30%, transparent);
+  text-align:center;
+}
+.tpl-cert-address{
+  font-size:11px;
+  color:#6E7490;
+  white-space:pre-line;
+  line-height:1.4;
+  margin-bottom:4px;
+}
+.tpl-cert-contact{
+  display:flex; justify-content:center; flex-wrap:wrap;
+  gap:16px;
+  font-size:10.5px;
+  color:var(--brand);
+  font-weight:600;
 }

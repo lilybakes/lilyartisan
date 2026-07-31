@@ -1,17 +1,18 @@
-import { ChalkFlourish, Sparkle } from './ornaments.jsx'
+import { BrandHeader, BrandFooter } from './parts.jsx'
 
 function money(n, currency = 'RM') {
   return `${currency}${Number(n || 0).toFixed(2)}`
 }
 
 /**
- * Menu Insert — "Café Chalkboard"
- * Dark chalkboard, chalk-white typography, handwritten feel.
+ * Multi-recipe menu insert. Groups recipes by category.
+ * A5 portrait — for placing in menus or leave-behinds.
  */
 export function MenuInsert({ recipes, brand }) {
   const currency = brand.currency || 'RM'
   const items = (recipes || []).filter(r => r?.name)
 
+  // Group by category
   const groups = new Map()
   for (const r of items) {
     const cat = r.category || 'Menu'
@@ -20,65 +21,36 @@ export function MenuInsert({ recipes, brand }) {
   }
 
   return (
-    <div className="tpl tpl-menu-v2 printable" style={{ '--brand': brand.brand_color }}>
-      {/* Wooden frame */}
-      <div className="tpl-menu-v2-frame">
-        {/* Chalk header */}
-        <div className="tpl-menu-v2-header">
-          {brand.logo_data_url && (
-            <div className="tpl-menu-v2-logo-round">
-              <img src={brand.logo_data_url} alt=""/>
-            </div>
-          )}
-          <div className="tpl-menu-v2-brand-name">{brand.business_name || 'Your Bakery'}</div>
-          {brand.tagline && <div className="tpl-menu-v2-brand-tag">— {brand.tagline} —</div>}
-          <div className="tpl-menu-v2-title">
-            <ChalkFlourish width={40}/>
-            <span>Today's Menu</span>
-            <ChalkFlourish width={40}/>
-          </div>
-        </div>
+    <div className="tpl tpl-menu printable" style={{ '--brand': brand.brand_color }}>
+      <BrandHeader brand={brand}/>
 
-        {/* Body */}
-        <div className="tpl-menu-v2-body">
-          {items.length === 0 && (
-            <div className="tpl-menu-v2-empty">Add recipes to build your menu</div>
-          )}
-          {[...groups.entries()].map(([cat, recs]) => (
-            <div key={cat} className="tpl-menu-v2-cat">
-              <div className="tpl-menu-v2-cat-title">
-                <span className="tpl-menu-v2-cat-line"/>
-                <span className="tpl-menu-v2-cat-name">— {cat} —</span>
-                <span className="tpl-menu-v2-cat-line"/>
-              </div>
-              <div className="tpl-menu-v2-cat-items">
-                {recs.map(r => (
-                  <div key={r.id} className="tpl-menu-v2-item">
-                    <div className="tpl-menu-v2-item-name">{r.name}</div>
+      <div className="tpl-menu-body">
+        {items.length === 0 && (
+          <p className="tpl-empty">Add recipes to build your menu.</p>
+        )}
+        {[...groups.entries()].map(([cat, recs]) => (
+          <div key={cat} className="tpl-menu-category">
+            <div className="tpl-menu-category-title">{cat}</div>
+            <div className="tpl-menu-items">
+              {recs.map(r => (
+                <div key={r.id} className="tpl-menu-item">
+                  <div className="tpl-menu-item-info">
+                    <div className="tpl-menu-item-name">{r.name}</div>
                     {r.description && (
-                      <div className="tpl-menu-v2-item-desc">{r.description}</div>
+                      <div className="tpl-menu-item-desc">{r.description}</div>
                     )}
-                    <div className="tpl-menu-v2-item-price">{money(r.suggested_price, currency)}</div>
-                    <div className="tpl-menu-v2-item-leader"/>
                   </div>
-                ))}
-              </div>
+                  <div className="tpl-menu-item-price">
+                    {money(r.suggested_price, currency)}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-
-        {/* Chalky footer */}
-        <div className="tpl-menu-v2-footer">
-          <ChalkFlourish width={60}/>
-          <div className="tpl-menu-v2-footer-contact">
-            {brand.instagram && <span>@{brand.instagram}</span>}
-            {brand.facebook  && <span>fb/{brand.facebook}</span>}
-            {brand.contact_phone && <span>{brand.contact_phone}</span>}
-            {brand.address && <span>{brand.address.split('\n')[0]}</span>}
           </div>
-          <ChalkFlourish width={60}/>
-        </div>
+        ))}
       </div>
+
+      <BrandFooter brand={brand}/>
     </div>
   )
 }

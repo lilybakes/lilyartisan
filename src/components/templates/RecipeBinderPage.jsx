@@ -1,86 +1,49 @@
+import { BrandHeader, BrandFooter } from './parts.jsx'
+
 function money(n, currency = 'RM') {
   return `${currency}${Number(n || 0).toFixed(2)}`
 }
 
 /**
- * Recipe Binder Page — "Chef's Professional"
- * A4. Left brand-color sidebar with metadata; right-hand main body.
+ * A4 detailed recipe binder page — for the kitchen binder.
+ * Includes photo slot, full ingredient table with quantities AND costs,
+ * method, and a notes section for chef comments.
  */
 export function RecipeBinderPage({ recipe, brand }) {
   const currency = brand.currency || 'RM'
-
   return (
-    <div className="tpl tpl-binder-v2 printable" style={{ '--brand': brand.brand_color }}>
-      {/* Sidebar */}
-      <aside className="tpl-binder-v2-side">
-        <div className="tpl-binder-v2-side-brand">
-          {brand.logo_data_url && <img src={brand.logo_data_url} alt="" className="tpl-binder-v2-side-logo"/>}
-          <div className="tpl-binder-v2-side-name">{brand.business_name || 'Your Bakery'}</div>
-          {brand.tagline && <div className="tpl-binder-v2-side-tag">{brand.tagline}</div>}
-        </div>
+    <div className="tpl tpl-binder printable" style={{ '--brand': brand.brand_color }}>
+      <BrandHeader brand={brand} compact/>
 
-        <div className="tpl-binder-v2-side-rule"/>
-
-        <div className="tpl-binder-v2-side-meta">
-          <div className="tpl-binder-v2-side-meta-item">
-            <div className="tpl-binder-v2-side-meta-label">Category</div>
-            <div className="tpl-binder-v2-side-meta-value">{recipe.category || '—'}</div>
-          </div>
-          <div className="tpl-binder-v2-side-meta-item">
-            <div className="tpl-binder-v2-side-meta-label">Yield</div>
-            <div className="tpl-binder-v2-side-meta-value">{recipe.yield_portions} portions</div>
-          </div>
-          <div className="tpl-binder-v2-side-meta-item">
-            <div className="tpl-binder-v2-side-meta-label">Batch cost</div>
-            <div className="tpl-binder-v2-side-meta-value">{money(recipe.total_cost, currency)}</div>
-          </div>
-          <div className="tpl-binder-v2-side-meta-item">
-            <div className="tpl-binder-v2-side-meta-label">Cost / portion</div>
-            <div className="tpl-binder-v2-side-meta-value">{money(recipe.cost_per_portion, currency)}</div>
-          </div>
-          <div className="tpl-binder-v2-side-meta-item tpl-binder-v2-side-meta-hero">
-            <div className="tpl-binder-v2-side-meta-label">Sell / portion</div>
-            <div className="tpl-binder-v2-side-meta-value">{money(recipe.suggested_price, currency)}</div>
+      <div className="tpl-binder-title-row">
+        <div>
+          <h1 className="tpl-binder-name">{recipe.name}</h1>
+          {recipe.description && <p className="tpl-binder-desc">{recipe.description}</p>}
+          <div className="tpl-binder-meta">
+            <span><strong>Category</strong> {recipe.category || '—'}</span>
+            <span><strong>Yield</strong> {recipe.yield_portions} portions</span>
+            <span><strong>Cost / portion</strong> {money(recipe.cost_per_portion, currency)}</span>
+            <span><strong>Sell / portion</strong> {money(recipe.suggested_price, currency)}</span>
           </div>
         </div>
-
-        <div className="tpl-binder-v2-side-photo">
+        <div className="tpl-binder-photo">
           {recipe.image_url ? (
             <img src={recipe.image_url} alt=""/>
           ) : (
-            <div className="tpl-binder-v2-side-photo-empty">
-              <div>📷</div>
-              <div>Photo slot</div>
-            </div>
+            <div className="tpl-binder-photo-empty">📷<br/><span>Photo</span></div>
           )}
         </div>
+      </div>
 
-        <div className="tpl-binder-v2-side-contact">
-          {brand.contact_phone && <div>{brand.contact_phone}</div>}
-          {brand.contact_email && <div>{brand.contact_email}</div>}
-          {brand.website       && <div>{brand.website}</div>}
-          {brand.instagram     && <div>@{brand.instagram}</div>}
-          {brand.facebook      && <div>fb/{brand.facebook}</div>}
-          {brand.address       && <div className="tpl-binder-v2-side-addr">{brand.address}</div>}
-        </div>
-      </aside>
-
-      {/* Main body */}
-      <main className="tpl-binder-v2-main">
-        <div className="tpl-binder-v2-main-head">
-          <div className="tpl-binder-v2-eyebrow">Recipe № {(recipe.id || '').slice(0, 6)}</div>
-          <h1 className="tpl-binder-v2-name">{recipe.name}</h1>
-          {recipe.description && <p className="tpl-binder-v2-desc">{recipe.description}</p>}
-        </div>
-
-        <section className="tpl-binder-v2-section">
-          <h2>Ingredients</h2>
-          <table className="tpl-binder-v2-ing">
+      <div className="tpl-binder-columns">
+        <div className="tpl-binder-col">
+          <h2 className="tpl-section-title">Ingredients</h2>
+          <table className="tpl-binder-ing-table">
             <thead>
               <tr>
                 <th>Ingredient</th>
-                <th style={{textAlign:'right', width:70}}>Qty</th>
-                <th style={{textAlign:'right', width:80}}>Cost</th>
+                <th style={{textAlign:'right'}}>Qty</th>
+                <th style={{textAlign:'right'}}>Cost</th>
               </tr>
             </thead>
             <tbody>
@@ -94,27 +57,29 @@ export function RecipeBinderPage({ recipe, brand }) {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan="2" style={{textAlign:'right'}}>Batch total</td>
-                <td style={{textAlign:'right', color:'var(--brand)'}}>{money(recipe.total_cost, currency)}</td>
+                <td colSpan="2" style={{textAlign:'right', fontWeight:700}}>Batch total</td>
+                <td style={{textAlign:'right', fontWeight:800, color:'var(--brand)'}}>{money(recipe.total_cost, currency)}</td>
               </tr>
             </tfoot>
           </table>
-        </section>
+        </div>
 
-        <section className="tpl-binder-v2-section">
-          <h2>Method</h2>
-          <div className="tpl-binder-v2-method">
-            {recipe.method || <span style={{color:'#A5A3AE', fontStyle:'italic'}}>No method recorded.</span>}
+        <div className="tpl-binder-col">
+          <h2 className="tpl-section-title">Method</h2>
+          <div className="tpl-binder-method">
+            {recipe.method || <span className="tpl-empty">No method recorded. Add one on the recipe detail page.</span>}
           </div>
-        </section>
+        </div>
+      </div>
 
-        <section className="tpl-binder-v2-section">
-          <h2>Chef's notes</h2>
-          <div className="tpl-binder-v2-notes">
-            {[1,2,3,4,5,6].map(i => <div key={i} className="tpl-binder-v2-notes-line"/>)}
-          </div>
-        </section>
-      </main>
+      <div className="tpl-binder-notes">
+        <h2 className="tpl-section-title">Chef's notes</h2>
+        <div className="tpl-binder-notes-lines">
+          {[1,2,3,4,5,6].map(i => <div key={i} className="tpl-binder-notes-line"/>)}
+        </div>
+      </div>
+
+      <BrandFooter brand={brand}/>
     </div>
   )
 }
