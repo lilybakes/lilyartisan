@@ -1,0 +1,1206 @@
+/* =============================================================================
+   EDITORIAL MAGAZINE VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   Palette:
+     Rust           #8E4527   dominant accent — side bands, mastheads, DC squares
+     Rust dark      #6E3418   pressed / deeper accent
+     Cream          #F5EEE2   ground
+     Cream tint     #EEDFC7   allergen box, trade terms box background
+     Cream soft     #F0E6D4   zebra row alt background
+     Ink            #1A1A18   titles, thick rules
+     Body           #3A342E   body copy
+     Muted          #8B8478   descriptions, meta
+     Cream on rust  #F5EEE2   text on rust surfaces
+   Fonts:
+     Serif display  Playfair Display (400/700/800 + italic)
+     Sans body      Archivo (400/500/600/700)
+   Both loaded globally via the @import at the top of root styles.css.
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, primitives, italic-accent titles, side-band mechanics
+   ============================================================================= */
+
+.e-tpl {
+  --e-rust: #8E4527;
+  --e-rust-dark: #6E3418;
+  --e-cream: #F5EEE2;
+  --e-cream-tint: #EEDFC7;
+  --e-cream-soft: #F0E6D4;
+  --e-ink: #1A1A18;
+  --e-body: #3A342E;
+  --e-muted: #8B8478;
+  --e-cream-on-rust: #F5EEE2;
+  --e-rule-hair: rgba(58, 52, 46, 0.22);
+
+  --e-serif: 'Playfair Display', Georgia, serif;
+  --e-sans: 'Archivo', 'Plus Jakarta Sans', -apple-system, sans-serif;
+
+  background: var(--e-cream);
+  color: var(--e-body);
+  font-family: var(--e-sans);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(26, 26, 24, 0.10);
+  box-sizing: border-box;
+}
+.e-tpl * { box-sizing: border-box; }
+
+/* --- Logo (filled rust square with cream initials; bordered variant on rust) */
+.e-logo {
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--e-serif);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.e-logo-filled {
+  background: var(--e-rust);
+  color: var(--e-cream-on-rust);
+  border: none;
+}
+.e-logo-bordered-on-rust {
+  background: transparent;
+  color: var(--e-cream-on-rust);
+  border: 1.5px solid var(--e-cream-on-rust);
+}
+.e-logo-img { width: 82%; height: 82%; object-fit: contain; }
+.e-logo-sm { width: 40px; height: 40px; font-size: 12px; }
+.e-logo-md { width: 58px; height: 58px; font-size: 18px; }
+.e-logo-lg { width: 78px; height: 78px; font-size: 24px; }
+
+/* --- Brand lockup ------------------------------------------------------ */
+.e-brand-lockup { display: flex; align-items: center; gap: 12px; }
+.e-brand-lockup-row { flex-direction: row; }
+.e-brand-lockup-row-reverse { flex-direction: row-reverse; }
+.e-brand-text { display: flex; flex-direction: column; gap: 3px; }
+
+.e-brand-name {
+  font-family: var(--e-serif);
+  font-weight: 700;
+  color: var(--e-ink);
+  margin: 0;
+  line-height: 1.1;
+  font-size: 22px;
+  letter-spacing: -0.015em;
+}
+.e-brand-name em {
+  font-family: var(--e-serif);
+  font-style: italic;
+  font-weight: 700;
+}
+.e-brand-name-sm { font-size: 16px; }
+.e-brand-name-italic em { font-weight: 700; }
+.e-brand-tagline {
+  font-family: var(--e-sans);
+  color: var(--e-muted);
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+.e-brand-tagline-sm { font-size: 11.5px; }
+.e-brand-tagline-caps {
+  font-family: var(--e-sans);
+  color: var(--e-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 11px;
+  font-weight: 500;
+  margin: 2mm 0 0;
+}
+
+/* --- Title (with italic-accent em) ------------------------------------- */
+.e-title {
+  font-family: var(--e-serif);
+  font-weight: 800;
+  color: var(--e-ink);
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: -0.015em;
+}
+.e-title em {
+  font-family: var(--e-serif);
+  font-style: italic;
+  font-weight: 700;
+  /* Optical adjustment — italic often reads slightly smaller */
+  font-size: 1.03em;
+}
+
+/* --- Small-caps letter-spaced eyebrow ---------------------------------- */
+.e-eyebrow {
+  font-family: var(--e-sans);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 10.5px;
+  padding-left: 0.18em;
+}
+.e-eyebrow-rust { color: var(--e-rust); }
+.e-eyebrow-muted { color: var(--e-muted); }
+.e-eyebrow-cream { color: var(--e-cream-on-rust); }
+
+.e-muted { color: var(--e-muted); }
+
+/* --- Rules ------------------------------------------------------------- */
+.e-rule { border: none; padding: 0; margin: 0; display: block; width: 100%; }
+.e-rule-thick { height: 3px; }
+.e-rule-hair { height: 1px; }
+.e-rule-black { background: var(--e-ink); }
+.e-rule-rust { background: var(--e-rust); }
+.e-rule-short {
+  width: 40mm;
+  height: 3px;
+  background: var(--e-rust);
+  margin: 4mm 0 5mm;
+}
+.e-rule-short.e-rule-black { background: var(--e-ink); }
+
+/* --- Side band (rust vertical bar with rotated text) ------------------- */
+.e-side-text {
+  font-family: var(--e-sans);
+  font-weight: 600;
+  color: var(--e-cream-on-rust);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 10.5px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+/* --- Bordered thin circular seal --------------------------------------- */
+.e-seal {
+  border-radius: 50%;
+  border: 1.5px solid var(--e-rust);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--e-rust);
+  aspect-ratio: 1;
+  background: transparent;
+}
+.e-seal-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-family: var(--e-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 9px;
+  padding-left: 0.18em;
+  text-align: center;
+  line-height: 1.15;
+}
+
+/* --- Numeric cells ------------------------------------------------------ */
+.e-num {
+  text-align: right;
+  font-family: var(--e-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Empty-state ------------------------------------------------------- */
+.e-empty {
+  color: var(--e-muted);
+  font-family: var(--e-sans);
+  font-style: italic;
+  font-size: 12px;
+  margin: 3mm 0 0;
+}
+
+/* --- Footer ------------------------------------------------------------ */
+.e-footer {
+  font-family: var(--e-sans);
+  font-size: 11px;
+  color: var(--e-body);
+  line-height: 1.55;
+}
+.e-footer-split {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+}
+.e-footer-split .e-footer-right { text-align: right; }
+.e-footer-centered {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center;
+}
+.e-footer-minimal { text-align: center; }
+.e-footer-inline { text-align: center; }
+.e-footer-line { font-size: 11px; }
+.e-footer-social { color: var(--e-rust); font-weight: 700; }
+
+/* --- Method sub-group heading ------------------------------------------ */
+.e-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--e-sans);
+  font-weight: 700;
+  color: var(--e-rust);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 10px;
+  margin: 3mm 0 2mm;
+}
+.e-method-group::before { content: '' !important; }
+
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.e-recipe-card {
+  width: 148mm; min-height: 210mm;
+  padding: 0;
+  display: flex;
+}
+.e-recipe-sideband {
+  width: 22mm;
+  background: var(--e-rust);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20mm 0;
+  flex-shrink: 0;
+}
+.e-recipe-main {
+  flex: 1;
+  padding: 14mm 12mm 10mm;
+  display: flex; flex-direction: column;
+  min-width: 0;
+}
+.e-recipe-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding-bottom: 8mm;
+}
+.e-recipe-header .e-brand-name { font-size: 20px; text-align: right; }
+.e-recipe-header .e-brand-tagline { font-size: 12px; text-align: right; }
+.e-recipe-brand-block {
+  display: flex; flex-direction: column; align-items: flex-end;
+}
+.e-recipe-meta {
+  font-size: 11.5px;
+  letter-spacing: 0.20em;
+  margin-bottom: 3mm;
+}
+.e-recipe-title {
+  font-size: 40px;
+  margin: 0;
+  line-height: 1.02;
+  max-width: 100%;
+}
+.e-recipe-title em { font-size: 1.02em; }
+
+.e-recipe-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 10mm;
+  margin-top: 8mm;
+  margin-bottom: 6mm;
+}
+.e-recipe-body-left { min-width: 0; }
+.e-recipe-body-left .e-eyebrow { margin-bottom: 4mm; font-size: 11px; letter-spacing: 0.20em; }
+
+.e-recipe-ingredients {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 4mm;
+}
+.e-recipe-ingredients li {
+  display: flex; flex-direction: column; gap: 1mm;
+}
+.e-recipe-ing-qty {
+  font-family: var(--e-sans);
+  font-weight: 700;
+  color: var(--e-rust);
+  font-size: 14.5px;
+}
+.e-recipe-ing-name {
+  font-family: var(--e-sans);
+  font-weight: 400;
+  color: var(--e-body);
+  font-size: 12.5px;
+}
+
+.e-recipe-glance {
+  background: var(--e-cream-tint);
+  padding: 6mm 6mm;
+  border-radius: 2px;
+  height: fit-content;
+}
+.e-recipe-glance .e-eyebrow {
+  margin-bottom: 4mm;
+  font-size: 11px;
+  letter-spacing: 0.20em;
+}
+.e-recipe-glance-body {
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.e-recipe-method-section .e-eyebrow {
+  margin-bottom: 4mm;
+  font-size: 11px;
+  letter-spacing: 0.20em;
+}
+.e-recipe-method {
+  list-style: none; padding: 0; margin: 0;
+  counter-reset: estep;
+  display: flex; flex-direction: column; gap: 3.5mm;
+  font-family: var(--e-sans);
+  font-size: 13px;
+  color: var(--e-body);
+  line-height: 1.55;
+}
+.e-recipe-method li {
+  counter-increment: estep;
+  padding-left: 8mm;
+  position: relative;
+}
+.e-recipe-method li::before {
+  content: counter(estep) ".";
+  position: absolute; left: 0;
+  color: var(--e-body);
+  font-weight: 400;
+}
+.e-recipe-card .e-footer { margin-top: 4mm; }
+
+
+/* =============================================================================
+   02 — COST BREAKDOWN  (A4 portrait, 210×297mm) — INTERNAL
+   ============================================================================= */
+.e-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 16mm 12mm;
+  display: flex; flex-direction: column;
+}
+.e-cost-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 4mm;
+}
+.e-cost-brand { display: flex; align-items: center; gap: 10px; }
+.e-cost-header-right { font-size: 11.5px; letter-spacing: 0.20em; }
+
+.e-cost-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 14mm; margin-top: 8mm;
+}
+.e-cost-title-left { flex: 1; min-width: 0; padding-top: 3mm; }
+.e-cost-title { font-size: 42px; line-height: 1.02; margin: 0; }
+.e-cost-meta { font-size: 11.5px; letter-spacing: 0.16em; margin-top: 4mm; }
+
+.e-cost-suggested-box {
+  background: var(--e-rust);
+  color: var(--e-cream-on-rust);
+  padding: 8mm 10mm;
+  min-width: 66mm;
+  border-radius: 2px;
+}
+.e-cost-suggested-box .e-eyebrow { letter-spacing: 0.20em; font-size: 10.5px; }
+.e-cost-suggested-value {
+  font-family: var(--e-serif);
+  font-weight: 800;
+  color: var(--e-cream-on-rust);
+  font-size: 34px;
+  line-height: 1;
+  margin: 3mm 0 5mm;
+}
+.e-cost-suggested-divider {
+  border-top: 1px solid rgba(245, 238, 226, 0.4);
+  margin: 0 0 4mm;
+}
+.e-cost-suggested-line {
+  display: flex; justify-content: space-between;
+  font-family: var(--e-sans);
+  font-size: 12.5px;
+  color: var(--e-cream-on-rust);
+  padding: 1mm 0;
+}
+
+/* Bar chart section */
+.e-cost-chart-section { margin-top: 10mm; }
+.e-cost-chart-section .e-eyebrow { margin-bottom: 5mm; font-size: 11px; letter-spacing: 0.20em; }
+.e-cost-chart { display: flex; flex-direction: column; gap: 2mm; }
+.e-cost-chart-row {
+  display: grid;
+  grid-template-columns: 52mm 1fr 22mm;
+  gap: 6mm;
+  align-items: center;
+  font-family: var(--e-sans);
+  font-size: 12.5px;
+  padding: 1.5mm 0;
+}
+.e-cost-chart-name { color: var(--e-body); }
+.e-cost-chart-track {
+  background: var(--e-cream-tint);
+  height: 6mm;
+  border-radius: 1px;
+  overflow: hidden;
+}
+.e-cost-chart-fill {
+  background: var(--e-rust);
+  height: 100%;
+}
+.e-cost-chart-val {
+  text-align: right;
+  font-weight: 700;
+  color: var(--e-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Full costing table */
+.e-cost-table-section { margin-top: 8mm; }
+.e-cost-table-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 4mm 0 3mm;
+}
+.e-cost-table-head .e-eyebrow { font-size: 11px; letter-spacing: 0.20em; }
+.e-cost-table-head-cols {
+  display: flex; gap: 20mm;
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+.e-cost-table {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--e-sans);
+  font-size: 12.5px;
+  color: var(--e-body);
+}
+.e-cost-table td {
+  padding: 3.5mm 0;
+  border-bottom: 1px solid var(--e-rule-hair);
+}
+.e-cost-td-name { color: var(--e-body); }
+.e-cost-td-val { font-weight: 700; color: var(--e-ink); }
+.e-cost-empty {
+  padding: 8mm 0 !important;
+  color: var(--e-muted);
+  font-style: italic;
+  text-align: center;
+}
+.e-cost-batch-row td {
+  padding: 5mm 0 2mm;
+  border-bottom: none;
+  font-family: var(--e-sans);
+  font-weight: 700;
+  color: var(--e-ink);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.e-cost-batch-row td.e-num {
+  font-family: var(--e-serif);
+  font-weight: 700;
+  color: var(--e-rust);
+  font-size: 20px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.e-cost-caution {
+  margin-top: 6mm;
+  font-size: 10.5px;
+  letter-spacing: 0.20em;
+}
+.e-cost .e-footer { font-size: 11px; }
+
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, 105×148mm)
+   ============================================================================= */
+.e-care {
+  width: 105mm; min-height: 148mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.e-care-masthead {
+  background: var(--e-rust);
+  color: var(--e-cream-on-rust);
+  padding: 12mm 10mm 14mm;
+}
+.e-care-thanks {
+  margin-bottom: 4mm;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: var(--e-cream-on-rust);
+}
+.e-care-product {
+  font-size: 30px;
+  line-height: 1.05;
+  color: var(--e-cream-on-rust);
+  margin: 0;
+}
+.e-care-body {
+  padding: 12mm 10mm 6mm;
+  display: flex; flex-direction: column; gap: 8mm;
+}
+.e-care-section .e-eyebrow {
+  margin-bottom: 3mm;
+  font-size: 10.5px;
+  letter-spacing: 0.20em;
+}
+.e-care-text {
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 0;
+}
+.e-care-footer {
+  display: flex; gap: 3mm; align-items: flex-start;
+  padding: 6mm 10mm 8mm;
+}
+.e-care-footer .e-logo { width: 34px; height: 34px; font-size: 11px; }
+.e-care-footer-text { display: flex; flex-direction: column; gap: 1mm; flex: 1; min-width: 0; }
+.e-care-footer-name {
+  font-family: var(--e-serif);
+  font-weight: 700;
+  color: var(--e-ink);
+  font-size: 13px;
+  line-height: 1.2;
+}
+.e-care-footer-line {
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.e-label {
+  width: 74mm; min-height: 105mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.e-label-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 5mm 5mm 3mm;
+  gap: 6mm;
+}
+.e-label-brand-text { display: flex; flex-direction: column; gap: 1mm; min-width: 0; }
+.e-label-brand-name { font-size: 15px; margin: 0; }
+.e-label-brand-tag { font-size: 10px; margin: 0; }
+.e-label-header .e-logo { width: 32px; height: 32px; font-size: 10.5px; }
+
+.e-label-midplate {
+  background: var(--e-rust);
+  color: var(--e-cream-on-rust);
+  padding: 5mm 5mm;
+  margin: 0;
+}
+.e-label-product {
+  font-size: 22px;
+  line-height: 1.05;
+  color: var(--e-cream-on-rust);
+  margin: 0;
+}
+
+.e-label-body {
+  padding: 5mm 5mm 4mm;
+  flex: 1;
+  display: flex; flex-direction: column;
+}
+.e-label-body .e-eyebrow { margin-bottom: 2mm; font-size: 9.5px; letter-spacing: 0.20em; }
+.e-label-ingredients {
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 10.5px;
+  line-height: 1.5;
+  margin: 0 0 4mm;
+}
+.e-label-allergen {
+  background: var(--e-cream-tint);
+  padding: 3mm 4mm;
+  border-radius: 2px;
+}
+.e-label-allergen .e-eyebrow { margin-bottom: 1mm; }
+.e-label-allergen-body {
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 10px;
+  line-height: 1.5;
+  margin: 0;
+}
+.e-label-footer {
+  padding: 3mm 5mm 4mm;
+  text-align: center;
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 9.5px;
+  line-height: 1.4;
+}
+
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.e-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 14mm 12mm 12mm;
+  display: flex; flex-direction: column;
+}
+.e-menu-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding-bottom: 6mm;
+  gap: 10mm;
+}
+.e-menu-brand-block { flex: 1; min-width: 0; }
+.e-menu-brand-name { font-size: 34px; line-height: 1.02; margin: 0; }
+.e-menu-brand-tag { margin: 3mm 0 0; font-size: 11px; }
+.e-menu-meta-block {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 3mm;
+}
+.e-menu-meta { font-size: 11px; letter-spacing: 0.18em; }
+
+.e-menu-body { flex: 1; padding-top: 5mm; }
+.e-menu-empty {
+  text-align: center;
+  color: var(--e-muted);
+  font-style: italic;
+  margin-top: 20mm;
+}
+
+.e-menu-cat-block { margin-bottom: 7mm; }
+.e-menu-cat-header {
+  display: flex; align-items: stretch;
+  margin-bottom: 4mm;
+  gap: 5mm;
+}
+.e-menu-cat-tag {
+  background: var(--e-rust);
+  color: var(--e-cream-on-rust);
+  font-family: var(--e-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  font-size: 11.5px;
+  padding: 3mm 6mm;
+  border-radius: 2px;
+}
+.e-menu-cat-rule {
+  flex: 1;
+  align-self: center;
+  border-top: 3px solid var(--e-rust);
+  height: 0;
+}
+
+.e-menu-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12mm;
+  padding: 3mm 0;
+}
+.e-menu-item-body { flex: 1; min-width: 0; }
+.e-menu-item-name {
+  font-family: var(--e-serif);
+  font-weight: 700;
+  color: var(--e-ink);
+  font-size: 18px;
+  line-height: 1.15;
+}
+.e-menu-item-desc {
+  font-family: var(--e-sans);
+  color: var(--e-muted);
+  font-size: 12px;
+  margin-top: 1mm;
+  line-height: 1.4;
+}
+.e-menu-item-price {
+  font-family: var(--e-sans);
+  font-weight: 700;
+  color: var(--e-rust);
+  font-size: 16px;
+  flex-shrink: 0;
+  padding-top: 1mm;
+}
+
+.e-menu-footer-line {
+  text-align: center;
+  color: var(--e-muted);
+  font-style: italic;
+  font-family: var(--e-sans);
+  font-size: 11.5px;
+  margin-top: 6mm;
+}
+
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.e-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 16mm 10mm;
+  display: flex; flex-direction: column;
+}
+.e-wholesale-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding-bottom: 5mm;
+  gap: 12mm;
+}
+.e-wholesale-brand-block { flex: 1; min-width: 0; }
+.e-wholesale-brand-name { font-size: 28px; line-height: 1.02; margin: 0; }
+.e-wholesale-brand-tag { margin: 3mm 0 0; font-size: 11px; }
+
+.e-wholesale-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-top: 8mm; gap: 14mm;
+}
+.e-wholesale-title-left { flex: 1; min-width: 0; padding-top: 3mm; }
+.e-wholesale-title { font-size: 40px; line-height: 1.02; margin: 0; }
+.e-wholesale-effective { font-size: 11px; letter-spacing: 0.20em; margin-top: 4mm; }
+.e-wholesale-terms-box {
+  background: var(--e-cream-tint);
+  border-left: 3px solid var(--e-rust);
+  padding: 5mm 6mm;
+  min-width: 68mm;
+  max-width: 78mm;
+}
+.e-wholesale-terms-box .e-eyebrow { margin-bottom: 3mm; font-size: 10.5px; letter-spacing: 0.20em; }
+.e-wholesale-terms-body {
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.e-wholesale-table {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--e-sans);
+  font-size: 12.5px;
+  color: var(--e-body);
+  margin: 0;
+}
+.e-wholesale-table thead th {
+  font-family: var(--e-sans);
+  font-weight: 700;
+  color: var(--e-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  padding: 5mm 3mm 3mm;
+  font-size: 10.5px;
+  text-align: left;
+  border-bottom: 1px solid var(--e-rule-hair);
+}
+.e-wholesale-table thead th.e-num { text-align: right; }
+.e-wholesale-th-rust { color: var(--e-rust) !important; }
+.e-wholesale-table td {
+  padding: 4mm 3mm;
+  border-bottom: 1px solid var(--e-rule-hair);
+}
+.e-wholesale-row-alt td { background: var(--e-cream-soft); }
+.e-wholesale-table td.e-num { text-align: right; }
+.e-wholesale-td-name { font-weight: 700; color: var(--e-ink); }
+.e-wholesale-td-price { color: var(--e-rust); font-weight: 700; }
+
+.e-wholesale-terms-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14mm;
+  margin-top: 6mm;
+}
+.e-wholesale-terms-col .e-eyebrow { margin-bottom: 4mm; font-size: 11px; letter-spacing: 0.20em; }
+.e-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 2.5mm;
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.e-wholesale-terms-list li {
+  padding-left: 5mm;
+  position: relative;
+}
+.e-wholesale-terms-list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--e-rust);
+}
+.e-wholesale-order-lines {
+  display: flex; flex-direction: column; gap: 2.5mm;
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 12.5px;
+}
+
+.e-wholesale-footer {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12px;
+  padding-top: 4mm;
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 11px;
+}
+
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.e-delivery {
+  width: 74mm; min-height: 105mm;
+  padding: 0;
+  display: flex;
+}
+.e-delivery-sideband {
+  width: 8mm;
+  background: var(--e-rust);
+  flex-shrink: 0;
+}
+.e-delivery-main {
+  flex: 1;
+  padding: 4mm 6mm 5mm;
+  display: flex; flex-direction: column;
+  min-width: 0;
+}
+.e-delivery-hole {
+  width: 8mm; height: 4mm;
+  border: 1px solid var(--e-muted);
+  border-radius: 50%;
+  margin: 1mm auto 4mm;
+}
+.e-delivery-brand-name { font-size: 16px; margin: 0; text-align: left; }
+.e-delivery-brand-tag { font-size: 10px; margin: 1mm 0 3mm; text-align: left; }
+
+.e-delivery-eyebrow { font-size: 9.5px; letter-spacing: 0.22em; margin: 3mm 0 2mm; }
+.e-delivery-product { font-size: 20px; margin: 0; line-height: 1.1; }
+.e-delivery .e-rule-short { width: 20mm; margin: 3mm 0 4mm; }
+.e-delivery-care-title { font-size: 9.5px; letter-spacing: 0.22em; margin: 3mm 0 2mm; }
+.e-delivery-care-body {
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 10.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+.e-delivery-thanks {
+  font-family: var(--e-serif);
+  font-style: italic;
+  color: var(--e-body);
+  font-size: 11.5px;
+  margin: 5mm 0 3mm;
+}
+.e-delivery-socials {
+  margin-top: 3mm;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-align: center;
+}
+
+
+/* =============================================================================
+   08 — SOCIAL MEDIA CARD  (1080×1080 = 148×148mm)
+   ============================================================================= */
+.e-social {
+  width: 148mm; height: 148mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.e-social-masthead {
+  background: var(--e-rust);
+  color: var(--e-cream-on-rust);
+  padding: 6mm 12mm;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--e-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 11px;
+  font-weight: 600;
+}
+.e-social-masthead-left,
+.e-social-masthead-right {
+  color: var(--e-cream-on-rust);
+}
+.e-social-body {
+  flex: 1;
+  padding: 10mm 12mm 8mm;
+  display: flex; flex-direction: column;
+  justify-content: center;
+}
+.e-social-eyebrow { font-size: 11.5px; letter-spacing: 0.24em; margin-bottom: 6mm; }
+.e-social-title {
+  font-size: 62px;
+  line-height: 1.02;
+  margin: 0 0 8mm;
+  max-width: 120mm;
+}
+.e-social-title em { font-size: 1em; }
+.e-social-desc-row {
+  display: flex; align-items: center; gap: 5mm;
+  margin-bottom: 8mm;
+}
+.e-social-desc-rule {
+  width: 30mm;
+  height: 3px;
+  background: var(--e-rust);
+  flex-shrink: 0;
+}
+.e-social-desc-text {
+  font-family: var(--e-sans);
+  color: var(--e-muted);
+  font-size: 15px;
+  line-height: 1.4;
+}
+.e-social-price {
+  display: inline-block;
+  background: var(--e-rust);
+  color: var(--e-cream-on-rust);
+  padding: 3.5mm 8mm;
+  font-family: var(--e-sans);
+  font-weight: 700;
+  font-size: 16px;
+  align-self: flex-start;
+}
+.e-social-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 5mm 12mm 8mm;
+  font-family: var(--e-sans);
+  font-size: 11.5px;
+}
+.e-social-handles { font-weight: 700; }
+.e-social-website { color: var(--e-body); }
+
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait)
+   ============================================================================= */
+.e-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 0;
+  display: flex;
+}
+.e-binder-sidebar {
+  width: 62mm;
+  background: var(--e-rust);
+  color: var(--e-cream-on-rust);
+  padding: 12mm 10mm 10mm;
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+}
+.e-binder-sidebar-logo { margin-bottom: 8mm; }
+.e-binder-brand-name {
+  font-size: 20px;
+  color: var(--e-cream-on-rust);
+  margin: 0;
+  line-height: 1.15;
+}
+.e-binder-brand-tag {
+  font-family: var(--e-sans);
+  color: var(--e-cream-on-rust);
+  opacity: 0.75;
+  font-size: 11px;
+  margin: 2mm 0 8mm;
+  line-height: 1.35;
+}
+.e-binder-meta-block { margin-bottom: 6mm; }
+.e-binder-sidebar .e-eyebrow-cream {
+  font-size: 10px; letter-spacing: 0.20em;
+  color: var(--e-cream-on-rust);
+  opacity: 0.85;
+  margin-bottom: 1.5mm;
+}
+.e-binder-meta-val {
+  font-family: var(--e-serif);
+  font-weight: 700;
+  color: var(--e-cream-on-rust);
+  font-size: 16px;
+  line-height: 1.15;
+}
+.e-binder-sidebar-footer {
+  margin-top: auto;
+  padding-top: 10mm;
+  font-family: var(--e-sans);
+  color: var(--e-cream-on-rust);
+  opacity: 0.85;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.e-binder-main {
+  flex: 1;
+  padding: 12mm 12mm 10mm;
+  display: flex; flex-direction: column;
+  min-width: 0;
+}
+.e-binder-title-row {
+  display: flex; gap: 10mm; align-items: flex-start;
+  margin-bottom: 8mm;
+}
+.e-binder-title-left { flex: 1; min-width: 0; }
+.e-binder-title { font-size: 34px; line-height: 1.05; margin: 0; }
+.e-binder-title-desc {
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 13.5px;
+  margin: 3mm 0 0;
+  line-height: 1.4;
+}
+.e-binder-photo {
+  width: 42mm; height: 42mm;
+  border: 1px solid var(--e-rule-hair);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.e-binder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.e-binder-photo-placeholder { padding: 3mm; line-height: 1.4; }
+.e-binder-photo-placeholder .e-eyebrow { font-size: 9.5px; letter-spacing: 0.20em; }
+.e-binder-photo-hint {
+  color: var(--e-muted); font-style: italic;
+  font-size: 9.5px; margin-top: 1mm;
+}
+
+.e-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10mm;
+  flex: 1;
+  margin-bottom: 6mm;
+}
+.e-binder-section .e-eyebrow { font-size: 11px; letter-spacing: 0.20em; }
+.e-binder-section-rule {
+  height: 1px;
+  background: var(--e-rust);
+  margin: 2mm 0 3mm;
+}
+.e-binder-ing-list { display: flex; flex-direction: column; }
+.e-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 2.5mm 0;
+  border-bottom: 1px solid var(--e-rule-hair);
+  font-family: var(--e-sans);
+  font-size: 12px;
+  color: var(--e-body);
+}
+.e-binder-ing-name { }
+.e-binder-ing-qty { color: var(--e-muted); text-align: right; font-variant-numeric: tabular-nums; }
+.e-binder-ing-cost { color: var(--e-body); text-align: right; font-variant-numeric: tabular-nums; min-width: 10mm; }
+
+.e-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  counter-reset: ebstep;
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--e-sans);
+  font-size: 12px;
+  color: var(--e-body);
+  line-height: 1.5;
+}
+.e-binder-method li {
+  counter-increment: ebstep;
+  padding-left: 7mm;
+  position: relative;
+}
+.e-binder-method li::before {
+  content: counter(ebstep) ".";
+  position: absolute; left: 0; top: 0;
+  color: var(--e-body);
+}
+
+.e-binder-notes { margin-top: 5mm; }
+.e-binder-notes .e-eyebrow { font-size: 11px; letter-spacing: 0.20em; margin-bottom: 2mm; }
+.e-binder-notes-lines { display: flex; flex-direction: column; gap: 7px; margin-top: 3mm; }
+.e-binder-notes-line { border-bottom: 1px solid var(--e-rule-hair); height: 5mm; }
+
+.e-binder-caption {
+  font-family: var(--e-sans);
+  color: var(--e-muted);
+  font-size: 10.5px;
+  margin: 3mm 0 0;
+}
+
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, 297×210mm)
+   ============================================================================= */
+.e-cert {
+  width: 297mm; height: 210mm;
+  padding: 0;
+  display: flex;
+}
+.e-cert-sideband {
+  width: 26mm;
+  background: var(--e-rust);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20mm 0;
+  flex-shrink: 0;
+}
+.e-cert-main {
+  flex: 1;
+  padding: 14mm 18mm 12mm;
+  display: flex; flex-direction: column;
+  min-width: 0;
+}
+.e-cert-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding-bottom: 4mm;
+  gap: 10mm;
+}
+.e-cert-brand-block { display: flex; flex-direction: column; gap: 1mm; }
+.e-cert-brand-name { font-size: 20px; margin: 0; }
+.e-cert-brand-tag { font-size: 11.5px; margin: 0; }
+
+.e-cert-body {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 10mm 0;
+  max-width: 210mm;
+}
+.e-cert-intro { font-size: 12px; letter-spacing: 0.24em; margin-bottom: 8mm; }
+.e-cert-product {
+  font-size: 62px;
+  line-height: 1.02;
+  margin: 0 0 10mm;
+  max-width: 200mm;
+}
+.e-cert-craft {
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 180mm;
+}
+.e-cert-craft strong { font-weight: 700; color: var(--e-ink); }
+
+.e-cert-seal-wrap {
+  position: absolute;
+  bottom: 46mm;
+  right: 30mm;
+}
+
+.e-cert-sig-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24mm;
+  margin-top: auto;
+  padding: 0 0 5mm;
+  max-width: 180mm;
+}
+.e-cert-sig-cell {
+  display: flex; flex-direction: column; gap: 2mm;
+}
+.e-cert-sig-cell .e-eyebrow { font-size: 10.5px; letter-spacing: 0.18em; }
+.e-cert-sig-cell .e-rule { margin-bottom: 2mm; }
+.e-cert-sig-img {
+  display: block;
+  max-width: 42mm; max-height: 12mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+
+.e-cert-footer {
+  padding: 3mm 0 0;
+  font-family: var(--e-sans);
+  color: var(--e-body);
+  font-size: 11px;
+  line-height: 1.5;
+  max-width: 220mm;
+}

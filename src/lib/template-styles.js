@@ -14,12 +14,6 @@ export const STYLE_VARIANTS = [
     accent: '#7367F0',
   },
   {
-    key: 'clean-modern',
-    name: 'Clean Modern',
-    description: 'White paper, Plus Jakarta Sans + JetBrains Mono numerals, hairline rules, violet app-brand accent. Neutral and precise.',
-    accent: '#6C5CE7',
-  },
-  {
     key: 'crisp',
     name: 'Crisp',
     description: 'Polished modern layout with warm brown accents on white. Plus Jakarta Sans body + JetBrains Mono numerals, thin gray rules with brown accent overlays, cream-background allergen notices, small square DC-style logo box. Designed to look like a finished printed sheet.',
@@ -40,8 +34,8 @@ export const STYLE_VARIANTS = [
   {
     key: 'editorial',
     name: 'Editorial Magazine',
-    description: 'DM Serif Display + Archivo. Filled black masthead, thick 3px rules, zebra rows, dark footer. Cherry-red social pop. Reads designed rather than generated.',
-    accent: '#1A1A18',
+    description: 'Playfair Display + Archivo, cream paper, rust accent (#8E4527). Signature italic-accent word within titles, full-height rust side bands, filled rust mastheads and category tags, thick 3px black rules, zebra table rows, WHERE THE MONEY GOES bar chart on the cost breakdown. Reads designed rather than generated.',
+    accent: '#8E4527',
   },
   {
     key: 'minimal',

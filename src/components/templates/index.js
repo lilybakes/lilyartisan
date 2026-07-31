@@ -16,6 +16,8 @@ import { KRAFT_TEMPLATES } from './variants/kraft/index.js'
 import { CRISP_TEMPLATES } from './variants/crisp/index.js'
 import { BKO_TEMPLATES } from './variants/bko/index.js'
 import { LETTERPRESS_TEMPLATES } from './variants/letterpress/index.js'
+import { EDITORIAL_TEMPLATES } from './variants/editorial/index.js'
+import { QUIET_MINIMAL_TEMPLATES } from './variants/quiet-minimal/index.js'
 
 /**
  * Registry of the 10 shared templates. Each entry is the DEFAULT (non-variant)
@@ -44,6 +46,8 @@ const VARIANT_MAP = {
   kraft: KRAFT_TEMPLATES,
   crisp: CRISP_TEMPLATES,
   letterpress: LETTERPRESS_TEMPLATES,
+  editorial: EDITORIAL_TEMPLATES,
+  minimal: QUIET_MINIMAL_TEMPLATES,
 }
 
 export function getTemplate(key) {
