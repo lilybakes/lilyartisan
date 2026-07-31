@@ -15,6 +15,7 @@ export default function TemplateAccess() {
   const [users, setUsers]           = useState([])
   const [loading, setLoading]       = useState(true)
   const [saving, setSaving]         = useState('')
+  const [rpcError, setRpcError]     = useState(null)
 
   async function reload() {
     setLoading(true)
@@ -23,6 +24,19 @@ export default function TemplateAccess() {
       supabase.rpc('sysadmin_list_template_grants'),
       supabase.rpc('sysadmin_users_for_grant'),
     ])
+
+    // Surface any RPC error so future silent failures are impossible to miss
+    const errs = []
+    if (visRes.error)    errs.push(`sysadmin_list_template_visibility → ${visRes.error.message}`)
+    if (grantsRes.error) errs.push(`sysadmin_list_template_grants → ${grantsRes.error.message}`)
+    if (usersRes.error)  errs.push(`sysadmin_users_for_grant → ${usersRes.error.message}`)
+    if (errs.length) {
+      console.error('[TemplateAccess] RPC errors:', errs)
+      setRpcError(errs)
+    } else {
+      setRpcError(null)
+    }
+
     const vis = {}
     for (const row of visRes.data || []) vis[`${row.scope}:${row.identifier}`] = row.is_exclusive
     setVisibility(vis)
@@ -55,6 +69,18 @@ export default function TemplateAccess() {
           <button key={t.id} className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>{t.label}</button>
         ))}
       </div>
+
+      {rpcError && (
+        <div className="panel" style={{background:'#FEF2F2', border:'1px solid #FCA5A5', color:'#7F1D1D'}}>
+          <div style={{fontWeight:700, marginBottom:6}}>Backend error</div>
+          <ul style={{margin:0, paddingLeft:18, fontSize:13, lineHeight:1.6}}>
+            {rpcError.map((e, i) => <li key={i}><code>{e}</code></li>)}
+          </ul>
+          <div style={{fontSize:12, marginTop:10, opacity:0.85}}>
+            Most likely cause: the template-access SQL migration hasn't run, or an earlier version needs the users-for-grant fix. Re-run <code>supabase/users-for-grant-fix.sql</code> in the Supabase SQL editor.
+          </div>
+        </div>
+      )}
 
       {loading && <div className="panel"><p className="loading">Loading…</p></div>}
 
@@ -212,7 +238,11 @@ function GrantsTab({ visibility, grants, users, onReload }) {
             <div className="field">
               <label>User</label>
               <select value={pickUser} onChange={e => setPickUser(e.target.value)}>
-                <option value="">Choose a user…</option>
+                <option value="">
+                  {users.length === 0
+                    ? 'No users returned — check the error banner above'
+                    : 'Choose a user…'}
+                </option>
                 {users.map(u => <option key={u.user_id} value={u.user_id}>{u.email}</option>)}
               </select>
             </div>
