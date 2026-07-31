@@ -9,12 +9,6 @@ import { SocialMediaCard }    from './SocialMediaCard.jsx'
 import { RecipeBinderPage }   from './RecipeBinderPage.jsx'
 import { CertificateOfCraft } from './CertificateOfCraft.jsx'
 
-/**
- * Template registry.
- *
- * To un-hide any of the 6 "in the works" templates, flip `ready: false` to
- * `ready: true` — the component files are already in this folder and wired up.
- */
 export const TEMPLATES = [
   {
     key: 'classic',
@@ -63,62 +57,68 @@ export const TEMPLATES = [
   {
     key: 'menu',
     name: 'Menu Insert',
-    description: 'Multi-recipe compact menu insert with prices.',
+    description: 'Multi-recipe compact menu insert with prices, grouped by category.',
     component: MenuInsert,
-    ready: false,
+    ready: true,
     pageSize: 'A5',
     multi: true,
     preview: 'grid',
+    gradient: 'linear-gradient(135deg, #FF7E9C 0%, #F5546E 100%)',
   },
   {
     key: 'wholesale',
     name: 'Wholesale Price Sheet',
-    description: 'Multi-recipe wholesale sheet for B2B customers.',
+    description: 'Multi-recipe wholesale sheet for B2B customers — retail, wholesale, batch pricing.',
     component: WholesalePriceList,
-    ready: false,
+    ready: true,
     pageSize: 'A4',
     multi: true,
     preview: 'table',
+    gradient: 'linear-gradient(135deg, #6BA5FF 0%, #4785FF 100%)',
   },
   {
     key: 'delivery',
     name: 'Delivery Tag',
-    description: 'Small tag for delivery orders with customer name and care info.',
+    description: 'Small hang-tag for delivery orders with care info and thank-you.',
     component: DeliveryTag,
-    ready: false,
+    ready: true,
     pageSize: 'A7',
     multi: false,
     preview: 'card-lines',
+    gradient: 'linear-gradient(135deg, #D8A66F 0%, #B08555 100%)',
   },
   {
     key: 'social',
     name: 'Social Media Card',
-    description: 'Instagram-sized square recipe teaser for posts.',
+    description: 'Square Instagram-ready card — screenshot to post; brand color background.',
     component: SocialMediaCard,
-    ready: false,
+    ready: true,
     pageSize: '1:1',
     multi: false,
     preview: 'square',
+    gradient: 'linear-gradient(135deg, #E17BEE 0%, #C25FDA 100%)',
   },
   {
     key: 'binder',
     name: 'Recipe Binder Page',
-    description: 'Detailed A4 page with photo slot for your recipe binder.',
+    description: 'Detailed A4 kitchen page with photo slot, full cost table, method, and notes.',
     component: RecipeBinderPage,
-    ready: false,
+    ready: true,
     pageSize: 'A4',
     multi: false,
     preview: 'card-lines',
+    gradient: 'linear-gradient(135deg, #8FA3BC 0%, #607089 100%)',
   },
   {
     key: 'cert',
-    name: 'Certificate of Care',
-    description: 'Decorative "made with care" certificate for premium orders.',
+    name: 'Certificate of Craft',
+    description: 'Decorative landscape certificate for premium orders and gift packaging.',
     component: CertificateOfCraft,
-    ready: false,
+    ready: true,
     pageSize: 'A4',
     multi: false,
     preview: 'circle',
+    gradient: 'linear-gradient(135deg, #E8BB57 0%, #D0A03A 100%)',
   },
 ]
 
