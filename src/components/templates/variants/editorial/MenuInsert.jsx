@@ -50,8 +50,6 @@ export function EditorialMenuInsert({ recipes = [], brand = {}, customization = 
         </div>
       </header>
 
-      <EditorialRule tone="black" weight="thick"/>
-
       <div className="e-menu-body">
         {sortedCats.length === 0 && (
           <p className="e-menu-empty">

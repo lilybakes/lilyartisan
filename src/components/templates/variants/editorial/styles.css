@@ -250,6 +250,7 @@
   width: 148mm; min-height: 210mm;
   padding: 0;
   display: flex;
+  flex-direction: row;
 }
 .e-recipe-sideband {
   width: 22mm;
@@ -847,6 +848,7 @@
   width: 74mm; min-height: 105mm;
   padding: 0;
   display: flex;
+  flex-direction: row;
 }
 .e-delivery-sideband {
   width: 8mm;
@@ -974,6 +976,7 @@
   width: 210mm; min-height: 297mm;
   padding: 0;
   display: flex;
+  flex-direction: row;
 }
 .e-binder-sidebar {
   width: 62mm;
@@ -1122,6 +1125,8 @@
   width: 297mm; height: 210mm;
   padding: 0;
   display: flex;
+  flex-direction: row;
+  position: relative;
 }
 .e-cert-sideband {
   width: 26mm;

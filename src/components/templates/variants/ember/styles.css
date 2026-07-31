@@ -1,0 +1,1314 @@
+/* =============================================================================
+   EMBER VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   Adds Bebas Neue via @import for the heavy condensed uppercase titles that
+   define the Ember voice. Falls back to Archivo Black / system condensed
+   sans if the font fails to load.
+
+   Palette:
+     Burgundy    #7A1418  gradient start (top-left)
+     Red         #A82A1F  gradient middle
+     Orange      #DE4A1F  gradient end (bottom-right) + primary accent
+     Cream       #FBF3E7  paper background
+     Cream warm  #F5EAD8  subtle warm alternate for zebra rows
+     Ink         #1F1614  near-black — titles, table headers, tags, footer bar
+     Dark        #2A1A17  Delivery Tag background
+     Body        #3A2E2A  softer body text
+     Muted       #8B7A72  meta text, secondary
+     Cream on gradient / dark  #FBF3E7  text on gradient/dark surfaces
+   ============================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+
+/* =============================================================================
+   SHARED — palette, primitives
+   ============================================================================= */
+
+.em-tpl {
+  --em-burgundy: #7A1418;
+  --em-red: #A82A1F;
+  --em-orange: #DE4A1F;
+  --em-cream: #FBF3E7;
+  --em-cream-warm: #F5EAD8;
+  --em-cream-alt: #F0E5D2;
+  --em-ink: #1F1614;
+  --em-dark: #2A1A17;
+  --em-body: #3A2E2A;
+  --em-muted: #8B7A72;
+  --em-cream-on-dark: #FBF3E7;
+
+  --em-gradient: linear-gradient(135deg,
+    var(--em-burgundy) 0%,
+    var(--em-red) 55%,
+    var(--em-orange) 100%);
+
+  --em-heavy: 'Bebas Neue', 'Archivo Black', 'Impact', system-ui, sans-serif;
+  --em-sans: 'Manrope', 'Plus Jakarta Sans', -apple-system, sans-serif;
+
+  background: var(--em-cream);
+  color: var(--em-body);
+  font-family: var(--em-sans);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(31, 22, 20, 0.14);
+  box-sizing: border-box;
+}
+.em-tpl * { box-sizing: border-box; }
+
+/* --- Brand lockup ------------------------------------------------------- */
+.em-brand-lockup { display: flex; flex-direction: column; gap: 2px; }
+.em-brand-name {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-ink);
+  margin: 0;
+  line-height: 0.95;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.em-brand-ink   { color: var(--em-ink); }
+.em-brand-cream { color: var(--em-cream-on-dark); }
+
+.em-brand-tagline {
+  font-family: var(--em-sans);
+  color: var(--em-muted);
+  margin: 2mm 0 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.em-brand-tagline-ink   { color: var(--em-muted); }
+.em-brand-tagline-cream { color: var(--em-cream-on-dark); opacity: 0.75; }
+
+.em-brand-lockup-sm .em-brand-name { font-size: 18px; }
+.em-brand-lockup-sm .em-brand-tagline { font-size: 11.5px; }
+.em-brand-lockup-lg .em-brand-name { font-size: 34px; line-height: 0.95; }
+.em-brand-lockup-lg .em-brand-tagline { font-size: 13px; }
+
+/* --- Title (Bebas Neue heavy condensed) --------------------------------- */
+.em-title {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-ink);
+  line-height: 0.95;
+  margin: 0;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* --- Small-caps eyebrow — Manrope, letter-spaced ----------------------- */
+.em-eyebrow {
+  font-family: var(--em-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 10.5px;
+  padding-left: 0.18em;
+  line-height: 1.4;
+}
+.em-eyebrow-ember { color: var(--em-orange); }
+.em-eyebrow-muted { color: var(--em-muted); }
+.em-eyebrow-cream { color: var(--em-cream-on-dark); }
+
+.em-muted { color: var(--em-muted); }
+.em-ember { color: var(--em-orange); }
+
+/* --- Chips (meta pills — three tone variants) --------------------------- */
+.em-chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: var(--em-sans);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding-left: calc(16px + 0.14em);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.em-chip-black {
+  background: var(--em-ink);
+  color: var(--em-cream-on-dark);
+}
+.em-chip-ember {
+  background: var(--em-orange);
+  color: var(--em-cream-on-dark);
+}
+.em-chip-outlined {
+  background: transparent;
+  color: var(--em-ink);
+  border: 1.5px solid var(--em-ink);
+}
+
+/* --- Category tag (menu-page filled ember rectangle) ------------------- */
+.em-cat-tag {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 6px 18px;
+  padding-left: calc(18px + 0.16em);
+  background: var(--em-orange);
+  color: var(--em-cream-on-dark);
+  font-family: var(--em-sans);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* --- Rules ------------------------------------------------------------- */
+.em-rule { border: none; padding: 0; margin: 0; display: block; width: 100%; }
+.em-rule-thick { height: 2.5px; }
+.em-rule-hair  { height: 1px; }
+.em-rule-ink   { background: var(--em-ink); }
+.em-rule-cream { background: rgba(251, 243, 231, 0.24); }
+
+/* --- Filled circular gradient seal (Certificate) ---------------------- */
+.em-seal {
+  border-radius: 50%;
+  background: var(--em-gradient);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--em-cream-on-dark);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(122, 20, 24, 0.18);
+}
+.em-seal-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+  padding-left: 0.12em;
+  text-align: center;
+  line-height: 1;
+}
+
+/* --- Numeric cells ---------------------------------------------------- */
+.em-num {
+  text-align: right;
+  font-family: var(--em-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Empty-state ------------------------------------------------------ */
+.em-empty {
+  color: var(--em-muted);
+  font-family: var(--em-sans);
+  font-style: italic;
+  font-size: 12px;
+  margin: 3mm 0 0;
+}
+
+/* --- Footer ----------------------------------------------------------- */
+.em-footer {
+  font-family: var(--em-sans);
+  color: var(--em-body);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.em-footer-split {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12mm;
+}
+.em-footer-split .em-footer-right { text-align: right; }
+.em-footer-centered {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 3px;
+}
+.em-footer-brand {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-ink);
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  margin-bottom: 3mm;
+}
+.em-footer-minimal { text-align: center; }
+.em-footer-line { font-size: 11px; }
+.em-footer-social { color: var(--em-orange); font-weight: 700; }
+
+/* --- Method sub-group heading ----------------------------------------- */
+.em-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--em-sans);
+  font-weight: 700;
+  color: var(--em-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 10px;
+  margin: 4mm 0 2mm;
+  display: block;
+}
+.em-method-group::before { content: '' !important; }
+
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.em-recipe {
+  width: 148mm; min-height: 210mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.em-recipe-header {
+  position: relative;
+  background: var(--em-gradient);
+  color: var(--em-cream-on-dark);
+  padding: 16mm 14mm 22mm;
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 65% 100%, 0 92%);
+  min-height: 88mm;
+}
+.em-recipe-brand-line {
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  margin-bottom: 8mm;
+  color: var(--em-cream-on-dark);
+  opacity: 0.9;
+}
+.em-recipe-title {
+  color: var(--em-cream-on-dark);
+  font-size: 62px;
+  line-height: 0.92;
+  max-width: 110mm;
+}
+
+.em-recipe-body {
+  padding: 8mm 14mm 12mm;
+  flex: 1;
+  display: flex; flex-direction: column;
+  margin-top: -6mm;
+}
+.em-recipe-chips {
+  display: flex; flex-wrap: wrap; gap: 3mm;
+  margin-bottom: 10mm;
+}
+
+.em-recipe-columns {
+  display: grid;
+  grid-template-columns: 60mm 1fr;
+  gap: 10mm;
+  flex: 1;
+}
+.em-recipe-ingredients > .em-eyebrow,
+.em-recipe-method > .em-eyebrow {
+  margin-bottom: 5mm;
+  font-size: 11.5px;
+  letter-spacing: 0.20em;
+}
+.em-recipe-ing-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+}
+.em-recipe-ing-list li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 3.5mm 0;
+  border-bottom: 1px solid rgba(31, 22, 20, 0.15);
+  font-family: var(--em-sans);
+  font-size: 13px;
+  color: var(--em-body);
+}
+.em-recipe-ing-list li:last-child { border-bottom: 1px solid rgba(31, 22, 20, 0.15); }
+.em-recipe-ing-name { color: var(--em-body); font-weight: 500; }
+.em-recipe-ing-qty {
+  font-family: var(--em-sans);
+  font-weight: 800;
+  color: var(--em-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.em-recipe-method-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 4mm;
+  font-family: var(--em-sans);
+  font-size: 13px;
+  color: var(--em-body);
+  line-height: 1.45;
+}
+.em-recipe-method-list li {
+  display: grid;
+  grid-template-columns: 12mm 1fr;
+  gap: 2mm;
+  align-items: baseline;
+}
+.em-recipe-method-num {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-orange);
+  font-size: 22px;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.em-recipe-method-step { color: var(--em-body); }
+.em-recipe-method-step-final strong {
+  font-weight: 800;
+  color: var(--em-ink);
+}
+
+.em-recipe-footer-wrap { margin-top: auto; padding-top: 4mm; }
+
+
+/* =============================================================================
+   02 — COST BREAKDOWN  (A4 portrait, 210×297mm) — INTERNAL
+   ============================================================================= */
+.em-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 18mm 0;
+  display: flex; flex-direction: column;
+}
+.em-cost-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  padding-bottom: 4mm;
+}
+.em-cost-header-pill {
+  background: var(--em-orange);
+  padding: 6px 14px;
+  border-radius: 4px;
+}
+.em-cost-header-pill .em-eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  color: var(--em-cream-on-dark);
+}
+
+.em-cost-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 14mm;
+  padding: 10mm 0 8mm;
+}
+.em-cost-title-left { flex: 1; min-width: 0; padding-top: 6mm; }
+.em-cost-title { font-size: 52px; line-height: 0.95; margin: 0; }
+.em-cost-meta { font-size: 11px; letter-spacing: 0.14em; margin-top: 5mm; }
+
+.em-cost-suggested-card {
+  background: var(--em-burgundy);
+  color: var(--em-cream-on-dark);
+  padding: 6mm 8mm;
+  border-radius: 8px;
+  min-width: 74mm;
+}
+.em-cost-suggested-card .em-eyebrow {
+  font-size: 10.5px; letter-spacing: 0.20em; margin-bottom: 2mm;
+  color: var(--em-cream-on-dark); opacity: 0.9;
+}
+.em-cost-suggested-value {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-cream-on-dark);
+  font-size: 44px;
+  line-height: 0.95;
+  margin: 1mm 0 3mm;
+  letter-spacing: 0.01em;
+}
+.em-cost-suggested-divider {
+  border-top: 1px solid rgba(251, 243, 231, 0.28);
+  margin: 0 0 3mm;
+}
+.em-cost-suggested-line {
+  display: flex; justify-content: space-between;
+  font-family: var(--em-sans);
+  font-size: 12px;
+  color: var(--em-cream-on-dark);
+  padding: 1mm 0;
+  font-weight: 500;
+}
+
+/* Bar chart */
+.em-cost-chart-section { margin-top: 4mm; }
+.em-cost-chart-section > .em-eyebrow {
+  margin-bottom: 5mm; font-size: 11px; letter-spacing: 0.20em;
+}
+.em-cost-chart { display: flex; flex-direction: column; gap: 2mm; }
+.em-cost-chart-row {
+  display: grid;
+  grid-template-columns: 42mm 1fr 24mm;
+  gap: 5mm;
+  align-items: center;
+  font-family: var(--em-sans);
+  font-size: 13px;
+  padding: 1.5mm 0;
+}
+.em-cost-chart-name { color: var(--em-body); font-weight: 500; }
+.em-cost-chart-track {
+  background: var(--em-cream-alt);
+  height: 8mm;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.em-cost-chart-fill {
+  background: var(--em-gradient);
+  height: 100%;
+}
+.em-cost-chart-val {
+  font-family: var(--em-sans);
+  font-weight: 800;
+  color: var(--em-ink);
+  text-align: right;
+  font-size: 14px;
+}
+
+/* Full costing table */
+.em-cost-table-section { margin-top: 8mm; }
+.em-cost-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--em-sans);
+  font-size: 12.5px;
+  color: var(--em-body);
+}
+.em-cost-table thead th {
+  background: var(--em-ink);
+  color: var(--em-cream-on-dark);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 4mm 4mm;
+  font-size: 10.5px;
+  text-align: left;
+}
+.em-cost-table thead th.em-num { text-align: right; }
+.em-cost-table td {
+  padding: 3.5mm 4mm;
+  border-bottom: 1px solid rgba(31, 22, 20, 0.10);
+}
+.em-cost-table tbody tr:nth-child(even) td { background: var(--em-cream-warm); }
+.em-cost-td-name { color: var(--em-body); font-weight: 500; }
+.em-cost-td-val  { font-weight: 800; color: var(--em-ink); }
+.em-cost-empty {
+  padding: 8mm 0 !important;
+  color: var(--em-muted);
+  font-style: italic;
+  text-align: center;
+}
+.em-cost-batch-row td {
+  padding: 5mm 4mm 4mm;
+  border-bottom: none;
+  border-top: 2.5px solid var(--em-ink);
+  font-family: var(--em-sans);
+  font-weight: 800;
+  color: var(--em-ink);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+}
+.em-cost-batch-row td.em-num {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-orange);
+  font-size: 28px;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+/* Full-width black caution bar at the bottom */
+.em-cost-caution-bar {
+  background: var(--em-ink);
+  color: var(--em-cream-on-dark);
+  padding: 6mm 18mm;
+  margin: 6mm -18mm 0;
+  font-family: var(--em-sans);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.em-cost-caution-lead {
+  color: var(--em-orange);
+  font-weight: 800;
+  margin-right: 4px;
+}
+.em-cost-caution-body {
+  color: var(--em-cream-on-dark);
+  opacity: 0.92;
+}
+
+.em-cost-footer-wrap {
+  margin-top: auto;
+  padding: 6mm 0 10mm;
+}
+
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, 105×148mm)
+   ============================================================================= */
+.em-care {
+  width: 105mm; min-height: 148mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.em-care-header {
+  background: var(--em-gradient);
+  color: var(--em-cream-on-dark);
+  padding: 10mm 10mm 15mm;
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 62% 100%, 0 92%);
+  min-height: 58mm;
+}
+.em-care-thanks {
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  margin-bottom: 4mm;
+  color: var(--em-cream-on-dark);
+  opacity: 0.9;
+}
+.em-care-product {
+  color: var(--em-cream-on-dark);
+  font-size: 40px;
+  line-height: 0.95;
+  margin: 0;
+  max-width: 82mm;
+}
+
+.em-care-body {
+  padding: 6mm 10mm 4mm;
+  flex: 1;
+  display: flex; flex-direction: column; gap: 5mm;
+  margin-top: -4mm;
+}
+.em-care-section { }
+.em-care-section > .em-eyebrow {
+  margin-bottom: 3mm; font-size: 10.5px; letter-spacing: 0.20em;
+}
+.em-care-text {
+  font-family: var(--em-sans);
+  color: var(--em-body);
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 0;
+}
+.em-care-allergen-chips {
+  display: flex; flex-wrap: wrap; gap: 3mm;
+}
+.em-care-allergen-chips .em-chip { padding: 5px 12px; font-size: 10px; }
+
+.em-care-footer-wrap { margin-top: auto; padding: 0 10mm 6mm; }
+.em-care-footer-wrap .em-footer-line { font-size: 10px; }
+
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.em-label {
+  width: 74mm; min-height: 105mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.em-label-header {
+  background: var(--em-gradient);
+  color: var(--em-cream-on-dark);
+  padding: 8mm 7mm 10mm;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 65% 100%, 0 92%);
+  min-height: 42mm;
+}
+.em-label-brand-line {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  margin-bottom: 4mm;
+  color: var(--em-cream-on-dark);
+  opacity: 0.9;
+}
+.em-label-product {
+  color: var(--em-cream-on-dark);
+  font-size: 26px;
+  line-height: 0.95;
+  margin: 0;
+  max-width: 60mm;
+}
+
+.em-label-body {
+  padding: 6mm 7mm 4mm;
+  flex: 1;
+  display: flex; flex-direction: column;
+  gap: 4mm;
+  margin-top: -3mm;
+}
+.em-label-section > .em-eyebrow {
+  margin-bottom: 2mm; font-size: 9.5px; letter-spacing: 0.20em;
+}
+.em-label-ingredients {
+  font-family: var(--em-sans);
+  color: var(--em-body);
+  font-size: 10.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+.em-label-allergen {
+  background: var(--em-ink);
+  padding: 4mm 5mm;
+  border-radius: 6px;
+}
+.em-label-allergen > .em-eyebrow {
+  margin-bottom: 2mm; font-size: 9.5px; letter-spacing: 0.20em;
+  color: var(--em-orange);
+}
+.em-label-allergen-body {
+  font-family: var(--em-sans);
+  color: var(--em-cream-on-dark);
+  font-size: 10.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.em-label-footer-wrap { margin-top: auto; padding: 0 7mm 5mm; }
+.em-label-footer-wrap .em-rule-hair { margin-bottom: 3mm; }
+.em-label-footer {
+  font-family: var(--em-sans);
+  color: var(--em-body);
+  font-size: 9.5px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.em-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 14mm 14mm 10mm;
+  display: flex; flex-direction: column;
+}
+.em-menu-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 10mm;
+  padding-bottom: 5mm;
+}
+.em-menu-header .em-brand-name { font-size: 42px; line-height: 0.9; }
+.em-menu-meta-block {
+  display: flex; flex-direction: column; gap: 2mm;
+  text-align: right;
+  align-items: flex-end;
+}
+.em-menu-meta-block .em-eyebrow {
+  font-size: 10.5px; letter-spacing: 0.16em;
+}
+
+.em-menu-body { padding: 6mm 0 6mm; }
+.em-menu-empty {
+  text-align: center; color: var(--em-muted);
+  font-style: italic;
+  margin-top: 20mm;
+}
+
+.em-menu-cat-block { margin-bottom: 8mm; }
+.em-menu-cat-block > .em-cat-tag { margin-bottom: 4mm; }
+
+.em-menu-cat-items {
+  display: flex; flex-direction: column; gap: 5mm;
+}
+.em-menu-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8mm;
+}
+.em-menu-item-body { flex: 1; min-width: 0; }
+.em-menu-item-name {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-ink);
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.em-menu-item-desc {
+  font-family: var(--em-sans);
+  color: var(--em-muted);
+  font-size: 12px;
+  margin-top: 2mm;
+  line-height: 1.4;
+}
+.em-menu-item-price {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-orange);
+  font-size: 24px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.em-menu-footer-wrap { margin-top: auto; }
+
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.em-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 18mm 12mm;
+  display: flex; flex-direction: column;
+}
+.em-wholesale-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12mm;
+  padding-bottom: 4mm;
+}
+.em-wholesale-meta-block {
+  display: flex; flex-direction: column; gap: 2mm;
+  text-align: right;
+  align-items: flex-end;
+}
+.em-wholesale-meta-block .em-eyebrow { font-size: 11px; letter-spacing: 0.16em; }
+
+.em-wholesale-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 14mm;
+  padding: 10mm 0 10mm;
+}
+.em-wholesale-title-left { flex: 1; min-width: 0; }
+.em-wholesale-title { font-size: 56px; margin: 0; line-height: 0.92; }
+.em-wholesale-terms-card {
+  background: var(--em-ink);
+  color: var(--em-cream-on-dark);
+  padding: 6mm 8mm;
+  border-radius: 8px;
+  min-width: 86mm;
+  max-width: 90mm;
+}
+.em-wholesale-terms-card > .em-eyebrow {
+  margin-bottom: 3mm; font-size: 10.5px; letter-spacing: 0.20em;
+  color: var(--em-orange);
+}
+.em-wholesale-terms-headline {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-cream-on-dark);
+  font-size: 44px;
+  line-height: 1;
+  margin: 0 0 3mm;
+  letter-spacing: 0.02em;
+}
+.em-wholesale-terms-sub {
+  font-family: var(--em-sans);
+  color: var(--em-cream-on-dark);
+  opacity: 0.75;
+  font-size: 12px;
+}
+
+.em-wholesale-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--em-sans);
+  font-size: 12.5px;
+  color: var(--em-body);
+}
+.em-wholesale-table thead th {
+  background: var(--em-orange);
+  color: var(--em-cream-on-dark);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 4mm 5mm;
+  font-size: 10.5px;
+  text-align: left;
+}
+.em-wholesale-table thead th.em-num { text-align: right; }
+.em-wholesale-table td {
+  padding: 4mm 5mm;
+  border-bottom: 1px solid rgba(31, 22, 20, 0.08);
+}
+.em-wholesale-row-alt td { background: var(--em-cream-warm); }
+.em-wholesale-td-name { color: var(--em-body); font-weight: 500; }
+.em-wholesale-td-price { color: var(--em-orange); font-weight: 800; }
+
+.em-wholesale-terms-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 10mm;
+}
+.em-wholesale-terms-col > .em-eyebrow { margin-bottom: 4mm; font-size: 11px; letter-spacing: 0.18em; }
+.em-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--em-sans);
+  color: var(--em-body);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.em-wholesale-terms-list li {
+  padding-left: 6mm;
+  position: relative;
+}
+.em-wholesale-terms-list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--em-ink);
+}
+.em-wholesale-order-lines {
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--em-sans);
+  color: var(--em-body);
+  font-size: 12.5px;
+}
+
+.em-wholesale-sig-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 10mm;
+}
+.em-wholesale-sig-cell { display: flex; flex-direction: column; gap: 2mm; }
+.em-wholesale-sig-line {
+  height: 1px;
+  background: var(--em-ink);
+  margin-bottom: 3mm;
+  width: 100%;
+}
+.em-wholesale-sig-cell .em-eyebrow { font-size: 10px; letter-spacing: 0.18em; }
+
+.em-wholesale-footer-wrap { margin-top: auto; padding-top: 10mm; }
+
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.em-delivery {
+  width: 74mm; min-height: 105mm;
+  padding: 0;
+  background: var(--em-dark);
+  color: var(--em-cream-on-dark);
+  display: flex; flex-direction: column;
+}
+.em-delivery-hole-wrap {
+  padding: 5mm 0 4mm;
+  display: flex; justify-content: center;
+}
+.em-delivery-hole {
+  width: 5mm; height: 5mm;
+  border: 1px solid rgba(251, 243, 231, 0.5);
+  border-radius: 50%;
+}
+.em-delivery-gradient {
+  margin: 0 4mm;
+  background: var(--em-gradient);
+  padding: 8mm 6mm 10mm;
+  clip-path: polygon(0 0, 100% 0, 100% 78%, 68% 100%, 0 92%);
+  min-height: 30mm;
+}
+.em-delivery-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.20em;
+  margin-bottom: 3mm;
+  color: var(--em-cream-on-dark);
+  opacity: 0.9;
+}
+.em-delivery-product {
+  color: var(--em-cream-on-dark);
+  font-size: 26px;
+  line-height: 0.95;
+  margin: 0;
+  max-width: 54mm;
+}
+
+.em-delivery-body {
+  padding: 6mm 6mm 4mm;
+  flex: 1;
+  display: flex; flex-direction: column;
+}
+.em-delivery-care-title {
+  margin-bottom: 2mm;
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  color: var(--em-orange);
+}
+.em-delivery-care-body {
+  font-family: var(--em-sans);
+  color: var(--em-cream-on-dark);
+  font-size: 10.5px;
+  line-height: 1.5;
+  margin: 0 0 6mm;
+  opacity: 0.92;
+}
+.em-delivery-brand-anchor {
+  margin-top: auto;
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-cream-on-dark);
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.em-delivery-footer-wrap { padding: 0 6mm 5mm; }
+.em-delivery-footer-line {
+  font-family: var(--em-sans);
+  font-size: 9.5px;
+  color: var(--em-cream-on-dark);
+  line-height: 1.4;
+}
+.em-delivery-socials { opacity: 0.95; }
+.em-delivery-contact { opacity: 0.7; }
+
+
+/* =============================================================================
+   08 — SOCIAL MEDIA CARD  (1080×1080 = 148×148mm)
+   ============================================================================= */
+.em-social {
+  width: 148mm; height: 148mm;
+  background: var(--em-gradient);
+  color: var(--em-cream-on-dark);
+  padding: 12mm 12mm 0;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.em-social-dark-band {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 100%;
+  height: 20mm;
+  background: var(--em-ink);
+  clip-path: polygon(50% 0, 100% 0, 100% 100%, 0 100%);
+  z-index: 0;
+}
+
+.em-social-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 10mm;
+  position: relative; z-index: 1;
+}
+.em-social-brand-name {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-cream-on-dark);
+  font-size: 24px;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.em-social-city {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--em-cream-on-dark);
+  padding-top: 2mm;
+}
+
+.em-social-body {
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 6mm 0;
+  position: relative; z-index: 1;
+}
+.em-social-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--em-cream-on-dark);
+  opacity: 0.95;
+  margin-bottom: 6mm;
+}
+.em-social-title {
+  color: var(--em-cream-on-dark);
+  font-size: 82px;
+  line-height: 0.9;
+  margin: 0 0 6mm;
+  max-width: 118mm;
+}
+.em-social-desc {
+  font-family: var(--em-sans);
+  color: var(--em-cream-on-dark);
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 0 0 8mm;
+  max-width: 108mm;
+  opacity: 0.95;
+  font-weight: 500;
+}
+.em-social-cta {
+  display: inline-block;
+  background: var(--em-cream);
+  color: var(--em-orange);
+  padding: 4mm 8mm;
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  align-self: flex-start;
+  border-radius: 2px;
+}
+
+.em-social-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6mm 0;
+  font-family: var(--em-sans);
+  font-size: 11.5px;
+  color: var(--em-cream-on-dark);
+  position: relative; z-index: 1;
+  font-weight: 500;
+}
+.em-social-handles { color: var(--em-cream-on-dark); }
+.em-social-website { color: var(--em-cream-on-dark); opacity: 0.75; }
+
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait)
+   ============================================================================= */
+.em-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 0;
+  display: flex;
+  position: relative;
+}
+.em-binder-stripe {
+  width: 8mm;
+  background: linear-gradient(180deg, var(--em-burgundy) 0%, var(--em-red) 55%, var(--em-orange) 100%);
+  flex-shrink: 0;
+}
+.em-binder-content {
+  flex: 1;
+  padding: 14mm 16mm 12mm;
+  display: flex; flex-direction: column;
+  min-width: 0;
+}
+.em-binder-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12mm;
+  padding-bottom: 4mm;
+}
+.em-binder-header-right { font-size: 11px; letter-spacing: 0.18em; }
+
+.em-binder-title-row {
+  display: flex; gap: 10mm; align-items: flex-start;
+  padding: 10mm 0 6mm;
+}
+.em-binder-title-left { flex: 1; min-width: 0; }
+.em-binder-title { font-size: 48px; margin: 0; line-height: 0.95; }
+.em-binder-desc {
+  font-family: var(--em-sans);
+  color: var(--em-muted);
+  font-size: 13.5px;
+  margin: 4mm 0 0;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.em-binder-photo {
+  width: 44mm; height: 44mm; flex-shrink: 0;
+  background: var(--em-cream-warm);
+  border: 1.5px solid var(--em-ink);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 4mm;
+}
+.em-binder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.em-binder-photo-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 1mm;
+}
+.em-binder-photo-placeholder .em-eyebrow { font-size: 9.5px; letter-spacing: 0.16em; }
+
+.em-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 4mm;
+  margin: 6mm 0 8mm;
+}
+.em-binder-meta-cell {
+  background: var(--em-cream);
+  border: 1.5px solid var(--em-ink);
+  padding: 4mm 5mm;
+}
+.em-binder-meta-cell > .em-eyebrow { font-size: 10px; letter-spacing: 0.16em; margin-bottom: 2mm; }
+.em-binder-meta-val {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-ink);
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.em-binder-meta-cell-accent {
+  background: var(--em-orange);
+  border-color: var(--em-orange);
+}
+.em-binder-meta-cell-accent .em-binder-meta-val { color: var(--em-cream-on-dark); }
+
+.em-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12mm;
+  flex: 1;
+}
+.em-binder-section > .em-eyebrow { margin-bottom: 5mm; font-size: 11px; letter-spacing: 0.20em; }
+
+.em-binder-ing-list { display: flex; flex-direction: column; }
+.em-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 2.5mm 0;
+  border-bottom: 1px solid rgba(31, 22, 20, 0.10);
+  font-family: var(--em-sans);
+  font-size: 12px;
+  color: var(--em-body);
+  align-items: baseline;
+}
+.em-binder-ing-name { color: var(--em-body); font-weight: 500; }
+.em-binder-ing-qty {
+  color: var(--em-body);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+}
+.em-binder-ing-cost {
+  color: var(--em-ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+  font-weight: 700;
+}
+.em-binder-batch-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 3mm 0 2mm;
+  border-top: 2.5px solid var(--em-ink);
+  font-family: var(--em-sans);
+  font-size: 13px;
+  color: var(--em-ink);
+  font-weight: 800;
+  margin-top: 2mm;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+}
+.em-binder-batch-row > span:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--em-orange);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.em-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--em-sans);
+  font-size: 12px;
+  color: var(--em-body);
+  line-height: 1.5;
+}
+.em-binder-method li {
+  display: grid;
+  grid-template-columns: 10mm 1fr;
+  gap: 2mm;
+  align-items: baseline;
+}
+.em-binder-method-num {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-orange);
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.em-binder-method-step { color: var(--em-body); }
+.em-binder-method-step strong {
+  font-weight: 800;
+  color: var(--em-ink);
+}
+
+.em-binder-notes { margin-top: 6mm; }
+.em-binder-notes > .em-eyebrow { margin-bottom: 3mm; font-size: 11px; letter-spacing: 0.20em; }
+.em-binder-notes-lines { display: flex; flex-direction: column; gap: 7px; }
+.em-binder-notes-line { border-bottom: 1px solid rgba(31, 22, 20, 0.14); height: 5mm; }
+
+.em-binder-footer-wrap { margin-top: auto; padding-top: 4mm; }
+
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, 297×210mm)
+   ============================================================================= */
+.em-cert {
+  width: 297mm; height: 210mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.em-cert-top-stripe {
+  height: 14mm;
+  background: var(--em-gradient);
+  border-bottom-left-radius: 40% 100%;
+  border-bottom-right-radius: 40% 100%;
+  flex-shrink: 0;
+}
+.em-cert-body {
+  flex: 1;
+  padding: 8mm 24mm 6mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.em-cert-title-label { font-size: 12px; letter-spacing: 0.24em; }
+
+.em-cert-inner {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4mm;
+  max-width: 220mm;
+}
+.em-cert-intro,
+.em-cert-outro {
+  font-family: var(--em-sans);
+  color: var(--em-muted);
+  font-size: 13px;
+  margin: 0;
+  font-weight: 500;
+}
+.em-cert-product {
+  font-size: 62px;
+  margin: 3mm 0;
+  line-height: 0.95;
+  max-width: 240mm;
+}
+.em-cert-brand-name {
+  font-family: var(--em-heavy);
+  font-weight: 400;
+  color: var(--em-orange);
+  font-size: 32px;
+  margin-top: 2mm;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.em-cert-tagline {
+  font-family: var(--em-sans);
+  color: var(--em-muted);
+  font-size: 13px;
+  margin: 2mm 0 0;
+}
+
+.em-cert-signature-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20mm;
+  width: 100%;
+  align-items: flex-end;
+  padding: 0 12mm 3mm;
+  max-width: 240mm;
+}
+.em-cert-sig-cell {
+  display: flex; flex-direction: column; gap: 2mm;
+  align-items: flex-start;
+  min-width: 0;
+}
+.em-cert-sig-cell-right { align-items: flex-end; text-align: right; }
+.em-cert-sig-cell .em-eyebrow { font-size: 10px; letter-spacing: 0.18em; }
+.em-cert-sig-cell .em-rule { margin-bottom: 2mm; }
+.em-cert-sig-img {
+  display: block;
+  max-width: 44mm; max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+.em-cert-seal-wrap {
+  display: flex; justify-content: center; align-items: center;
+  padding-bottom: 2mm;
+}
+
+.em-cert-footer {
+  padding-top: 4mm;
+  font-family: var(--em-sans);
+  color: var(--em-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.em-cert-footer-line { color: var(--em-muted); }
+
+.em-cert-bottom-bar {
+  height: 4mm;
+  background: var(--em-ink);
+  flex-shrink: 0;
+}

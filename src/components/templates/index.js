@@ -19,6 +19,7 @@ import { LETTERPRESS_TEMPLATES } from './variants/letterpress/index.js'
 import { EDITORIAL_TEMPLATES } from './variants/editorial/index.js'
 import { QUIET_MINIMAL_TEMPLATES } from './variants/quiet-minimal/index.js'
 import { VERDANT_TEMPLATES } from './variants/verdant/index.js'
+import { EMBER_TEMPLATES } from './variants/ember/index.js'
 
 /**
  * Registry of the 10 shared templates. Each entry is the DEFAULT (non-variant)
@@ -50,6 +51,7 @@ const VARIANT_MAP = {
   editorial: EDITORIAL_TEMPLATES,
   minimal: QUIET_MINIMAL_TEMPLATES,
   verdant: VERDANT_TEMPLATES,
+  ember: EMBER_TEMPLATES,
 }
 
 export function getTemplate(key) {

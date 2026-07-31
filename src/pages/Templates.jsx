@@ -46,6 +46,8 @@ const STYLE_VARIANTS = [
     description: 'Warm off-white paper, Manrope Light titles, JetBrains Mono meta throughout. Tiny rust dot before titles, hairline dividers, generous whitespace — most restrained.' },
   { key: 'verdant',     name: 'Verdant',
     description: 'Deep forest green on cream. DM Serif Display + Manrope. Mint pill chips, numbered method chips (last step accented), soft decor circles, filled green headers on Recipe Card + Product Label.' },
+  { key: 'ember',       name: 'Ember',
+    description: 'Burgundy→red→orange gradient headers with diagonal-cut edges on cream. Bebas Neue heavy condensed titles + Manrope. Ember-red "01" "02" numbered steps, three-tone meta chips, filled black bars — bold and industrial.' },
   { key: 'flour-ink',   name: 'Flour & Ink',
     description: 'Single-ink minimalism, tracked capitals, 1px hairlines — no accent colour at all.' },
 ]

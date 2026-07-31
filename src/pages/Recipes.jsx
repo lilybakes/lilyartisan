@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { useTable } from '../lib/data'
 import { supabase } from '../lib/supabase'
 import { useSettings } from '../lib/settings.jsx'
-import { initials, CHIP_COLORS } from '../lib/costing'
+import { CHIP_COLORS } from '../lib/costing'
 import { Icon } from '../lib/icons.jsx'
+import Chip from '../components/Chip.jsx'
+import { uploadImage, deleteImage } from '../lib/upload'
 import RecipeContentDrawer from '../components/RecipeContentDrawer.jsx'
 
 export default function Recipes() {
@@ -11,7 +13,7 @@ export default function Recipes() {
   const { rows, loading, insert, update, remove } = useTable('recipes', 'name')
   const { rows: ingredients } = useTable('ingredients', 'name')
   const [bomLines, setBomLines] = useState([])
-  const [f, setF] = useState({ name:'', category:'', yield_portions:'', target_food_cost_pct:'' })
+  const [f, setF] = useState({ name:'', category:'', yield_portions:'', target_food_cost_pct:'', image_url:null })
 
   // BOM lines aren't in useTable's registry — pull them directly so the
   // Content drawer's live preview can render the real ingredient list.
@@ -53,8 +55,46 @@ export default function Recipes() {
       category: f.category.trim() || null,
       yield_portions: parseInt(f.yield_portions),
       target_food_cost_pct: parseFloat(f.target_food_cost_pct) || settings.default_target_food_cost_pct,
+      image_url: f.image_url || null,
     })
-    setF({ name:'', category:'', yield_portions:'', target_food_cost_pct:'' })
+    setF({ name:'', category:'', yield_portions:'', target_food_cost_pct:'', image_url:null })
+  }
+
+  // Image upload / remove — mirrors the Ingredients pattern. Existing rows
+  // save immediately; the add-form buffers the URL until the row is created.
+  async function handleRowImageUpload(row, file) {
+    try {
+      const newUrl = await uploadImage(file, 'recipes', 512)
+      if (row.image_url) {
+        try { await deleteImage(row.image_url) } catch (e) { console.warn('image cleanup failed', e) }
+      }
+      await update(row.id, { image_url: newUrl })
+    } catch (e) {
+      alert('Upload failed: ' + (e.message || e))
+    }
+  }
+  async function handleRowImageRemove(row) {
+    if (row.image_url) {
+      try { await deleteImage(row.image_url) } catch (e) { console.warn('image cleanup failed', e) }
+    }
+    await update(row.id, { image_url: null })
+  }
+  async function handleAddImageUpload(file) {
+    try {
+      const newUrl = await uploadImage(file, 'recipes', 512)
+      if (f.image_url) {
+        try { await deleteImage(f.image_url) } catch (e) { console.warn('image cleanup failed', e) }
+      }
+      setF(prev => ({ ...prev, image_url: newUrl }))
+    } catch (e) {
+      alert('Upload failed: ' + (e.message || e))
+    }
+  }
+  async function handleAddImageRemove() {
+    if (f.image_url) {
+      try { await deleteImage(f.image_url) } catch (e) { console.warn('image cleanup failed', e) }
+    }
+    setF(prev => ({ ...prev, image_url: null }))
   }
 
   async function saveContent(id, patch) {
@@ -91,12 +131,23 @@ export default function Recipes() {
             const isEditing = editingId === r.id
             const hasContent = !!(r.method?.length || r.description || r.storage_text || r.care_text || r.label_ingredients_text || r.allergens_text)
 
+            const chip = (
+              <Chip
+                item={r}
+                size={32}
+                color={color}
+                uploadable
+                onUpload={(file) => handleRowImageUpload(r, file)}
+                onRemove={r.image_url ? () => handleRowImageRemove(r) : null}
+              />
+            )
+
             if (isEditing) {
               return (
                 <tr key={r.id} style={{background:'#fafaff'}}>
                   <td>
                     <div className="row-name">
-                      <div className="row-chip" style={{background:color}}>{initials(draft.name || r.name)}</div>
+                      {chip}
                       <input value={draft.name} onChange={e => setDraft({...draft, name: e.target.value})} style={{width:240}}/>
                     </div>
                   </td>
@@ -118,7 +169,7 @@ export default function Recipes() {
               <tr key={r.id}>
                 <td>
                   <div className="row-name">
-                    <div className="row-chip" style={{background:color}}>{initials(r.name)}</div>
+                    {chip}
                     <strong>{r.name}</strong>
                   </div>
                 </td>
@@ -150,6 +201,13 @@ export default function Recipes() {
       </table>
 
       <div className="row-add">
+        <Chip
+          item={{ name: f.name || 'New', image_url: f.image_url }}
+          size={32}
+          uploadable
+          onUpload={handleAddImageUpload}
+          onRemove={f.image_url ? handleAddImageRemove : null}
+        />
         <div className="field"><label>Name</label><input value={f.name} onChange={e=>setF({...f,name:e.target.value})} placeholder="e.g. Chocolate Fudge Cake" style={{width:240}}/></div>
         <div className="field"><label>Category</label><input value={f.category} onChange={e=>setF({...f,category:e.target.value})} placeholder="Cake / Cupcake" style={{width:150}}/></div>
         <div className="field"><label>Yield</label><input type="number" value={f.yield_portions} onChange={e=>setF({...f,yield_portions:e.target.value})} style={{width:100}}/></div>

@@ -50,6 +50,12 @@ export const STYLE_VARIANTS = [
     accent: '#1E4A38',
   },
   {
+    key: 'ember',
+    name: 'Ember',
+    description: 'Warm cream paper with burgundy→red→orange gradient headers and diagonal-cut bottom edges. Bebas Neue heavy condensed uppercase titles + Manrope body. Ember red accent on prices and numbered "01" "02" method steps. Three-tone meta chips (black/ember/outlined), filled-black table headers, WHERE THE MONEY GOES gradient bar chart, full black caution bars. Bold, industrial, confident.',
+    accent: '#DE4A1F',
+  },
+  {
     key: 'flour-ink',
     name: 'Flour & Ink',
     description: 'Single-ink minimalism. Jost only (weights 200–500), three colors (ink · paper · stone), tracked capitals, 1px hairlines, no accent, no gradients. Delivery tag on stone; social card on ink. Reads as a print artifact.',
