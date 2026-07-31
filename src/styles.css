@@ -5537,3 +5537,219 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   line-height:1.2 !important;
   letter-spacing:-0.02em !important;
 }
+
+/* ============================================================
+   Sysadmin Template Access — exclusivity + grants
+   ============================================================ */
+.access-note{
+  padding:14px 18px;
+  background:#FEF8EA;
+  border:1px solid #F5D9A8;
+  border-radius:10px;
+  color:#6E4B0F;
+  font-size:13px; line-height:1.55;
+  margin-bottom:20px;
+}
+.access-note b{ color:#4E3400; }
+
+.access-section{
+  margin-bottom:28px;
+}
+.access-section-head{
+  display:flex; align-items:center; gap:12px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:14px;
+}
+.access-section-head h4{
+  margin:0;
+  font-size:15px; font-weight:700;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+}
+.access-section-head .pill{
+  padding:3px 10px;
+  background:#F0F1F7;
+  color:var(--ink-soft);
+  border-radius:999px;
+  font-size:11px; font-weight:600;
+}
+
+.access-list{
+  display:flex; flex-direction:column;
+  gap:8px;
+}
+.access-item{
+  display:flex; align-items:center; gap:14px;
+  padding:14px 16px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:10px;
+  transition:all 0.15s;
+}
+.access-item:hover{ border-color:#DEE0EA; }
+.access-item.exclusive{
+  border-color:#DEDAFC;
+  background:linear-gradient(90deg, #FAF9FE 0%, #fff 60%);
+}
+.access-item-body{ flex:1; min-width:0; }
+.access-item-name{
+  display:flex; align-items:center; gap:8px;
+  font-weight:700; font-size:14px;
+  color:var(--ink);
+  letter-spacing:-0.01em;
+  margin-bottom:2px;
+}
+.access-item-desc{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.45;
+}
+.access-badge{
+  display:inline-flex; align-items:center;
+  padding:2px 7px;
+  background:var(--accent);
+  color:#fff;
+  border-radius:4px;
+  font-size:9.5px; font-weight:800;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+}
+.access-default{
+  padding:2px 7px;
+  background:#F0F1F7;
+  color:var(--muted);
+  border-radius:4px;
+  font-size:9.5px; font-weight:700;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+}
+
+/* Toggle switch */
+.access-toggle{
+  display:flex; align-items:center; gap:10px;
+  cursor:pointer;
+  user-select:none;
+  flex-shrink:0;
+}
+.access-toggle input{ display:none; }
+.access-toggle-track{
+  position:relative;
+  width:42px; height:24px;
+  background:#DEE0EA;
+  border-radius:999px;
+  transition:background 0.18s;
+}
+.access-toggle-thumb{
+  position:absolute; top:2px; left:2px;
+  width:20px; height:20px;
+  background:#fff;
+  border-radius:50%;
+  box-shadow:0 1px 3px rgba(0,0,0,0.15);
+  transition:transform 0.18s;
+}
+.access-toggle.on .access-toggle-track{ background:var(--accent); }
+.access-toggle.on .access-toggle-thumb{ transform:translateX(18px); }
+.access-toggle.disabled{ cursor:not-allowed; opacity:0.5; }
+.access-toggle-label{
+  font-size:12px; font-weight:600;
+  color:var(--ink-soft);
+  min-width:64px;
+}
+.access-toggle.on .access-toggle-label{ color:var(--accent-dark); }
+
+/* Grants tab */
+.access-grant-form{
+  padding:20px;
+  background:#FAFAFC;
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin-bottom:24px;
+}
+.access-grant-form h4{
+  margin:0 0 14px;
+  font-size:14px; font-weight:700;
+  color:var(--ink);
+}
+.access-grant-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 2fr;
+  gap:14px;
+  margin-bottom:14px;
+}
+.access-grant-grid .field select,
+.access-grant-grid .field input{
+  padding:10px 14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-family:inherit;
+  font-size:13px;
+  background:#fff;
+  width:100%;
+}
+@media(max-width:720px){ .access-grant-grid{ grid-template-columns:1fr; } }
+
+.access-grants-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+.access-grants-table th{
+  text-align:left;
+  padding:10px 12px;
+  background:#F5F6FA;
+  color:var(--ink-soft);
+  font-weight:600;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.05em;
+}
+.access-grants-table td{
+  padding:12px;
+  border-bottom:1px solid var(--line);
+}
+.access-grants-table td.muted{ color:var(--muted); }
+.scope-pill{
+  display:inline-block;
+  padding:2px 8px;
+  background:#EEECFE;
+  color:var(--accent-dark);
+  border-radius:4px;
+  font-size:10px; font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+}
+button.ghost.small{
+  padding:5px 12px;
+  font-size:12px;
+  background:transparent;
+  border:1px solid var(--line);
+  border-radius:6px;
+  color:var(--ink-soft);
+  cursor:pointer;
+}
+button.ghost.small:hover{
+  border-color:#E4405F;
+  color:#E4405F;
+}
+
+/* ============================================================
+   Templates page — exclusive granted badge on user's item
+   ============================================================ */
+.tpl-item-exclusive{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:14px; height:14px;
+  color:#D4A017;   /* soft gold star */
+  margin-left:2px;
+}
+.tpl-item.exclusive-granted .tpl-item-icon{
+  position:relative;
+}
+.tpl-item.exclusive-granted .tpl-item-icon::after{
+  content:'';
+  position:absolute; top:-3px; right:-3px;
+  width:9px; height:9px;
+  border-radius:50%;
+  background:#D4A017;
+  border:1.5px solid #fff;
+}

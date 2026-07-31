@@ -106,6 +106,17 @@ function PrinterIcon() {
   )
 }
 
+/* Small badge stamped on templates the current user has been exclusively granted */
+function ExclusiveStar() {
+  return (
+    <span className="tpl-item-exclusive" title="Exclusive — granted to you">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/>
+      </svg>
+    </span>
+  )
+}
+
 
 /* ============================================================
    Recipe enrichment (unchanged from previous)
@@ -142,17 +153,37 @@ export default function Templates() {
   const [templateKey, setTemplateKey] = useState('classic')
   const [templateStyles, setTemplateStyles] = useState({})  // { classic: 'kraft', cost: 'editorial', ... }
   const [loading, setLoading]         = useState(true)
+  const [accessRules, setAccessRules] = useState([])  // [{scope, identifier, is_exclusive, has_access}]
+
+  useEffect(() => {
+    if (accessRules.length === 0) return
+    if (!availableTemplates.find(t => t.key === templateKey)) {
+      setTemplateKey(availableTemplates[0]?.key || '')
+    }
+  }, [accessRules, templateKey])
 
   const currentStyle = templateStyles[templateKey] || DEFAULT_STYLE_KEY
   const setCurrentStyle = (styleKey) =>
     setTemplateStyles(prev => ({ ...prev, [templateKey]: styleKey }))
 
+  // Access helpers — undefined rule means the item is open to all
+  const ruleFor = (scope, key) => accessRules.find(r => r.scope === scope && r.identifier === key)
+  const canAccess = (scope, key) => {
+    const r = ruleFor(scope, key)
+    return !r || r.has_access
+  }
+  const isExclusive = (scope, key) => !!ruleFor(scope, key)?.is_exclusive
+
+  const availableTemplates = TEMPLATES.filter(t => canAccess('template', t.key))
+  const availableStyles    = STYLE_VARIANTS.filter(s => canAccess('style', s.key))
+
   useEffect(() => {
     ;(async () => {
-      const [{ data: recs }, { data: ings }, { data: bom }] = await Promise.all([
+      const [{ data: recs }, { data: ings }, { data: bom }, { data: access }] = await Promise.all([
         supabase.from('recipes').select('*').order('name'),
         supabase.from('ingredients').select('*'),
         supabase.from('bom_lines').select('*'),
+        supabase.rpc('my_template_access'),
       ])
       const ingMap = {}
       for (const i of ings || []) ingMap[i.id] = i
@@ -164,6 +195,7 @@ export default function Templates() {
       setRecipes(recs || [])
       setIngredients(ingMap)
       setBomLines(bomMap)
+      setAccessRules(access || [])
       if (recs?.length) setRecipeId(prev => prev || recs[0].id)
       setLoading(false)
     })()
@@ -196,7 +228,7 @@ export default function Templates() {
   const TemplateComponent = template?.ready ? template.component : null
   const isMulti = !!template?.multi
 
-  const readyCount = TEMPLATES.filter(t => t.ready).length
+  const readyCount = availableTemplates.filter(t => t.ready).length
 
   const canPreview = !!TemplateComponent && (isMulti || enrichedRecipe)
 
@@ -211,18 +243,19 @@ export default function Templates() {
           </span>
         </div>
         <div className="tpl-list">
-          {TEMPLATES.map(t => (
+          {availableTemplates.map(t => (
             <button
               key={t.key}
               type="button"
               className={
                 'tpl-item' +
                 (templateKey === t.key ? ' active' : '') +
-                (!t.ready ? ' soon' : '')
+                (!t.ready ? ' soon' : '') +
+                (isExclusive('template', t.key) ? ' exclusive-granted' : '')
               }
               onClick={() => t.ready && setTemplateKey(t.key)}
               disabled={!t.ready}
-              title={t.description}
+              title={t.description + (isExclusive('template', t.key) ? '  (Exclusive template — granted to you)' : '')}
             >
               <div
                 className="tpl-item-icon"
@@ -232,7 +265,10 @@ export default function Templates() {
               </div>
               <div className="tpl-item-body">
                 <div className="tpl-item-header">
-                  <span className="tpl-item-name">{t.name}</span>
+                  <span className="tpl-item-name">
+                    {t.name}
+                    {isExclusive('template', t.key) && <ExclusiveStar/>}
+                  </span>
                   {t.ready
                     ? <span className="tpl-item-size">{t.pageSize}</span>
                     : <span className="tpl-item-soon">SOON</span>}
@@ -271,9 +307,9 @@ export default function Templates() {
             <div className="tpl-control">
               <label>Style</label>
               <select value={currentStyle} onChange={e => setCurrentStyle(e.target.value)}>
-                {STYLE_VARIANTS.map(s => (
+                {availableStyles.map(s => (
                   <option key={s.key} value={s.key}>
-                    {s.name}{s.isDefault ? ' (default)' : ''}
+                    {s.name}{s.isDefault ? ' (default)' : ''}{isExclusive('style', s.key) ? ' ★' : ''}
                   </option>
                 ))}
               </select>

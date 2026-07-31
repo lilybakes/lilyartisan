@@ -108,6 +108,18 @@ export function NavGlyph({ name }) {
         </svg>
       )
 
+    case 'vault':
+      // Rounded padlock — body filled, shackle outlined
+      return (
+        <svg {...SVG_PROPS}>
+          <rect className="glyph-fill" x="4.5" y="11" width="15" height="10" rx="2.5"/>
+          <rect x="4.5" y="11" width="15" height="10" rx="2.5" stroke="currentColor" strokeWidth={SW}/>
+          <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth={SW} fill="none"/>
+          <circle cx="12" cy="15.5" r="1.5" fill="#FFFFFF"/>
+          <path d="M12 17v1.5" stroke="#FFFFFF" strokeWidth={SW}/>
+        </svg>
+      )
+
     /* ============================================================ You */
     case 'personalize':
       // Artist's palette — body filled, three paint dots solid

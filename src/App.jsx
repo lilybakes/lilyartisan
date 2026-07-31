@@ -38,6 +38,7 @@ import Gallery from './pages/sysadmin/Gallery.jsx'
 import Platform from './pages/sysadmin/Platform.jsx'
 import AuditLog from './pages/sysadmin/AuditLog.jsx'
 import Orders from './pages/sysadmin/Orders.jsx'
+import TemplateAccess from './pages/sysadmin/TemplateAccess.jsx'
 
 export default function App() {
   return (
@@ -73,6 +74,7 @@ export default function App() {
                     <Route path="templates"     element={<Templates/>}/>
 
                     <Route path="sysadmin/orders"   element={<SysadminGuard><Orders/></SysadminGuard>}/>
+                    <Route path="sysadmin/templates" element={<SysadminGuard><TemplateAccess/></SysadminGuard>}/>
                     <Route path="sysadmin/users"    element={<SysadminGuard><Users/></SysadminGuard>}/>
                     <Route path="sysadmin/billing"  element={<SysadminGuard><Billing/></SysadminGuard>}/>
                     <Route path="sysadmin/content"  element={<SysadminGuard><Content/></SysadminGuard>}/>

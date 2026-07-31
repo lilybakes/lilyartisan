@@ -1,51 +1,95 @@
-# Distinct Color Palettes per Variant + Font-Size Variety
+# Exclusive Templates & Styles — Access Control System
 
-One file: `src/styles.css`.
+Adds fine-grained sysadmin control over which users can see which templates and which style variants.
 
-Every variant now owns its own accent palette instead of all sharing warm brown. Plus recipe-name font sizes now vary across variants for real hierarchy differentiation.
+## Design
 
-## The 5 palettes
+**Default:** every template + every style is available to every user.
 
-| # | Variant | Primary accent | Rationale |
-|---|---|---|---|
-| 1 | **Clean Modern** | `#6C5CE7` app violet | On-brand with the app itself — this is the "default" variant, so it reads as the BakeOnomics-native aesthetic |
-| 2 | **Rustic Kraft** | `#8B4A2B` warm brown | Native to kraft paper, feels hand-stamped and organic |
-| 3 | **Vintage Letterpress** | `#7A2E3B` deep burgundy | Patisserie / heritage / premium gifting — classical formality |
-| 4 | **Editorial Magazine** | `#1A1A18` near-black with `#C41E3A` cherry-red pop | Magazine masthead + one small pop color for social handles, per editorial convention |
-| 5 | **Quiet Minimal** | `#5B6874` slate blue-grey | Quiet, sophisticated, restrained — Aesop/Byredo territory |
+**Sysadmin toggles Exclusivity:** on any of the 10 templates OR any of the 5 style variants (except the default one). Marking something exclusive hides it from every user.
 
-**Kraft is the only variant that keeps warm brown** — it's baked into the aesthetic.
+**Sysadmin grants access per-user:** exclusive items appear only for the specific users named in the Grants table. Individual user grants — not groups, not roles — matching your exact spec.
 
-## Recipe name font sizes now vary
+Two independent scopes:
+- **Template scope** — hide/grant whole templates (e.g. only VIP customers see "Certificate of Craft")
+- **Style scope** — hide/grant whole style aesthetics (e.g. only premium subscribers see "Vintage Letterpress")
 
-| Variant | Recipe name size | Line height | Weight |
-|---|---|---|---|
-| Clean Modern | 26px (default) | 1.1 | 800 |
-| Rustic Kraft | **29px** | 1.15 | 800 (Bitter serif) |
-| Vintage Letterpress | **32px** | 1.1 | 700 (Playfair Display) |
-| Editorial Magazine | **36px** | 1.0 | 400 (DM Serif Display, biggest) |
-| Quiet Minimal | **22px** | 1.2 | **400 light** (smallest, most restrained) |
+## Files
 
-## What actually changed
+```
+supabase/
+  template-access.sql               # NEW — 2 tables, 7 RPCs, RLS policies
 
-**Block-aware color remap**: a Python pass walked the CSS, detected which variant block each line belonged to (by tracking `.tpl.variant-{key}` selector prefixes), and swapped `#8B4A2B` → variant-specific accent within each block only.
+src/
+  pages/
+    Templates.jsx                   # OVERWRITE — filters by access, shows exclusive-granted badge
+    sysadmin/
+      TemplateAccess.jsx            # NEW — 2-tab sysadmin management page
+  components/
+    Sidebar.jsx                     # OVERWRITE — adds "Template Access" nav under Content & Design
+    NavGlyph.jsx                    # OVERWRITE — adds padlock "vault" glyph
+  App.jsx                           # OVERWRITE — adds /app/sysadmin/templates route
+  styles.css                        # OVERWRITE (full file) — sysadmin page styles + exclusive badge
+```
 
-- Clean Modern: 8 replacements
-- Kraft: 0 (intentional)
-- Letterpress: 12
-- Editorial: 2 (mostly used `#1A1A18` explicitly already; also swapped social `#C9A88A` → `#C41E3A`)
-- Minimal: 3
+## Deploy — 2 steps
 
-RGBA brown-tinted values (like `rgba(139,74,43,0.4)` on kraft dashed borders) were also remapped per variant — so Letterpress dashed dividers use burgundy tints, Minimal uses slate tints, etc.
+### 1. Run the SQL
 
-**Font-size overrides**: added at the end of the file, targeting `[class*="-recipe-name"]` and its siblings (`-care-product`, `-wholesale-title`, `-cert-product`, `-social-name`) so every template's main title scales per variant.
+Supabase SQL Editor → paste `supabase/template-access.sql` → Run. Creates:
+- `template_visibility` table (which items are exclusive)
+- `template_grants` table (who has access to what)
+- RLS policies (users see own grants; sysadmins see everything)
+- 7 RPCs (`my_template_access`, `has_template_access`, plus 5 sysadmin functions)
 
-## What stayed uniform (within each style)
+Uses the existing `is_sysadmin()` function from previous deltas. Safe to re-run.
 
-All 10 templates rendered in a given style share the same palette + font scale. So Classic Card in Letterpress, and Care Card in Letterpress, and Certificate in Letterpress — all use burgundy, all use the Playfair/Cormorant pairing, all have the 32px recipe name.
+### 2. Push the code
 
-The variation is **between** styles, not within a style. Which is what you asked for.
+Overwrite the 6 files, push. Netlify redeploys.
 
-## Deploy
+## How to use it — walkthrough
 
-Overwrite the file, push, hard-refresh. Cycle any template through all 5 variants and each should feel like a distinct piece of design — different accent color, different type scale, different rule treatment, different paper.
+1. Log in as sysadmin (`anthony2211@gmail.com`)
+2. Sidebar → **Sysadmin → Content & Design → Template Access**
+3. **Exclusivity tab**: flip toggles to mark items exclusive
+   - Example: toggle **Certificate of Craft** and **Vintage Letterpress** to Exclusive
+   - Immediately, those disappear from every regular user's Templates page
+4. **Grants tab**: pick a specific user, pick a scope + item, add an optional note, click Grant
+   - Example: grant `certificate` and `letterpress` to `lily@bakeonomics.com`
+5. Log in as Lily → she sees the Certificate template + Letterpress style; other users don't
+6. Anthony (sysadmin) sees everything regardless of grants
+
+## How exclusivity displays for the granted user
+
+Two subtle indicators — the templates work exactly the same, but with a hint of "this is yours":
+
+- **Small gold star** ★ next to the template name in the sidebar list
+- **Gold dot** in the top-right corner of the template's gradient icon
+- **Title tooltip** appends "(Exclusive template — granted to you)"
+- Exclusive style variants get a ★ suffix in the dropdown option label
+
+Nothing louder than that — the point is quiet flex, not decoration.
+
+## Security notes
+
+- All sysadmin RPCs check `is_sysadmin()` at the top and raise if not.
+- RLS policies enforce: users see their own grants only (via SELECT); only sysadmins can INSERT/UPDATE/DELETE.
+- The `my_template_access` RPC is `SECURITY DEFINER` so it can peek into `template_visibility` and `template_grants` on behalf of the calling user without exposing them via direct table access.
+- Default style variant (`clean-modern`) has its toggle disabled — the sysadmin cannot mark the fallback style exclusive, so users always have at least one style available.
+- If a user's granted template gets revoked while their Templates page is open, the frontend detects the missing template on the next data refresh and auto-selects an available one.
+
+## Edge cases handled
+
+- Sysadmin marks something exclusive but doesn't grant it → nobody except sysadmins can use it
+- Sysadmin unmarks exclusive → item becomes public again immediately (row stays in `template_visibility` with `is_exclusive=false` for auditability)
+- User has no grants for anything → they see the standard set (everything not marked exclusive)
+- Grant is set with a note like "VIP · 2026-Q4 promo" — visible in the sysadmin grants list for record-keeping
+
+## Extending
+
+**Group-based grants later.** The current schema is per-user. If you want to add "grant to a group" later, add a `template_grant_groups` table with the same shape, plus a link table, and update `has_template_access()` to check both.
+
+**Time-limited grants.** Add an `expires_at timestamptz` column to `template_grants`. Update the SQL check in `my_template_access` to include `AND (g.expires_at IS NULL OR g.expires_at > now())`.
+
+**Audit trail.** Every grant already records `granted_by` + `granted_at`. To also log revocations, add a `template_grant_history` table triggered on DELETE.

@@ -140,9 +140,10 @@ export default function Sidebar() {
             {item('/app/sysadmin/users',    'Users',        'users')}
             {item('/app/sysadmin/billing',  'Billing',      'billing')}
             <SubGroup>Content &amp; Design</SubGroup>
-            {item('/app/sysadmin/content',  'Content',      'content')}
-            {item('/app/sysadmin/auth',     'Auth & Login', 'auth')}
-            {item('/app/sysadmin/gallery',  'Gallery',      'gallery')}
+            {item('/app/sysadmin/content',   'Content',        'content')}
+            {item('/app/sysadmin/templates', 'Template Access','vault')}
+            {item('/app/sysadmin/auth',      'Auth & Login',   'auth')}
+            {item('/app/sysadmin/gallery',   'Gallery',        'gallery')}
             <SubGroup>Platform</SubGroup>
             {item('/app/sysadmin/platform', 'Platform',     'platform')}
             {item('/app/sysadmin/audit',    'Audit Log',    'audit')}
