@@ -5,6 +5,7 @@ import { useSettings } from '../lib/settings.jsx'
 import { TEMPLATES, getTemplate, getTemplateComponent } from '../components/templates/index.js'
 import TemplateIcon from '../components/TemplateIcon.jsx'
 import PrinterIcon from '../components/PrinterIcon.jsx'
+import PreviewFit from '../components/PreviewFit.jsx'
 import '../components/templates-page.css'
 
 // Enrich a raw recipe with BOM + costs
@@ -42,7 +43,7 @@ const STYLE_VARIANTS = [
   { key: 'editorial',   name: 'Editorial Magazine',
     description: 'Playfair Display + Archivo on cream. Rust side bands, italic-accent titles, zebra rows, bar chart. Reads designed rather than generated.' },
   { key: 'minimal',     name: 'Quiet Minimal',
-    description: 'Slate blue-grey, hairline marks, lots of breathing room — modernist restraint.' },
+    description: 'Warm off-white paper, Manrope Light titles, JetBrains Mono meta throughout. Tiny rust dot before titles, hairline dividers, generous whitespace — most restrained.' },
   { key: 'flour-ink',   name: 'Flour & Ink',
     description: 'Single-ink minimalism, tracked capitals, 1px hairlines — no accent colour at all.' },
 ]
@@ -253,22 +254,24 @@ export default function Templates() {
 
         {canPreview && (
           <div className="templates-preview">
-            {isDedicatedVariant ? (
-              <TemplateComponent
-                recipe={enrichedRecipe}
-                recipes={enrichedRecipes}
-                brand={brand}
-                customization={currentCustomization}
-              />
-            ) : (
-              <TemplateComponent
-                recipe={enrichedRecipe}
-                recipes={enrichedRecipes}
-                brand={brand}
-                styleVariant={currentStyle}
-                customization={currentCustomization}
-              />
-            )}
+            <PreviewFit>
+              {isDedicatedVariant ? (
+                <TemplateComponent
+                  recipe={enrichedRecipe}
+                  recipes={enrichedRecipes}
+                  brand={brand}
+                  customization={currentCustomization}
+                />
+              ) : (
+                <TemplateComponent
+                  recipe={enrichedRecipe}
+                  recipes={enrichedRecipes}
+                  brand={brand}
+                  styleVariant={currentStyle}
+                  customization={currentCustomization}
+                />
+              )}
+            </PreviewFit>
           </div>
         )}
       </main>
