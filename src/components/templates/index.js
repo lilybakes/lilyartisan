@@ -18,6 +18,7 @@ import { BKO_TEMPLATES } from './variants/bko/index.js'
 import { LETTERPRESS_TEMPLATES } from './variants/letterpress/index.js'
 import { EDITORIAL_TEMPLATES } from './variants/editorial/index.js'
 import { QUIET_MINIMAL_TEMPLATES } from './variants/quiet-minimal/index.js'
+import { VERDANT_TEMPLATES } from './variants/verdant/index.js'
 
 /**
  * Registry of the 10 shared templates. Each entry is the DEFAULT (non-variant)
@@ -48,6 +49,7 @@ const VARIANT_MAP = {
   letterpress: LETTERPRESS_TEMPLATES,
   editorial: EDITORIAL_TEMPLATES,
   minimal: QUIET_MINIMAL_TEMPLATES,
+  verdant: VERDANT_TEMPLATES,
 }
 
 export function getTemplate(key) {

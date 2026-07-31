@@ -44,6 +44,8 @@ const STYLE_VARIANTS = [
     description: 'Playfair Display + Archivo on cream. Rust side bands, italic-accent titles, zebra rows, bar chart. Reads designed rather than generated.' },
   { key: 'minimal',     name: 'Quiet Minimal',
     description: 'Warm off-white paper, Manrope Light titles, JetBrains Mono meta throughout. Tiny rust dot before titles, hairline dividers, generous whitespace — most restrained.' },
+  { key: 'verdant',     name: 'Verdant',
+    description: 'Deep forest green on cream. DM Serif Display + Manrope. Mint pill chips, numbered method chips (last step accented), soft decor circles, filled green headers on Recipe Card + Product Label.' },
   { key: 'flour-ink',   name: 'Flour & Ink',
     description: 'Single-ink minimalism, tracked capitals, 1px hairlines — no accent colour at all.' },
 ]

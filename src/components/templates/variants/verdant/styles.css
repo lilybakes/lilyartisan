@@ -1,0 +1,1229 @@
+/* =============================================================================
+   VERDANT VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   Palette:
+     Green         #1E4A38   dominant forest green — headers, table bars, CTA
+     Green dark    #143526   deeper accent — gradients, hover states
+     Green mid     #2E5B47   mid tone for chart bar gradient
+     Mint          #D9E5D3   pill chips, method chips, callout fills
+     Mint soft     #E8EFE4   soft callouts (Care Card, Wholesale terms)
+     Mint zebra    #F0F4EC   subtle zebra alternates
+     Cream         #F5F4EE   paper background
+     Ink           #1D1D1B   body / title ink on cream
+     Body          #3A3A35   softer body
+     Muted         #7A857A   meta text, secondary
+     Cream on green #F5F4EE  text on dark-green surfaces
+     Green tint    rgba(255,255,255,0.08) — decor circle tint on green
+   Fonts:
+     Serif         DM Serif Display — big display titles (bold, high contrast)
+     Sans          Manrope — body, eyebrows, chips, everything else
+   Both loaded globally via @import in root styles.css.
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, primitives
+   ============================================================================= */
+
+.v-tpl {
+  --v-green: #1E4A38;
+  --v-green-dark: #143526;
+  --v-green-mid: #2E5B47;
+  --v-mint: #D9E5D3;
+  --v-mint-soft: #E8EFE4;
+  --v-mint-zebra: #F0F4EC;
+  --v-cream: #F5F4EE;
+  --v-ink: #1D1D1B;
+  --v-body: #3A3A35;
+  --v-muted: #7A857A;
+  --v-cream-on-green: #F5F4EE;
+  --v-hair: rgba(30, 74, 56, 0.12);
+  --v-hair-strong: rgba(30, 74, 56, 0.22);
+
+  --v-serif: 'DM Serif Display', 'Playfair Display', Georgia, serif;
+  --v-sans: 'Manrope', 'Plus Jakarta Sans', -apple-system, sans-serif;
+
+  background: var(--v-cream);
+  color: var(--v-body);
+  font-family: var(--v-sans);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(30, 74, 56, 0.10);
+  box-sizing: border-box;
+}
+.v-tpl * { box-sizing: border-box; }
+
+/* --- Brand lockup ------------------------------------------------------- */
+.v-brand-lockup { display: flex; flex-direction: column; gap: 2px; }
+.v-brand-name {
+  font-family: var(--v-serif);
+  font-weight: 400;
+  color: var(--v-green);
+  margin: 0;
+  line-height: 1.05;
+  font-size: 22px;
+  letter-spacing: -0.005em;
+}
+.v-brand-ink   { color: var(--v-green); }
+.v-brand-cream { color: var(--v-cream-on-green); }
+
+.v-brand-tagline {
+  font-family: var(--v-sans);
+  color: var(--v-muted);
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.v-brand-tagline-ink   { color: var(--v-muted); }
+.v-brand-tagline-cream { color: var(--v-cream-on-green); opacity: 0.72; }
+
+.v-brand-lockup-sm .v-brand-name { font-size: 18px; }
+.v-brand-lockup-sm .v-brand-tagline { font-size: 11.5px; }
+.v-brand-lockup-lg .v-brand-name { font-size: 28px; }
+.v-brand-lockup-lg .v-brand-tagline { font-size: 14px; }
+
+/* --- Title (DM Serif Display, chunky and bold) ------------------------- */
+.v-title {
+  font-family: var(--v-serif);
+  font-weight: 400;         /* DM Serif Display is inherently bold */
+  color: var(--v-ink);
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* --- Small-caps eyebrow — Manrope, letter-spaced ----------------------- */
+.v-eyebrow {
+  font-family: var(--v-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 10.5px;
+  padding-left: 0.18em;
+  line-height: 1.4;
+}
+.v-eyebrow-green { color: var(--v-green); }
+.v-eyebrow-muted { color: var(--v-muted); }
+.v-eyebrow-cream { color: var(--v-cream-on-green); opacity: 0.85; }
+
+.v-muted { color: var(--v-muted); }
+
+/* --- Rounded pill chip ------------------------------------------------- */
+.v-chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  font-family: var(--v-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding-left: 0.14em;
+  white-space: nowrap;
+}
+.v-chip-mint {
+  background: var(--v-mint);
+  color: var(--v-green);
+}
+.v-chip-green {
+  background: var(--v-green);
+  color: var(--v-cream-on-green);
+}
+.v-chip-md { padding: 6px 14px; font-size: 10.5px; }
+.v-chip-lg { padding: 8px 18px; font-size: 11px; }
+
+/* --- Numbered method chip (small filled circle) ------------------------ */
+.v-method-chip {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--v-sans);
+  font-weight: 700;
+  font-size: 11px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.v-method-chip-normal {
+  background: var(--v-mint);
+  color: var(--v-green);
+}
+.v-method-chip-accent {
+  background: var(--v-green);
+  color: var(--v-cream-on-green);
+}
+
+/* --- Rules ------------------------------------------------------------- */
+.v-rule { border: none; padding: 0; margin: 0; display: block; width: 100%; }
+.v-rule-thick { height: 2px; }
+.v-rule-hair  { height: 1px; }
+.v-rule-green { background: var(--v-green); }
+.v-rule-hair  { background: var(--v-hair); }
+
+/* --- Filled seal (dark green circle with cream text) ------------------- */
+.v-seal {
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--v-green-mid) 0%, var(--v-green) 55%, var(--v-green-dark) 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--v-cream-on-green);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+.v-seal-subtle {
+  background: radial-gradient(circle at 30% 30%, var(--v-green-mid) 0%, var(--v-green) 60%, var(--v-green-dark) 100%);
+}
+.v-seal-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-family: var(--v-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 9px;
+  padding-left: 0.18em;
+  text-align: center;
+  line-height: 1.15;
+}
+
+/* --- Decorative circles (soft floating background flourishes) --------- */
+.v-decor-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.v-decor-circle-mint-soft {
+  background: var(--v-mint-soft);
+}
+.v-decor-circle-green-tint {
+  /* pale-mint on cream ground */
+  background: rgba(30, 74, 56, 0.08);
+}
+.v-decor-circle-green-tint-on-green {
+  /* subtle lighter-green on dark green ground */
+  background: rgba(255, 255, 255, 0.06);
+}
+.v-decor-circle-outlined {
+  background: transparent;
+  border: 1.5px solid;
+}
+.v-decor-circle-outlined.v-decor-circle-green-tint {
+  border-color: rgba(30, 74, 56, 0.20);
+}
+.v-decor-circle-outlined.v-decor-circle-green-tint-on-green {
+  border-color: rgba(255, 255, 255, 0.20);
+}
+
+/* --- Numeric cells ---------------------------------------------------- */
+.v-num {
+  text-align: right;
+  font-family: var(--v-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Empty-state ------------------------------------------------------ */
+.v-empty {
+  color: var(--v-muted);
+  font-family: var(--v-sans);
+  font-style: italic;
+  font-size: 12px;
+  margin: 3mm 0 0;
+}
+
+/* --- Footer ----------------------------------------------------------- */
+.v-footer {
+  font-family: var(--v-sans);
+  color: var(--v-body);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.v-footer-split {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12mm;
+}
+.v-footer-split .v-footer-right { text-align: right; }
+.v-footer-centered {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 3px;
+}
+.v-footer-minimal { text-align: center; }
+.v-footer-line { font-size: 11px; }
+.v-footer-social { color: var(--v-green); font-weight: 700; }
+
+/* --- Method sub-group heading ----------------------------------------- */
+.v-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--v-sans);
+  font-weight: 700;
+  color: var(--v-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 10px;
+  margin: 4mm 0 2mm;
+  display: block;
+}
+.v-method-group::before { content: '' !important; }
+
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.v-recipe {
+  width: 148mm; min-height: 210mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.v-recipe-header {
+  position: relative;
+  background: var(--v-green);
+  color: var(--v-cream-on-green);
+  padding: 16mm 14mm 20mm;
+  overflow: hidden;
+}
+.v-recipe-brand-line {
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  margin-bottom: 8mm;
+  color: var(--v-cream-on-green);
+  opacity: 0.9;
+}
+.v-recipe-title {
+  color: var(--v-cream-on-green);
+  font-size: 40px;
+  line-height: 1.05;
+  max-width: 100mm;
+  position: relative;
+  z-index: 1;
+}
+
+.v-recipe-body {
+  padding: 10mm 14mm 12mm;
+  flex: 1;
+  display: flex; flex-direction: column;
+}
+.v-recipe-chips {
+  display: flex; flex-wrap: wrap; gap: 4mm;
+  margin-bottom: 10mm;
+}
+
+.v-recipe-columns {
+  display: grid;
+  grid-template-columns: 50mm 1fr;
+  gap: 10mm;
+  flex: 1;
+}
+.v-recipe-ingredients > .v-eyebrow,
+.v-recipe-method > .v-eyebrow {
+  margin-bottom: 5mm;
+  font-size: 11px;
+  letter-spacing: 0.20em;
+}
+.v-recipe-ing-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+}
+.v-recipe-ing-list li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 3mm 0;
+  font-family: var(--v-sans);
+  font-size: 13px;
+  color: var(--v-body);
+}
+.v-recipe-ing-name { color: var(--v-body); font-weight: 500; }
+.v-recipe-ing-qty {
+  font-family: var(--v-sans);
+  font-weight: 700;
+  color: var(--v-green);
+  font-variant-numeric: tabular-nums;
+}
+
+.v-recipe-method-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 4mm;
+  font-family: var(--v-sans);
+  font-size: 13px;
+  color: var(--v-body);
+  line-height: 1.5;
+}
+.v-recipe-method-list li {
+  display: flex; align-items: flex-start; gap: 3mm;
+}
+.v-recipe-method-step { flex: 1; }
+.v-recipe-method-step-accent { font-weight: 500; }
+
+.v-recipe .v-footer { padding-top: 3mm; }
+
+
+/* =============================================================================
+   02 — COST BREAKDOWN  (A4 portrait, 210×297mm) — INTERNAL
+   ============================================================================= */
+.v-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 18mm 12mm;
+  display: flex; flex-direction: column;
+}
+.v-cost-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding-bottom: 4mm;
+}
+.v-cost-header-right { font-size: 11px; letter-spacing: 0.20em; padding-top: 2mm; }
+
+.v-cost-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 14mm;
+  padding: 10mm 0 8mm;
+}
+.v-cost-title-left { flex: 1; padding-top: 8mm; min-width: 0; }
+.v-cost-title { font-size: 32px; margin: 0; line-height: 1.02; }
+.v-cost-meta { font-size: 11px; letter-spacing: 0.14em; margin-top: 5mm; }
+
+.v-cost-suggested-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--v-green) 0%, var(--v-green-dark) 100%);
+  color: var(--v-cream-on-green);
+  padding: 8mm 10mm;
+  border-radius: 10px;
+  min-width: 76mm;
+}
+.v-cost-suggested-card .v-eyebrow-cream {
+  font-size: 10.5px; letter-spacing: 0.20em; margin-bottom: 3mm;
+  color: var(--v-cream-on-green); opacity: 0.85;
+}
+.v-cost-suggested-value {
+  font-family: var(--v-serif);
+  font-weight: 400;
+  color: var(--v-cream-on-green);
+  font-size: 34px;
+  line-height: 1;
+  margin: 0 0 4mm;
+  letter-spacing: -0.005em;
+}
+.v-cost-suggested-divider {
+  border-top: 1px solid rgba(245, 244, 238, 0.28);
+  margin: 0 0 3mm;
+}
+.v-cost-suggested-line {
+  display: flex; justify-content: space-between;
+  font-family: var(--v-sans);
+  font-size: 12px;
+  color: var(--v-cream-on-green);
+  padding: 1mm 0;
+  font-weight: 500;
+}
+
+/* Bar chart */
+.v-cost-chart-section { margin-top: 6mm; }
+.v-cost-chart-section > .v-eyebrow {
+  margin-bottom: 5mm; font-size: 11px; letter-spacing: 0.20em;
+}
+.v-cost-chart { display: flex; flex-direction: column; gap: 2.5mm; }
+.v-cost-chart-row {
+  display: grid;
+  grid-template-columns: 42mm 1fr 24mm;
+  gap: 5mm;
+  align-items: center;
+  font-family: var(--v-sans);
+  font-size: 13px;
+  padding: 1mm 0;
+}
+.v-cost-chart-name { color: var(--v-body); font-weight: 500; }
+.v-cost-chart-track {
+  background: var(--v-mint);
+  height: 8mm;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.v-cost-chart-fill {
+  background: linear-gradient(90deg, var(--v-green-dark) 0%, var(--v-green) 60%, var(--v-green-mid) 100%);
+  height: 100%;
+  border-radius: 999px;
+}
+.v-cost-chart-val {
+  font-family: var(--v-serif);
+  font-weight: 400;
+  color: var(--v-ink);
+  text-align: right;
+  font-size: 15px;
+}
+
+/* Full costing table */
+.v-cost-table-section { margin-top: 8mm; }
+.v-cost-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--v-sans);
+  font-size: 12.5px;
+  color: var(--v-body);
+}
+.v-cost-table thead th {
+  background: var(--v-green);
+  color: var(--v-cream-on-green);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 4mm 4mm;
+  font-size: 10.5px;
+  text-align: left;
+}
+.v-cost-table thead th.v-num { text-align: right; }
+.v-cost-table thead th:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+.v-cost-table thead th:last-child  { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+.v-cost-table td {
+  padding: 3.5mm 4mm;
+  border-bottom: 1px solid var(--v-hair);
+}
+.v-cost-table tbody tr:nth-child(even) td { background: var(--v-mint-zebra); }
+.v-cost-td-name { color: var(--v-body); font-weight: 500; }
+.v-cost-td-val  { font-family: var(--v-serif); font-weight: 400; color: var(--v-ink); font-size: 14px; }
+.v-cost-empty {
+  padding: 8mm 0 !important;
+  color: var(--v-muted);
+  font-style: italic;
+  text-align: center;
+}
+.v-cost-batch-row td {
+  padding: 5mm 4mm 4mm;
+  border-bottom: none;
+  border-top: 2px solid var(--v-green);
+  font-family: var(--v-sans);
+  font-weight: 700;
+  color: var(--v-ink);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+}
+.v-cost-batch-row td.v-num {
+  font-family: var(--v-serif);
+  font-weight: 400;
+  color: var(--v-green);
+  font-size: 20px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.v-cost-caution {
+  margin-top: 6mm;
+  background: var(--v-mint-soft);
+  padding: 5mm 6mm;
+  border-radius: 8px;
+  font-family: var(--v-sans);
+  font-size: 12.5px;
+  color: var(--v-body);
+  line-height: 1.5;
+}
+.v-cost-caution strong { color: var(--v-green); font-weight: 700; }
+
+.v-cost-footer-wrap { margin-top: auto; padding-top: 6mm; }
+.v-cost-footer-wrap .v-rule-hair { margin-bottom: 4mm; }
+
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, 105×148mm)
+   ============================================================================= */
+.v-care {
+  width: 105mm; min-height: 148mm;
+  padding: 10mm 10mm 8mm;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.v-care-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 6mm;
+  position: relative; z-index: 1;
+}
+.v-care-header .v-brand-name { font-size: 17px; }
+.v-care-header .v-brand-tagline { font-size: 11px; }
+.v-care-header .v-seal { width: 34px !important; height: 34px !important; }
+
+.v-care-title-block { padding: 8mm 0 6mm; position: relative; z-index: 1; }
+.v-care-title-block > .v-eyebrow { margin-bottom: 3mm; font-size: 10.5px; letter-spacing: 0.20em; }
+.v-care-product { font-size: 26px; margin: 0; line-height: 1.05; }
+
+.v-care-section { margin-bottom: 6mm; position: relative; z-index: 1; }
+.v-care-section > .v-eyebrow { margin-bottom: 3mm; font-size: 10.5px; letter-spacing: 0.20em; }
+.v-care-text {
+  font-family: var(--v-sans);
+  color: var(--v-body);
+  font-size: 12.5px;
+  line-height: 1.55;
+  margin: 0;
+}
+.v-care-allergen-chips {
+  display: flex; flex-wrap: wrap; gap: 3mm;
+}
+
+.v-care-footer-wrap { margin-top: auto; position: relative; z-index: 1; }
+.v-care-footer-wrap .v-footer-line { font-size: 10.5px; }
+
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.v-label {
+  width: 74mm; min-height: 105mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.v-label-header {
+  position: relative;
+  background: var(--v-green);
+  color: var(--v-cream-on-green);
+  padding: 8mm 7mm 9mm;
+  overflow: hidden;
+}
+.v-label-brand-line {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  margin-bottom: 4mm;
+  color: var(--v-cream-on-green);
+  opacity: 0.9;
+}
+.v-label-product {
+  color: var(--v-cream-on-green);
+  font-size: 22px;
+  line-height: 1.05;
+  position: relative; z-index: 1;
+}
+
+.v-label-body {
+  padding: 6mm 7mm 4mm;
+  flex: 1;
+  display: flex; flex-direction: column;
+}
+.v-label-section { margin-bottom: 5mm; }
+.v-label-section > .v-eyebrow { margin-bottom: 2mm; font-size: 9.5px; letter-spacing: 0.20em; }
+.v-label-ingredients {
+  font-family: var(--v-sans);
+  color: var(--v-body);
+  font-size: 10.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+.v-label-allergen {
+  background: var(--v-mint-soft);
+  padding: 4mm 5mm;
+  border-radius: 8px;
+}
+.v-label-allergen > .v-eyebrow { margin-bottom: 2mm; font-size: 9.5px; letter-spacing: 0.20em; }
+.v-label-allergen-body {
+  font-family: var(--v-sans);
+  color: var(--v-body);
+  font-size: 10.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.v-label-footer-wrap { margin-top: auto; padding: 0 7mm 5mm; }
+.v-label-footer-wrap .v-rule-hair { margin-bottom: 3mm; }
+.v-label-footer {
+  font-family: var(--v-sans);
+  color: var(--v-body);
+  font-size: 9.5px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.v-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 14mm 14mm 10mm;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.v-menu-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 10mm;
+  padding-bottom: 4mm;
+  position: relative; z-index: 1;
+}
+.v-menu-header .v-brand-name { font-size: 28px; line-height: 1.05; }
+.v-menu-header .v-brand-tagline { font-size: 12.5px; }
+.v-menu-meta { font-size: 11px; letter-spacing: 0.18em; padding-bottom: 2mm; }
+
+.v-menu-body { padding: 8mm 0 6mm; position: relative; z-index: 1; }
+.v-menu-empty {
+  text-align: center; color: var(--v-muted);
+  font-style: italic;
+  margin-top: 20mm;
+}
+
+.v-menu-cat-block { margin-bottom: 8mm; }
+.v-menu-cat-block > .v-chip { margin-bottom: 5mm; }
+
+.v-menu-cat-items {
+  display: flex; flex-direction: column; gap: 5mm;
+}
+.v-menu-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8mm;
+}
+.v-menu-item-body { flex: 1; min-width: 0; }
+.v-menu-item-name {
+  font-family: var(--v-serif);
+  font-weight: 400;
+  color: var(--v-ink);
+  font-size: 19px;
+  line-height: 1.15;
+}
+.v-menu-item-desc {
+  font-family: var(--v-sans);
+  color: var(--v-muted);
+  font-size: 12px;
+  margin-top: 1mm;
+  line-height: 1.4;
+}
+.v-menu-item-price {
+  font-family: var(--v-serif);
+  font-weight: 400;
+  color: var(--v-green);
+  font-size: 18px;
+  flex-shrink: 0;
+  padding-top: 1mm;
+}
+
+.v-menu-footer-wrap { margin-top: auto; position: relative; z-index: 1; }
+.v-menu-footer-wrap .v-rule-hair { margin-bottom: 4mm; }
+
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.v-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 18mm 12mm;
+  display: flex; flex-direction: column;
+}
+.v-wholesale-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 12mm;
+  padding-bottom: 4mm;
+}
+.v-wholesale-header-right { font-size: 11px; letter-spacing: 0.18em; padding-bottom: 2mm; }
+
+.v-wholesale-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 14mm;
+  padding: 10mm 0 10mm;
+}
+.v-wholesale-title-left { flex: 1; min-width: 0; }
+.v-wholesale-title { font-size: 40px; margin: 0; line-height: 1.02; }
+.v-wholesale-desc {
+  font-family: var(--v-sans);
+  color: var(--v-body);
+  font-size: 13px;
+  margin: 4mm 0 0;
+  max-width: 120mm;
+  line-height: 1.5;
+}
+
+.v-wholesale-terms-card {
+  display: flex;
+  min-width: 78mm;
+  max-width: 88mm;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--v-mint-soft);
+}
+.v-wholesale-terms-tab {
+  width: 8px;
+  background: var(--v-green);
+  flex-shrink: 0;
+}
+.v-wholesale-terms-body { padding: 5mm 7mm; flex: 1; }
+.v-wholesale-terms-body > .v-eyebrow { margin-bottom: 3mm; font-size: 10.5px; letter-spacing: 0.20em; }
+.v-wholesale-terms-headline {
+  font-family: var(--v-serif);
+  font-weight: 400;
+  color: var(--v-ink);
+  font-size: 22px;
+  line-height: 1.05;
+  margin: 0 0 2mm;
+}
+.v-wholesale-terms-sub {
+  font-family: var(--v-sans);
+  color: var(--v-muted);
+  font-size: 12px;
+}
+
+.v-wholesale-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--v-sans);
+  font-size: 12.5px;
+  color: var(--v-body);
+}
+.v-wholesale-table thead th {
+  background: var(--v-green);
+  color: var(--v-cream-on-green);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 4mm 5mm;
+  font-size: 10.5px;
+  text-align: left;
+}
+.v-wholesale-table thead th.v-num { text-align: right; }
+.v-wholesale-table thead th:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+.v-wholesale-table thead th:last-child  { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+.v-wholesale-table td {
+  padding: 4mm 5mm;
+  border-bottom: 1px solid var(--v-hair);
+}
+.v-wholesale-row-alt td { background: var(--v-mint-zebra); }
+.v-wholesale-td-name { color: var(--v-ink); font-weight: 700; }
+.v-wholesale-td-price { color: var(--v-ink); font-weight: 700; }
+
+.v-wholesale-terms-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 10mm;
+}
+.v-wholesale-terms-col > .v-eyebrow { margin-bottom: 4mm; font-size: 11px; letter-spacing: 0.18em; }
+.v-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--v-sans);
+  color: var(--v-body);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.v-wholesale-terms-list li {
+  padding-left: 6mm;
+  position: relative;
+}
+.v-wholesale-terms-list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--v-green);
+}
+.v-wholesale-order-lines {
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--v-sans);
+  color: var(--v-body);
+  font-size: 12.5px;
+}
+
+.v-wholesale-sig-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-top: 12mm;
+}
+.v-wholesale-sig-cell { display: flex; flex-direction: column; gap: 2mm; }
+.v-wholesale-sig-line {
+  height: 2px;
+  background: var(--v-green);
+  margin-bottom: 2mm;
+  width: 100%;
+}
+.v-wholesale-sig-cell .v-eyebrow { font-size: 10px; letter-spacing: 0.18em; }
+
+.v-wholesale-footer-wrap { margin-top: auto; padding-top: 10mm; }
+
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.v-delivery {
+  width: 74mm; min-height: 105mm;
+  padding: 6mm 6mm 6mm;
+  background: var(--v-green);
+  color: var(--v-cream-on-green);
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  position: relative;
+}
+.v-delivery-hole {
+  width: 6mm; height: 6mm;
+  border: 1px solid rgba(245, 244, 238, 0.55);
+  border-radius: 50%;
+  margin: 0 auto 4mm;
+  position: relative; z-index: 1;
+}
+
+.v-delivery-brand-block { position: relative; z-index: 1; margin-bottom: 3mm; }
+.v-delivery-brand-name {
+  font-size: 20px;
+  margin: 0;
+  color: var(--v-cream-on-green);
+}
+.v-delivery-brand-line {
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  color: var(--v-cream-on-green);
+  opacity: 0.75;
+  margin-top: 1mm;
+}
+
+.v-delivery-eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 0.22em;
+  color: var(--v-cream-on-green);
+  opacity: 0.85;
+  margin-top: 4mm;
+}
+.v-delivery-product {
+  color: var(--v-cream-on-green);
+  font-size: 22px;
+  margin: 2mm 0 5mm;
+  line-height: 1.05;
+  position: relative; z-index: 1;
+}
+
+.v-delivery-care-box {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 4mm 5mm;
+  border-radius: 8px;
+  width: 100%;
+  text-align: left;
+  position: relative; z-index: 1;
+}
+.v-delivery-care-box > .v-eyebrow { margin-bottom: 2mm; font-size: 9.5px; letter-spacing: 0.20em; }
+.v-delivery-care-body {
+  font-family: var(--v-sans);
+  color: var(--v-cream-on-green);
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.92;
+}
+
+.v-delivery-footer {
+  margin-top: auto;
+  padding-top: 4mm;
+  font-family: var(--v-sans);
+  color: var(--v-cream-on-green);
+  font-size: 10px;
+  line-height: 1.5;
+  position: relative; z-index: 1;
+}
+.v-delivery-footer-line { color: var(--v-cream-on-green); opacity: 0.85; }
+
+
+/* =============================================================================
+   08 — SOCIAL MEDIA CARD  (1080×1080 = 148×148mm)
+   ============================================================================= */
+.v-social {
+  width: 148mm; height: 148mm;
+  background: var(--v-green);
+  color: var(--v-cream-on-green);
+  padding: 14mm 14mm 12mm;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+
+.v-social-header { position: relative; z-index: 1; }
+.v-social-brand-name {
+  font-size: 22px;
+  color: var(--v-cream-on-green);
+  margin: 0;
+}
+.v-social-brand-line {
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  color: var(--v-cream-on-green);
+  opacity: 0.75;
+  margin-top: 1mm;
+}
+
+.v-social-body {
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 6mm 0;
+  position: relative; z-index: 1;
+}
+.v-social-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--v-cream-on-green);
+  opacity: 0.85;
+  margin-bottom: 5mm;
+}
+.v-social-title {
+  font-size: 52px;
+  color: var(--v-cream-on-green);
+  margin: 0 0 5mm;
+  max-width: 110mm;
+  line-height: 1.03;
+}
+.v-social-desc {
+  font-family: var(--v-sans);
+  color: var(--v-cream-on-green);
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 0 0 7mm;
+  max-width: 105mm;
+  opacity: 0.9;
+  font-weight: 500;
+}
+.v-social-cta {
+  display: inline-block;
+  background: var(--v-cream);
+  color: var(--v-green);
+  padding: 4mm 8mm;
+  border-radius: 999px;
+  font-family: var(--v-sans);
+  font-weight: 700;
+  font-size: 14px;
+  align-self: flex-start;
+}
+
+.v-social-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 5mm;
+  font-family: var(--v-sans);
+  font-size: 11px;
+  color: var(--v-cream-on-green);
+  position: relative; z-index: 1;
+}
+.v-social-handles { font-weight: 700; }
+.v-social-website { opacity: 0.75; }
+
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait)
+   ============================================================================= */
+.v-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 16mm 12mm;
+  display: flex; flex-direction: column;
+}
+.v-binder-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 12mm;
+  padding-bottom: 4mm;
+}
+.v-binder-header-right { font-size: 11px; letter-spacing: 0.18em; padding-bottom: 2mm; }
+
+.v-binder-title-row {
+  display: flex; gap: 10mm; align-items: flex-start;
+  padding: 10mm 0 6mm;
+}
+.v-binder-title-left { flex: 1; min-width: 0; }
+.v-binder-title { font-size: 32px; margin: 0; line-height: 1.05; }
+.v-binder-desc {
+  font-family: var(--v-sans);
+  color: var(--v-body);
+  font-size: 13.5px;
+  margin: 3mm 0 0;
+  line-height: 1.5;
+}
+.v-binder-photo {
+  width: 42mm; height: 42mm; flex-shrink: 0;
+  background: var(--v-mint-soft);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 4mm;
+}
+.v-binder-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
+.v-binder-photo-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 1mm;
+}
+.v-binder-photo-placeholder .v-eyebrow { font-size: 9.5px; letter-spacing: 0.16em; }
+
+.v-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 4mm;
+  margin: 6mm 0 8mm;
+}
+.v-binder-meta-cell {
+  background: var(--v-mint-soft);
+  border-radius: 10px;
+  padding: 5mm 6mm;
+}
+.v-binder-meta-cell > .v-eyebrow { font-size: 10px; letter-spacing: 0.16em; margin-bottom: 2mm; }
+.v-binder-meta-val {
+  font-family: var(--v-serif);
+  font-weight: 400;
+  color: var(--v-ink);
+  font-size: 18px;
+  line-height: 1.1;
+}
+.v-binder-meta-cell-accent {
+  background: var(--v-green);
+}
+.v-binder-meta-cell-accent .v-binder-meta-val { color: var(--v-cream-on-green); }
+
+.v-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12mm;
+  flex: 1;
+}
+.v-binder-section > .v-eyebrow { margin-bottom: 5mm; font-size: 11px; letter-spacing: 0.20em; }
+
+.v-binder-ing-list { display: flex; flex-direction: column; }
+.v-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 2.5mm 0;
+  border-bottom: 1px solid var(--v-hair);
+  font-family: var(--v-sans);
+  font-size: 12px;
+  color: var(--v-body);
+  align-items: baseline;
+}
+.v-binder-ing-name { color: var(--v-body); font-weight: 500; }
+.v-binder-ing-qty {
+  color: var(--v-body);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+}
+.v-binder-ing-cost {
+  color: var(--v-ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+  font-weight: 600;
+}
+.v-binder-batch-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 6mm;
+  padding: 3mm 0 2mm;
+  border-top: 1px solid var(--v-green);
+  font-family: var(--v-sans);
+  font-size: 13px;
+  color: var(--v-ink);
+  font-weight: 700;
+  margin-top: 2mm;
+}
+.v-binder-batch-row > span:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.v-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3.5mm;
+  font-family: var(--v-sans);
+  font-size: 12px;
+  color: var(--v-body);
+  line-height: 1.5;
+}
+.v-binder-method li {
+  display: flex; align-items: flex-start; gap: 3mm;
+}
+.v-binder-method .v-method-group {
+  display: block;
+  padding-left: 0 !important;
+}
+.v-binder-method-step { flex: 1; }
+.v-binder-method-step-accent { font-weight: 500; }
+
+.v-binder-notes { margin-top: 6mm; }
+.v-binder-notes > .v-eyebrow { margin-bottom: 3mm; font-size: 11px; letter-spacing: 0.20em; }
+.v-binder-notes-lines { display: flex; flex-direction: column; gap: 7px; }
+.v-binder-notes-line { border-bottom: 1px solid var(--v-hair); height: 5mm; }
+
+.v-binder-footer-wrap { margin-top: auto; padding-top: 4mm; }
+
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, 297×210mm)
+   ============================================================================= */
+.v-cert {
+  width: 297mm; height: 210mm;
+  padding: 8mm;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+.v-cert-border {
+  flex: 1;
+  border: 1.5px solid var(--v-green);
+  border-radius: 10px;
+  padding: 10mm 20mm 8mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  position: relative; z-index: 1;
+  background: transparent;
+}
+.v-cert-top {
+  display: flex; flex-direction: column; align-items: center; gap: 4mm;
+  padding-top: 2mm;
+}
+.v-cert-title-label { font-size: 11px; letter-spacing: 0.24em; }
+
+.v-cert-body {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4mm;
+  max-width: 220mm;
+}
+.v-cert-intro,
+.v-cert-outro {
+  font-family: var(--v-sans);
+  color: var(--v-muted);
+  font-size: 13px;
+  margin: 0;
+  font-weight: 500;
+}
+.v-cert-product {
+  font-size: 48px;
+  margin: 3mm 0;
+  line-height: 1.02;
+  max-width: 240mm;
+}
+.v-cert-brand-name {
+  font-family: var(--v-serif);
+  font-weight: 400;
+  color: var(--v-green);
+  font-size: 26px;
+  margin-top: 2mm;
+  line-height: 1.05;
+}
+.v-cert-tagline {
+  font-family: var(--v-sans);
+  color: var(--v-muted);
+  font-size: 13px;
+  margin: 1mm 0 0;
+}
+
+.v-cert-signature-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20mm;
+  width: 100%;
+  align-items: flex-end;
+  padding: 0 12mm 4mm;
+  max-width: 240mm;
+}
+.v-cert-sig-cell {
+  display: flex; flex-direction: column; gap: 2mm;
+  align-items: flex-start;
+  min-width: 0;
+}
+.v-cert-sig-cell-right { align-items: flex-end; text-align: right; }
+.v-cert-sig-line {
+  width: 100%;
+  height: 1px;
+  background: var(--v-ink);
+  margin-bottom: 2mm;
+}
+.v-cert-sig-cell .v-eyebrow { font-size: 10px; letter-spacing: 0.18em; }
+.v-cert-sig-img {
+  display: block;
+  max-width: 44mm; max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+.v-cert-seal-wrap {
+  display: flex; justify-content: center; align-items: center;
+  padding-bottom: 2mm;
+}
+
+.v-cert-footer {
+  padding-top: 4mm;
+  font-family: var(--v-sans);
+  color: var(--v-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.v-cert-footer-line { color: var(--v-muted); }

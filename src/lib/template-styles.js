@@ -40,8 +40,14 @@ export const STYLE_VARIANTS = [
   {
     key: 'minimal',
     name: 'Quiet Minimal',
-    description: 'Manrope 300 + IBM Plex Mono. 0.5px hairlines, slate accent dot, generous whitespace. Most app-native. Cheapest to print.',
-    accent: '#5B6874',
+    description: 'Warm off-white paper, Manrope Light titles, JetBrains Mono for every meta label / number / date. Tiny rust bullet dot before section titles, hairline dividers, generous whitespace. No logo bounding box — just DC as mono text. Wide-spaced qty units. Most restrained set.',
+    accent: '#A5502D',
+  },
+  {
+    key: 'verdant',
+    name: 'Verdant',
+    description: 'Deep forest green on cream. DM Serif Display titles + Manrope body. Rounded mint pill chips for meta, numbered method chips with the final step highlighted in dark green, soft decorative circles floating at page edges, dark-green filled headers on Recipe Card and Product Label. Nature-inspired, warm, confident.',
+    accent: '#1E4A38',
   },
   {
     key: 'flour-ink',
