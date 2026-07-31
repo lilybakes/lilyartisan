@@ -1,91 +1,46 @@
-# Default filler recipe for new signups
+# Login brand rename — Baker|Nomics → Bake|Onomics
 
-## What ships
+## What was wrong
 
-Replaces `seed_starter_recipes()` with a single, polished "hello world" recipe — a **Moist Chocolate Ganache Cake** — with every content field populated. Every one of the 10 Kraft templates renders correctly out of the box the moment a new user finishes signup.
+Login.jsx has the wordmark **hardcoded** as two spans:
 
-Also fixes a latent bug: an earlier migration added `recipes.method` as **text**, and my later Kraft-content migration was written assuming **jsonb**. Because `ADD COLUMN IF NOT EXISTS` is a no-op when the column exists, on your database `method` is still text — which is why the 6 starter recipes didn't render method properly on the Kraft templates either. This delta converts it to jsonb, preserving existing content by splitting on newlines.
-
-## The recipe
-
-**Moist Chocolate Ganache Cake** — 10 slices, target 30% food cost, ~RM 2.74/portion, suggested RM 10.
-
-Fields populated for every template that needs them:
-
-| Field | Used by |
-|---|---|
-| `name`, `category` | all |
-| `yield_portions`, `target_food_cost_pct` | Cost Breakdown, Binder Page |
-| `description` | Social Card, Binder Page, Menu Insert |
-| `method` (jsonb array with CAKE / GANACHE sub-groups) | Recipe Card, Binder Page |
-| `storage_text` | Care Card, Delivery Tag |
-| `care_text` | Care Card |
-| `allergens_text` | Care Card |
-| `label_ingredients_text` | Product Label |
-| `label_allergens_text` | Product Label |
-| `show_in_menu` = true | Menu Insert, Wholesale Price List |
-| `image_url` | Binder Page (NULL for now — see below) |
-
-Method has proper sub-group labels so it renders as:
-
-```
-CAKE
-  1. Preheat oven to 175°C…
-  2. Whisk flour, cocoa…
-  …
-GANACHE
-  9. Finely chop the dark chocolate…
-  10. Warm the cream…
+```jsx
+<span className="part1">Baker</span><span className="part2">Nomics</span>
 ```
 
-## 12 ingredients seeded
+Unlike Sidebar.jsx, it doesn't read `settings.app_name` — so it never picked up the app-wide rename. Also, on the login page there's no logged-in user yet, so there's no `settings` context to read from anyway; hardcoding is actually correct here, it just needs the correct name.
 
-Everything the recipe references, priced realistically:
+## The fix
 
-| Ingredient | Unit | Purchase qty | Price (RM) |
-|---|---|---|---|
-| All-purpose flour | g | 1000 | 4.50 |
-| Granulated sugar | g | 1000 | 3.50 |
-| Cocoa powder | g | 500 | 22.00 |
-| Baking powder | g | 500 | 12.00 |
-| Baking soda | g | 500 | 8.00 |
-| Sea salt | g | 500 | 6.00 |
-| Large eggs | pcs | 30 | 15.00 |
-| Whole milk | ml | 1000 | 7.50 |
-| Vegetable oil | ml | 1000 | 8.00 |
-| Vanilla extract | ml | 100 | 25.00 |
-| Dark chocolate 70% | g | 500 | 28.00 |
-| Heavy cream | ml | 1000 | 22.00 |
+Same shape, correct text:
+
+```jsx
+<span className="part1">Bake</span><span className="part2">Onomics</span>
+```
+
+"Bake" renders in navy (`part1`), "Onomics" renders in violet (`part2`) — matching the sidebar rendering when a signed-in user's `settings.app_name` is `"Bake|Onomics"`.
 
 ## Files
 
 ```
-supabase/
-  filler-seed.sql        # NEW — method column type fix + new seed_starter_recipes
+src/
+  pages/Login.jsx        # OVERWRITE — brand text swapped, everything else identical
 ```
 
-Safe to re-run.
+One file.
 
 ## Deploy
 
-Supabase SQL editor → paste `supabase/filler-seed.sql` → Run. Existing users are unaffected (function is idempotent per user). Every new signup from now on gets this one recipe.
+Drop it in, push, hard-refresh the login page.
 
-If you want your own account reset to just this recipe: delete your existing recipes/ingredients in Recipe Master, then in SQL editor run:
+## What about the sidebar for existing users?
+
+If Lily's or Anthony's `settings.app_name` in the database is still `Baker|Nomics`, the sidebar shows the old name for them even after this fix. To update the database default, run in Supabase SQL editor:
 
 ```sql
-SELECT seed_starter_recipes((SELECT id FROM auth.users WHERE email = 'anthony2211@gmail.com'));
+UPDATE settings SET app_name = 'Bake|Onomics' WHERE app_name = 'Baker|Nomics';
 ```
 
-## The image
+Or edit it per-user via **Settings → Brand & Identity → App Name (wordmark)**.
 
-`image_url` is NULL in the seed for now. I can't generate images. If you send me a chocolate cake photo you're OK with using as the default across every new signup, I'll:
-
-1. Upload it to your `lilyartisan-images` bucket at a stable path (probably `starter/moist-chocolate-cake.jpg`)
-2. Update the seed to set `image_url` to that URL
-3. Ship as a two-line SQL follow-up
-
-Anything from a phone camera works fine. Ideally landscape or square, well-lit, cake visible. If you have a photo Lily's already taken of one of her real cakes, even better — makes the default feel authentic instead of stocky. Otherwise a stock photo you've licensed also works.
-
-## What about the earlier 6-recipe starter?
-
-Overwritten. The old function that seeded Sourdough, Chocolate Chip Cookies, Vanilla Cupcakes, Chocolate Fudge Cake, Blueberry Muffins, and Almond Biscotti is gone. If you signed users up under the old function, they keep those 6 recipes — this only affects future signups.
+Every future signup already gets `Bake|Onomics` if the earlier brand-rename delta was fully applied to the `handle_new_user` trigger. If not, tell me and I'll ship a follow-up that updates the trigger.
