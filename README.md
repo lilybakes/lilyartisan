@@ -1,62 +1,89 @@
-# Brand Coverage Audit + Fix
+# Templates v2 — Full Design Refresh
 
-## What the audit found
-
-Every field the user fills in Settings should surface on at least one relevant template. Two fields didn't:
-
-1. **`facebook` was dead code.** BrandFooter only rendered instagram. Users filling the Facebook field saw nothing appear anywhere.
-2. **`tagline` was dropped in compact headers.** CostBreakdown, CareCard, Recipe Binder, Product Label — none rendered the tagline.
-
-Plus some smaller gaps: Delivery Tag ignored `default_storage_notes` fallback, Certificate of Craft had no contact info at all, Social Media Card ignored Facebook.
-
-## Final coverage matrix (after this delta)
-
-|  | Logo | Business Name | Brand Color | Tagline | Phone | Email | Website | Address | Instagram | Facebook | Storage default | Allergen default |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **Classic Recipe Card** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | — |
-| **Cost Breakdown Sheet** | ✓ | ✓ | ✓ | ✓ (small) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | — |
-| **Care & Storage Card** | ✓ | ✓ | ✓ | ✓ (small) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | **✓ fallback** | **✓ fallback** |
-| **Product Label** | ✓ | ✓ | ✓ | ✓ (small) | ✓ | — | ✓ | — | ✓ | — | — | **✓ fallback** |
-| **Menu Insert** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | — |
-| **Wholesale Price List** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | — |
-| **Delivery Tag** | ✓ | ✓ | ✓ | ✓ (small) | ✓ | — | ✓ | — | ✓ | ✓ | **✓ fallback** | — |
-| **Social Media Card** | ✓ | ✓ | ✓ (gradient) | ✓ | — | — | ✓ | — | ✓ | ✓ | — | — |
-| **Recipe Binder Page** | ✓ | ✓ | ✓ | ✓ (small) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — | — |
-| **Certificate of Craft** | ✓ | ✓ | ✓ | ✓ | ✓ | — | ✓ | ✓ | ✓ | ✓ | — | — |
-
-Legend:
-- **✓** — rendered
-- **✓ (small)** — rendered in a compact/subtle style appropriate to the template size
-- **✓ fallback** — recipe field takes precedence; falls back to the brand default when the recipe is blank
-- **—** — intentionally omitted (usually because the template is too small, or the field isn't semantically relevant)
-
-Every user-set field now appears on **at least one** template. Most appear on 6+ templates.
+Ten templates redesigned per the design handoff you sent. Each has its own distinct aesthetic instead of the previous unified style.
 
 ## Files
 
 ```
 src/
   components/templates/
-    parts.jsx                    # OVERWRITE — compact header shows tagline; footer adds facebook
-    DeliveryTag.jsx              # OVERWRITE — tagline, brand storage fallback, +facebook +website +phone
-    SocialMediaCard.jsx          # OVERWRITE — tagline, facebook handle
-    CertificateOfCraft.jsx       # OVERWRITE — address + full contact line at bottom
-    ProductLabel.jsx             # OVERWRITE — tagline, restructured header
-  styles.css                     # OVERWRITE (full file — adds compact tagline + supporting classes)
+    ornaments.jsx                # NEW — reusable SVG components (wax seal, wheat sprig, botanical branches, twine, grommet, sparkle, heart)
+    parts.jsx                    # OVERWRITE — BrandHeader/Footer kept for compatibility
+    ClassicRecipeCard.jsx        # OVERWRITE — Kraft Deli, Modern-Warm
+    CostBreakdown.jsx            # OVERWRITE — Startup Dashboard
+    CareCard.jsx                 # OVERWRITE — Warm Handwritten
+    ProductLabel.jsx             # OVERWRITE — Apothecary Jar
+    MenuInsert.jsx               # OVERWRITE — Café Chalkboard
+    WholesalePriceList.jsx       # OVERWRITE — Corporate B2B
+    DeliveryTag.jsx              # OVERWRITE — Kraft Paper Stamp
+    SocialMediaCard.jsx          # OVERWRITE — Editorial Magazine
+    RecipeBinderPage.jsx         # OVERWRITE — Chef's Professional
+    CertificateOfCraft.jsx       # OVERWRITE — Traditional Botanical
+    index.js                     # OVERWRITE (unchanged registry, kept for completeness)
+  pages/
+    Templates.jsx                # OVERWRITE (null-safe useSettings + multi-recipe support)
+  styles.css                     # OVERWRITE (full file — adds Google Fonts import + entire v2 stylesheet)
 ```
 
-6 files. No SQL, no App.jsx, no sidebar changes.
+15 files total.
 
-## Design notes
+## The 10 aesthetics
 
-**"Small" tagline treatment.** On compact-header templates (CostBreakdown, CareCard, RecipeBinder, ProductLabel, DeliveryTag) the tagline renders in muted grey below the business name at a smaller size — visible but doesn't fight the recipe name for attention.
+| # | Template | Aesthetic | Font pairing |
+|---|---|---|---|
+| 1 | Classic Recipe Card | Kraft Deli, Modern-Warm | Playfair Display + Inter + Caveat (note) |
+| 2 | Cost Breakdown Sheet | Startup Dashboard | Space Grotesk + Inter |
+| 3 | Care & Storage Card | Warm Handwritten | Caveat + Playfair Display + Inter |
+| 4 | Product Label | Apothecary Jar | Cormorant Garamond + Inter |
+| 5 | Menu Insert | Café Chalkboard | Caveat + Playfair italic + Inter |
+| 6 | Wholesale Price List | Corporate B2B | Inter + IBM Plex Mono |
+| 7 | Delivery Tag | Kraft Paper Stamp | Playfair Display + Caveat + Inter |
+| 8 | Social Media Card | Editorial Magazine | Instrument Serif italic + Inter |
+| 9 | Recipe Binder Page | Chef's Professional | Inter + IBM Plex Mono |
+| 10 | Certificate of Craft | Traditional Botanical | Marcellus + Playfair Display + EB Garamond |
 
-**Facebook rendering.** Followed the same convention as Instagram: prefix with `fb/` to keep the label short and unambiguous. So `fb/TheDailyCrumb` alongside `@thedailycrumb`. Users just enter the page slug; the template adds the prefix.
+## Notable design elements
 
-**Storage fallback on Delivery Tag.** Delivery tags almost always benefit from care info, so if the recipe doesn't have `storage_notes` set, we now fall back to `brand.default_storage_notes` — matching how CareCard already worked.
+**Ornaments** (all SVG, brand-color aware):
+- **Wax Seal** — used on Classic Card (top-left), Product Label (top), Certificate (centre). Auto-derives initials from business name.
+- **Wheat Sprig** — Classic Card footer center
+- **Sparkle** — Classic Card top-right, Care Card top-right
+- **Twine Arc** — Care Card top, Delivery Tag top
+- **Heart Doodle** — Care Card divider + sign-off
+- **Chalk Flourish** — Menu Insert dividers and footer
+- **Tag Grommet** — Delivery Tag punch-hole with peeking twine
+- **Botanical Branch** — Certificate four corners (mirrored appropriately)
 
-**Certificate address block.** Small dashed separator, then address (multi-line) and a violet contact row underneath — feels like the "official location" line on a real certificate without cluttering the decorative body.
+**Font loading:** Google Fonts imported via CSS at the top of `styles.css`. Users get the fonts on first visit; cached thereafter. No `index.html` edit needed.
+
+**Brand color flows everywhere via `--brand` CSS variable.** Every template respects it — Classic Card seal, Cost Breakdown price highlight, Menu chalk elements, Certificate frame, Recipe Binder full sidebar.
+
+**Page sizes match handoff spec:**
+- Classic Card: 148×210mm (A5)
+- Cost Breakdown: 210×297mm (A4)
+- Care Card: 105×148mm (A6)
+- Product Label: 60×90mm (custom small)
+- Menu Insert: 148×210mm (A5)
+- Wholesale: 210×297mm (A4)
+- Delivery Tag: 74×105mm (A7)
+- Social: 148×148mm (1:1 square)
+- Recipe Binder: 210×297mm (A4) — grid layout with sidebar
+- Certificate: 297×210mm (A4 landscape)
 
 ## Deploy
 
-Overwrite the 6 files, push, hard-refresh. Fill in Settings → Contact tab with a Facebook page slug and a tagline you didn't have before → visit Templates → cycle through them. Every field you filled will show up somewhere.
+Overwrite the 15 files, push, hard-refresh. First load will fetch the Google Fonts (~10s over slow connections); subsequent loads are instant.
+
+Try each template — every recipe from your starter seed produces a nicely-composed sheet with your brand color and identity.
+
+## Missing image_url gracefully
+
+Every template handles `recipe.image_url = null` — none rely on a recipe photo being present. Only Recipe Binder Page has a photo slot, which renders a "Photo slot" placeholder if empty.
+
+## Print behavior
+
+Same as before — `window.print()`, `@media print` hides everything but the `.printable` element. Certificate of Craft correctly triggers landscape orientation via a named `@page`.
+
+## Adjust the aesthetic
+
+If you want to tweak a specific template's colors, ornaments, or fonts, each template is a self-contained file. Change the CSS classes in `styles.css` under the `/* N. Template Name */` header for that specific template — nothing else is affected.

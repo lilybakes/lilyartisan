@@ -1,9 +1,3 @@
-/**
- * Shared brand pieces used across templates.
- * Placing them here keeps every template visually consistent while
- * letting each template control its own layout below.
- */
-
 export function BrandHeader({ brand, compact = false }) {
   return (
     <header className={'tpl-brand-header' + (compact ? ' tpl-brand-header-compact' : '')}>
@@ -27,13 +21,10 @@ export function BrandFooter({ brand }) {
   if (brand.contact_phone) contacts.push(brand.contact_phone)
   if (brand.contact_email) contacts.push(brand.contact_email)
   if (brand.website)       contacts.push(brand.website)
-
   const socials = []
   if (brand.instagram) socials.push('@' + brand.instagram)
   if (brand.facebook)  socials.push('fb/' + brand.facebook)
-
   if (contacts.length === 0 && socials.length === 0 && !brand.address) return null
-
   return (
     <footer className="tpl-brand-footer">
       {brand.address && <div className="tpl-brand-address">{brand.address}</div>}
