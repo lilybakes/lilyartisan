@@ -2,7 +2,7 @@
  * Compact product label — allergens, ingredients, best-by. For packaging.
  * A7 sized when printed — 8 fit on an A4 sheet.
  */
-export function ProductLabel({ recipe, brand }) {
+export function ProductLabel({ recipe, brand, styleVariant = 'clean-modern' }) {
   const allergens = recipe.allergen_notice || brand.default_allergen_notice
   const ingredientsList = recipe.lines
     .map(l => l.ingredient_name)
@@ -15,7 +15,7 @@ export function ProductLabel({ recipe, brand }) {
   if (brand.instagram)     contactBits.push('@' + brand.instagram)
 
   return (
-    <div className="tpl tpl-label printable" style={{ '--brand': brand.brand_color }}>
+    <div className={`tpl tpl-label printable variant-${styleVariant}`} style={{ '--brand': brand.brand_color }}>
       <div className="tpl-label-header">
         {brand.logo_data_url && <img src={brand.logo_data_url} alt="" className="tpl-label-logo"/>}
         <div className="tpl-label-header-text">

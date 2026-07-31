@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useSettings } from '../lib/settings.jsx'
 import { TEMPLATES, getTemplate } from '../components/templates/index.js'
+import { STYLE_VARIANTS, DEFAULT_STYLE_KEY } from '../lib/template-styles.js'
 
 /* ============================================================
    Preview thumbnail illustrations — abstract shapes hinting at layout
@@ -149,7 +150,12 @@ export default function Templates() {
   const [bomLines, setBomLines]       = useState({})
   const [recipeId, setRecipeId]       = useState('')
   const [templateKey, setTemplateKey] = useState('classic')
+  const [templateStyles, setTemplateStyles] = useState({})  // { classic: 'kraft', cost: 'editorial', ... }
   const [loading, setLoading]         = useState(true)
+
+  const currentStyle = templateStyles[templateKey] || DEFAULT_STYLE_KEY
+  const setCurrentStyle = (styleKey) =>
+    setTemplateStyles(prev => ({ ...prev, [templateKey]: styleKey }))
 
   useEffect(() => {
     ;(async () => {
@@ -291,13 +297,32 @@ export default function Templates() {
       </div>
 
       {TemplateComponent && (isMulti || enrichedRecipe) && (
-        <div className="templates-preview">
-          <TemplateComponent
-            recipe={enrichedRecipe}
-            recipes={enrichedRecipes}
-            brand={brand}
-          />
-        </div>
+        <>
+          <div className="tpl-style-row no-print">
+            <div className="tpl-style-field">
+              <label>Style for {template.name}</label>
+              <select value={currentStyle} onChange={e => setCurrentStyle(e.target.value)}>
+                {STYLE_VARIANTS.map(s => (
+                  <option key={s.key} value={s.key}>
+                    {s.name}{s.isDefault ? ' (default)' : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="tpl-style-desc">
+              {STYLE_VARIANTS.find(s => s.key === currentStyle)?.description}
+            </div>
+          </div>
+
+          <div className="templates-preview">
+            <TemplateComponent
+              recipe={enrichedRecipe}
+              recipes={enrichedRecipes}
+              brand={brand}
+              styleVariant={currentStyle}
+            />
+          </div>
+        </>
       )}
     </>
   )

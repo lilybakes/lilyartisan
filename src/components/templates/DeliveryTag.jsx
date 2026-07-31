@@ -2,11 +2,11 @@
  * Delivery tag — small hang-tag or box-topper for delivery orders.
  * A7 sized, punchable for string.
  */
-export function DeliveryTag({ recipe, brand }) {
+export function DeliveryTag({ recipe, brand, styleVariant = 'clean-modern' }) {
   const storage = recipe.storage_notes || brand.default_storage_notes
 
   return (
-    <div className="tpl tpl-delivery printable" style={{ '--brand': brand.brand_color }}>
+    <div className={`tpl tpl-delivery printable variant-${styleVariant}`} style={{ '--brand': brand.brand_color }}>
       <div className="tpl-delivery-punch"/>
 
       <div className="tpl-delivery-header">

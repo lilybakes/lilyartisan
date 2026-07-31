@@ -8,7 +8,7 @@ function money(n, currency = 'RM') {
  * Internal cost sheet — for kitchen management and price decisions.
  * Not for customers. Shows real numbers.
  */
-export function CostBreakdown({ recipe, brand }) {
+export function CostBreakdown({ recipe, brand, styleVariant = 'clean-modern' }) {
   const currency = brand.currency || 'RM'
   const totalCost      = recipe.total_cost || 0
   const perPortion     = recipe.cost_per_portion || 0
@@ -17,7 +17,7 @@ export function CostBreakdown({ recipe, brand }) {
   const currentMargin  = suggestedPrice > 0 ? Math.round(((suggestedPrice - perPortion) / suggestedPrice) * 100) : 0
 
   return (
-    <div className="tpl tpl-cost printable" style={{ '--brand': brand.brand_color }}>
+    <div className={`tpl tpl-cost printable variant-${styleVariant}`} style={{ '--brand': brand.brand_color }}>
       <BrandHeader brand={brand} compact/>
 
       <div className="tpl-cost-title-row">

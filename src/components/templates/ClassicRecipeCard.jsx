@@ -4,9 +4,9 @@ import { BrandHeader, BrandFooter } from './parts.jsx'
  * Traditional recipe card. Ingredients list + yield + brand.
  * Sized for A5 portrait when printed.
  */
-export function ClassicRecipeCard({ recipe, brand }) {
+export function ClassicRecipeCard({ recipe, brand, styleVariant = 'clean-modern' }) {
   return (
-    <div className="tpl tpl-classic printable" style={{ '--brand': brand.brand_color }}>
+    <div className={`tpl tpl-classic printable variant-${styleVariant}`} style={{ '--brand': brand.brand_color }}>
       <BrandHeader brand={brand}/>
 
       <div className="tpl-classic-body">

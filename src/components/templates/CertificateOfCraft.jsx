@@ -2,7 +2,7 @@
  * Certificate of Craft — decorative landscape A4 certificate.
  * For premium orders, gifts, or press features.
  */
-export function CertificateOfCraft({ recipe, brand }) {
+export function CertificateOfCraft({ recipe, brand, styleVariant = 'clean-modern' }) {
   const today = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
 
   const contacts = []
@@ -12,7 +12,7 @@ export function CertificateOfCraft({ recipe, brand }) {
   if (brand.contact_phone) contacts.push(brand.contact_phone)
 
   return (
-    <div className="tpl tpl-cert printable" style={{ '--brand': brand.brand_color }}>
+    <div className={`tpl tpl-cert printable variant-${styleVariant}`} style={{ '--brand': brand.brand_color }}>
       <div className="tpl-cert-inner">
         <div className="tpl-cert-corner tpl-cert-corner-tl"/>
         <div className="tpl-cert-corner tpl-cert-corner-tr"/>

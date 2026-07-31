@@ -9,10 +9,10 @@ function money(n, currency = 'RM') {
  * Includes photo slot, full ingredient table with quantities AND costs,
  * method, and a notes section for chef comments.
  */
-export function RecipeBinderPage({ recipe, brand }) {
+export function RecipeBinderPage({ recipe, brand, styleVariant = 'clean-modern' }) {
   const currency = brand.currency || 'RM'
   return (
-    <div className="tpl tpl-binder printable" style={{ '--brand': brand.brand_color }}>
+    <div className={`tpl tpl-binder printable variant-${styleVariant}`} style={{ '--brand': brand.brand_color }}>
       <BrandHeader brand={brand} compact/>
 
       <div className="tpl-binder-title-row">

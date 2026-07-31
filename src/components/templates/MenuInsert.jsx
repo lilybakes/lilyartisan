@@ -8,7 +8,7 @@ function money(n, currency = 'RM') {
  * Multi-recipe menu insert. Groups recipes by category.
  * A5 portrait — for placing in menus or leave-behinds.
  */
-export function MenuInsert({ recipes, brand }) {
+export function MenuInsert({ recipes, brand, styleVariant = 'clean-modern' }) {
   const currency = brand.currency || 'RM'
   const items = (recipes || []).filter(r => r?.name)
 
@@ -21,7 +21,7 @@ export function MenuInsert({ recipes, brand }) {
   }
 
   return (
-    <div className="tpl tpl-menu printable" style={{ '--brand': brand.brand_color }}>
+    <div className={`tpl tpl-menu printable variant-${styleVariant}`} style={{ '--brand': brand.brand_color }}>
       <BrandHeader brand={brand}/>
 
       <div className="tpl-menu-body">

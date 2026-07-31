@@ -6,10 +6,10 @@ function money(n, currency = 'RM') {
  * Square social media card. Screenshot-friendly for Instagram / Facebook posts.
  * 1080×1080 equivalent scaled to 148mm for print.
  */
-export function SocialMediaCard({ recipe, brand }) {
+export function SocialMediaCard({ recipe, brand, styleVariant = 'clean-modern' }) {
   const currency = brand.currency || 'RM'
   return (
-    <div className="tpl tpl-social printable" style={{ '--brand': brand.brand_color }}>
+    <div className={`tpl tpl-social printable variant-${styleVariant}`} style={{ '--brand': brand.brand_color }}>
       <div className="tpl-social-bg"/>
 
       <div className="tpl-social-mark">

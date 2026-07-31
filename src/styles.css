@@ -1,3 +1,6 @@
+/* Template style-variant fonts — Clean Modern / Kraft / Letterpress / Editorial / Minimal */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Bitter:wght@400;600;700;800&family=Karla:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Serif+Display:ital@0;1&family=Archivo:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
 :root{
   --bg:#f5f5f9;
   --panel:#ffffff;
@@ -4446,4 +4449,392 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   font-size:10.5px;
   color:var(--brand);
   font-weight:600;
+}
+
+/* ============================================================
+   Style variant picker UI
+   ============================================================ */
+.tpl-style-row{
+  display:flex; align-items:flex-end; gap:22px;
+  padding:18px 22px;
+  background:#FAFAFC;
+  border:1px solid var(--line);
+  border-radius:14px;
+  margin:20px 0 16px;
+  flex-wrap:wrap;
+}
+.tpl-style-field{ display:flex; flex-direction:column; gap:6px; flex-shrink:0; }
+.tpl-style-field label{
+  font-size:10.5px;
+  font-weight:700;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.tpl-style-field select{
+  width:280px;
+  padding:10px 14px; padding-right:36px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  font-family:inherit;
+  font-size:14px;
+  color:var(--ink);
+  background:#fff;
+  cursor:pointer;
+}
+.tpl-style-field select:hover{ border-color:var(--accent); }
+.tpl-style-field select:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(115,103,240,0.12); }
+.tpl-style-desc{
+  flex:1;
+  font-size:12.5px;
+  color:var(--ink-soft);
+  line-height:1.55;
+  min-width:200px;
+  padding-bottom:6px;
+}
+
+/* ============================================================
+   Style Variant 1 — Clean Modern (this is the default, so mostly
+   uses base template styles). Adds Plus Jakarta Sans + JetBrains Mono.
+   ============================================================ */
+.tpl.variant-clean-modern{
+  --tpl-accent: #8B4A2B;
+  font-family:'Plus Jakarta Sans', -apple-system, sans-serif;
+}
+.tpl.variant-clean-modern .tpl-brand-name,
+.tpl.variant-clean-modern h1,
+.tpl.variant-clean-modern h2{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  letter-spacing:-0.02em;
+}
+.tpl.variant-clean-modern [class*="qty"],
+.tpl.variant-clean-modern [class*="cost"],
+.tpl.variant-clean-modern [class*="price"],
+.tpl.variant-clean-modern [class*="total"],
+.tpl.variant-clean-modern td[style*="tabular"],
+.tpl.variant-clean-modern .tpl-cost-headline-val,
+.tpl.variant-clean-modern .tpl-cost-stat-val{
+  font-family:'JetBrains Mono', monospace;
+}
+
+
+/* ============================================================
+   Style Variant 2 — Rustic Kraft & Stamp
+   ============================================================ */
+.tpl.variant-kraft{
+  --tpl-accent: #8B4A2B;
+  background:#F5EADB !important;
+  color:#3A2A1C;
+  font-family:'Karla', sans-serif;
+}
+.tpl.variant-kraft .tpl-brand-name,
+.tpl.variant-kraft h1,
+.tpl.variant-kraft h2,
+.tpl.variant-kraft [class*="-name"]:not([class*="-brand-name"]){
+  font-family:'Bitter', serif;
+  color:#3A2A1C;
+  font-weight:800;
+}
+.tpl.variant-kraft .tpl-brand-name{ color:#8B4A2B; }
+.tpl.variant-kraft .tpl-brand-header{
+  border-bottom:3px double #8B4A2B;
+  background:#FAF5EC;
+}
+.tpl.variant-kraft .tpl-brand-tagline,
+.tpl.variant-kraft .tpl-brand-tagline-small{ color:#6B5B4B; font-style:italic; }
+.tpl.variant-kraft [class*="-section-title"],
+.tpl.variant-kraft [class*="-eyebrow"]{
+  color:#8B4A2B;
+  border-bottom:1px dashed rgba(139,74,43,0.35);
+}
+.tpl.variant-kraft th{
+  background:#EBDBBF !important;
+  color:#3A2A1C !important;
+  border-bottom:2px solid #8B4A2B !important;
+}
+.tpl.variant-kraft td{ border-bottom:1px dotted rgba(139,74,43,0.3) !important; }
+.tpl.variant-kraft .tpl-brand-footer{
+  background:#FAF5EC;
+  border-top:1px dashed rgba(139,74,43,0.4);
+  color:#6B5B4B;
+}
+.tpl.variant-kraft [class*="-badge"],
+.tpl.variant-kraft [class*="-chip"]{
+  background:#EBDBBF !important;
+  color:#8B4A2B !important;
+}
+.tpl.variant-kraft [class*="-meta"] > span{ color:#6B5B4B; }
+/* Rubber-stamp seal on relevant templates */
+.tpl.variant-kraft.tpl-classic::after,
+.tpl.variant-kraft.tpl-care::after{
+  content:'BAKED · SMALL · BATCH';
+  position:absolute;
+  bottom:44px; right:24px;
+  padding:16px 16px;
+  border:2px solid #8B4A2B;
+  border-radius:50%;
+  color:#8B4A2B;
+  font-family:'Bitter', serif;
+  font-size:8px; font-weight:800;
+  letter-spacing:0.14em;
+  text-align:center;
+  transform:rotate(-14deg);
+  width:66px; height:66px;
+  display:flex; align-items:center; justify-content:center;
+  line-height:1.15;
+  opacity:0.7;
+}
+
+
+/* ============================================================
+   Style Variant 3 — Vintage Letterpress
+   ============================================================ */
+.tpl.variant-letterpress{
+  --tpl-accent: #8B4A2B;
+  background:#FBF7EF !important;
+  color:#23201C;
+  font-family:'Cormorant Garamond', serif;
+  text-align:center;
+}
+.tpl.variant-letterpress .tpl-brand-name,
+.tpl.variant-letterpress h1,
+.tpl.variant-letterpress h2,
+.tpl.variant-letterpress [class*="-recipe-name"],
+.tpl.variant-letterpress [class*="-name"]:not([class*="-brand-name"]):not([class*="-ing-name"]){
+  font-family:'Playfair Display', serif;
+  color:#23201C;
+  font-weight:700;
+  letter-spacing:-0.01em;
+}
+.tpl.variant-letterpress .tpl-brand-name{ color:#8B4A2B; font-weight:900; }
+.tpl.variant-letterpress .tpl-brand-header{
+  border-bottom:1px solid #8B4A2B;
+  position:relative;
+  padding-bottom:24px;
+}
+.tpl.variant-letterpress .tpl-brand-header::after{
+  content:'❧';
+  position:absolute;
+  bottom:-9px; left:50%;
+  transform:translateX(-50%);
+  background:#FBF7EF;
+  padding:0 8px;
+  color:#8B4A2B;
+  font-size:14px;
+}
+.tpl.variant-letterpress .tpl-brand-tagline,
+.tpl.variant-letterpress .tpl-brand-tagline-small{
+  font-family:'Karla', sans-serif;
+  text-transform:uppercase;
+  letter-spacing:0.24em;
+  font-size:9.5px !important;
+  color:#6E6558 !important;
+  font-style:normal;
+}
+.tpl.variant-letterpress [class*="-section-title"],
+.tpl.variant-letterpress [class*="-eyebrow"]{
+  font-family:'Karla', sans-serif;
+  text-transform:uppercase;
+  letter-spacing:0.28em;
+  font-size:9.5px !important;
+  color:#8B4A2B !important;
+  text-align:center !important;
+  border-bottom:none !important;
+  position:relative;
+  padding:8px 0 !important;
+}
+.tpl.variant-letterpress [class*="-section-title"]::before,
+.tpl.variant-letterpress [class*="-section-title"]::after{
+  content:'———';
+  color:#8B4A2B;
+  margin:0 12px;
+  opacity:0.5;
+  letter-spacing:0;
+}
+.tpl.variant-letterpress p,
+.tpl.variant-letterpress [class*="-desc"],
+.tpl.variant-letterpress [class*="-body"]{
+  font-family:'Cormorant Garamond', serif;
+  font-style:italic;
+  color:#3D382F;
+}
+.tpl.variant-letterpress th,
+.tpl.variant-letterpress td{ text-align:center !important; }
+.tpl.variant-letterpress th{
+  background:transparent !important;
+  color:#8B4A2B !important;
+  border-bottom:1px solid #8B4A2B !important;
+  font-family:'Karla', sans-serif !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.22em !important;
+  font-size:9px !important;
+}
+.tpl.variant-letterpress td{
+  border-bottom:1px solid rgba(35,32,28,0.08) !important;
+  font-family:'Cormorant Garamond', serif;
+}
+.tpl.variant-letterpress .tpl-brand-footer{
+  background:transparent;
+  border-top:1px solid #8B4A2B;
+  text-align:center;
+  padding-top:16px;
+}
+.tpl.variant-letterpress .tpl-brand-contact,
+.tpl.variant-letterpress .tpl-brand-address{ justify-content:center; text-align:center; }
+.tpl.variant-letterpress [class*="-ingredients-list"],
+.tpl.variant-letterpress [class*="-ing-grid"]{ text-align:left; }
+
+
+/* ============================================================
+   Style Variant 4 — Editorial Magazine
+   ============================================================ */
+.tpl.variant-editorial{
+  --tpl-accent: #8B4A2B;
+  background:#FCFBF9 !important;
+  color:#1A1A18;
+  font-family:'Archivo', sans-serif;
+}
+.tpl.variant-editorial .tpl-brand-name,
+.tpl.variant-editorial h1,
+.tpl.variant-editorial h2,
+.tpl.variant-editorial [class*="-recipe-name"],
+.tpl.variant-editorial [class*="-name"]:not([class*="-brand-name"]):not([class*="-ing-name"]){
+  font-family:'DM Serif Display', serif;
+  color:#1A1A18;
+  font-weight:400;
+  letter-spacing:-0.02em;
+}
+.tpl.variant-editorial .tpl-brand-name{
+  font-family:'Archivo', sans-serif;
+  color:#1A1A18;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:0.02em;
+}
+.tpl.variant-editorial .tpl-brand-header{
+  border-bottom:3px solid #1A1A18;
+  padding-bottom:20px;
+}
+.tpl.variant-editorial [class*="-section-title"],
+.tpl.variant-editorial [class*="-eyebrow"]{
+  font-family:'Archivo', sans-serif !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.16em !important;
+  font-weight:800 !important;
+  color:#1A1A18 !important;
+  border-bottom:2px solid #1A1A18 !important;
+  padding-bottom:8px !important;
+}
+.tpl.variant-editorial [class*="-meta-chip"]{
+  background:#1A1A18 !important;
+  color:#FCFBF9 !important;
+  border-radius:2px !important;
+}
+.tpl.variant-editorial th{
+  background:#1A1A18 !important;
+  color:#FCFBF9 !important;
+  font-family:'Archivo', sans-serif !important;
+  letter-spacing:0.14em !important;
+}
+.tpl.variant-editorial tr:nth-child(even) td{ background:#F5F0E9; }
+.tpl.variant-editorial td{ border-bottom:1px solid #E2DED6 !important; }
+.tpl.variant-editorial .tpl-brand-footer{
+  background:#1A1A18;
+  color:#FCFBF9;
+  border-top:none;
+}
+.tpl.variant-editorial .tpl-brand-footer *{ color:#FCFBF9 !important; }
+.tpl.variant-editorial .tpl-brand-social{ color:#8B4A2B !important; }
+/* Accent block for hero areas */
+.tpl.variant-editorial [class*="-hero"],
+.tpl.variant-editorial [class*="-eyebrow"]:first-of-type{
+  position:relative;
+}
+
+
+/* ============================================================
+   Style Variant 5 — Quiet Minimal
+   ============================================================ */
+.tpl.variant-minimal{
+  --tpl-accent: #8B4A2B;
+  background:#FDFDFC !important;
+  color:#2B2B29;
+  font-family:'Manrope', sans-serif;
+  font-weight:300;
+}
+.tpl.variant-minimal .tpl-brand-name,
+.tpl.variant-minimal h1,
+.tpl.variant-minimal h2{
+  font-family:'Manrope', sans-serif;
+  font-weight:500;
+  color:#2B2B29;
+  letter-spacing:-0.02em;
+}
+.tpl.variant-minimal .tpl-brand-name{ color:#2B2B29; }
+.tpl.variant-minimal .tpl-brand-header{
+  border-bottom:0.5px solid #D8D8D2;
+  position:relative;
+}
+.tpl.variant-minimal .tpl-brand-header::after{
+  content:'';
+  position:absolute;
+  bottom:-3px; left:0;
+  width:5px; height:5px;
+  border-radius:50%;
+  background:#8B4A2B;
+}
+.tpl.variant-minimal [class*="-section-title"],
+.tpl.variant-minimal [class*="-eyebrow"]{
+  font-family:'IBM Plex Mono', monospace !important;
+  font-size:9px !important;
+  color:#77776F !important;
+  font-weight:400 !important;
+  text-transform:uppercase;
+  letter-spacing:0.16em;
+  border:none !important;
+  padding-bottom:16px !important;
+  margin-bottom:12px !important;
+}
+.tpl.variant-minimal [class*="-recipe-name"],
+.tpl.variant-minimal [class*="-name"]:not([class*="-brand-name"]):not([class*="-ing-name"]){
+  font-family:'Manrope', sans-serif;
+  font-weight:400 !important;
+  color:#2B2B29;
+  letter-spacing:-0.03em;
+}
+.tpl.variant-minimal [class*="-qty"],
+.tpl.variant-minimal [class*="-cost"],
+.tpl.variant-minimal [class*="-price"],
+.tpl.variant-minimal [class*="-headline-val"],
+.tpl.variant-minimal [class*="-stat-val"]{
+  font-family:'IBM Plex Mono', monospace;
+  font-weight:400;
+}
+.tpl.variant-minimal th{
+  background:transparent !important;
+  color:#77776F !important;
+  border-bottom:0.5px solid #2B2B29 !important;
+  font-family:'IBM Plex Mono', monospace !important;
+  font-size:9.5px !important;
+  font-weight:400 !important;
+  text-transform:uppercase;
+  letter-spacing:0.16em;
+}
+.tpl.variant-minimal td{
+  border-bottom:0.5px solid #EDEDE9 !important;
+  font-family:'Manrope', sans-serif;
+  font-weight:300;
+}
+.tpl.variant-minimal .tpl-brand-footer{
+  background:transparent;
+  border-top:0.5px solid #D8D8D2;
+  color:#77776F;
+}
+.tpl.variant-minimal [class*="-meta-chip"],
+.tpl.variant-minimal [class*="-badge"]{
+  background:transparent !important;
+  color:#77776F !important;
+  border:0.5px solid #D8D8D2 !important;
+  font-family:'IBM Plex Mono', monospace !important;
+  font-weight:400 !important;
 }

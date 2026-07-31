@@ -4,11 +4,11 @@ import { BrandHeader, BrandFooter } from './parts.jsx'
  * Customer-facing care card. Storage instructions, best-by, thank you.
  * A6 sized when printed — 4 fit on an A4 sheet.
  */
-export function CareCard({ recipe, brand }) {
+export function CareCard({ recipe, brand, styleVariant = 'clean-modern' }) {
   const storage = recipe.storage_notes || brand.default_storage_notes || 'Best enjoyed within 2–3 days. Keep in a cool, dry place.'
 
   return (
-    <div className="tpl tpl-care printable" style={{ '--brand': brand.brand_color }}>
+    <div className={`tpl tpl-care printable variant-${styleVariant}`} style={{ '--brand': brand.brand_color }}>
       <BrandHeader brand={brand} compact/>
 
       <div className="tpl-care-body">

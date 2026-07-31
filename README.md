@@ -1,104 +1,97 @@
-# Templates Module — Picker Redesign (v3)
+# Style Variants — 5 aesthetics per template
 
-Reverts the aggressive template design overhaul from the last delta and instead redesigns just the picker page to match your screenshot.
-
-## What changed
-
-### Reverted
-- All 10 template designs go back to the **clean simple purple** aesthetic (Plus Jakarta Sans, purple accents, minimal ornament — exactly as they were in the `brand-coverage` delta).
-- The `ornaments.jsx` file, all the Google Font imports, and every Kraft/Chalkboard/Editorial variant are gone.
-
-### Redesigned
-- The **Templates picker page** now matches your screenshot precisely: 5-column card grid with large gradient preview thumbnails, size badges in the corner, purple ring on the active card, status counter, redesigned print button with icon.
+Delivers the picker-per-template style system from the handoff. Every one of the 10 templates can be rendered in any of 5 distinct aesthetics: Clean Modern (default), Rustic Kraft, Vintage Letterpress, Editorial Magazine, Quiet Minimal.
 
 ## Files
 
 ```
 src/
+  lib/
+    template-styles.js               # NEW — 5-variant registry with descriptions
   pages/
-    Templates.jsx                                # OVERWRITE — picker matches screenshot
+    Templates.jsx                    # OVERWRITE — style dropdown per template + per-template style memory
   components/templates/
-    index.js                                     # OVERWRITE — 4 ready + 6 soon, gradient per template
-    parts.jsx                                    # OVERWRITE — clean version (brand-coverage improvements kept)
-    ClassicRecipeCard.jsx                        # OVERWRITE — clean purple
-    CostBreakdown.jsx                            # OVERWRITE — clean purple
-    CareCard.jsx                                 # OVERWRITE — clean purple
-    ProductLabel.jsx                             # OVERWRITE — clean purple + brand-coverage improvements
-    MenuInsert.jsx                               # OVERWRITE — clean purple (file present, hidden from picker)
-    WholesalePriceList.jsx                       # OVERWRITE — clean purple (file present, hidden from picker)
-    DeliveryTag.jsx                              # OVERWRITE — clean purple (file present, hidden from picker)
-    SocialMediaCard.jsx                          # OVERWRITE — clean purple (file present, hidden from picker)
-    RecipeBinderPage.jsx                         # OVERWRITE — clean purple (file present, hidden from picker)
-    CertificateOfCraft.jsx                       # OVERWRITE — clean purple (file present, hidden from picker)
-  styles.css                                     # OVERWRITE (full file)
+    ClassicRecipeCard.jsx            # OVERWRITE — accepts styleVariant prop
+    CostBreakdown.jsx                # OVERWRITE — same
+    CareCard.jsx                     # OVERWRITE — same
+    ProductLabel.jsx                 # OVERWRITE — same
+    MenuInsert.jsx                   # OVERWRITE — same
+    WholesalePriceList.jsx           # OVERWRITE — same
+    DeliveryTag.jsx                  # OVERWRITE — same
+    SocialMediaCard.jsx              # OVERWRITE — same
+    RecipeBinderPage.jsx             # OVERWRITE — same
+    CertificateOfCraft.jsx           # OVERWRITE — same
+    index.js                         # OVERWRITE (unchanged, kept for completeness)
+    parts.jsx                        # OVERWRITE (unchanged, kept for completeness)
+  styles.css                         # OVERWRITE (full file) — adds Google Fonts + 5 variant CSS blocks + picker UI styles
 ```
 
-**Delete after push:** the file `src/components/templates/ornaments.jsx` from the previous v2 delta — no longer used. You can leave it and it'll just sit unused, but tidier to delete.
+14 files.
 
-## The 4 ready templates + 6 "in the works"
+## How the system works
 
-Marked as ready (colored gradient thumbnails, clickable):
+1. **Registry** (`template-styles.js`) — 5 variants with `key`, `name`, `description`. Add a 6th by editing this file.
 
-| # | Template | Gradient | Size |
-|---|---|---|---|
-| 1 | Classic Recipe Card | violet | A5 |
-| 2 | Cost Breakdown Sheet | orange | A4 |
-| 3 | Care & Storage Card | teal | A6 |
-| 4 | Product Label | green | A7 |
+2. **State** (`Templates.jsx`) — `templateStyles` object keeps the chosen variant per template (`{ classic: 'kraft', cost: 'editorial', ... }`). Each template remembers its own choice. Default is `clean-modern`.
 
-Marked as "SOON" (grey placeholder, disabled):
+3. **UI** — When a template is selected, a **style picker row** appears above the preview: dropdown showing all 5 variants + a description of the current one. Changing it re-renders the preview instantly.
 
-5. Menu Insert — A5
-6. Wholesale Price Sheet — A4
-7. Delivery Tag — A7
-8. Social Media Card — 1:1
-9. Recipe Binder Page — A4
-10. Certificate of Care — A4
+4. **Templates** — Every template accepts `styleVariant` prop and adds `variant-{key}` to its root className. No structural changes to the JSX.
 
-The 6 "soon" template files are still in the folder and fully working — they just don't appear in the picker until you flip their `ready: false` to `ready: true` in `src/components/templates/index.js`. One-line change per template.
+5. **CSS** — 5 variant class modifiers override fonts, colors, borders, rule weights. Higher specificity than the base styles so `.tpl.variant-kraft` beats `.tpl-classic`.
 
-## Picker design details
+## The 5 variants
 
-Matches your screenshot:
+Per the handoff document — all use warm brown `#8B4A2B` as accent (except default, which respects the user's brand color).
 
-- **5-column grid** of large cards; each card has a **preview thumbnail** at the top (colored gradient with a white abstract UI shape hinting at layout)
-- **Size badge** in the top-right corner of the preview (A5, A4, A6, A7)
-- **Active card** gets a 2px purple border and a soft purple glow shadow
-- **Status counter** row: "4 templates ready" (green pill with dot) · "6 in the works" (muted)
-- **Nudge card** at top with a filled purple checkmark badge instead of a generic emoji
-- **Print button** has a proper printer SVG icon and a solid purple background matching the accent color
-- **Responsive**: 5 → 4 → 3 → 2 → 1 columns as viewport shrinks
+| Key | Name | Signature |
+|---|---|---|
+| `clean-modern` | Clean Modern (default) | Plus Jakarta Sans + JetBrains Mono, hairline rules, humanist neutral |
+| `kraft` | Rustic Kraft & Stamp | Bitter + Karla on kraft paper, dashed dividers, rubber-stamp seal on cards |
+| `letterpress` | Vintage Letterpress | Playfair + Cormorant, everything centered, fleuron `❧` between sections |
+| `editorial` | Editorial Magazine | DM Serif Display + Archivo, thick black rules, filled dark footer |
+| `minimal` | Quiet Minimal | Manrope 300 + IBM Plex Mono, 0.5px hairlines, single accent dot marker |
 
-## Preview thumbnails
+## What the delta delivers vs what needs follow-up
 
-Every ready template gets a distinct gradient background matching its category:
+**Delivered end-to-end:**
+- Style picker UI + state per template ✓
+- All 10 templates accept and apply the variant ✓
+- All 5 variants have distinct fonts + colors + rule styles ✓
+- All 5 variants visibly different when you switch between them ✓
+- Google Fonts loaded (all 10 font families in one import) ✓
+- Print behavior preserved (variant styles print correctly) ✓
 
-- Classic Recipe Card: violet — full recipe with title + body lines
-- Cost Breakdown: orange — chart-bars illustration
-- Care & Storage: teal — bulleted-list illustration
-- Product Label: green — card with highlighted product name
+**Realistic caveat — pixel-perfect matches to the handoff need follow-up:**
+Each aesthetic in the handoff has signature ornaments that don't come out of a generic CSS override:
+- Kraft's per-template rubber stamps (BAKED SMALL BATCH, TRADE PRICES, BAKED WITH CARE)
+- Letterpress's fleuron section breaks and wax-seal disc
+- Editorial's cost-bar chart on Cost Breakdown and 46mm accent sidebar on Recipe Binder
+- Minimal's `01 02 03` mono step numbers
 
-Soon templates all use a grey placeholder with a generic card-lines illustration.
-
-The abstract shape inside each preview is inline SVG (no images to load), so previews render instantly and scale cleanly on any DPI.
+I've implemented the shared aesthetic (fonts, colors, rules, general treatment) plus a few signature ornaments (kraft rubber stamp on Classic + Care, letterpress fleuron under headers, editorial black-inverted footer, minimal accent dot). The rest need template-specific JSX changes — one delta per (template × variant) as you iterate.
 
 ## Deploy
 
-Overwrite the 13 files, push, hard-refresh. Templates page will show the redesigned picker. Only the 4 ready templates are clickable — the other 6 are visible but disabled.
+Overwrite the 14 files, push, hard-refresh. First load fetches ~10 Google Font families (~1MB); cached after that. Every template in the picker now has a Style dropdown next to its preview.
 
-## To bring back one of the 6 hidden templates
+## Extending
 
-Open `src/components/templates/index.js`, find the template you want, change:
+**Add a signature ornament to a specific variant × template:**
 
-```js
-ready: false,
-```
+1. Open the template's JSX file
+2. Add the ornament element gated on `styleVariant === 'kraft'` (or whichever variant):
+   ```jsx
+   {styleVariant === 'kraft' && <div className="tpl-kraft-stamp">TRADE PRICES</div>}
+   ```
+3. Style it in `styles.css` under the variant block
 
-to:
+**Add a 6th style variant:**
 
-```js
-ready: true,
-gradient: 'linear-gradient(135deg, #YOURCOLOR1 0%, #YOURCOLOR2 100%)',
-```
+1. Add an entry to `STYLE_VARIANTS` in `template-styles.js`
+2. Add a `.tpl.variant-{yourkey}` CSS block in `styles.css`
+3. Import any new Google Font in the same `@import` at the top
 
-Pick two hex colors ~15% apart in lightness for the gradient. That template is now live.
+## Bug-safe
+
+The style picker row is `no-print` — it disappears in the print dialog. `variant-*` classes are on the printable element, so they persist through print. Certificate landscape print still works.

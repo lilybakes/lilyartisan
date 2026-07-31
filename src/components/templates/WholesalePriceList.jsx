@@ -9,7 +9,7 @@ function money(n, currency = 'RM') {
  * Shows retail (suggested) alongside wholesale (retail × 0.7) and a per-batch
  * bulk price. A4 portrait.
  */
-export function WholesalePriceList({ recipes, brand }) {
+export function WholesalePriceList({ recipes, brand, styleVariant = 'clean-modern' }) {
   const currency = brand.currency || 'RM'
   const items = (recipes || []).filter(r => r?.name)
   const wholesaleDiscount = 0.7  // 30% off retail
@@ -17,7 +17,7 @@ export function WholesalePriceList({ recipes, brand }) {
   const today = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
 
   return (
-    <div className="tpl tpl-wholesale printable" style={{ '--brand': brand.brand_color }}>
+    <div className={`tpl tpl-wholesale printable variant-${styleVariant}`} style={{ '--brand': brand.brand_color }}>
       <BrandHeader brand={brand}/>
 
       <div className="tpl-wholesale-title-row">
