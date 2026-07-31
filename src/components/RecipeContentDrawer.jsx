@@ -1,48 +1,50 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Icon } from '../lib/icons.jsx'
+import { getTemplateComponent } from './templates/index.js'
+import { DEFAULT_STYLE_KEY } from '../lib/template-styles.js'
+import { unitCostBase, lineCost } from '../lib/costing.js'
 import './rcd-styles.css'
 
 /**
  * Recipe Content Drawer
  *
- * Modal for editing all the per-recipe fields that feed the Kraft templates:
+ * Modal for editing all the per-recipe fields that feed the templates:
  *   • Method       — ordered list of steps, with optional sub-group labels
  *   • Marketing    — description (short tagline, used on Social Card)
  *   • Care & Label — care_text, storage_text, allergens_text,
  *                    label_ingredients_text (override), label_allergens_text (override)
  *   • Menu Display — show_in_menu boolean
  *
- * The `brand` prop is the settings object — used only to show defaults as
- * placeholders so the user knows what the template will fall back to.
+ * The `brand` prop is the settings object — used both to show defaults as
+ * placeholders and to render the live preview pane on the right.
+ *
+ * The `bomLines` and `ingredients` props power the preview's ingredient list
+ * and cost calculations. When they're empty the previews still render usefully
+ * (empty state or fallback text) so the drawer stays functional on pages that
+ * don't hydrate those tables.
  */
-export default function RecipeContentDrawer({ recipe, brand = {}, onClose, onSave }) {
+export default function RecipeContentDrawer({
+  recipe,
+  brand = {},
+  bomLines = [],
+  ingredients = [],
+  onClose,
+  onSave,
+}) {
   const [tab, setTab] = useState('method')
   const [saving, setSaving] = useState(false)
   const [dirty, setDirty] = useState(false)
+  // Preview open by default on desktop, closed on phones so the form is
+  // immediately usable — user can tap the toggle to peek at the preview.
+  const [previewOpen, setPreviewOpen] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth > 1024 : true
+  )
 
   // Draft mirrors editable fields from the recipe
-  const [draft, setDraft] = useState({
-    method:                  Array.isArray(recipe.method) ? recipe.method : [],
-    description:             recipe.description || '',
-    care_text:               recipe.care_text || '',
-    storage_text:            recipe.storage_text || '',
-    allergens_text:          recipe.allergens_text || '',
-    label_ingredients_text:  recipe.label_ingredients_text || '',
-    label_allergens_text:    recipe.label_allergens_text || '',
-    show_in_menu:            recipe.show_in_menu !== false,
-  })
+  const [draft, setDraft] = useState(() => initialDraft(recipe))
 
   useEffect(() => {
-    setDraft({
-      method:                  Array.isArray(recipe.method) ? recipe.method : [],
-      description:             recipe.description || '',
-      care_text:               recipe.care_text || '',
-      storage_text:            recipe.storage_text || '',
-      allergens_text:          recipe.allergens_text || '',
-      label_ingredients_text:  recipe.label_ingredients_text || '',
-      label_allergens_text:    recipe.label_allergens_text || '',
-      show_in_menu:            recipe.show_in_menu !== false,
-    })
+    setDraft(initialDraft(recipe))
     setDirty(false)
   }, [recipe.id])
 
@@ -58,54 +60,105 @@ export default function RecipeContentDrawer({ recipe, brand = {}, onClose, onSav
     setDirty(false)
   }
 
+  // Enrich the recipe with draft fields + computed cost lines so previews
+  // update as the user types.
+  const enriched = useMemo(
+    () => enrichForPreview(recipe, draft, bomLines, ingredients),
+    [recipe, draft, bomLines, ingredients],
+  )
+
+  const previewMeta = PREVIEW_MAP[tab]
+
   return (
     <div className="rcd-overlay" onClick={onClose}>
-      <div className="rcd-modal" onClick={e => e.stopPropagation()}>
+      <div
+        className={
+          'rcd-modal rcd-modal-wide' +
+          (previewOpen ? ' rcd-modal-preview-open' : ' rcd-modal-preview-closed')
+        }
+        onClick={e => e.stopPropagation()}
+      >
         <div className="rcd-header">
           <div>
             <div className="rcd-eyebrow">Recipe Content</div>
             <h2 className="rcd-title">{recipe.name}</h2>
           </div>
-          <button className="rcd-close" onClick={onClose} aria-label="Close">
-            <Icon name="trash" size={16}/>
-          </button>
+          <div className="rcd-header-actions">
+            <button
+              className="rcd-preview-toggle"
+              onClick={() => setPreviewOpen(v => !v)}
+              title={previewOpen ? 'Hide preview' : 'Show preview'}
+            >
+              {previewOpen ? 'Hide preview' : 'Show preview'}
+            </button>
+            <button className="rcd-close" onClick={onClose} aria-label="Close">
+              <Icon name="trash" size={16}/>
+            </button>
+          </div>
         </div>
 
         <div className="rcd-tabs">
-          <RcdTab active={tab === 'method'}      onClick={() => setTab('method')}>Method</RcdTab>
-          <RcdTab active={tab === 'marketing'}   onClick={() => setTab('marketing')}>Marketing</RcdTab>
-          <RcdTab active={tab === 'care'}        onClick={() => setTab('care')}>Care &amp; Storage</RcdTab>
-          <RcdTab active={tab === 'label'}       onClick={() => setTab('label')}>Product Label</RcdTab>
-          <RcdTab active={tab === 'menu'}        onClick={() => setTab('menu')}>Menu Display</RcdTab>
+          <RcdTab active={tab === 'method'}    onClick={() => setTab('method')}>Method</RcdTab>
+          <RcdTab active={tab === 'marketing'} onClick={() => setTab('marketing')}>Marketing</RcdTab>
+          <RcdTab active={tab === 'care'}      onClick={() => setTab('care')}>Care &amp; Storage</RcdTab>
+          <RcdTab active={tab === 'label'}     onClick={() => setTab('label')}>Product Label</RcdTab>
+          <RcdTab active={tab === 'menu'}      onClick={() => setTab('menu')}>Menu Display</RcdTab>
         </div>
 
-        <div className="rcd-body">
-          {tab === 'method'    && <MethodEditor value={draft.method} onChange={m => patchDraft({ method: m })}/>}
-          {tab === 'marketing' && <MarketingEditor value={draft.description} onChange={d => patchDraft({ description: d })}/>}
-          {tab === 'care'      && (
-            <CareEditor
-              care={draft.care_text}
-              storage={draft.storage_text}
-              allergens={draft.allergens_text}
-              defaults={{
-                care:      brand.default_care_text,
-                storage:   brand.default_storage_notes,
-                allergens: brand.default_allergen_notice,
-              }}
-              onChange={patchDraft}
-            />
+        <div className="rcd-split">
+          <div className="rcd-body">
+            {tab === 'method'    && <MethodEditor value={draft.method} onChange={m => patchDraft({ method: m })}/>}
+            {tab === 'marketing' && <MarketingEditor value={draft.description} onChange={d => patchDraft({ description: d })}/>}
+            {tab === 'care'      && (
+              <CareEditor
+                care={draft.care_text}
+                storage={draft.storage_text}
+                allergens={draft.allergens_text}
+                defaults={{
+                  care:      brand.default_care_text,
+                  storage:   brand.default_storage_notes,
+                  allergens: brand.default_allergen_notice,
+                }}
+                onChange={patchDraft}
+              />
+            )}
+            {tab === 'label'     && (
+              <LabelEditor
+                ingredients={draft.label_ingredients_text}
+                allergens={draft.label_allergens_text}
+                defaults={{
+                  allergens: brand.default_allergen_notice,
+                }}
+                onChange={patchDraft}
+              />
+            )}
+            {tab === 'menu'      && <MenuEditor value={draft.show_in_menu} onChange={v => patchDraft({ show_in_menu: v })}/>}
+          </div>
+
+          {previewOpen && (
+            <aside className="rcd-preview-pane">
+              <div className="rcd-preview-head">
+                <div>
+                  <div className="rcd-preview-eyebrow">Live preview</div>
+                  <div className="rcd-preview-name">{previewMeta.label}</div>
+                </div>
+                <div className={'rcd-preview-badge ' + (dirty ? 'is-dirty' : 'is-clean')}>
+                  {dirty ? 'Unsaved' : 'Saved'}
+                </div>
+              </div>
+              <div className="rcd-preview-viewport">
+                <PreviewStage
+                  templateKey={previewMeta.templateKey}
+                  scale={previewMeta.scale}
+                  recipe={enriched}
+                  brand={brand}
+                />
+              </div>
+              <div className="rcd-preview-hint">
+                {previewMeta.hint}
+              </div>
+            </aside>
           )}
-          {tab === 'label'     && (
-            <LabelEditor
-              ingredients={draft.label_ingredients_text}
-              allergens={draft.label_allergens_text}
-              defaults={{
-                allergens: brand.default_allergen_notice,
-              }}
-              onChange={patchDraft}
-            />
-          )}
-          {tab === 'menu'      && <MenuEditor value={draft.show_in_menu} onChange={v => patchDraft({ show_in_menu: v })}/>}
         </div>
 
         <div className="rcd-footer">
@@ -124,6 +177,143 @@ export default function RecipeContentDrawer({ recipe, brand = {}, onClose, onSav
   )
 }
 
+// ============================================================================
+// Draft + enrichment
+// ============================================================================
+
+function initialDraft(recipe) {
+  return {
+    method:                  Array.isArray(recipe.method) ? recipe.method : [],
+    description:             recipe.description || '',
+    care_text:               recipe.care_text || '',
+    storage_text:            recipe.storage_text || '',
+    allergens_text:          recipe.allergens_text || '',
+    label_ingredients_text:  recipe.label_ingredients_text || '',
+    label_allergens_text:    recipe.label_allergens_text || '',
+    show_in_menu:            recipe.show_in_menu !== false,
+  }
+}
+
+/**
+ * Assemble the object the template components expect. Merges the persisted
+ * recipe with the current draft, adds computed lines[], total_cost,
+ * cost_per_portion, suggested_price.
+ */
+function enrichForPreview(recipe, draft, bomLines, ingredients) {
+  const ingById = Object.fromEntries((ingredients || []).map(i => [i.id, i]))
+  const recipeBom = (bomLines || []).filter(l => l.recipe_id === recipe.id)
+
+  const lines = recipeBom.map(l => {
+    const ing = ingById[l.ingredient_id]
+    if (!ing) {
+      return { ingredient_name: 'Unknown', qty: l.qty, unit: l.unit, cost: 0, unit_cost: 0 }
+    }
+    const r = lineCost(ing, l.qty, l.unit)
+    return {
+      ingredient_name: ing.name,
+      qty: l.qty,
+      unit: l.unit,
+      cost: r.ok ? r.cost : 0,
+      unit_cost: unitCostBase(ing),
+    }
+  })
+
+  const totalCost   = lines.reduce((sum, l) => sum + (l.cost || 0), 0)
+  const perPortion  = recipe.yield_portions > 0 ? totalCost / recipe.yield_portions : 0
+  const targetFC    = Number(recipe.target_food_cost_pct) || 30
+  const suggested   = targetFC > 0 ? perPortion / (targetFC / 100) : 0
+
+  return {
+    ...recipe,
+    ...draft,
+    lines,
+    total_cost:            totalCost,
+    cost_per_portion:      perPortion,
+    target_food_cost_pct:  targetFC,
+    suggested_price:       suggested,
+  }
+}
+
+// ============================================================================
+// Preview stage — resolves the right template component and scales it
+// ============================================================================
+
+const PREVIEW_MAP = {
+  method:    {
+    templateKey: 'classic',
+    label: 'Recipe Card',
+    scale: 0.52,
+    hint: 'The Recipe Card (A5) uses the method steps you edit here — plus ingredients from Recipe BOM.',
+  },
+  marketing: {
+    templateKey: 'social',
+    label: 'Social Media Card',
+    scale: 0.62,
+    hint: 'The Social Card square uses this description as the italic sub-line under the product name.',
+  },
+  care:      {
+    templateKey: 'care',
+    label: 'Care & Storage Card',
+    scale: 0.72,
+    hint: 'The Care Card (A6) shows storage/allergens; blank fields fall back to brand defaults.',
+  },
+  label:     {
+    templateKey: 'label',
+    label: 'Product Label',
+    scale: 0.90,
+    hint: 'The Product Label (A7) uses the ingredient override + allergen line you set here.',
+  },
+  menu:      {
+    templateKey: null,
+    label: 'Menu row',
+    scale: 1,
+    hint: 'Menu Insert and Wholesale Price List are multi-recipe templates — this preview shows only the row.',
+  },
+}
+
+function PreviewStage({ templateKey, scale, recipe, brand }) {
+  // Menu tab has no per-recipe template — render a mini row.
+  if (!templateKey) {
+    return (
+      <div className="rcd-preview-menu-row">
+        <div className={'rcd-preview-menu-inner ' + (recipe.show_in_menu ? 'is-shown' : 'is-hidden')}>
+          {recipe.show_in_menu ? (
+            <>
+              <div className="rcd-preview-menu-line">
+                <span className="rcd-preview-menu-name">{recipe.name || 'Product name'}</span>
+                <span className="rcd-preview-menu-price">
+                  {(brand.currency || 'RM')} {Number(recipe.suggested_price || 0).toFixed(2)}
+                </span>
+              </div>
+              {recipe.description && (
+                <div className="rcd-preview-menu-desc">{recipe.description}</div>
+              )}
+              <div className="rcd-preview-menu-note">
+                ✓ Appears on Menu Insert &amp; Wholesale Price List
+              </div>
+            </>
+          ) : (
+            <div className="rcd-preview-menu-note is-off">
+              ✗ Hidden from Menu Insert &amp; Wholesale Price List
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  const { Component } = getTemplateComponent(templateKey, DEFAULT_STYLE_KEY)
+  if (!Component) {
+    return <div className="rcd-preview-empty">Template not available.</div>
+  }
+
+  return (
+    <div className="rcd-preview-scaler" style={{ '--rcd-preview-scale': scale }}>
+      <Component recipe={recipe} brand={brand}/>
+    </div>
+  )
+}
+
 function RcdTab({ active, onClick, children }) {
   return (
     <button className={'rcd-tab' + (active ? ' active' : '')} onClick={onClick}>
@@ -136,7 +326,6 @@ function RcdTab({ active, onClick, children }) {
 // Method editor — ordered list of steps, with optional sub-group headings
 // ============================================================================
 function MethodEditor({ value, onChange }) {
-  // Normalize incoming values to the {step, group?} shape internally
   const items = useMemo(() => {
     return (value || []).map(v => {
       if (typeof v === 'string') return { step: v }
@@ -205,16 +394,15 @@ function MethodEditor({ value, onChange }) {
   )
 }
 
-// Trim + drop empty steps to keep DB clean
 function cleanup(items) {
   return items
     .map(it => ({ step: (it.step || '').trim(), group: (it.group || '').trim() }))
-    .filter(it => it.step || it.group)  // allow orphan group headings only if user adds a step after
+    .filter(it => it.step || it.group)
     .map(it => it.group ? it : { step: it.step })
 }
 
 // ============================================================================
-// Marketing editor — single short description used on Social Card
+// Marketing editor
 // ============================================================================
 function MarketingEditor({ value, onChange }) {
   return (

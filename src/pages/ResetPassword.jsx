@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth.jsx'
+import Logo from '../components/Logo.jsx'
 
 export default function ResetPassword() {
   const { updatePassword } = useAuth()
@@ -49,8 +50,11 @@ export default function ResetPassword() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-brand">
+          <div style={{display:'flex', justifyContent:'center', marginBottom:14}}>
+            <Logo size={56}/>
+          </div>
           <h1 className="auth-title">
-            <span className="part1">Baker</span><span className="part2">Nomics</span>
+            <span className="part1">Bake</span><span className="part2">Onomics</span>
           </h1>
           <p className="auth-tagline">Choose a new password</p>
         </div>

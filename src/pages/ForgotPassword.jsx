@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../lib/auth.jsx'
+import Logo from '../components/Logo.jsx'
 
 export default function ForgotPassword() {
   const { sendPasswordReset } = useAuth()
@@ -23,8 +24,11 @@ export default function ForgotPassword() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-brand">
+          <div style={{display:'flex', justifyContent:'center', marginBottom:14}}>
+            <Logo size={56}/>
+          </div>
           <h1 className="auth-title">
-            <span className="part1">Baker</span><span className="part2">Nomics</span>
+            <span className="part1">Bake</span><span className="part2">Onomics</span>
           </h1>
           <p className="auth-tagline">Reset your password</p>
         </div>

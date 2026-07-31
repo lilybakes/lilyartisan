@@ -1,0 +1,818 @@
+/* =============================================================================
+   BAKEONOMICS CLEAN VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   All 10 bko templates share this file. Section 1 defines the palette +
+   shared primitives (square logo box, brand rule, chips, footer, seal).
+   Sections 01–10 each own their template's layout, spacing, and margins.
+
+   Palette (matches the BakeOnomics app palette):
+     Ink            #2F3349   titles, main text (app --brand-ink)
+     Body           #4A5068   secondary text
+     Muted          #8590A5   descriptions, taglines, meta labels
+     Accent purple  #7367F0   brand, section labels, key prices, rules (app --accent)
+     Accent dark    #5A4FD6   deeper purple for pressed states / bold accents
+     Accent soft    #EEECFF   lavender wash for allergen box / care-tag box
+     Success green  #28C76F   margin percentage
+     Hairline       #E9E7EB   thin gray rules
+   Fonts:
+     Body           Plus Jakarta Sans (400/700/800) — already loaded globally
+     Numbers        JetBrains Mono (400/500/700)    — already loaded globally
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, fonts, primitives used by all 10 templates
+   ============================================================================= */
+
+.b-tpl {
+  --b-paper: #FFFFFF;
+  --b-ink: #2F3349;
+  --b-body: #4A5068;
+  --b-muted: #8590A5;
+  --b-accent: #7367F0;
+  --b-accent-dark: #5A4FD6;
+  --b-accent-soft: #EEECFF;
+  --b-green: #28C76F;
+  --b-rule: #E9E7EB;
+  --b-rule-mid: #DCD9DE;
+
+  --b-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --b-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  background: var(--b-paper);
+  color: var(--b-ink);
+  font-family: var(--b-font);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(115, 103, 240, 0.10);
+  box-sizing: border-box;
+}
+.b-tpl * { box-sizing: border-box; }
+
+/* --- Logo (square bordered box) ---------------------------------------- */
+.b-logo {
+  border-radius: 4px;
+  border: 1.5px solid var(--b-accent);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--b-accent);
+  font-family: var(--b-font);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: #FFFFFF;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.b-logo-img { width: 78%; height: 78%; object-fit: contain; }
+.b-logo-sm { width: 38px; height: 38px; font-size: 12px; }
+.b-logo-md { width: 54px; height: 54px; font-size: 16px; }
+.b-logo-lg { width: 74px; height: 74px; font-size: 21px; }
+.b-logo-xl { width: 96px; height: 96px; font-size: 28px; }
+
+/* --- Brand lockup ------------------------------------------------------- */
+.b-brand-lockup { display: flex; align-items: center; }
+.b-brand-lockup-row { flex-direction: row; gap: 12px; }
+.b-brand-lockup-column { flex-direction: column; text-align: center; gap: 8px; }
+.b-brand-text { display: flex; flex-direction: column; gap: 2px; }
+.b-brand-lockup-column .b-brand-text { align-items: center; }
+.b-brand-name {
+  font-family: var(--b-font);
+  font-weight: 800;
+  color: var(--b-accent);
+  margin: 0;
+  line-height: 1.15;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+.b-brand-tagline {
+  font-family: var(--b-font);
+  color: var(--b-muted);
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 400;
+}
+
+/* --- Header wrapper (logo+name, rule applied separately) --------------- */
+.b-header { padding-bottom: 7mm; }
+
+/* --- Rules --------------------------------------------------------------- */
+.b-rule-brand { border: none; border-top: 2.5px solid var(--b-accent); height: 2.5px; margin: 0; padding: 0; }
+.b-rule-hairline { border: none; border-top: 1px solid var(--b-rule); margin: 0; }
+
+/* --- Eyebrow (small caps letter-spaced) ---------------------------------- */
+.b-eyebrow {
+  font-family: var(--b-font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 10px;
+  padding-left: 0.16em;
+}
+.b-eyebrow-accent { color: var(--b-accent); }
+.b-eyebrow-muted { color: var(--b-muted); }
+.b-section-lbl { margin-bottom: 3mm; }
+
+/* --- Chip (bordered meta tag) -------------------------------------------- */
+.b-chip {
+  display: inline-block;
+  border: 1px solid var(--b-rule-mid);
+  border-radius: 3px;
+  padding: 1.5mm 3mm;
+  font-family: var(--b-font);
+  font-weight: 700;
+  color: var(--b-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 9px;
+  margin-right: 2mm;
+}
+
+/* --- Empty-state text ----------------------------------------------------- */
+.b-empty {
+  color: var(--b-muted);
+  font-style: italic;
+  font-size: 12px;
+  margin: 2mm 0 0;
+}
+
+/* --- Seal (thin-lined circle, not dashed) — Certificate only ------------- */
+.b-seal {
+  border-radius: 50%;
+  border: 1.5px solid var(--b-accent);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--b-accent);
+  aspect-ratio: 1;
+  background: transparent;
+}
+.b-seal-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-family: var(--b-font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 8.5px;
+  padding-left: 0.18em;
+  text-align: center;
+  line-height: 1;
+  color: var(--b-accent);
+}
+
+/* --- Footer --------------------------------------------------------------- */
+.b-footer { margin-top: auto; }
+.b-footer .b-rule-hairline { margin-bottom: 9px; }
+.b-footer-content {
+  font-size: 11px;
+  color: var(--b-muted);
+  font-family: var(--b-font);
+  line-height: 1.5;
+}
+.b-footer-split .b-footer-content {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+}
+.b-footer-split .b-footer-right { text-align: right; }
+.b-footer-stacked .b-footer-content {
+  display: flex; flex-direction: column; gap: 2px; text-align: left;
+}
+.b-footer-minimal .b-footer-content { text-align: left; }
+.b-footer-centered .b-footer-content {
+  display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center;
+}
+.b-footer-social { color: var(--b-accent); font-weight: 700; }
+.b-footer-social span { color: inherit; }
+.b-accent { color: var(--b-accent); }
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait)  — /variants/bko/RecipeCard.jsx
+   ============================================================================= */
+.b-recipe-card {
+  width: 148mm; min-height: 210mm;
+  padding: 15mm 14mm 12mm;
+  display: flex; flex-direction: column;
+}
+.b-recipe-body {
+  display: flex; flex-direction: column; gap: 6mm; margin-top: 6mm; flex: 1;
+}
+.b-recipe-title {
+  font-family: var(--b-font);
+  font-weight: 800;
+  color: var(--b-ink);
+  font-size: 26px;
+  line-height: 1.15;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.b-recipe-chips { display: flex; gap: 2mm; margin-top: 3mm; flex-wrap: wrap; }
+.b-recipe-ingredients {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3mm 6mm;
+  margin-top: 2mm;
+}
+.b-recipe-ing-pair { display: flex; align-items: baseline; gap: 2mm; font-size: 13px; }
+.b-recipe-ing-qty {
+  font-family: var(--b-mono);
+  font-weight: 700;
+  color: var(--b-accent);
+  flex-shrink: 0;
+  min-width: 14mm;
+}
+.b-recipe-ing-name { font-family: var(--b-font); color: var(--b-body); font-weight: 400; }
+.b-recipe-method {
+  list-style: none; padding: 0; margin: 0;
+  counter-reset: cstep;
+  display: flex; flex-direction: column; gap: 9px;
+  font-size: 13px;
+  color: var(--b-body);
+  line-height: 1.55;
+}
+.b-recipe-method li {
+  counter-increment: cstep;
+  padding-left: 20px;
+  position: relative;
+}
+.b-recipe-method li::before {
+  content: counter(cstep) ".";
+  position: absolute; left: 0;
+  color: var(--b-muted);
+  font-weight: 600;
+  font-family: var(--b-mono);
+  font-size: 12px;
+}
+.b-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--b-font);
+  font-weight: 700;
+  color: var(--b-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  font-size: 9.5px;
+  margin: 2mm 0 1mm;
+}
+.b-method-group::before { content: '' !important; }
+
+/* =============================================================================
+   02 — COST BREAKDOWN  (A4 portrait)  — /variants/bko/CostBreakdown.jsx
+   ============================================================================= */
+.b-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 16mm 16mm 14mm;
+  display: flex; flex-direction: column;
+}
+.b-cost-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16mm; margin-top: 8mm;
+}
+.b-cost-title-left h2 {
+  font-family: var(--b-font);
+  font-weight: 800;
+  color: var(--b-ink);
+  font-size: 28px;
+  margin: 0 0 3mm;
+  line-height: 1.1;
+}
+.b-cost-meta {
+  color: var(--b-muted);
+  font-size: 12px;
+  font-family: var(--b-mono);
+}
+.b-cost-suggested-box {
+  border-left: 3px solid var(--b-accent);
+  padding: 1mm 0 1mm 6mm;
+  min-width: 55mm;
+}
+.b-cost-suggested-value {
+  font-family: var(--b-mono);
+  font-weight: 700;
+  color: var(--b-accent);
+  font-size: 28px;
+  margin-top: 2mm;
+  line-height: 1;
+}
+.b-cost-table { width: 100%; border-collapse: collapse; margin-top: 10mm; font-size: 12px; }
+.b-cost-table thead th {
+  font-family: var(--b-font);
+  font-weight: 700;
+  color: var(--b-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 0 0 3mm;
+  border-bottom: 2px solid var(--b-accent);
+  font-size: 10px;
+  text-align: left;
+}
+.b-cost-table thead th.b-num { text-align: right; }
+.b-cost-table td {
+  padding: 3.5mm 0;
+  border-bottom: 1px solid var(--b-rule);
+  font-family: var(--b-font);
+  color: var(--b-body);
+}
+.b-cost-table td.b-num { text-align: right; font-family: var(--b-mono); color: var(--b-body); }
+.b-cost-table td.b-cost-val { font-weight: 700; color: var(--b-ink); font-family: var(--b-mono); }
+.b-cost-empty { padding: 8mm 0; color: var(--b-muted); font-style: italic; }
+.b-cost-batch-row td {
+  padding-top: 4mm; padding-bottom: 1mm;
+  border-top: 1.5px solid var(--b-ink);
+  border-bottom: none;
+  font-family: var(--b-font); font-weight: 800; color: var(--b-ink);
+}
+.b-cost-batch-row td.b-num { color: var(--b-accent); font-size: 15px; font-family: var(--b-mono); }
+.b-cost-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm;
+  margin-top: 8mm;
+}
+.b-cost-stat { border: 1px solid var(--b-rule-mid); padding: 5mm 6mm; border-radius: 3px; }
+.b-cost-stat-val {
+  font-family: var(--b-mono);
+  font-weight: 700;
+  color: var(--b-ink);
+  font-size: 20px;
+  line-height: 1;
+  margin-top: 2mm;
+}
+.b-cost-stat-val.b-accent { color: var(--b-accent); }
+.b-cost-stat-val.b-green { color: var(--b-green); }
+.b-cost-warning {
+  margin-top: 8mm;
+  color: var(--b-muted);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--b-font);
+  font-weight: 600;
+}
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, left-aligned icon rows)
+   ============================================================================= */
+.b-care {
+  width: 105mm; min-height: 148mm;
+  padding: 10mm 9mm;
+  display: flex; flex-direction: column;
+}
+.b-care-body {
+  display: flex; flex-direction: column; gap: 4mm; margin-top: 5mm; flex: 1;
+}
+.b-care-product {
+  font-family: var(--b-font);
+  font-weight: 800;
+  color: var(--b-ink);
+  font-size: 24px;
+  line-height: 1.1;
+  margin: 0 0 2mm;
+}
+.b-care-row { display: flex; gap: 3mm; align-items: flex-start; margin-top: 2mm; }
+.b-care-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  border: 1.5px solid var(--b-accent);
+  flex-shrink: 0; margin-top: 4px;
+}
+.b-care-dot-filled { background: var(--b-accent); }
+.b-care-row-title {
+  font-family: var(--b-font);
+  font-weight: 700; color: var(--b-accent);
+  text-transform: uppercase; letter-spacing: 0.14em;
+  padding-left: 0.14em;
+  font-size: 10.5px;
+  margin-bottom: 1.5mm;
+}
+.b-care-row-text {
+  font-family: var(--b-font);
+  color: var(--b-body);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, top accent bar + lavender allergen box)
+   ============================================================================= */
+.b-label {
+  width: 74mm; min-height: 105mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.b-label-topbar { height: 3.5mm; background: var(--b-accent-dark); flex-shrink: 0; }
+.b-label-body {
+  padding: 5mm 6mm 6mm;
+  display: flex; flex-direction: column; flex: 1;
+}
+.b-label-product {
+  font-family: var(--b-font);
+  font-weight: 800;
+  color: var(--b-ink);
+  font-size: 19px;
+  line-height: 1.15;
+  margin: 4mm 0;
+}
+.b-label-ingredients {
+  font-size: 10.5px;
+  color: var(--b-body);
+  line-height: 1.5;
+  margin-top: 1mm;
+  margin-bottom: 4mm;
+}
+.b-label-allergen {
+  background: var(--b-accent-soft);
+  border-left: 3px solid var(--b-accent);
+  padding: 3mm 4mm;
+  border-radius: 0 3px 3px 0;
+}
+.b-label-allergen-body {
+  font-size: 10.5px;
+  color: var(--b-body);
+  line-height: 1.5;
+  margin-top: 1mm;
+}
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, inline category rules)
+   ============================================================================= */
+.b-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 16mm 16mm 12mm;
+  display: flex; flex-direction: column;
+}
+.b-menu-body { flex: 1; padding-top: 6mm; }
+.b-menu-empty { margin-top: 20mm; text-align: center; }
+.b-menu-cat-block { margin-bottom: 7mm; }
+.b-menu-cat-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4mm; }
+.b-menu-cat-lbl {
+  font-family: var(--b-font);
+  font-weight: 700; color: var(--b-accent);
+  text-transform: uppercase; letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.b-menu-cat-rule { flex: 1; border-top: 1px solid var(--b-rule); height: 0; }
+.b-menu-item { margin-bottom: 5mm; }
+.b-menu-item-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.b-menu-item-name { font-family: var(--b-font); font-weight: 700; color: var(--b-ink); font-size: 14px; }
+.b-menu-item-price { font-family: var(--b-mono); font-weight: 700; color: var(--b-accent); font-size: 13px; flex-shrink: 0; }
+.b-menu-item-desc {
+  font-family: var(--b-font);
+  font-style: italic;
+  color: var(--b-muted);
+  font-size: 11px;
+  margin-top: 1mm;
+  line-height: 1.4;
+}
+.b-menu-footer-line { text-align: center; color: var(--b-muted); font-style: italic; margin-top: 8mm; font-size: 11px; }
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, solid accent table header)
+   ============================================================================= */
+.b-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 16mm 18mm 14mm;
+  display: flex; flex-direction: column;
+}
+.b-wholesale-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-top: 8mm; gap: 16mm;
+}
+.b-wholesale-title-left h2 {
+  font-family: var(--b-font);
+  font-weight: 800; color: var(--b-ink);
+  font-size: 28px; margin: 0 0 3mm; line-height: 1.1;
+}
+.b-wholesale-effective { font-family: var(--b-mono); color: var(--b-muted); font-size: 12px; }
+.b-wholesale-terms-box {
+  border: 1px solid var(--b-rule-mid);
+  padding: 4mm 6mm;
+  min-width: 64mm;
+  border-radius: 3px;
+}
+.b-wholesale-terms-box .b-eyebrow { margin-bottom: 2mm; }
+.b-wholesale-terms-body {
+  font-size: 12px;
+  color: var(--b-body);
+  font-family: var(--b-font);
+  line-height: 1.5;
+}
+.b-wholesale-table { width: 100%; border-collapse: collapse; margin-top: 10mm; font-size: 12px; }
+.b-wholesale-table thead th {
+  background: var(--b-accent);
+  color: #FFFFFF;
+  font-family: var(--b-font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 3.5mm 3mm;
+  font-size: 10px;
+  text-align: left;
+}
+.b-wholesale-table thead th:first-child { padding-left: 4mm; }
+.b-wholesale-table thead th:last-child { padding-right: 4mm; }
+.b-wholesale-table thead th.b-num { text-align: right; }
+.b-wholesale-table td {
+  padding: 3.5mm 3mm;
+  border-bottom: 1px solid var(--b-rule);
+  font-family: var(--b-font);
+  color: var(--b-body);
+}
+.b-wholesale-table td:first-child { padding-left: 4mm; }
+.b-wholesale-table td:last-child { padding-right: 4mm; }
+.b-wholesale-table td.b-num { text-align: right; font-family: var(--b-mono); }
+.b-wholesale-table td.b-wprice { color: var(--b-accent); font-weight: 700; }
+.b-wholesale-table td.b-name { font-family: var(--b-font); font-weight: 700; color: var(--b-ink); }
+.b-wholesale-terms-title { margin-top: 10mm; margin-bottom: 4mm; }
+.b-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  font-family: var(--b-font);
+  color: var(--b-body); font-size: 12px; line-height: 1.9;
+}
+.b-wholesale-terms-list li { padding-left: 14px; position: relative; }
+.b-wholesale-terms-list li::before {
+  content: '•';
+  position: absolute; left: 2px;
+  color: var(--b-accent);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, top accent bar + punch hole, centered)
+   ============================================================================= */
+.b-delivery {
+  width: 74mm; min-height: 105mm;
+  background: var(--b-paper);
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.b-delivery-topbar { height: 3mm; background: var(--b-accent-dark); flex-shrink: 0; }
+.b-delivery-hole {
+  width: 6mm; height: 6mm;
+  border-radius: 50%;
+  border: 1px solid var(--b-rule-mid);
+  background: #FFFFFF;
+  margin: 3mm auto 0;
+}
+.b-delivery-inner {
+  flex: 1;
+  padding: 3mm 6mm 5mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 2.5mm;
+}
+.b-delivery-eyebrow { margin-top: 2mm; font-size: 9px; }
+.b-delivery-product {
+  font-family: var(--b-font);
+  font-weight: 800; color: var(--b-ink);
+  font-size: 18px; line-height: 1.1;
+  margin: 0;
+}
+.b-delivery-care-box {
+  width: 100%;
+  background: var(--b-accent-soft);
+  padding: 4mm 5mm;
+  margin: 2mm 0;
+  border-radius: 3px;
+}
+.b-delivery-care-body {
+  font-family: var(--b-font);
+  font-size: 10.5px;
+  color: var(--b-body);
+  line-height: 1.5;
+  margin-top: 1.5mm;
+}
+.b-delivery-thanks {
+  font-family: var(--b-font);
+  font-style: italic;
+  color: var(--b-muted);
+  font-size: 10.5px;
+  margin-top: 2mm;
+}
+.b-delivery-footer {
+  margin-top: auto;
+  padding-top: 4mm;
+  display: flex; flex-direction: column; gap: 1.5mm;
+  font-size: 9.5px;
+}
+.b-delivery-footer-line { color: var(--b-muted); }
+
+/* =============================================================================
+   08 — SOCIAL CARD  (1080×1080 drawn 148×148mm, corner accent block)
+   ============================================================================= */
+.b-social {
+  width: 148mm; height: 148mm;
+  padding: 12mm 14mm;
+  background: #FFFFFF;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.b-social-corner {
+  position: absolute; top: 0; right: 0;
+  width: 26mm; height: 26mm;
+  background: var(--b-accent);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+}
+.b-social-top { position: relative; z-index: 1; }
+.b-social-center {
+  display: flex; flex-direction: column; align-items: flex-start; text-align: left;
+  gap: 3mm; max-width: 80%; position: relative; z-index: 1;
+}
+.b-social-name {
+  font-family: var(--b-font);
+  font-weight: 800; color: var(--b-ink);
+  font-size: 38px; line-height: 1.05;
+  margin: 0; letter-spacing: -0.01em;
+}
+.b-social-desc {
+  font-family: var(--b-font);
+  font-style: italic; color: var(--b-muted);
+  font-size: 14px; line-height: 1.4;
+}
+.b-social-price-pill {
+  display: inline-block;
+  border: 1.5px solid var(--b-accent);
+  border-radius: 4px;
+  padding: 2.5mm 6mm;
+  color: var(--b-accent);
+  font-family: var(--b-mono);
+  font-weight: 700;
+  font-size: 16px;
+  margin-top: 2mm;
+}
+.b-social-bottom {
+  width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px;
+  color: var(--b-muted);
+  font-family: var(--b-font);
+  position: relative; z-index: 1;
+}
+.b-social-website { color: var(--b-muted); }
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait, comprehensive)
+   ============================================================================= */
+.b-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 14mm 12mm;
+  display: flex; flex-direction: column;
+}
+.b-binder-title-block { display: flex; gap: 10mm; margin-top: 8mm; align-items: flex-start; }
+.b-binder-title-left { flex: 1; }
+.b-binder-title-left h2 {
+  font-family: var(--b-font);
+  font-weight: 800; color: var(--b-ink);
+  font-size: 26px; line-height: 1.1; margin: 0;
+}
+.b-binder-title-desc {
+  font-family: var(--b-font);
+  color: var(--b-muted);
+  font-size: 12.5px;
+  margin-top: 2mm;
+}
+.b-binder-photo {
+  width: 58mm; height: 42mm; flex-shrink: 0;
+  border: 1px dashed var(--b-rule-mid);
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  color: var(--b-muted);
+  font-size: 10px;
+  font-family: var(--b-font);
+  overflow: hidden;
+}
+.b-binder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.b-binder-photo-placeholder { padding: 3mm; line-height: 1.5; }
+.b-binder-photo-hint { font-size: 9px; }
+.b-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 4mm 0;
+  margin-top: 6mm;
+  border-top: 1px solid var(--b-rule);
+  border-bottom: 1px solid var(--b-rule);
+}
+.b-binder-meta-val {
+  font-family: var(--b-mono); font-weight: 700; color: var(--b-ink);
+  font-size: 14px;
+  margin-top: 1mm;
+}
+.b-binder-meta-val.b-accent { color: var(--b-accent); }
+.b-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14mm;
+  margin-top: 8mm; flex: 1;
+}
+.b-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 8px; padding: 2.5mm 0;
+  border-bottom: 1px solid var(--b-rule);
+  font-size: 12px;
+}
+.b-binder-ing-row .b-ing-name { color: var(--b-body); font-family: var(--b-font); }
+.b-binder-ing-row .b-ing-qty { color: var(--b-muted); font-family: var(--b-mono); text-align: right; }
+.b-binder-ing-row .b-ing-cost { color: var(--b-body); font-family: var(--b-mono); text-align: right; min-width: 10mm; }
+.b-binder-batch {
+  display: flex; justify-content: space-between;
+  margin-top: 3mm;
+  font-family: var(--b-font); font-weight: 800; color: var(--b-ink);
+  font-size: 13px;
+}
+.b-binder-batch-val { color: var(--b-accent); font-family: var(--b-mono); }
+.b-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  counter-reset: cbstep;
+  display: flex; flex-direction: column; gap: 8px;
+  font-size: 12px; color: var(--b-body); line-height: 1.55;
+}
+.b-binder-method li { counter-increment: cbstep; padding-left: 18px; position: relative; }
+.b-binder-method li::before {
+  content: counter(cbstep) ".";
+  position: absolute; left: 0; top: 0;
+  color: var(--b-muted); font-weight: 600; font-family: var(--b-mono); font-size: 11px;
+}
+.b-binder-notes { margin-top: 8mm; }
+.b-binder-notes-lines { display: flex; flex-direction: column; gap: 7px; margin-top: 2mm; }
+.b-binder-notes-line { border-bottom: 1px solid var(--b-rule); height: 6mm; }
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, single border, thin-lined seal)
+   ============================================================================= */
+.b-cert {
+  width: 297mm; height: 210mm;
+  padding: 8mm;
+  display: flex;
+}
+.b-cert-border {
+  flex: 1;
+  border: 1px solid var(--b-accent);
+  padding: 12mm 16mm 8mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.b-cert-logo-wrap { margin-bottom: 5mm; }
+.b-cert-eyebrow { font-size: 11px; margin-bottom: 8mm; }
+.b-cert-intro,
+.b-cert-outro {
+  font-family: var(--b-font);
+  color: var(--b-muted);
+  font-size: 13px;
+}
+.b-cert-product {
+  font-family: var(--b-font);
+  font-weight: 800;
+  color: var(--b-ink);
+  text-transform: uppercase;
+  font-size: 40px;
+  margin: 5mm 0;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.b-cert-brand {
+  font-family: var(--b-font);
+  font-weight: 800;
+  color: var(--b-accent);
+  text-transform: uppercase;
+  font-size: 22px;
+  margin: 5mm 0 2mm;
+  letter-spacing: 0.02em;
+}
+.b-cert-tagline {
+  font-family: var(--b-font);
+  font-style: italic;
+  color: var(--b-muted);
+  font-size: 12px;
+  margin: 0;
+}
+.b-cert-signature-row {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 14mm;
+  gap: 8mm;
+}
+.b-cert-sig-block {
+  flex: 1;
+  border-top: 1px solid var(--b-rule-mid);
+  padding-top: 2mm;
+  font-family: var(--b-font);
+  color: var(--b-muted);
+  font-size: 12px;
+}
+.b-cert-sig-block.b-right { text-align: right; }
+.b-cert-seal-center { flex-shrink: 0; }
+.b-cert-signature-img {
+  display: block;
+  max-width: 40mm;
+  max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+.b-cert-footer {
+  margin-top: 6mm;
+  font-family: var(--b-font);
+  color: var(--b-muted);
+  font-size: 10.5px;
+  text-align: center;
+  line-height: 1.55;
+  padding-bottom: 2mm;
+}
+.b-cert-footer .b-accent { color: var(--b-accent); font-weight: 700; }

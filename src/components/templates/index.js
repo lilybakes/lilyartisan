@@ -14,6 +14,7 @@ import { CertificateOfCraft } from './CertificateOfCraft.jsx'
 // map: { [templateKey]: React component }.
 import { KRAFT_TEMPLATES } from './variants/kraft/index.js'
 import { CRISP_TEMPLATES } from './variants/crisp/index.js'
+import { BKO_TEMPLATES } from './variants/bko/index.js'
 
 /**
  * Registry of the 10 shared templates. Each entry is the DEFAULT (non-variant)
@@ -38,6 +39,7 @@ export const TEMPLATES = [
  * Add another entry when a new variant gets its own /variants/{name}/ folder.
  */
 const VARIANT_MAP = {
+  bko: BKO_TEMPLATES,
   kraft: KRAFT_TEMPLATES,
   crisp: CRISP_TEMPLATES,
   // Future: 'letterpress': LETTERPRESS_TEMPLATES, etc.

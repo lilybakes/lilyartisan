@@ -49,11 +49,17 @@ export default function Landing() {
             <a href="#pricing"  className="landing-navlink">Pricing</a>
             <a href="#faq"      className="landing-navlink">FAQ</a>
             {session ? (
-              <Link to="/app" className="landing-btn landing-btn-primary">Open App →</Link>
+              <Link to="/app" className="landing-btn landing-btn-primary">
+                <span className="landing-btn-label-desktop">Open App →</span>
+                <span className="landing-btn-label-mobile">App →</span>
+              </Link>
             ) : (
               <>
                 <Link to="/login"  className="landing-navlink landing-navlink-strong">Log in</Link>
-                <Link to="/signup" className="landing-btn landing-btn-primary">Start Free Trial</Link>
+                <Link to="/signup" className="landing-btn landing-btn-primary">
+                  <span className="landing-btn-label-desktop">Start Free Trial</span>
+                  <span className="landing-btn-label-mobile">Sign up</span>
+                </Link>
               </>
             )}
           </nav>
@@ -150,7 +156,7 @@ export default function Landing() {
         <div className="landing-container landing-footer-inner">
           <div>
             <div className="landing-footer-brand">
-              <span style={{color:'#1F2440'}}>Baker</span><span style={{color:'#6C5CE7'}}>Nomics</span>
+              <span style={{color:'#1F2440'}}>Bake</span><span style={{color:'#6C5CE7'}}>Onomics</span>
             </div>
             <div className="landing-footer-tag">Made with care in Malaysia 🇲🇾</div>
           </div>

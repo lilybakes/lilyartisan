@@ -7,10 +7,16 @@
  */
 export const STYLE_VARIANTS = [
   {
+    key: 'bko',
+    name: 'BakeOnomics Clean',
+    description: 'The default BakeOnomics theme. Purple app-brand accent (#7367F0) on white paper, Plus Jakarta Sans body + JetBrains Mono numerals, thin gray rules with lavender allergen wash. Small square logo box, solid 2.5px accent rule under every header. Designed to look like a finished printed sheet in the app\'s own visual language.',
+    isDefault: true,
+    accent: '#7367F0',
+  },
+  {
     key: 'clean-modern',
     name: 'Clean Modern',
     description: 'White paper, Plus Jakarta Sans + JetBrains Mono numerals, hairline rules, violet app-brand accent. Neutral and precise.',
-    isDefault: true,
     accent: '#6C5CE7',
   },
   {
@@ -56,4 +62,4 @@ export function getStyleVariant(key) {
 }
 
 /** Default variant when nothing is picked yet */
-export const DEFAULT_STYLE_KEY = 'clean-modern'
+export const DEFAULT_STYLE_KEY = 'bko'

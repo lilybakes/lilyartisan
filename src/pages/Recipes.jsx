@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTable } from '../lib/data'
+import { supabase } from '../lib/supabase'
 import { useSettings } from '../lib/settings.jsx'
 import { initials, CHIP_COLORS } from '../lib/costing'
 import { Icon } from '../lib/icons.jsx'
@@ -8,7 +9,15 @@ import RecipeContentDrawer from '../components/RecipeContentDrawer.jsx'
 export default function Recipes() {
   const { settings } = useSettings()
   const { rows, loading, insert, update, remove } = useTable('recipes', 'name')
+  const { rows: ingredients } = useTable('ingredients', 'name')
+  const [bomLines, setBomLines] = useState([])
   const [f, setF] = useState({ name:'', category:'', yield_portions:'', target_food_cost_pct:'' })
+
+  // BOM lines aren't in useTable's registry — pull them directly so the
+  // Content drawer's live preview can render the real ingredient list.
+  useEffect(() => {
+    supabase.from('bom_lines').select('*').then(({ data }) => setBomLines(data || []))
+  }, [])
 
   const [editingId, setEditingId] = useState(null)
   const [draft, setDraft] = useState({})
@@ -152,6 +161,8 @@ export default function Recipes() {
         <RecipeContentDrawer
           recipe={contentRecipe}
           brand={settings}
+          bomLines={bomLines}
+          ingredients={ingredients}
           onClose={() => setContentRecipeId(null)}
           onSave={patch => saveContent(contentRecipe.id, patch)}
         />

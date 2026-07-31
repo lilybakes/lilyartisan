@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useTable } from '../lib/data'
 import { supabase } from '../lib/supabase'
 import { useSettings } from '../lib/settings.jsx'
@@ -22,20 +23,49 @@ export default function Pricing() {
     return m
   }, [allBom])
 
+  // Wholesale defaults live on the settings row and are edited on Template
+  // Customization. Read them here so the Pricing table can surface the same
+  // wholesale price + batch total that appears on the Wholesale Price List.
+  const discountPct = Number(settings.wholesale_discount_pct ?? 30)
+  const moq         = Number(settings.wholesale_moq ?? 10)
+  const factor      = 1 - discountPct / 100
+
   return (
     <div className="panel">
       <div className="panel-head">
-        <div><h3>Selling Price Calculator</h3><p className="sub">Suggested price = cost per portion ÷ target food-cost %. Ingredient price changes flow through automatically.</p></div>
+        <div>
+          <h3>Selling Price Calculator</h3>
+          <p className="sub">
+            Suggested price = cost per portion ÷ target food-cost %.
+            Wholesale = suggested × (1 − {discountPct}%). Batch = wholesale × MOQ ({moq}).
+          </p>
+        </div>
+        <div className="pricing-wholesale-meta">
+          <span className="pill">Wholesale: {discountPct}% off · MOQ {moq}</span>
+          <Link to="/app/template-customization" className="pricing-wholesale-edit">Edit defaults →</Link>
+        </div>
       </div>
       <table className="responsive-table">
-        <thead><tr><th>Recipe</th><th className="num">Cost/Portion</th><th className="num">Target FC %</th><th className="num">Suggested Price</th><th className="num">Margin</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Recipe</th>
+            <th className="num">Cost/Portion</th>
+            <th className="num">Target FC %</th>
+            <th className="num">Suggested Price</th>
+            <th className="num">Margin</th>
+            <th className="num">Wholesale</th>
+            <th className="num">Batch of {moq}</th>
+          </tr>
+        </thead>
         <tbody>
-          {recipes.length === 0 && <tr><td colSpan="5" className="empty">No recipes yet.</td></tr>}
+          {recipes.length === 0 && <tr><td colSpan="7" className="empty">No recipes yet.</td></tr>}
           {recipes.map((r, idx) => {
             const lines = bomByRecipe[r.id] || []
             const cpp = costPerPortion(r, lines, ingById)
             const sp = suggestedPrice(r, lines, ingById)
             const margin = sp > 0 ? ((sp - cpp) / sp * 100) : 0
+            const wholesale = sp * factor
+            const batch     = wholesale * moq
             const color = CHIP_COLORS[idx % CHIP_COLORS.length]
             return (
               <tr key={r.id}>
@@ -51,6 +81,8 @@ export default function Pricing() {
                 </td>
                 <td className="num" data-label="Suggested Price"><strong>{money(sp, settings.currency)}</strong></td>
                 <td className="num" data-label="Margin"><span className="pill ok">{margin.toFixed(1)}%</span></td>
+                <td className="num pricing-wholesale-cell" data-label="Wholesale">{money(wholesale, settings.currency)}</td>
+                <td className="num" data-label={`Batch of ${moq}`}>{money(batch, settings.currency)}</td>
               </tr>
             )
           })}

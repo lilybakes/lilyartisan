@@ -280,8 +280,9 @@ tr:hover td{ background:#fafaff; }
 .lightbox-btn.ghost{ background:transparent; border:1px solid rgba(255,255,255,0.28); color:rgba(255,255,255,0.9); }
 .lightbox-btn.ghost:hover{ background:rgba(234,84,85,0.18); border-color:var(--danger); color:#fff; }
 
-input, select{ font-family:inherit; font-size:13.5px; padding:9px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); width:100%; transition:all 0.15s; }
-input:focus, select:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(115,103,240,0.12); }
+input, select, textarea{ font-family:inherit; font-size:13.5px; padding:9px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); width:100%; max-width:100%; min-width:0; box-sizing:border-box; transition:all 0.15s; }
+textarea{ line-height:1.5; resize:vertical; }
+input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(115,103,240,0.12); }
 .row-add{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; align-items:flex-end; padding-top:16px; border-top:1px dashed var(--line); }
 .field{ display:flex; flex-direction:column; gap:5px; }
 .field label{ font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.4px; }
@@ -592,9 +593,13 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   .conv-box{ padding:12px; font-size:12px; }
   .recipe-select{ max-width:100%; }
 
-  .settings-tabs{ flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
-  .settings-tabs::-webkit-scrollbar{ display:none; }
-  .settings-tabs button{ padding:12px 14px; flex-shrink:0; font-size:13px; }
+  /* Tabs: wrap onto multiple lines instead of scrolling horizontally so no
+     label ever gets clipped mid-word. For 3–6 tabs this reads more discoverably
+     than a horizontal scroll with no visible cue. */
+  .settings-tabs{ flex-wrap:wrap; overflow-x:visible; gap:2px 6px; }
+  .settings-tabs button{ padding:10px 12px; font-size:13px; }
+  .settings-subtabs{ flex-wrap:wrap; overflow-x:visible; width:auto; gap:4px; }
+  .settings-subtabs button{ padding:7px 12px; font-size:12.5px; }
 
   .header-link-row{ flex-direction:column; align-items:stretch; gap:10px; }
   .header-link-row .field{ width:100% !important; min-width:0 !important; flex:1 1 auto !important; }
@@ -773,9 +778,13 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   font-weight:500;
   border-radius:8px;
   transition:color 0.15s, background 0.15s;
+  white-space:nowrap;
 }
 .landing-navlink:hover{ color:var(--ink); background:var(--nav-row-hover); }
 .landing-navlink-strong{ font-weight:600; color:var(--ink); }
+
+/* Header CTA has two labels — a long one for desktop, a short one for phones */
+.landing-btn-label-mobile{ display:none; }
 .landing-btn{
   display:inline-flex; align-items:center;
   padding:9px 18px;
@@ -1295,13 +1304,16 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
 
 @media(max-width:640px){
   .landing-container{ padding:0 20px; }
-  .landing-header-inner{ padding:12px 20px; }
-  .landing-nav{ gap:4px; }
+  .landing-header-inner{ padding:10px 16px; gap:8px; }
+  .landing-nav{ gap:2px; }
   .landing-nav a[href="#features"],
   .landing-nav a[href="#pricing"],
   .landing-nav a[href="#faq"]{ display:none; }
   .landing-navlink{ padding:6px 10px; font-size:13px; }
-  .landing-btn{ padding:8px 14px; font-size:12.5px; }
+  .landing-btn{ padding:8px 14px; font-size:13px; }
+  /* Swap CTA copy to the compact label — "Sign up" not "Start Free Trial" */
+  .landing-btn-label-desktop{ display:none; }
+  .landing-btn-label-mobile{ display:inline; }
   .landing-hero{ padding:48px 0 60px; }
   .landing-hero-title{ font-size:36px; }
   .landing-hero-tagline{ font-size:17px; }
@@ -1322,6 +1334,15 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   .landing-cta-sub{ font-size:15px; }
   .auth-form-row{ grid-template-columns:1fr; }
   .auth-row{ flex-direction:column; align-items:flex-start; gap:10px; }
+}
+
+/* Very narrow phones — hide the wordmark, keep only the logo mark so the
+   CTA button never gets clipped by the viewport edge. */
+@media(max-width:440px){
+  .landing-header-inner{ padding:10px 14px; gap:6px; }
+  .landing-brand .brand-wordmark{ display:none; }
+  .landing-navlink{ padding:6px 8px; font-size:12.5px; }
+  .landing-btn{ padding:8px 12px; font-size:12.5px; }
 }
 /* ============================================================
    APPEND THIS TO THE END OF src/styles.css
@@ -5224,27 +5245,31 @@ button.edit:hover{ border-color:var(--accent); background:var(--accent-soft); }
   margin-top:14px;
 }
 
-/* Responsive — stack sidebar above main on narrow screens */
+/* Mobile-only template dropdown is hidden on wide screens (the sidebar cards
+   handle selection there). */
+.tpl-control-template-mobile{ display:none; }
+
+/* Responsive — collapse sidebar into a dropdown on narrow screens so the
+   user isn't forced to scroll past 10 template cards to reach the picker.
+   The card sidebar returns on tablet+desktop for its browsability. */
 @media(max-width:900px){
   .tpl-page{
     grid-template-columns:1fr;
   }
   .tpl-sidebar{
-    position:static;
-    max-height:none;
-    overflow-y:visible;
+    display:none;
   }
-  .tpl-list{
-    display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:6px;
+  .tpl-control-template-mobile{
+    display:flex;
   }
   .tpl-controls-panel{
     grid-template-columns:1fr;
   }
 }
 @media(max-width:520px){
-  .tpl-list{ grid-template-columns:1fr; }
+  .tpl-main{ padding:16px 14px; border-radius:12px; }
+  .tpl-main-head h3{ font-size:18px; }
+  .tpl-controls-panel{ padding:12px; gap:10px; }
 }
 
 /* ============================================================
@@ -7032,3 +7057,29 @@ button.ghost.small:hover{
   letter-spacing:0.14em !important;
   font-size:10px !important;
 }
+
+/* ============================================================
+   Pricing page — wholesale meta cluster in the panel head
+   ============================================================ */
+.pricing-wholesale-meta{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.pricing-wholesale-meta .pill{
+  background:var(--accent-soft);
+  color:var(--accent-dark);
+  border:1px solid rgba(115,103,240,0.18);
+  font-weight:600;
+  font-size:12px;
+  letter-spacing:0.02em;
+}
+.pricing-wholesale-edit{
+  color:var(--accent);
+  text-decoration:none;
+  font-size:13px;
+  font-weight:600;
+  white-space:nowrap;
+}
+.pricing-wholesale-edit:hover{ color:var(--accent-dark); text-decoration:underline; }
+
+/* Give the wholesale column a subtle accent tint so it reads as derived */
+.pricing-wholesale-cell{ color:var(--accent-dark); font-weight:600; }
