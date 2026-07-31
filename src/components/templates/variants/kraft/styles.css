@@ -981,3 +981,45 @@
   padding-bottom: 2mm;
 }
 .k-cert-footer .k-brown { color: var(--k-brown); font-weight: 700; }
+
+
+/* =============================================================================
+   Additions for content-driven rendering (added by content-full delta)
+   ============================================================================= */
+
+/* Empty-state text used inside sections when a recipe has no data yet */
+.k-recipe-empty {
+  color: var(--k-muted);
+  font-style: italic;
+  font-size: 12px;
+  margin: 3mm 0 0;
+  padding-left: 0.2em;
+}
+
+/* Method sub-group heading — "CUPCAKES" / "BUTTERCREAM" style */
+.k-recipe-method-group,
+.k-binder-method-group {
+  list-style: none;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--k-body-font);
+  font-weight: 700;
+  color: var(--k-brown);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 9.5px;
+  margin: 3mm 0 1mm;
+}
+.k-recipe-method-group::before,
+.k-binder-method-group::before {
+  content: '' !important;
+}
+
+/* Certificate signature image */
+.k-cert-signature-img {
+  display: block;
+  max-width: 40mm;
+  max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}

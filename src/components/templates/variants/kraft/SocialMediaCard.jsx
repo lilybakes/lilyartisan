@@ -1,20 +1,20 @@
 import { KraftBrandLockup, kraftMoney } from './_parts.jsx'
 
 /**
- * 08 — SOCIAL CARD  (1080×1080, drawn 148×148mm) — screen only
+ * 08 — SOCIAL CARD  (1080×1080) — screen only
  *
- * Matches Image 3 (Chocolate Fudge Cake social card):
- *   • Kraft-warm background
- *   • Centered stack: monogram + brand + tagline
- *   • Vertical space
- *   • "FRESH FROM OUR KITCHEN" tracked-caps brown eyebrow
- *   • HUGE slab-serif product name (wraps 2 lines)
- *   • Italic muted description
- *   • Rounded-pill brown outline "From RM 10.00"
- *   • Footer row: @handle · fb/handle (left), website (right)
+ * FIELD MAPPING:
+ *   customization.eyebrow_text — default "Fresh from our kitchen"
+ *   customization.cta_prefix   — default "From" (renders "From RM 10.00")
+ *   customization.desc_override — optional override for recipe.description
+ *   recipe.description         — short marketing tagline
+ *   recipe.suggested_price     — price shown in pill
  */
-export function KraftSocialMediaCard({ recipe = {}, brand = {} }) {
-  const suggested = recipe.suggested_price ?? recipe.suggestedPrice ?? 0
+export function KraftSocialMediaCard({ recipe = {}, brand = {}, customization = {} }) {
+  const eyebrow    = customization.eyebrow_text || 'Fresh from our kitchen'
+  const ctaPrefix  = customization.cta_prefix   || 'From'
+  const desc       = customization.desc_override || recipe.description
+  const suggested  = Number(recipe.suggested_price) || 0
 
   return (
     <div className="tpl k-tpl k-social printable">
@@ -23,13 +23,11 @@ export function KraftSocialMediaCard({ recipe = {}, brand = {} }) {
       </div>
 
       <div className="k-social-center">
-        <div className="k-eyebrow k-social-eyebrow">Fresh from our kitchen</div>
+        <div className="k-eyebrow k-social-eyebrow">{eyebrow}</div>
         <h2 className="k-social-name">{recipe.name || 'Product name'}</h2>
-        {recipe.description && (
-          <div className="k-social-desc">{recipe.description}</div>
-        )}
+        {desc && <div className="k-social-desc">{desc}</div>}
         {suggested > 0 && (
-          <div className="k-social-price-pill">From {kraftMoney(suggested)}</div>
+          <div className="k-social-price-pill">{ctaPrefix} {kraftMoney(suggested)}</div>
         )}
       </div>
 

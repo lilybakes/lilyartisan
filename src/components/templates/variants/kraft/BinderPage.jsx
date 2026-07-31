@@ -3,30 +3,23 @@ import { KraftBrandLockup, KraftDoubleRule, KraftFooter, kraftMoney } from './_p
 /**
  * 09 — RECIPE BINDER PAGE  (A4 portrait) — kitchen reference
  *
- * Matches Image 4 (Vanilla Cupcakes binder page):
- *   • Header left: monogram + brand + tagline
- *   • Header right: "KITCHEN BINDER · No 04" tracked caps
- *   • Double rule
- *   • Left title block: product name (big slab) + italic description
- *     + dotted separators + 4-column meta row (CATEGORY / YIELD / COST/PORTION / SELL/PORTION)
- *   • Right: recipe photo box (slightly rotated 1.5deg — taped-in feel)
- *     Uses recipe.image_url if present, otherwise placeholder text
- *   • Two-column body: Ingredients (left) with dotted-separator table + Batch total
- *                     Method (right) with sub-group labels + numbered steps
- *   • Chef's notes: title + several dotted ruled lines for writing
- *   • Dashed-divider split footer
+ * FIELD MAPPING:
+ *   recipe.lines[]              — ingredient rows
+ *   recipe.method[]             — steps, with { group } sub-headings
+ *   recipe.description          — italic description under the title
+ *   recipe.image_url            — rotated photo box (taped-in feel)
+ *   recipe.total_cost           — batch total
+ *   recipe.cost_per_portion     — meta cell
+ *   recipe.suggested_price      — meta cell
+ *   binderNumber                — prop; "KITCHEN BINDER · No 04"
  */
 export function KraftBinderPage({ recipe = {}, brand = {}, binderNumber = '04' }) {
-  const ings = recipe.ingredients || []
-  const method = recipe.method || []
-  const batchTotal = recipe.batch_total ?? recipe.batchTotal ?? 0
-  const costPerPortion = recipe.cost_per_portion ?? recipe.costPerPortion ?? 0
-  const suggested = recipe.suggested_price ?? recipe.suggestedPrice ?? 0
-  const photo = recipe.image_url || recipe.imageUrl
-
-  // Method may have grouped steps: [{groupLabel: 'CUPCAKES', step: '...'}]
-  // Render group label the first time a new group appears
-  let lastGroup = null
+  const lines           = recipe.lines || []
+  const method          = normalizeMethod(recipe.method)
+  const total           = Number(recipe.total_cost)         || 0
+  const perPortion      = Number(recipe.cost_per_portion)   || 0
+  const suggested       = Number(recipe.suggested_price)    || 0
+  const photo           = recipe.image_url || recipe.imageUrl
 
   return (
     <div className="tpl k-tpl k-binder printable">
@@ -54,7 +47,7 @@ export function KraftBinderPage({ recipe = {}, brand = {}, binderNumber = '04' }
             </div>
             <div>
               <div className="k-binder-meta-cell-lbl">Cost / Portion</div>
-              <div className="k-binder-meta-cell-val">{kraftMoney(costPerPortion)}</div>
+              <div className="k-binder-meta-cell-val">{kraftMoney(perPortion)}</div>
             </div>
             <div>
               <div className="k-binder-meta-cell-lbl">Sell / Portion</div>
@@ -68,7 +61,7 @@ export function KraftBinderPage({ recipe = {}, brand = {}, binderNumber = '04' }
           ) : (
             <div className="k-binder-photo-placeholder">
               Recipe photo<br/>
-              <span style={{ fontStyle: 'italic', fontSize: '9px' }}>(placeholder when empty)</span>
+              <span style={{ fontStyle: 'italic', fontSize: 9 }}>(upload via Recipe Master)</span>
             </div>
           )}
         </div>
@@ -80,17 +73,25 @@ export function KraftBinderPage({ recipe = {}, brand = {}, binderNumber = '04' }
             <h3>Ingredients</h3>
             <div className="k-rule-single"/>
           </div>
-          {ings.map((i, idx) => (
-            <div key={idx} className="k-binder-ing-row">
-              <div className="k-ing-name">{i.name}</div>
-              <div className="k-ing-qty">{i.qty}{i.unit ? ` ${i.unit}` : ''}</div>
-              <div className="k-ing-cost">{Number(i.line_cost ?? i.cost ?? 0).toFixed(2)}</div>
-            </div>
-          ))}
-          <div className="k-binder-batch">
-            <span>Batch total</span>
-            <span className="k-binder-batch-val">{Number(batchTotal).toFixed(2)}</span>
-          </div>
+          {lines.length === 0 ? (
+            <p style={{ color: 'var(--k-muted)', fontStyle: 'italic', fontSize: 12 }}>
+              No ingredients linked yet.
+            </p>
+          ) : (
+            <>
+              {lines.map((line, idx) => (
+                <div key={idx} className="k-binder-ing-row">
+                  <div className="k-ing-name">{line.ingredient_name || 'Unknown'}</div>
+                  <div className="k-ing-qty">{line.qty}{line.unit ? ` ${line.unit}` : ''}</div>
+                  <div className="k-ing-cost">{Number(line.cost || 0).toFixed(2)}</div>
+                </div>
+              ))}
+              <div className="k-binder-batch">
+                <span>Batch total</span>
+                <span className="k-binder-batch-val">{Number(total).toFixed(2)}</span>
+              </div>
+            </>
+          )}
         </section>
 
         <section>
@@ -98,20 +99,19 @@ export function KraftBinderPage({ recipe = {}, brand = {}, binderNumber = '04' }
             <h3>Method</h3>
             <div className="k-rule-single"/>
           </div>
-          <ol className="k-binder-method">
-            {method.map((step, i) => {
-              const stepText = typeof step === 'string' ? step : step.step
-              const group = typeof step === 'object' ? step.group_label || step.groupLabel : null
-              const showGroup = group && group !== lastGroup
-              if (showGroup) lastGroup = group
-              return (
-                <>
-                  {showGroup && <li key={`g${i}`} className="k-binder-method-group" style={{ listStyle: 'none', paddingLeft: 0 }}>{group}</li>}
-                  <li key={i}>{stepText}</li>
-                </>
-              )
-            })}
-          </ol>
+          {method.length === 0 ? (
+            <p style={{ color: 'var(--k-muted)', fontStyle: 'italic', fontSize: 12 }}>
+              Add method steps via the recipe's Content drawer.
+            </p>
+          ) : (
+            <ol className="k-binder-method">
+              {method.map((step, i) =>
+                step.group
+                  ? <li key={i} className="k-binder-method-group" style={{ listStyle: 'none', paddingLeft: 0 }}>{step.group}</li>
+                  : <li key={i}>{step.step}</li>
+              )}
+            </ol>
+          )}
         </section>
       </div>
 
@@ -127,4 +127,20 @@ export function KraftBinderPage({ recipe = {}, brand = {}, binderNumber = '04' }
       <KraftFooter brand={brand} layout="split"/>
     </div>
   )
+}
+
+function normalizeMethod(raw) {
+  if (!raw || !Array.isArray(raw)) return []
+  const out = []
+  let lastGroup = null
+  for (const item of raw) {
+    if (typeof item === 'string') { out.push({ step: item }); continue }
+    if (item && typeof item === 'object') {
+      const g = item.group || item.group_label || item.groupLabel
+      if (g && g !== lastGroup) { out.push({ group: g }); lastGroup = g }
+      const s = item.step || item.text
+      if (s) out.push({ step: s })
+    }
+  }
+  return out
 }

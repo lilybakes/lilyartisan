@@ -1,26 +1,22 @@
 import {
-  KraftBrandLockup, KraftDoubleRule, KraftSeal, KraftFooter, KraftEyebrow,
+  KraftBrandLockup, KraftDoubleRule, KraftSeal, KraftFooter,
 } from './_parts.jsx'
 
 /**
  * 01 — RECIPE CARD  (A5 portrait, 148×210mm)
  *
- * Matches Image 6 (Classic Sourdough Loaf) from the Kraft handover:
- *   • Small brand lockup top-left (monogram + name + tagline)
- *   • Double horizontal brown rule
- *   • Large slab-serif recipe title + small-caps meta row
- *   • Ingredients: 2-column grid — bold slab-serif brown qty | regular name
- *   • Method: numbered list in body sans
- *   • Circular dashed "BAKED SMALL BATCH" seal bottom-right
- *   • Dashed-divider footer split between address (L) and contact (R)
+ * FIELD MAPPING (enriched recipe from Templates.jsx):
+ *   recipe.lines[]        — { ingredient_name, qty, unit, cost, unit_cost }
+ *   recipe.method[]       — jsonb array of strings, or { step, group }
+ *   recipe.category       — meta chip
+ *   recipe.yield_portions — meta chip
  */
 export function KraftRecipeCard({ recipe = {}, brand = {} }) {
-  const ings = recipe.ingredients || []
-  const method = recipe.method || []
+  const lines  = recipe.lines || []
+  const method = normalizeMethod(recipe.method)
   const yieldStr = recipe.yield_portions
-    ? `YIELD ${recipe.yield_portions} ${recipe.yield_unit || 'PORTIONS'}`
+    ? `YIELD ${recipe.yield_portions}${recipe.yield_portions === 1 ? '' : ' PORTIONS'}`
     : null
-  const notes = recipe.notes  // optional third meta chip (e.g. "SLOW FERMENT")
 
   return (
     <div className="tpl k-tpl k-recipe-card printable">
@@ -37,7 +33,6 @@ export function KraftRecipeCard({ recipe = {}, brand = {} }) {
             {recipe.category && <span>{recipe.category}</span>}
             {recipe.category && yieldStr && <span className="k-recipe-meta-sep">·</span>}
             {yieldStr && <span>{yieldStr}</span>}
-            {notes && <><span className="k-recipe-meta-sep">·</span><span>{notes}</span></>}
           </div>
         </div>
 
@@ -46,14 +41,22 @@ export function KraftRecipeCard({ recipe = {}, brand = {} }) {
             <h3>Ingredients</h3>
             <div className="k-rule-single"/>
           </div>
-          <div className="k-recipe-ingredients">
-            {ings.map((i, idx) => (
-              <>
-                <div key={`q${idx}`} className="k-recipe-ing-qty">{i.qty}{i.unit ? ` ${i.unit}` : ''}</div>
-                <div key={`n${idx}`} className="k-recipe-ing-name">{i.name}</div>
-              </>
-            ))}
-          </div>
+          {lines.length === 0 ? (
+            <p className="k-recipe-empty">No ingredients yet — link them via Recipe BOM.</p>
+          ) : (
+            <div className="k-recipe-ingredients">
+              {lines.map((line, idx) => (
+                <>
+                  <div key={`q${idx}`} className="k-recipe-ing-qty">
+                    {line.qty}{line.unit ? ` ${line.unit}` : ''}
+                  </div>
+                  <div key={`n${idx}`} className="k-recipe-ing-name">
+                    {line.ingredient_name || 'Unknown ingredient'}
+                  </div>
+                </>
+              ))}
+            </div>
+          )}
         </section>
 
         <section>
@@ -61,11 +64,19 @@ export function KraftRecipeCard({ recipe = {}, brand = {} }) {
             <h3>Method</h3>
             <div className="k-rule-single"/>
           </div>
-          <ol className="k-recipe-method">
-            {method.map((step, i) => (
-              <li key={i}>{typeof step === 'string' ? step : step.step}</li>
-            ))}
-          </ol>
+          {method.length === 0 ? (
+            <p className="k-recipe-empty">
+              Add method steps in the recipe's <em>Content</em> drawer.
+            </p>
+          ) : (
+            <ol className="k-recipe-method">
+              {method.map((step, i) =>
+                step.group
+                  ? <li key={i} className="k-recipe-method-group">{step.group}</li>
+                  : <li key={i}>{step.step}</li>
+              )}
+            </ol>
+          )}
         </section>
       </div>
 
@@ -76,4 +87,21 @@ export function KraftRecipeCard({ recipe = {}, brand = {} }) {
       <KraftFooter brand={brand} layout="split"/>
     </div>
   )
+}
+
+/** Accepts array of strings OR array of { step, group } — returns flat list of {step} / {group} items */
+function normalizeMethod(raw) {
+  if (!raw || !Array.isArray(raw)) return []
+  const out = []
+  let lastGroup = null
+  for (const item of raw) {
+    if (typeof item === 'string') { out.push({ step: item }); continue }
+    if (item && typeof item === 'object') {
+      const g = item.group || item.group_label || item.groupLabel
+      if (g && g !== lastGroup) { out.push({ group: g }); lastGroup = g }
+      const s = item.step || item.text
+      if (s) out.push({ step: s })
+    }
+  }
+  return out
 }

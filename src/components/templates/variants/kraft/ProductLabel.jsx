@@ -3,26 +3,30 @@ import { KraftBrandLockup, KraftFooter } from './_parts.jsx'
 /**
  * 04 — PRODUCT LABEL  (A7 portrait, 74×105mm) — packaging
  *
- * Matches Image 9 (Almond Biscotti label):
- *   • Compact header: monogram-sm + brand + tagline (left), "IPOH" tracked caps (right)
- *   • SOLID DARK BROWN BAND holding "SMALL BATCH" eyebrow + product name in cream
- *   • "INGREDIENTS" section: brown eyebrow + ingredients as one sentence
- *   • BROWN-OUTLINED RECTANGLE: "ALLERGEN NOTICE" eyebrow + allergens sentence
- *   • Dashed-divider footer with contact
+ * FIELD MAPPING:
+ *   Ingredients sentence = recipe.label_ingredients_text
+ *                        ↓ ingredient names from recipe.lines (joined)
+ *                        ↓ hard fallback
+ *   Allergen sentence    = recipe.label_allergens_text
+ *                        ↓ recipe.allergens_text
+ *                        ↓ brand.default_allergen_notice
+ *                        ↓ hard fallback
  */
 export function KraftProductLabel({ recipe = {}, brand = {} }) {
-  const ings = recipe.ingredients || []
-  const allergens = recipe.allergens || []
-  const city = brand.city || 'Ipoh'
-  const ingredientsSentence = ings.length
-    ? ings.map(i => i.name).join(', ') + '.'
-    : 'See recipe for full ingredients.'
-  const allergensText = Array.isArray(allergens) && allergens.length
-    ? `Contains: ${allergens.join(', ')}.`
-    : 'See label for allergens.'
-  const eyebrowText = recipe.category === 'Cookies' ? 'Small batch'
-    : recipe.category === 'Bread' ? 'Baked fresh'
-    : 'Small batch'
+  const lines = recipe.lines || []
+  const city  = brand.city || extractCityFromAddress(brand.address) || 'Ipoh'
+
+  const ingredientsSentence =
+    (recipe.label_ingredients_text && recipe.label_ingredients_text.trim()) ||
+    (lines.length > 0 ? lines.map(l => l.ingredient_name).filter(Boolean).join(', ') + '.' : 'See recipe.')
+
+  const allergensText =
+    recipe.label_allergens_text ||
+    recipe.allergens_text ||
+    brand.default_allergen_notice ||
+    'See label for allergens.'
+
+  const eyebrowText = pickEyebrow(recipe.category)
 
   return (
     <div className="tpl k-tpl k-label printable">
@@ -47,4 +51,20 @@ export function KraftProductLabel({ recipe = {}, brand = {} }) {
       <KraftFooter brand={brand} layout="split" showSocials={false}/>
     </div>
   )
+}
+
+/** Pull last comma-separated token from an address as a rough city guess. */
+function extractCityFromAddress(addr) {
+  if (!addr) return null
+  const tokens = addr.split(',').map(s => s.trim()).filter(Boolean)
+  return tokens[tokens.length - 1] || null
+}
+
+function pickEyebrow(category) {
+  switch ((category || '').toLowerCase()) {
+    case 'bread':   return 'Baked fresh'
+    case 'cookies': return 'Small batch'
+    case 'cakes':   return 'Handmade'
+    default:        return 'Small batch'
+  }
 }
