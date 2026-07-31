@@ -247,7 +247,7 @@
    01 — RECIPE CARD  (A5 portrait, 148×210mm)
    ============================================================================= */
 .e-tpl.e-recipe-card {
-  width: 148mm; min-height: 210mm;
+  width: 148mm; height: 210mm;
   padding: 0;
   display: flex;
   flex-direction: row;
@@ -846,7 +846,7 @@
    07 — DELIVERY TAG  (A7 portrait, 74×105mm)
    ============================================================================= */
 .e-tpl.e-delivery {
-  width: 74mm; min-height: 105mm;
+  width: 74mm; height: 105mm;
   padding: 0;
   display: flex;
   flex-direction: row;
@@ -975,7 +975,7 @@
    09 — RECIPE BINDER PAGE  (A4 portrait)
    ============================================================================= */
 .e-tpl.e-binder {
-  width: 210mm; min-height: 297mm;
+  width: 210mm; height: 297mm;
   padding: 0;
   display: flex;
   flex-direction: row;
