@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth.jsx'
 import { Icon } from '../lib/icons.jsx'
-import UserAvatar from './UserAvatar.jsx'
+import UserAvatarMenu from './UserAvatarMenu.jsx'
 
 export default function Topbar() {
   const { user } = useAuth() || {}
@@ -70,7 +70,7 @@ export default function Topbar() {
           <Icon name="bell" size={18}/>
           <span className="dot"/>
         </div>
-        <UserAvatar size={34}/>
+        <UserAvatarMenu size={34}/>
       </div>
     </div>
   )

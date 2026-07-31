@@ -1,0 +1,816 @@
+/* =============================================================================
+   CRISP VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   All 10 crisp templates share this file. Section 1 defines the palette +
+   shared primitives (square logo box, brand rule, chips, footer, seal).
+   Sections 01–10 each own their template's layout, spacing, and margins.
+
+   Palette (matches STYLE_VARIANTS registry entry for 'crisp'):
+     Navy ink       #1F2440   titles, main text
+     Body           #4A5068   secondary text
+     Muted gray     #8590A5   descriptions, taglines, meta labels
+     Warm brown     #8B4A2B   brand, section labels, key prices, rules
+     Success green  #28C76F   margin percentage
+     Cream          #FBEDD3   allergen notice background
+     Hairline gray  #E9E7EB   rules
+   Fonts:
+     Body           Plus Jakarta Sans (400/700/800) — already loaded globally
+     Numbers        JetBrains Mono (400/500/700)    — already loaded globally
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, fonts, primitives used by all 10 templates
+   ============================================================================= */
+
+.c-tpl {
+  --c-paper: #FFFFFF;
+  --c-ink: #1F2440;
+  --c-body: #4A5068;
+  --c-muted: #8590A5;
+  --c-brown: #8B4A2B;
+  --c-green: #28C76F;
+  --c-cream: #FBEDD3;
+  --c-rule: #E9E7EB;
+  --c-rule-mid: #DCD9DE;
+
+  --c-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --c-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  background: var(--c-paper);
+  color: var(--c-ink);
+  font-family: var(--c-font);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(31, 36, 64, 0.09);
+  box-sizing: border-box;
+}
+.c-tpl * { box-sizing: border-box; }
+
+/* --- Logo (square bordered box) ---------------------------------------- */
+.c-logo {
+  border-radius: 4px;
+  border: 1.5px solid var(--c-brown);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--c-brown);
+  font-family: var(--c-font);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: #FFFFFF;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.c-logo-img { width: 78%; height: 78%; object-fit: contain; }
+.c-logo-sm { width: 38px; height: 38px; font-size: 12px; }
+.c-logo-md { width: 54px; height: 54px; font-size: 16px; }
+.c-logo-lg { width: 74px; height: 74px; font-size: 21px; }
+.c-logo-xl { width: 96px; height: 96px; font-size: 28px; }
+
+/* --- Brand lockup ------------------------------------------------------- */
+.c-brand-lockup { display: flex; align-items: center; }
+.c-brand-lockup-row { flex-direction: row; gap: 12px; }
+.c-brand-lockup-column { flex-direction: column; text-align: center; gap: 8px; }
+.c-brand-text { display: flex; flex-direction: column; gap: 2px; }
+.c-brand-lockup-column .c-brand-text { align-items: center; }
+.c-brand-name {
+  font-family: var(--c-font);
+  font-weight: 800;
+  color: var(--c-brown);
+  margin: 0;
+  line-height: 1.15;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+.c-brand-tagline {
+  font-family: var(--c-font);
+  color: var(--c-muted);
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 400;
+}
+
+/* --- Header wrapper (logo+name, rule applied separately) --------------- */
+.c-header { padding-bottom: 7mm; }
+
+/* --- Rules --------------------------------------------------------------- */
+.c-rule-brand { border: none; border-top: 2.5px solid var(--c-brown); height: 2.5px; margin: 0; padding: 0; }
+.c-rule-hairline { border: none; border-top: 1px solid var(--c-rule); margin: 0; }
+
+/* --- Eyebrow (small caps letter-spaced) ---------------------------------- */
+.c-eyebrow {
+  font-family: var(--c-font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 10px;
+  padding-left: 0.16em;
+}
+.c-eyebrow-brown { color: var(--c-brown); }
+.c-eyebrow-muted { color: var(--c-muted); }
+.c-section-lbl { margin-bottom: 3mm; }
+
+/* --- Chip (bordered meta tag) -------------------------------------------- */
+.c-chip {
+  display: inline-block;
+  border: 1px solid var(--c-rule-mid);
+  border-radius: 3px;
+  padding: 1.5mm 3mm;
+  font-family: var(--c-font);
+  font-weight: 700;
+  color: var(--c-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 9px;
+  margin-right: 2mm;
+}
+
+/* --- Empty-state text ----------------------------------------------------- */
+.c-empty {
+  color: var(--c-muted);
+  font-style: italic;
+  font-size: 12px;
+  margin: 2mm 0 0;
+}
+
+/* --- Seal (thin-lined circle, not dashed) — Certificate only ------------- */
+.c-seal {
+  border-radius: 50%;
+  border: 1.5px solid var(--c-brown);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--c-brown);
+  aspect-ratio: 1;
+  background: transparent;
+}
+.c-seal-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-family: var(--c-font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 8.5px;
+  padding-left: 0.18em;
+  text-align: center;
+  line-height: 1;
+  color: var(--c-brown);
+}
+
+/* --- Footer --------------------------------------------------------------- */
+.c-footer { margin-top: auto; }
+.c-footer .c-rule-hairline { margin-bottom: 9px; }
+.c-footer-content {
+  font-size: 11px;
+  color: var(--c-muted);
+  font-family: var(--c-font);
+  line-height: 1.5;
+}
+.c-footer-split .c-footer-content {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+}
+.c-footer-split .c-footer-right { text-align: right; }
+.c-footer-stacked .c-footer-content {
+  display: flex; flex-direction: column; gap: 2px; text-align: left;
+}
+.c-footer-minimal .c-footer-content { text-align: left; }
+.c-footer-centered .c-footer-content {
+  display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center;
+}
+.c-footer-social { color: var(--c-brown); font-weight: 700; }
+.c-footer-social span { color: inherit; }
+.c-brown { color: var(--c-brown); }
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait)  — /variants/crisp/RecipeCard.jsx
+   ============================================================================= */
+.c-recipe-card {
+  width: 148mm; min-height: 210mm;
+  padding: 15mm 14mm 12mm;
+  display: flex; flex-direction: column;
+}
+.c-recipe-body {
+  display: flex; flex-direction: column; gap: 6mm; margin-top: 6mm; flex: 1;
+}
+.c-recipe-title {
+  font-family: var(--c-font);
+  font-weight: 800;
+  color: var(--c-ink);
+  font-size: 26px;
+  line-height: 1.15;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.c-recipe-chips { display: flex; gap: 2mm; margin-top: 3mm; flex-wrap: wrap; }
+.c-recipe-ingredients {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3mm 6mm;
+  margin-top: 2mm;
+}
+.c-recipe-ing-pair { display: flex; align-items: baseline; gap: 2mm; font-size: 13px; }
+.c-recipe-ing-qty {
+  font-family: var(--c-mono);
+  font-weight: 700;
+  color: var(--c-brown);
+  flex-shrink: 0;
+  min-width: 14mm;
+}
+.c-recipe-ing-name { font-family: var(--c-font); color: var(--c-body); font-weight: 400; }
+.c-recipe-method {
+  list-style: none; padding: 0; margin: 0;
+  counter-reset: cstep;
+  display: flex; flex-direction: column; gap: 9px;
+  font-size: 13px;
+  color: var(--c-body);
+  line-height: 1.55;
+}
+.c-recipe-method li {
+  counter-increment: cstep;
+  padding-left: 20px;
+  position: relative;
+}
+.c-recipe-method li::before {
+  content: counter(cstep) ".";
+  position: absolute; left: 0;
+  color: var(--c-muted);
+  font-weight: 600;
+  font-family: var(--c-mono);
+  font-size: 12px;
+}
+.c-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--c-font);
+  font-weight: 700;
+  color: var(--c-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  font-size: 9.5px;
+  margin: 2mm 0 1mm;
+}
+.c-method-group::before { content: '' !important; }
+
+/* =============================================================================
+   02 — COST BREAKDOWN  (A4 portrait)  — /variants/crisp/CostBreakdown.jsx
+   ============================================================================= */
+.c-cost {
+  width: 210mm; min-height: 297mm;
+  padding: 16mm 16mm 14mm;
+  display: flex; flex-direction: column;
+}
+.c-cost-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16mm; margin-top: 8mm;
+}
+.c-cost-title-left h2 {
+  font-family: var(--c-font);
+  font-weight: 800;
+  color: var(--c-ink);
+  font-size: 28px;
+  margin: 0 0 3mm;
+  line-height: 1.1;
+}
+.c-cost-meta {
+  color: var(--c-muted);
+  font-size: 12px;
+  font-family: var(--c-mono);
+}
+.c-cost-suggested-box {
+  border-left: 3px solid var(--c-brown);
+  padding: 1mm 0 1mm 6mm;
+  min-width: 55mm;
+}
+.c-cost-suggested-value {
+  font-family: var(--c-mono);
+  font-weight: 700;
+  color: var(--c-brown);
+  font-size: 28px;
+  margin-top: 2mm;
+  line-height: 1;
+}
+.c-cost-table { width: 100%; border-collapse: collapse; margin-top: 10mm; font-size: 12px; }
+.c-cost-table thead th {
+  font-family: var(--c-font);
+  font-weight: 700;
+  color: var(--c-brown);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 0 0 3mm;
+  border-bottom: 2px solid var(--c-brown);
+  font-size: 10px;
+  text-align: left;
+}
+.c-cost-table thead th.c-num { text-align: right; }
+.c-cost-table td {
+  padding: 3.5mm 0;
+  border-bottom: 1px solid var(--c-rule);
+  font-family: var(--c-font);
+  color: var(--c-body);
+}
+.c-cost-table td.c-num { text-align: right; font-family: var(--c-mono); color: var(--c-body); }
+.c-cost-table td.c-cost-val { font-weight: 700; color: var(--c-ink); font-family: var(--c-mono); }
+.c-cost-empty { padding: 8mm 0; color: var(--c-muted); font-style: italic; }
+.c-cost-batch-row td {
+  padding-top: 4mm; padding-bottom: 1mm;
+  border-top: 1.5px solid var(--c-ink);
+  border-bottom: none;
+  font-family: var(--c-font); font-weight: 800; color: var(--c-ink);
+}
+.c-cost-batch-row td.c-num { color: var(--c-brown); font-size: 15px; font-family: var(--c-mono); }
+.c-cost-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm;
+  margin-top: 8mm;
+}
+.c-cost-stat { border: 1px solid var(--c-rule-mid); padding: 5mm 6mm; border-radius: 3px; }
+.c-cost-stat-val {
+  font-family: var(--c-mono);
+  font-weight: 700;
+  color: var(--c-ink);
+  font-size: 20px;
+  line-height: 1;
+  margin-top: 2mm;
+}
+.c-cost-stat-val.c-brown { color: var(--c-brown); }
+.c-cost-stat-val.c-green { color: var(--c-green); }
+.c-cost-warning {
+  margin-top: 8mm;
+  color: var(--c-muted);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--c-font);
+  font-weight: 600;
+}
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, left-aligned icon rows)
+   ============================================================================= */
+.c-care {
+  width: 105mm; min-height: 148mm;
+  padding: 10mm 9mm;
+  display: flex; flex-direction: column;
+}
+.c-care-body {
+  display: flex; flex-direction: column; gap: 4mm; margin-top: 5mm; flex: 1;
+}
+.c-care-product {
+  font-family: var(--c-font);
+  font-weight: 800;
+  color: var(--c-ink);
+  font-size: 24px;
+  line-height: 1.1;
+  margin: 0 0 2mm;
+}
+.c-care-row { display: flex; gap: 3mm; align-items: flex-start; margin-top: 2mm; }
+.c-care-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  border: 1.5px solid var(--c-brown);
+  flex-shrink: 0; margin-top: 4px;
+}
+.c-care-dot-filled { background: var(--c-brown); }
+.c-care-row-title {
+  font-family: var(--c-font);
+  font-weight: 700; color: var(--c-brown);
+  text-transform: uppercase; letter-spacing: 0.14em;
+  padding-left: 0.14em;
+  font-size: 10.5px;
+  margin-bottom: 1.5mm;
+}
+.c-care-row-text {
+  font-family: var(--c-font);
+  color: var(--c-body);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, top brown bar + cream allergen box)
+   ============================================================================= */
+.c-label {
+  width: 74mm; min-height: 105mm;
+  padding: 0;
+  display: flex; flex-direction: column;
+}
+.c-label-topbar { height: 3.5mm; background: var(--c-brown); flex-shrink: 0; }
+.c-label-body {
+  padding: 5mm 6mm 6mm;
+  display: flex; flex-direction: column; flex: 1;
+}
+.c-label-product {
+  font-family: var(--c-font);
+  font-weight: 800;
+  color: var(--c-ink);
+  font-size: 19px;
+  line-height: 1.15;
+  margin: 4mm 0;
+}
+.c-label-ingredients {
+  font-size: 10.5px;
+  color: var(--c-body);
+  line-height: 1.5;
+  margin-top: 1mm;
+  margin-bottom: 4mm;
+}
+.c-label-allergen {
+  background: var(--c-cream);
+  border-left: 3px solid var(--c-brown);
+  padding: 3mm 4mm;
+  border-radius: 0 3px 3px 0;
+}
+.c-label-allergen-body {
+  font-size: 10.5px;
+  color: var(--c-body);
+  line-height: 1.5;
+  margin-top: 1mm;
+}
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, inline category rules)
+   ============================================================================= */
+.c-menu {
+  width: 148mm; min-height: 210mm;
+  padding: 16mm 16mm 12mm;
+  display: flex; flex-direction: column;
+}
+.c-menu-body { flex: 1; padding-top: 6mm; }
+.c-menu-empty { margin-top: 20mm; text-align: center; }
+.c-menu-cat-block { margin-bottom: 7mm; }
+.c-menu-cat-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4mm; }
+.c-menu-cat-lbl {
+  font-family: var(--c-font);
+  font-weight: 700; color: var(--c-brown);
+  text-transform: uppercase; letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.c-menu-cat-rule { flex: 1; border-top: 1px solid var(--c-rule); height: 0; }
+.c-menu-item { margin-bottom: 5mm; }
+.c-menu-item-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.c-menu-item-name { font-family: var(--c-font); font-weight: 700; color: var(--c-ink); font-size: 14px; }
+.c-menu-item-price { font-family: var(--c-mono); font-weight: 700; color: var(--c-brown); font-size: 13px; flex-shrink: 0; }
+.c-menu-item-desc {
+  font-family: var(--c-font);
+  font-style: italic;
+  color: var(--c-muted);
+  font-size: 11px;
+  margin-top: 1mm;
+  line-height: 1.4;
+}
+.c-menu-footer-line { text-align: center; color: var(--c-muted); font-style: italic; margin-top: 8mm; font-size: 11px; }
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, solid brown table header)
+   ============================================================================= */
+.c-wholesale {
+  width: 210mm; min-height: 297mm;
+  padding: 16mm 18mm 14mm;
+  display: flex; flex-direction: column;
+}
+.c-wholesale-title-block {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-top: 8mm; gap: 16mm;
+}
+.c-wholesale-title-left h2 {
+  font-family: var(--c-font);
+  font-weight: 800; color: var(--c-ink);
+  font-size: 28px; margin: 0 0 3mm; line-height: 1.1;
+}
+.c-wholesale-effective { font-family: var(--c-mono); color: var(--c-muted); font-size: 12px; }
+.c-wholesale-terms-box {
+  border: 1px solid var(--c-rule-mid);
+  padding: 4mm 6mm;
+  min-width: 64mm;
+  border-radius: 3px;
+}
+.c-wholesale-terms-box .c-eyebrow { margin-bottom: 2mm; }
+.c-wholesale-terms-body {
+  font-size: 12px;
+  color: var(--c-body);
+  font-family: var(--c-font);
+  line-height: 1.5;
+}
+.c-wholesale-table { width: 100%; border-collapse: collapse; margin-top: 10mm; font-size: 12px; }
+.c-wholesale-table thead th {
+  background: var(--c-brown);
+  color: #FFFFFF;
+  font-family: var(--c-font);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 3.5mm 3mm;
+  font-size: 10px;
+  text-align: left;
+}
+.c-wholesale-table thead th:first-child { padding-left: 4mm; }
+.c-wholesale-table thead th:last-child { padding-right: 4mm; }
+.c-wholesale-table thead th.c-num { text-align: right; }
+.c-wholesale-table td {
+  padding: 3.5mm 3mm;
+  border-bottom: 1px solid var(--c-rule);
+  font-family: var(--c-font);
+  color: var(--c-body);
+}
+.c-wholesale-table td:first-child { padding-left: 4mm; }
+.c-wholesale-table td:last-child { padding-right: 4mm; }
+.c-wholesale-table td.c-num { text-align: right; font-family: var(--c-mono); }
+.c-wholesale-table td.c-wprice { color: var(--c-brown); font-weight: 700; }
+.c-wholesale-table td.c-name { font-family: var(--c-font); font-weight: 700; color: var(--c-ink); }
+.c-wholesale-terms-title { margin-top: 10mm; margin-bottom: 4mm; }
+.c-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  font-family: var(--c-font);
+  color: var(--c-body); font-size: 12px; line-height: 1.9;
+}
+.c-wholesale-terms-list li { padding-left: 14px; position: relative; }
+.c-wholesale-terms-list li::before {
+  content: '•';
+  position: absolute; left: 2px;
+  color: var(--c-brown);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, top brown bar + punch hole, centered)
+   ============================================================================= */
+.c-delivery {
+  width: 74mm; min-height: 105mm;
+  background: var(--c-paper);
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.c-delivery-topbar { height: 3mm; background: var(--c-brown); flex-shrink: 0; }
+.c-delivery-hole {
+  width: 6mm; height: 6mm;
+  border-radius: 50%;
+  border: 1px solid var(--c-rule-mid);
+  background: #FFFFFF;
+  margin: 3mm auto 0;
+}
+.c-delivery-inner {
+  flex: 1;
+  padding: 3mm 6mm 5mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 2.5mm;
+}
+.c-delivery-eyebrow { margin-top: 2mm; font-size: 9px; }
+.c-delivery-product {
+  font-family: var(--c-font);
+  font-weight: 800; color: var(--c-ink);
+  font-size: 18px; line-height: 1.1;
+  margin: 0;
+}
+.c-delivery-care-box {
+  width: 100%;
+  background: var(--c-cream);
+  padding: 4mm 5mm;
+  margin: 2mm 0;
+  border-radius: 3px;
+}
+.c-delivery-care-body {
+  font-family: var(--c-font);
+  font-size: 10.5px;
+  color: var(--c-body);
+  line-height: 1.5;
+  margin-top: 1.5mm;
+}
+.c-delivery-thanks {
+  font-family: var(--c-font);
+  font-style: italic;
+  color: var(--c-muted);
+  font-size: 10.5px;
+  margin-top: 2mm;
+}
+.c-delivery-footer {
+  margin-top: auto;
+  padding-top: 4mm;
+  display: flex; flex-direction: column; gap: 1.5mm;
+  font-size: 9.5px;
+}
+.c-delivery-footer-line { color: var(--c-muted); }
+
+/* =============================================================================
+   08 — SOCIAL CARD  (1080×1080 drawn 148×148mm, corner accent block)
+   ============================================================================= */
+.c-social {
+  width: 148mm; height: 148mm;
+  padding: 12mm 14mm;
+  background: #FFFFFF;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.c-social-corner {
+  position: absolute; top: 0; right: 0;
+  width: 26mm; height: 26mm;
+  background: var(--c-brown);
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+}
+.c-social-top { position: relative; z-index: 1; }
+.c-social-center {
+  display: flex; flex-direction: column; align-items: flex-start; text-align: left;
+  gap: 3mm; max-width: 80%; position: relative; z-index: 1;
+}
+.c-social-name {
+  font-family: var(--c-font);
+  font-weight: 800; color: var(--c-ink);
+  font-size: 38px; line-height: 1.05;
+  margin: 0; letter-spacing: -0.01em;
+}
+.c-social-desc {
+  font-family: var(--c-font);
+  font-style: italic; color: var(--c-muted);
+  font-size: 14px; line-height: 1.4;
+}
+.c-social-price-pill {
+  display: inline-block;
+  border: 1.5px solid var(--c-brown);
+  border-radius: 4px;
+  padding: 2.5mm 6mm;
+  color: var(--c-brown);
+  font-family: var(--c-mono);
+  font-weight: 700;
+  font-size: 16px;
+  margin-top: 2mm;
+}
+.c-social-bottom {
+  width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px;
+  color: var(--c-muted);
+  font-family: var(--c-font);
+  position: relative; z-index: 1;
+}
+.c-social-website { color: var(--c-muted); }
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait, comprehensive)
+   ============================================================================= */
+.c-binder {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 14mm 12mm;
+  display: flex; flex-direction: column;
+}
+.c-binder-title-block { display: flex; gap: 10mm; margin-top: 8mm; align-items: flex-start; }
+.c-binder-title-left { flex: 1; }
+.c-binder-title-left h2 {
+  font-family: var(--c-font);
+  font-weight: 800; color: var(--c-ink);
+  font-size: 26px; line-height: 1.1; margin: 0;
+}
+.c-binder-title-desc {
+  font-family: var(--c-font);
+  color: var(--c-muted);
+  font-size: 12.5px;
+  margin-top: 2mm;
+}
+.c-binder-photo {
+  width: 58mm; height: 42mm; flex-shrink: 0;
+  border: 1px dashed var(--c-rule-mid);
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  color: var(--c-muted);
+  font-size: 10px;
+  font-family: var(--c-font);
+  overflow: hidden;
+}
+.c-binder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.c-binder-photo-placeholder { padding: 3mm; line-height: 1.5; }
+.c-binder-photo-hint { font-size: 9px; }
+.c-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 4mm 0;
+  margin-top: 6mm;
+  border-top: 1px solid var(--c-rule);
+  border-bottom: 1px solid var(--c-rule);
+}
+.c-binder-meta-val {
+  font-family: var(--c-mono); font-weight: 700; color: var(--c-ink);
+  font-size: 14px;
+  margin-top: 1mm;
+}
+.c-binder-meta-val.c-brown { color: var(--c-brown); }
+.c-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14mm;
+  margin-top: 8mm; flex: 1;
+}
+.c-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 8px; padding: 2.5mm 0;
+  border-bottom: 1px solid var(--c-rule);
+  font-size: 12px;
+}
+.c-binder-ing-row .c-ing-name { color: var(--c-body); font-family: var(--c-font); }
+.c-binder-ing-row .c-ing-qty { color: var(--c-muted); font-family: var(--c-mono); text-align: right; }
+.c-binder-ing-row .c-ing-cost { color: var(--c-body); font-family: var(--c-mono); text-align: right; min-width: 10mm; }
+.c-binder-batch {
+  display: flex; justify-content: space-between;
+  margin-top: 3mm;
+  font-family: var(--c-font); font-weight: 800; color: var(--c-ink);
+  font-size: 13px;
+}
+.c-binder-batch-val { color: var(--c-brown); font-family: var(--c-mono); }
+.c-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  counter-reset: cbstep;
+  display: flex; flex-direction: column; gap: 8px;
+  font-size: 12px; color: var(--c-body); line-height: 1.55;
+}
+.c-binder-method li { counter-increment: cbstep; padding-left: 18px; position: relative; }
+.c-binder-method li::before {
+  content: counter(cbstep) ".";
+  position: absolute; left: 0; top: 0;
+  color: var(--c-muted); font-weight: 600; font-family: var(--c-mono); font-size: 11px;
+}
+.c-binder-notes { margin-top: 8mm; }
+.c-binder-notes-lines { display: flex; flex-direction: column; gap: 7px; margin-top: 2mm; }
+.c-binder-notes-line { border-bottom: 1px solid var(--c-rule); height: 6mm; }
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, single border, thin-lined seal)
+   ============================================================================= */
+.c-cert {
+  width: 297mm; height: 210mm;
+  padding: 8mm;
+  display: flex;
+}
+.c-cert-border {
+  flex: 1;
+  border: 1px solid var(--c-brown);
+  padding: 12mm 16mm 8mm;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.c-cert-logo-wrap { margin-bottom: 5mm; }
+.c-cert-eyebrow { font-size: 11px; margin-bottom: 8mm; }
+.c-cert-intro,
+.c-cert-outro {
+  font-family: var(--c-font);
+  color: var(--c-muted);
+  font-size: 13px;
+}
+.c-cert-product {
+  font-family: var(--c-font);
+  font-weight: 800;
+  color: var(--c-ink);
+  text-transform: uppercase;
+  font-size: 40px;
+  margin: 5mm 0;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.c-cert-brand {
+  font-family: var(--c-font);
+  font-weight: 800;
+  color: var(--c-brown);
+  text-transform: uppercase;
+  font-size: 22px;
+  margin: 5mm 0 2mm;
+  letter-spacing: 0.02em;
+}
+.c-cert-tagline {
+  font-family: var(--c-font);
+  font-style: italic;
+  color: var(--c-muted);
+  font-size: 12px;
+  margin: 0;
+}
+.c-cert-signature-row {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 14mm;
+  gap: 8mm;
+}
+.c-cert-sig-block {
+  flex: 1;
+  border-top: 1px solid var(--c-rule-mid);
+  padding-top: 2mm;
+  font-family: var(--c-font);
+  color: var(--c-muted);
+  font-size: 12px;
+}
+.c-cert-sig-block.c-right { text-align: right; }
+.c-cert-seal-center { flex-shrink: 0; }
+.c-cert-signature-img {
+  display: block;
+  max-width: 40mm;
+  max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+.c-cert-footer {
+  margin-top: 6mm;
+  font-family: var(--c-font);
+  color: var(--c-muted);
+  font-size: 10.5px;
+  text-align: center;
+  line-height: 1.55;
+  padding-bottom: 2mm;
+}
+.c-cert-footer .c-brown { color: var(--c-brown); font-weight: 700; }

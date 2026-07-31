@@ -13,6 +13,7 @@ import { CertificateOfCraft } from './CertificateOfCraft.jsx'
 // pay CSS or JS cost. Each variant module exports a `<VARIANT>_TEMPLATES`
 // map: { [templateKey]: React component }.
 import { KRAFT_TEMPLATES } from './variants/kraft/index.js'
+import { CRISP_TEMPLATES } from './variants/crisp/index.js'
 
 /**
  * Registry of the 10 shared templates. Each entry is the DEFAULT (non-variant)
@@ -38,7 +39,8 @@ export const TEMPLATES = [
  */
 const VARIANT_MAP = {
   kraft: KRAFT_TEMPLATES,
-  // Future: 'crisp': CRISP_TEMPLATES, 'letterpress': LETTERPRESS_TEMPLATES, etc.
+  crisp: CRISP_TEMPLATES,
+  // Future: 'letterpress': LETTERPRESS_TEMPLATES, etc.
 }
 
 export function getTemplate(key) {

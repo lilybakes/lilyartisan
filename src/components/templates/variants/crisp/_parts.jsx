@@ -1,0 +1,152 @@
+/**
+ * Shared primitives used across all 10 Crisp templates.
+ *
+ * Crisp reads as a "finished printed sheet": square bordered logo box
+ * (not circular like Kraft), a solid brown rule under every header,
+ * navy titles, brown accents, monospace numerals, hairline dividers.
+ *
+ * Each of the 10 crisp templates composes these into its own dedicated
+ * layout — no shared parent template, no CSS variant overrides.
+ */
+
+/** Two-letter monogram from a business name — "The Daily Crumb" → "DC" */
+export function getMonogramInitials(businessName) {
+  if (!businessName) return 'YB'
+  const stopwords = new Set(['the', 'a', 'an', 'of', '&', 'and'])
+  const words = businessName
+    .split(/\s+/)
+    .filter(w => w && !stopwords.has(w.toLowerCase()))
+  if (words.length === 0) return businessName.slice(0, 2).toUpperCase()
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase()
+  return words.slice(0, 2).map(w => w[0].toUpperCase()).join('')
+}
+
+/**
+ * Square bordered logo box — brand's uploaded logo when present,
+ * otherwise 2-letter initials in bold brown type.
+ */
+export function CrispLogo({ brand, size = 'md' }) {
+  const initials = getMonogramInitials(brand?.business_name)
+  const cls = `c-logo c-logo-${size}`
+  if (brand?.logo_data_url) {
+    return (
+      <div className={cls}>
+        <img src={brand.logo_data_url} alt="" className="c-logo-img"/>
+      </div>
+    )
+  }
+  return <div className={cls}><span>{initials}</span></div>
+}
+
+/**
+ * Brand lockup — logo box + name + tagline.
+ * `layout='row'` puts them side-by-side (recipe, cost, wholesale, binder, menu, label, care)
+ * `layout='column'` stacks them centered (delivery tag, social card)
+ */
+export function CrispBrandLockup({ brand, size = 'md', layout = 'row' }) {
+  return (
+    <div className={`c-brand-lockup c-brand-lockup-${layout}`}>
+      <CrispLogo brand={brand} size={size}/>
+      <div className="c-brand-text">
+        <h1 className="c-brand-name">{brand?.business_name || 'Your Bakery'}</h1>
+        {brand?.tagline && <p className="c-brand-tagline">{brand.tagline}</p>}
+      </div>
+    </div>
+  )
+}
+
+/** Solid brown full-width rule — signature divider under every header */
+export function CrispRule({ marginTop, marginBottom }) {
+  return <div className="c-rule-brand" style={{ marginTop, marginBottom }}/>
+}
+
+/** Thin gray hairline — internal separators, footer divider */
+export function CrispHairline({ marginTop, marginBottom }) {
+  return <div className="c-rule-hairline" style={{ marginTop, marginBottom }}/>
+}
+
+/** Small caps letter-spaced eyebrow. `tone='brown'` (default) or `tone='muted'` */
+export function CrispEyebrow({ children, tone = 'brown', className = '' }) {
+  return <div className={`c-eyebrow c-eyebrow-${tone} ${className}`}>{children}</div>
+}
+
+/** Bordered pill/chip — recipe card meta tags ("BREAD", "YIELD 1 LOAF") */
+export function CrispChip({ children }) {
+  return <span className="c-chip">{children}</span>
+}
+
+/**
+ * Thin-lined circular seal (not dashed) — Certificate only.
+ * Pass the whole string with `/` separators for multi-line text.
+ */
+export function CrispSeal({ text, size = 96 }) {
+  const lines = text.split('/').map(s => s.trim())
+  return (
+    <div className="c-seal" style={{ width: size, height: size }}>
+      <div className="c-seal-inner">
+        {lines.map((l, i) => <span key={i} className="c-seal-line">{l}</span>)}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Footer with hairline divider above address/contact.
+ * `layout='split'`    = address left / contact right (recipe, cost, wholesale, binder, menu)
+ * `layout='stacked'`  = address then contact+handles, both left-aligned (care card)
+ * `layout='minimal'`  = single contact line, left-aligned, no address (product label)
+ * `layout='centered'` = everything centered (delivery, social, certificate)
+ */
+export function CrispFooter({ brand, layout = 'split', showSocials = true }) {
+  const address = [brand?.address_line1, brand?.address_line2].filter(Boolean).join(', ')
+  const contact = [brand?.phone, brand?.email, brand?.website].filter(Boolean).join(' · ')
+  const socials = [
+    brand?.instagram ? `@${brand.instagram}` : null,
+    brand?.facebook ? `fb/${brand.facebook}` : null,
+  ].filter(Boolean).join(' · ')
+
+  return (
+    <footer className={`c-footer c-footer-${layout}`}>
+      <div className="c-rule-hairline"/>
+      <div className="c-footer-content">
+        {layout === 'centered' && (
+          <>
+            {socials && <div className="c-footer-social">{socials}</div>}
+            <div className="c-footer-line">
+              {[brand?.website, contact].filter(Boolean).join(' · ') || contact}
+            </div>
+          </>
+        )}
+        {layout === 'stacked' && (
+          <>
+            {address && <div>{address}</div>}
+            <div>
+              {[contact, showSocials ? socials : null].filter(Boolean).join(' · ')}
+            </div>
+          </>
+        )}
+        {layout === 'minimal' && (
+          <div>{[contact, showSocials ? socials : null].filter(Boolean).join(' · ')}</div>
+        )}
+        {layout === 'split' && (
+          <>
+            <div className="c-footer-left">
+              {address && <div>{address}</div>}
+            </div>
+            <div className="c-footer-right">
+              {contact && <div>{contact}</div>}
+              {showSocials && socials && <div className="c-footer-social">{socials}</div>}
+            </div>
+          </>
+        )}
+      </div>
+    </footer>
+  )
+}
+
+/** Format a money value — always `RM 0.00` for Malaysian Ringgit. */
+export function crispMoney(value, { bare = false } = {}) {
+  const n = Number(value) || 0
+  const s = n.toFixed(2)
+  return bare ? s : `RM ${s}`
+}
