@@ -1,5 +1,5 @@
 /* Template style-variant fonts — Clean Modern / Kraft / Letterpress / Editorial / Minimal */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Bitter:wght@400;600;700;800&family=Karla:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Serif+Display:ital@0;1&family=Archivo:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Bitter:wght@400;600;700;800&family=Karla:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Serif+Display:ital@0;1&family=Archivo:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Jost:wght@200;300;400;500&display=swap');
 
 :root{
   --bg:#f5f5f9;
@@ -5889,4 +5889,439 @@ button.ghost.small:hover{
 .tpl.variant-minimal .tpl-social-logo{
   background:transparent !important;
   opacity:0.9 !important;
+}
+
+/* ============================================================
+   Dashboard "Coming Soon" strip — compact, one-line, muted
+   ============================================================ */
+.coming-soon-strip{
+  display:flex; align-items:center; gap:14px;
+  padding:9px 16px;
+  background:linear-gradient(90deg, rgba(115,103,240,0.05) 0%, rgba(115,103,240,0.01) 100%);
+  border:1px solid rgba(115,103,240,0.14);
+  border-radius:10px;
+  margin-top:16px;
+  flex-wrap:wrap;
+  font-size:12px;
+}
+.coming-soon-strip-label{
+  display:inline-flex; align-items:center; gap:6px;
+  color:var(--accent-dark);
+  font-size:10.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  flex-shrink:0;
+  opacity:0.85;
+}
+.coming-soon-strip-label svg{ opacity:0.75; }
+.coming-soon-strip-items{
+  display:flex; gap:6px; align-items:center;
+  flex-wrap:wrap;
+  min-width:0;
+}
+.coming-soon-strip-item{
+  padding:3px 10px;
+  background:rgba(115,103,240,0.09);
+  color:var(--accent-dark);
+  border-radius:999px;
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:-0.005em;
+  cursor:default;
+  transition:background 0.15s;
+  white-space:nowrap;
+}
+.coming-soon-strip-item:hover{
+  background:rgba(115,103,240,0.16);
+}
+
+/* ============================================================
+   6. FLOUR & INK — single-ink minimalism
+   ------------------------------------------------------------
+   One font (Jost), three colors (ink #1A1A18 · paper #FDFCFA · stone #CBBFAE),
+   no accent color, no gradients, only 0 and 50% radii, 1px hairlines only.
+   All tracked capitals include compensating padding-left so centred blocks
+   don't skew off optical centre.
+   ============================================================ */
+
+.tpl.variant-flour-ink{
+  --brand:#1A1A18 !important;
+  background:#FDFCFA !important;
+  color:#3A3733;
+  font-family:'Jost', sans-serif;
+  font-weight:300;
+  line-height:1.7;
+}
+
+/* --- Type ladder ---------------------------------------------
+   200 · .24em — titles (recipe/product names, cert)
+   400 · .26em — names (brand)
+   400 · .30em — facts, labels
+   400 · .34em — eyebrows / section titles
+   400 · .46em — inside circles (monogram)
+   400 · .54em — caps line beneath a rule
+   300         — sentences, sentence case, line-height 1.7
+   ------------------------------------------------------------ */
+
+/* Titles — 200 weight, 0.24em tracking, tracked caps */
+.tpl.variant-flour-ink [class*="-recipe-name"],
+.tpl.variant-flour-ink [class*="-care-product"],
+.tpl.variant-flour-ink [class*="-social-name"],
+.tpl.variant-flour-ink [class*="-cert-product"],
+.tpl.variant-flour-ink [class*="-wholesale-title"],
+.tpl.variant-flour-ink h1,
+.tpl.variant-flour-ink h2,
+.tpl.variant-flour-ink [class*="-product"]:not([class*="-product-eyebrow"]){
+  font-family:'Jost', sans-serif !important;
+  font-weight:200 !important;
+  color:#1A1A18 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.24em !important;
+  padding-left:0.24em !important;
+  font-size:24px !important;
+  line-height:1.35 !important;
+}
+
+/* Brand name — 400 weight, 0.26em */
+.tpl.variant-flour-ink .tpl-brand-name{
+  font-family:'Jost', sans-serif !important;
+  font-weight:400 !important;
+  color:#1A1A18 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.26em !important;
+  padding-left:0.26em !important;
+  font-size:11px !important;
+}
+
+/* Taglines — sentence case, weight 300, muted */
+.tpl.variant-flour-ink .tpl-brand-tagline,
+.tpl.variant-flour-ink .tpl-brand-tagline-small,
+.tpl.variant-flour-ink [class*="-tagline"]{
+  font-family:'Jost', sans-serif !important;
+  font-weight:300 !important;
+  color:#6A635B !important;
+  font-style:normal !important;
+  text-transform:none !important;
+  letter-spacing:0 !important;
+  padding-left:0 !important;
+  line-height:1.5 !important;
+  font-size:11px !important;
+}
+
+/* Section titles / eyebrows — 400 weight, 0.34em */
+.tpl.variant-flour-ink [class*="-section-title"],
+.tpl.variant-flour-ink [class*="-eyebrow"]{
+  font-family:'Jost', sans-serif !important;
+  font-weight:400 !important;
+  color:#1A1A18 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.34em !important;
+  padding-left:0.34em !important;
+  font-size:8.5px !important;
+  border:none !important;
+  padding-bottom:6px !important;
+  padding-top:14px !important;
+  margin-bottom:8px !important;
+}
+
+/* Body / descriptions / methods — 300 weight, sentence case */
+.tpl.variant-flour-ink p,
+.tpl.variant-flour-ink [class*="-desc"]:not([class*="-tagline"]),
+.tpl.variant-flour-ink [class*="-method"],
+.tpl.variant-flour-ink [class*="-body"]{
+  font-family:'Jost', sans-serif !important;
+  font-weight:300 !important;
+  color:#3A3733 !important;
+  line-height:1.7 !important;
+  text-transform:none !important;
+  letter-spacing:0 !important;
+  font-style:normal !important;
+}
+
+/* Meta chips — flat, tracked, no fill, no rounding */
+.tpl.variant-flour-ink [class*="-meta-chip"],
+.tpl.variant-flour-ink [class*="-chip"],
+.tpl.variant-flour-ink [class*="-badge"]:not([class*="-soon-badge"]){
+  background:transparent !important;
+  color:#1A1A18 !important;
+  border:none !important;
+  font-family:'Jost', sans-serif !important;
+  font-weight:400 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.30em !important;
+  padding-left:0.30em !important;
+  border-radius:0 !important;
+  font-size:9px !important;
+}
+
+/* --- Header --------------------------------------------------
+   Centred column layout, 1px rule under, circular monogram
+   ------------------------------------------------------------ */
+.tpl.variant-flour-ink .tpl-brand-header{
+  flex-direction:column !important;
+  align-items:center !important;
+  text-align:center !important;
+  gap:12px !important;
+  border-bottom:1px solid rgba(26,26,24,0.3) !important;
+  padding-bottom:26px !important;
+  background:transparent !important;
+}
+.tpl.variant-flour-ink .tpl-brand-text{
+  text-align:center !important;
+  flex:0 auto !important;
+}
+
+/* Logos — only 50% radius, hairline outline, no fill */
+.tpl.variant-flour-ink .tpl-brand-logo{
+  width:46px !important; height:46px !important;
+  border-radius:50% !important;
+  border:1px solid #1A1A18 !important;
+  padding:5px !important;
+  background:transparent !important;
+  object-fit:contain !important;
+}
+.tpl.variant-flour-ink .tpl-brand-header-compact .tpl-brand-logo{
+  width:36px !important; height:36px !important;
+  padding:4px !important;
+}
+.tpl.variant-flour-ink .tpl-delivery-logo{
+  width:22px !important; height:22px !important;
+  border-radius:50% !important;
+  border:1px solid #1A1A18 !important;
+  padding:2px !important;
+  background:transparent !important;
+}
+.tpl.variant-flour-ink .tpl-label-logo{
+  width:28px !important; height:28px !important;
+  border-radius:50% !important;
+  border:1px solid #1A1A18 !important;
+  padding:3px !important;
+  background:transparent !important;
+}
+.tpl.variant-flour-ink .tpl-cert-logo{
+  width:60px !important; height:60px !important;
+  border-radius:50% !important;
+  border:1px solid #1A1A18 !important;
+  padding:8px !important;
+  background:transparent !important;
+}
+
+/* --- Tables — 1px hairlines, no fills ----------------------- */
+.tpl.variant-flour-ink th{
+  background:transparent !important;
+  color:#1A1A18 !important;
+  border-bottom:1px solid #1A1A18 !important;
+  font-family:'Jost', sans-serif !important;
+  font-weight:400 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.30em !important;
+  padding-left:0.30em !important;
+  font-size:8.5px !important;
+  padding:10px 10px 8px !important;
+}
+.tpl.variant-flour-ink td{
+  border-bottom:1px solid rgba(26,26,24,0.15) !important;
+  font-family:'Jost', sans-serif !important;
+  font-weight:300 !important;
+  padding:10px 10px !important;
+  color:#3A3733 !important;
+}
+.tpl.variant-flour-ink tr:nth-child(even) td{ background:transparent !important; }
+
+/* Ingredient rows — hairline separators, tracked caps for names/qtys */
+.tpl.variant-flour-ink [class*="-ing-name"]{
+  font-family:'Jost', sans-serif !important;
+  font-weight:400 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.15em !important;
+  padding-left:0.15em !important;
+  color:#1A1A18 !important;
+  font-size:10.5px !important;
+}
+.tpl.variant-flour-ink [class*="-ing-qty"]{
+  font-family:'Jost', sans-serif !important;
+  font-weight:400 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.15em !important;
+  padding-left:0.15em !important;
+  color:#1A1A18 !important;
+  font-size:10.5px !important;
+}
+.tpl.variant-flour-ink [class*="-ingredient-row"],
+.tpl.variant-flour-ink [class*="-ing-row"]{
+  border-bottom:1px solid rgba(26,26,24,0.15) !important;
+}
+
+/* --- Footer — hairline top rule, quiet ----------------------- */
+.tpl.variant-flour-ink .tpl-brand-footer{
+  background:transparent !important;
+  border-top:1px solid rgba(26,26,24,0.3) !important;
+  color:#6A635B !important;
+  font-family:'Jost', sans-serif !important;
+  font-weight:300 !important;
+  font-style:normal !important;
+}
+.tpl.variant-flour-ink .tpl-brand-social{
+  color:#1A1A18 !important;
+  font-weight:400 !important;
+  letter-spacing:0.15em !important;
+  padding-left:0.15em !important;
+  text-transform:uppercase !important;
+}
+
+/* --- Delivery Tag: FULL STONE FIELD -------------------------- */
+.tpl.variant-flour-ink.tpl-delivery,
+.tpl.variant-flour-ink .tpl-delivery-inner{
+  background:#CBBFAE !important;
+}
+.tpl.variant-flour-ink .tpl-delivery-brand,
+.tpl.variant-flour-ink .tpl-delivery-product,
+.tpl.variant-flour-ink [class*="tpl-delivery-"]{
+  color:#1A1A18 !important;
+}
+.tpl.variant-flour-ink .tpl-delivery-header{
+  flex-direction:column !important;
+  align-items:center !important;
+  text-align:center !important;
+  gap:6px !important;
+}
+.tpl.variant-flour-ink .tpl-delivery-brand-block{
+  align-items:center !important;
+  text-align:center !important;
+}
+
+/* --- Social Card: FULL INK FIELD ----------------------------- */
+.tpl.variant-flour-ink .tpl-social-bg{
+  background:#1A1A18 !important;
+}
+.tpl.variant-flour-ink .tpl-social-brand,
+.tpl.variant-flour-ink .tpl-social-footer,
+.tpl.variant-flour-ink .tpl-social-handles > span{
+  color:rgba(253,252,250,0.8) !important;
+}
+.tpl.variant-flour-ink .tpl-social-name{
+  color:#FDFCFA !important;
+  font-weight:200 !important;
+  letter-spacing:0.24em !important;
+  padding-left:0.24em !important;
+}
+.tpl.variant-flour-ink .tpl-social-tagline,
+.tpl.variant-flour-ink .tpl-social-desc{
+  color:rgba(253,252,250,0.8) !important;
+  font-weight:300 !important;
+  font-style:normal !important;
+}
+.tpl.variant-flour-ink .tpl-social-eyebrow{
+  color:rgba(253,252,250,0.6) !important;
+  font-family:'Jost', sans-serif !important;
+  font-weight:400 !important;
+  letter-spacing:0.34em !important;
+  padding-left:0.34em !important;
+  border:none !important;
+  padding-bottom:0 !important;
+  padding-top:0 !important;
+}
+.tpl.variant-flour-ink .tpl-social-price{
+  background:transparent !important;
+  border:1px solid rgba(253,252,250,0.6) !important;
+  backdrop-filter:none !important;
+  border-radius:0 !important;
+}
+.tpl.variant-flour-ink .tpl-social-price-label{
+  color:rgba(253,252,250,0.6) !important;
+  font-weight:400 !important;
+  letter-spacing:0.15em !important;
+  padding-left:0.15em !important;
+}
+.tpl.variant-flour-ink .tpl-social-price-value{
+  color:#FDFCFA !important;
+  font-weight:300 !important;
+}
+.tpl.variant-flour-ink .tpl-social-web{
+  color:rgba(253,252,250,0.8) !important;
+  font-weight:400 !important;
+}
+.tpl.variant-flour-ink .tpl-social-logo{
+  border-color:rgba(253,252,250,0.6) !important;
+  background:transparent !important;
+  opacity:0.9 !important;
+  border-radius:50% !important;
+}
+
+/* --- Cost Sheet: filled ink panel on suggested price --------- */
+.tpl.variant-flour-ink [class*="-cost-headline"],
+.tpl.variant-flour-ink [class*="-cost-suggested"]{
+  background:#1A1A18 !important;
+  color:#FDFCFA !important;
+  border-radius:0 !important;
+  border:none !important;
+}
+.tpl.variant-flour-ink [class*="-cost-headline"] *,
+.tpl.variant-flour-ink [class*="-cost-suggested"] *{
+  color:#FDFCFA !important;
+}
+.tpl.variant-flour-ink [class*="-cost-stat"]{
+  background:transparent !important;
+  border:1px solid rgba(26,26,24,0.3) !important;
+  border-radius:0 !important;
+}
+
+/* --- Certificate: hairline frame, no ornament --------------- */
+.tpl.variant-flour-ink [class*="-cert-frame"],
+.tpl.variant-flour-ink [class*="-cert-inner"]{
+  border:1px solid #1A1A18 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+}
+.tpl.variant-flour-ink [class*="-cert-seal"]{
+  border:6px solid #1A1A18 !important;
+  border-radius:50% !important;
+  background:transparent !important;
+  color:#1A1A18 !important;
+  font-family:'Jost', sans-serif !important;
+  font-weight:400 !important;
+  letter-spacing:0.34em !important;
+  padding-left:0.34em !important;
+  text-transform:uppercase !important;
+  font-size:8px !important;
+}
+
+/* --- Care Card & other centred sheets — centre-align --------- */
+.tpl.variant-flour-ink.tpl-care{
+  text-align:center;
+}
+.tpl.variant-flour-ink.tpl-care .tpl-care-body,
+.tpl.variant-flour-ink.tpl-care [class*="-care-"]{
+  text-align:center;
+}
+.tpl.variant-flour-ink [class*="-care-allergen"],
+.tpl.variant-flour-ink [class*="-allergen"]{
+  background:transparent !important;
+  color:#1A1A18 !important;
+  border:none !important;
+  font-family:'Jost', sans-serif !important;
+  font-weight:400 !important;
+  text-transform:uppercase !important;
+  letter-spacing:0.30em !important;
+  padding-left:0.30em !important;
+  border-radius:0 !important;
+}
+
+/* --- Recipe name font-size variety exception for social ------ */
+.tpl.variant-flour-ink [class*="-social-name"]{
+  font-size:26px !important;
+  padding-top:16px;
+  padding-bottom:8px;
+}
+.tpl.variant-flour-ink [class*="-cert-product"]{
+  font-size:32px !important;
+}
+
+/* --- Kill any inherited gradients or shadows on this variant - */
+.tpl.variant-flour-ink *,
+.tpl.variant-flour-ink *::before,
+.tpl.variant-flour-ink *::after{
+  box-shadow:none !important;
+  text-shadow:none !important;
 }
