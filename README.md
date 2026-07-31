@@ -1,41 +1,60 @@
-# Dashboard Coming Soon Strip
+# Social Card Contrast + White Background Fixes
 
-Small one-line strip at the bottom of the user dashboard showing up to 4 upcoming features. Reads from the same sysadmin-editable `content_blocks` list used by the Settings page — no new data model, no new admin UI.
+Two issues addressed in one CSS append. No JSX changes — every fix lives in `src/styles.css` as a targeted variant override.
 
-## Files
+## The two problems
 
-```
-src/
-  components/ComingSoonStrip.jsx    # NEW — compact widget
-  pages/Dashboard.jsx               # OVERWRITE — imports + renders strip at bottom
-  styles.css                        # OVERWRITE (full file) — strip styles appended
-```
+### 1. Eyebrow invisible on gradient backgrounds
 
-## What it looks like
+`"FRESH FROM OUR KITCHEN"` was rendering as low-contrast text because my earlier variant CSS forced eyebrow color to the variant's accent color (`#7A2E3B` burgundy on the letterpress gradient, `#8B4A2B` brown on kraft's brown gradient, etc.) — same color family as the gradient behind it.
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│  🕐 ON THE ROADMAP    Multi-user teams   SST invoices   Backups   │
-└────────────────────────────────────────────────────────────────────┘
-```
+### 2. Editorial + Minimal should be white paper, not brand gradient
 
-One row. Soft violet-tinted background. Small uppercase label with a mini clock icon. Pill items with hover tooltip showing the full description from the DB.
+The gradient background suits Clean Modern / Kraft / Letterpress (all bold, colored aesthetics). Editorial and Minimal are designed around white space and restraint — a brand-color gradient fights their identity.
 
-Design decisions to keep it non-intrusive:
-- Placed at the very bottom of the dashboard, after the Recipe Overview panel
-- Only 4 items max (slice), even if sysadmin adds more — the full list still shows on the Settings page
-- If no items exist or all are hidden, the strip renders `null` — takes zero space
-- Font size 11–12px, padding tight
-- Muted violet accent — matches app brand, doesn't compete with the four stat cards above
+## The fix
 
-## Data source
+Per-variant selectors that beat the earlier `[class*="-eyebrow"]` and `[class*="-desc"]` rules by matching specificity + coming later in the cascade.
 
-Same as the existing `<ComingSoonWidget/>` on Settings — reads `content_blocks` row where `key = 'coming_soon'`. Sysadmin manages the list at **Sysadmin → Content & Design → Content**. No schema changes.
+**Variants 1-3 (Clean Modern / Kraft / Letterpress)**: keep the brand-color gradient background but force every text element to white/off-white so the whole card reads on the gradient.
 
-Each item shows its `title` as the pill label and its `description` as the hover tooltip. Hidden items (visible=false) are filtered out.
+- Eyebrow: `rgba(255,255,255,0.95)`
+- Brand, recipe name, footer, handles, web: `rgba(255,255,255,0.95)`
+- Tagline: `rgba(255,255,255,0.75)`
+- Description: `rgba(255,255,255,0.85)`
+
+**Variant 4 (Editorial Magazine)**: white paper `#FCFBF9` background with black type + cherry-red pops.
+
+- Background: `#FCFBF9`
+- Brand, recipe name, footer, handles: `#1A1A18`
+- Description: `#3A382F` (dark) with italic style
+- Eyebrow: `#C41E3A` (cherry-red pop) — magazine-editorial signature
+- Website: `#C41E3A` (cherry-red pop)
+- Price pill: solid `#1A1A18` black with white text
+- Logo: `#FCFBF9` background with `#1A1A18` black frame
+
+**Variant 5 (Quiet Minimal)**: white paper `#FDFDFC` background with slate accents.
+
+- Background: `#FDFDFC`
+- Brand, recipe name, footer, handles: `#2B2B29`
+- Description: `#44443F`
+- Eyebrow: `#77776F` (soft muted slate)
+- Website: `#5B6874` (slate accent)
+- Price pill: transparent with 0.5px `#2B2B29` hairline outline
+- Logo: transparent, 90% opacity
+
+## Design consistency preserved
+
+- Editorial still uses black masthead rules and cherry-red pop elsewhere (matches other Editorial templates)
+- Minimal still uses slate accents and hairlines elsewhere (matches other Minimal templates)
+- The three gradient variants (Clean / Kraft / Letterpress) still show the brand-color-derived gradient — just with correctly white text on top
 
 ## Deploy
 
-Overwrite the 3 files, push, hard-refresh. Load `/app/dashboard` — strip appears at the bottom.
+Overwrite `src/styles.css`, push, hard-refresh. Cycle the Social Media Card through all 5 variants:
 
-To hide it entirely for a user: sysadmin toggles all Coming Soon items to hidden (or deletes them).
+1. Clean Modern → violet gradient, white text
+2. Kraft → warm brown gradient, white text
+3. Letterpress → burgundy gradient, white text (eyebrow now readable ✓)
+4. Editorial → **white paper**, black type, cherry-red eyebrow + web accent
+5. Minimal → **white paper**, slate accents, hairline outline price pill
