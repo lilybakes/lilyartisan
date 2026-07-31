@@ -31,7 +31,9 @@ function enrich(recipe, bomLines, ingredients, defaultTargetPct) {
 }
 
 const STYLE_VARIANTS = [
-  { key: 'kraft',       name: 'Rustic Kraft & Stamp',    isDefault: true,
+  { key: 'bko',         name: 'BakeOnomics Clean',       isDefault: true,
+    description: 'The default BakeOnomics theme. Purple app-brand accent on white paper, JetBrains Mono numerals, lavender allergen wash — reads like a finished printed sheet in the app\'s own visual language.' },
+  { key: 'kraft',       name: 'Rustic Kraft & Stamp',
     description: 'Warm brown ink on kraft paper. Dashed seals, hand-stamped feel — reads like the small-batch bakery down the road.' },
   { key: 'clean',       name: 'Clean Modern',
     description: 'Purple accents, generous whitespace, sans-serif — polished and app-like.' },
@@ -55,7 +57,7 @@ export default function Templates() {
   const [bomLines, setBomLines]         = useState({})
   const [recipeId, setRecipeId]         = useState('')
   const [templateKey, setTemplateKey]   = useState('classic')
-  const [currentStyle, setCurrentStyle] = useState('kraft')
+  const [currentStyle, setCurrentStyle] = useState('bko')
   const [customizations, setCustoms]    = useState({})
   const [loading, setLoading]           = useState(true)
 
@@ -188,6 +190,20 @@ export default function Templates() {
         </div>
 
         <div className="tpl-controls-panel no-print">
+          {/* Mobile-only template dropdown — replaces the 10-card sidebar on
+              phones. Hidden on desktop where the sidebar column shows cards. */}
+          <div className="tpl-control tpl-control-template-mobile">
+            <label>Template</label>
+            <select
+              value={templateKey}
+              onChange={e => setTemplateKey(e.target.value)}
+            >
+              {TEMPLATES.filter(t => t.ready !== false).map(t => (
+                <option key={t.key} value={t.key}>{t.name} · {t.pageSize}</option>
+              ))}
+            </select>
+          </div>
+
           {!isMulti && (
             <div className="tpl-control">
               <label>Recipe</label>

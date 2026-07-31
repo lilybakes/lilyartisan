@@ -244,3 +244,248 @@
   from { transform: translate(-50%, 10px); opacity: 0; }
   to   { transform: translate(-50%, 0);    opacity: 1; }
 }
+
+/* =============================================================================
+   Preview pane — added by preview-pane delta
+   ============================================================================= */
+
+/* Modal widens when preview is on so form + preview both breathe */
+.rcd-modal-wide {
+  width: min(1240px, 100%);
+}
+.rcd-modal-preview-closed {
+  width: min(720px, 100%);
+}
+
+/* Header cluster — preview toggle button next to close */
+.rcd-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.rcd-preview-toggle {
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid #E5E5EC;
+  background: #FAFAFC;
+  color: #6C5CE7;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 120ms, border-color 120ms, color 120ms;
+  white-space: nowrap;
+}
+.rcd-preview-toggle:hover {
+  background: #EEECFF;
+  border-color: #6C5CE7;
+}
+
+/* Split layout — form on the left, preview on the right */
+.rcd-split {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
+  overflow: hidden;
+}
+.rcd-modal-preview-closed .rcd-split {
+  grid-template-columns: 1fr;
+}
+.rcd-split .rcd-body {
+  flex: initial;
+  overflow-y: auto;
+  border-right: 1px solid #EEEEF4;
+}
+
+/* Preview pane */
+.rcd-preview-pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #F7F6FB;
+}
+.rcd-preview-head {
+  padding: 14px 20px 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid #EEEEF4;
+  flex-shrink: 0;
+}
+.rcd-preview-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6C5CE7;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.rcd-preview-name {
+  font-size: 14.5px;
+  color: #1E1B4B;
+  font-weight: 700;
+}
+.rcd-preview-badge {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.rcd-preview-badge.is-clean {
+  background: #E3F7EA;
+  color: #1F7A3E;
+}
+.rcd-preview-badge.is-dirty {
+  background: #FFE9B0;
+  color: #8A5A00;
+}
+
+/* Viewport clips the scaled template */
+.rcd-preview-viewport {
+  flex: 1;
+  overflow: auto;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Scaler wraps the template component and shrinks it to fit the viewport.
+   `zoom` is layout-aware in Chrome/Safari/Firefox and shrinks the box size
+   in flow. On older Firefox it silently no-ops; the container is scrollable
+   anyway so degradation is graceful. */
+.rcd-preview-scaler {
+  zoom: var(--rcd-preview-scale, 0.55);
+  display: inline-block;
+  flex-shrink: 0;
+}
+/* Kill the template component's outer shadow — it looks weird when scaled
+   and we render our own frame via the viewport background. */
+.rcd-preview-scaler > .tpl {
+  box-shadow: 0 4px 24px rgba(30, 27, 75, 0.14);
+}
+
+.rcd-preview-hint {
+  padding: 10px 20px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #6B7288;
+  border-top: 1px solid #EEEEF4;
+  background: #FAFAFC;
+  flex-shrink: 0;
+}
+
+.rcd-preview-empty {
+  padding: 40px 20px;
+  color: #9A9DAB;
+  font-style: italic;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Menu tab mini-preview */
+.rcd-preview-menu-row {
+  width: 100%;
+  padding: 24px 8px;
+  display: flex;
+  justify-content: center;
+}
+.rcd-preview-menu-inner {
+  width: 100%;
+  max-width: 360px;
+  padding: 20px 22px;
+  background: #FFFFFF;
+  border: 1px solid #EEEEF4;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(30, 27, 75, 0.08);
+}
+.rcd-preview-menu-inner.is-hidden {
+  background: #F7F6FB;
+  border-style: dashed;
+  box-shadow: none;
+}
+.rcd-preview-menu-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.rcd-preview-menu-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: #2F3349;
+  font-size: 15px;
+}
+.rcd-preview-menu-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: #7367F0;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.rcd-preview-menu-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-style: italic;
+  color: #8590A5;
+  font-size: 12.5px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+.rcd-preview-menu-note {
+  font-size: 11.5px;
+  color: #28C76F;
+  font-weight: 600;
+  margin-top: 8px;
+}
+.rcd-preview-menu-note.is-off {
+  color: #8590A5;
+  text-align: center;
+  padding: 12px 0;
+}
+
+/* -------- Responsive -------- */
+/* Below 1024px the preview pane stacks below the form (or hides) */
+@media (max-width: 1024px) {
+  .rcd-modal-wide { width: 100%; }
+  .rcd-split {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+  .rcd-split .rcd-body {
+    border-right: none;
+    border-bottom: 1px solid #EEEEF4;
+  }
+  .rcd-preview-pane {
+    min-height: 260px;
+  }
+  /* Header cluster on tighter screens */
+  .rcd-header {
+    padding: 18px 18px 12px;
+  }
+  .rcd-tabs {
+    padding: 0 14px;
+  }
+  .rcd-body {
+    padding: 18px 18px;
+  }
+}
+/* On small phones the toggle text is expensive — shrink it */
+@media (max-width: 640px) {
+  .rcd-preview-toggle {
+    padding: 6px 10px;
+    font-size: 11.5px;
+  }
+  .rcd-title {
+    font-size: 18px;
+  }
+  .rcd-preview-pane {
+    min-height: 200px;
+  }
+  .rcd-preview-viewport {
+    padding: 12px 10px;
+  }
+}
