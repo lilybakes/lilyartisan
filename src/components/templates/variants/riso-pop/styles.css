@@ -1,0 +1,1611 @@
+/* =============================================================================
+   RISO POP VARIANT — dedicated templates, per-template layouts
+   =============================================================================
+   The identity: RISOGRAPH MISREGISTRATION. Warm cream paper, deep navy ink,
+   rust orange-red accents. Every major title renders TWICE — a rust copy
+   offset ~5px down-right BEHIND a navy copy on top — so titles read like
+   an offset-printed poster with color plates that don't quite align.
+
+   The recurring shape is the SOLID FILLED CIRCLE. Rust and navy disks
+   appear on nearly every template; when they overlap, `mix-blend-mode:
+   multiply` on the top disk produces the deep BROWN "overprint" region
+   at the intersection — no hardcoded brown shapes.
+
+   Palette:
+     Paper           #F3EDE0   warm cream
+     Navy            #1A2340   deep near-black navy — titles, table borders
+     Rust            #E84C22   rust orange-red — shadow layer, chips, accents
+     Brown           #3F1F16   overprint colour (visualised via multiply blend)
+     Body            #2A3049   softer navy for body copy
+     Muted           #6E7078   muted subtitle colour
+     Cream-on-color  #F3EDE0   cream text on rust/navy surfaces
+     Hair            rgba(26, 35, 64, 0.15)
+
+   ELONGATION-BUG GUARDRAILS (non-negotiable):
+     1. Every template container uses fixed `height`, NEVER `min-height`.
+     2. Container-level overrides live on `.rp-tpl.rp-<name>` (0,2,0) —
+        never on bare `.rp-<name>`.
+     3. `flex-direction` is stated explicitly on every template container.
+     4. Row-layout containers set `align-items: stretch` so sibling stripes
+        stretch to full height without needing their own min-height.
+     5. Containers that host `position: absolute` children set
+        `position: relative` at the `.rp-tpl.rp-<name>` specificity.
+   ============================================================================= */
+
+
+/* =============================================================================
+   SHARED — palette, primitives
+   ============================================================================= */
+
+.rp-tpl {
+  --rp-paper: #F3EDE0;
+  --rp-navy: #1A2340;
+  --rp-rust: #E84C22;
+  --rp-brown: #3F1F16;
+  --rp-body: #2A3049;
+  --rp-muted: #6E7078;
+  --rp-cream-on-color: #F3EDE0;
+  --rp-hair: rgba(26, 35, 64, 0.15);
+  --rp-hair-strong: rgba(26, 35, 64, 0.35);
+
+  --rp-sans: 'Manrope', 'Plus Jakarta Sans', -apple-system, sans-serif;
+
+  background: var(--rp-paper);
+  color: var(--rp-body);
+  font-family: var(--rp-sans);
+  font-weight: 400;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(26, 35, 64, 0.10);
+  box-sizing: border-box;
+}
+.rp-tpl * { box-sizing: border-box; }
+
+/* --- Offset title (THE defining move) ----------------------------------- */
+.rp-offset-title {
+  position: relative;
+  display: inline-block;
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: var(--rp-navy);
+  max-width: 100%;
+}
+.rp-offset-title-shadow {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  color: var(--rp-rust);
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  white-space: pre-wrap;
+  width: 100%;
+  display: block;
+}
+.rp-offset-title-front {
+  position: relative;
+  color: var(--rp-navy);
+  z-index: 1;
+  display: block;
+}
+.rp-offset-title-xl  { font-size: 72px; }
+.rp-offset-title-lg  { font-size: 56px; }
+.rp-offset-title-md  { font-size: 44px; }
+.rp-offset-title-sm  { font-size: 30px; }
+.rp-offset-title-oncolor .rp-offset-title-front  { color: var(--rp-cream-on-color); }
+.rp-offset-title-oncolor .rp-offset-title-shadow { color: var(--rp-navy); }
+
+/* --- Brand lockup ------------------------------------------------------- */
+.rp-brand-lockup { display: flex; flex-direction: column; gap: 2mm; }
+.rp-brand-name {
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  color: var(--rp-navy);
+  font-size: 18px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+.rp-brand-tagline {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-rust);
+  font-size: 9.5px;
+  line-height: 1.4;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+}
+.rp-brand-lockup-oncolor .rp-brand-name    { color: var(--rp-cream-on-color); }
+.rp-brand-lockup-oncolor .rp-brand-tagline { color: var(--rp-cream-on-color); opacity: 0.75; }
+
+/* --- Meta label / eyebrow ---------------------------------------------- */
+.rp-eyebrow {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+.rp-eyebrow-rust  { color: var(--rp-rust); }
+.rp-eyebrow-navy  { color: var(--rp-navy); }
+.rp-eyebrow-muted { color: var(--rp-muted); }
+.rp-eyebrow-cream { color: var(--rp-cream-on-color); }
+
+/* --- Rules ------------------------------------------------------------- */
+.rp-rule { border: none; padding: 0; margin: 0; display: block; width: 100%; }
+.rp-rule-hair       { height: 1px; background: var(--rp-hair); }
+.rp-rule-navy       { height: 1.2px; background: var(--rp-navy); }
+.rp-rule-navy-thick { height: 2.5px; background: var(--rp-navy); }
+.rp-rule-cream      { height: 1px; background: rgba(243, 237, 224, 0.4); }
+
+/* --- Meta pill (solid rectangle chip) ---------------------------------- */
+.rp-meta-pill {
+  display: inline-block;
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  padding: 1.6mm 3mm 1.4mm;
+  padding-left: calc(3mm + 0.18em);
+  text-transform: uppercase;
+  line-height: 1.1;
+  border-radius: 0;
+}
+.rp-meta-pill-navy {
+  background: var(--rp-navy);
+  color: var(--rp-cream-on-color);
+}
+.rp-meta-pill-rust {
+  background: var(--rp-rust);
+  color: var(--rp-cream-on-color);
+}
+.rp-meta-pill-outline {
+  background: transparent;
+  color: var(--rp-navy);
+  border: 1px solid var(--rp-navy);
+  padding: calc(1.6mm - 1px) calc(3mm - 1px) calc(1.4mm - 1px);
+  padding-left: calc(3mm - 1px + 0.18em);
+}
+
+/* --- Method chip ------------------------------------------------------- */
+.rp-method-chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.rp-method-chip-normal {
+  width: 8mm;
+  height: 5mm;
+  color: var(--rp-rust);
+  font-size: 13px;
+  background: transparent;
+  justify-content: flex-end;
+  padding-right: 1mm;
+  letter-spacing: -0.01em;
+}
+.rp-method-chip-accent {
+  width: 8mm; height: 8mm;
+  background: var(--rp-rust);
+  color: var(--rp-cream-on-color);
+  font-size: 12px;
+}
+.rp-method-chip-navy {
+  width: 8mm; height: 8mm;
+  background: var(--rp-navy);
+  color: var(--rp-cream-on-color);
+  font-size: 12px;
+}
+
+/* --- Solid circle shape ------------------------------------------------ */
+.rp-circle {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+.rp-circle-rust  { background: var(--rp-rust); }
+.rp-circle-navy  { background: var(--rp-navy); }
+.rp-circle-brown { background: var(--rp-brown); }
+.rp-circle-cream-outline {
+  background: transparent;
+  border: 1.5px solid var(--rp-cream-on-color);
+}
+.rp-circle-blend { mix-blend-mode: multiply; }
+
+/* --- Empty state ------------------------------------------------------- */
+.rp-empty {
+  color: var(--rp-muted);
+  font-family: var(--rp-sans);
+  font-style: italic;
+  font-size: 12px;
+  margin: 3mm 0 0;
+}
+
+/* --- Numeric cell helper ---------------------------------------------- */
+.rp-num {
+  text-align: right;
+  font-family: var(--rp-sans);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+/* --- Method sub-group heading ----------------------------------------- */
+.rp-method-group {
+  list-style: none !important;
+  padding-left: 0 !important;
+  counter-increment: none !important;
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-rust);
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  font-size: 10px;
+  margin: 5mm 0 3mm;
+  display: block;
+}
+.rp-method-group::before { content: '' !important; }
+
+/* --- Footer ----------------------------------------------------------- */
+.rp-footer {
+  font-family: var(--rp-sans);
+  color: var(--rp-body);
+  font-size: 10px;
+  line-height: 1.55;
+  font-weight: 400;
+}
+.rp-footer-split {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12mm;
+}
+.rp-footer-split .rp-footer-right { text-align: right; }
+.rp-footer-centered {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 1.5mm;
+}
+.rp-footer-minimal { text-align: center; }
+.rp-footer-line { font-size: 10px; color: var(--rp-body); }
+.rp-footer-line-accent {
+  color: var(--rp-rust);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.rp-footer-oncolor .rp-footer-line { color: var(--rp-cream-on-color); }
+.rp-footer-oncolor .rp-footer-line-accent { color: var(--rp-cream-on-color); font-weight: 700; }
+
+
+/* =============================================================================
+   01 — RECIPE CARD  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.rp-tpl.rp-recipe {
+  width: 148mm;
+  height: 210mm;
+  flex-direction: column;
+  align-items: stretch;
+  display: flex;
+  padding: 12mm 12mm 10mm;
+  position: relative;
+  background: var(--rp-paper);
+}
+.rp-recipe-shapes {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 90mm;
+  pointer-events: none;
+  z-index: 0;
+}
+.rp-recipe-shapes .rp-circle-rust {
+  width: 55mm; height: 55mm;
+  top: -18mm; left: -12mm;
+}
+.rp-recipe-shapes .rp-circle-navy {
+  width: 55mm; height: 55mm;
+  top: -12mm; left: 22mm;
+}
+.rp-recipe-header {
+  position: relative;
+  z-index: 2;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8mm;
+  min-height: 24mm;
+}
+.rp-recipe-header-right { text-align: right; }
+.rp-recipe-header-eyebrow { font-size: 9px; letter-spacing: 0.22em; margin-top: 1mm; }
+
+.rp-recipe-title-block {
+  position: relative;
+  z-index: 2;
+  margin-top: 26mm;
+}
+.rp-recipe-title-block .rp-offset-title {
+  font-size: 36px;
+  max-width: 118mm;
+}
+.rp-recipe-eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  margin-bottom: 3mm;
+}
+.rp-recipe-pills {
+  display: flex; flex-wrap: wrap; gap: 2mm;
+  margin-top: 6mm;
+}
+
+.rp-recipe-body {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 52mm 1fr;
+  gap: 8mm;
+  flex: 1;
+  padding-top: 8mm;
+  min-height: 0;
+}
+.rp-recipe-ingredients > .rp-eyebrow,
+.rp-recipe-method > .rp-eyebrow {
+  margin-bottom: 4mm;
+  font-size: 10.5px;
+}
+.rp-recipe-ing-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+}
+.rp-recipe-ing-list li {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 2mm 0;
+  border-bottom: 1px solid var(--rp-hair);
+  font-family: var(--rp-sans);
+  font-size: 10.5px;
+  color: var(--rp-body);
+  font-weight: 400;
+}
+.rp-recipe-ing-name { color: var(--rp-navy); font-weight: 700; }
+.rp-recipe-ing-qty {
+  color: var(--rp-body);
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+}
+.rp-recipe-method-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3.5mm;
+  font-family: var(--rp-sans);
+  font-size: 11px;
+  color: var(--rp-body);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.rp-recipe-method-list li {
+  display: grid;
+  grid-template-columns: 8mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.rp-recipe-method-step { padding-top: 1mm; }
+.rp-recipe-method-step-final { color: var(--rp-navy); }
+.rp-recipe-method-step-final strong { font-weight: 800; color: var(--rp-navy); }
+
+.rp-recipe-footer-wrap {
+  position: relative; z-index: 2;
+  margin-top: auto;
+  padding-top: 5mm;
+}
+.rp-recipe-footer-wrap .rp-footer { font-size: 8.5px; }
+.rp-recipe-footer-wrap .rp-footer-line { font-size: 8.5px; }
+
+
+/* =============================================================================
+   02 — COST SHEET  (A4 portrait, 210×297mm) — INTERNAL
+   ============================================================================= */
+.rp-tpl.rp-cost {
+  width: 210mm;
+  height: 297mm;
+  flex-direction: column;
+  align-items: stretch;
+  display: flex;
+  padding: 16mm 18mm 14mm;
+  position: relative;
+  background: var(--rp-paper);
+}
+.rp-cost-corner-circle {
+  position: absolute;
+  top: -18mm; right: -18mm;
+  width: 60mm; height: 60mm;
+  background: var(--rp-rust);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+.rp-cost-header {
+  position: relative; z-index: 2;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12mm;
+}
+.rp-cost-chip {
+  background: var(--rp-rust);
+  color: var(--rp-cream-on-color);
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  padding-left: calc(3.5mm + 0.20em);
+  padding-right: 3.5mm;
+  padding-top: 2mm; padding-bottom: 1.8mm;
+  text-transform: uppercase;
+  border-radius: 1mm;
+  align-self: flex-start;
+}
+.rp-cost-title-row {
+  position: relative; z-index: 2;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 10mm;
+  padding: 14mm 0 4mm;
+}
+.rp-cost-title-block { flex: 1; min-width: 0; }
+.rp-cost-title-block .rp-offset-title {
+  font-size: 50px;
+  max-width: 130mm;
+}
+.rp-cost-meta {
+  margin-top: 4mm;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+}
+.rp-cost-price-card {
+  flex-shrink: 0;
+  width: 62mm;
+  background: var(--rp-navy);
+  color: var(--rp-cream-on-color);
+  padding: 8mm 8mm 7mm;
+  display: flex; flex-direction: column; gap: 3mm;
+}
+.rp-cost-price-card .rp-cost-price-eyebrow {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-rust);
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  padding-left: 0.24em;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+.rp-cost-price-card .rp-cost-price-val {
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  color: var(--rp-cream-on-color);
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.rp-cost-price-divider {
+  height: 1px;
+  background: rgba(243, 237, 224, 0.35);
+  margin: 1mm 0;
+}
+.rp-cost-price-sub {
+  font-family: var(--rp-sans);
+  color: var(--rp-cream-on-color);
+  font-size: 10.5px;
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 0.9;
+  display: flex; justify-content: space-between; gap: 4mm;
+}
+.rp-cost-price-sub strong { font-weight: 800; }
+
+.rp-cost-table {
+  position: relative; z-index: 2;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10mm;
+  font-family: var(--rp-sans);
+  font-size: 11px;
+  color: var(--rp-body);
+  font-weight: 400;
+}
+.rp-cost-table thead tr { background: var(--rp-navy); }
+.rp-cost-table thead th {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-cream-on-color);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 3.5mm 4mm;
+  font-size: 10px;
+  text-align: left;
+}
+.rp-cost-table thead th.rp-num { text-align: right; }
+.rp-cost-table thead th.rp-cost-th-cost {
+  background: var(--rp-rust);
+  color: var(--rp-cream-on-color);
+}
+.rp-cost-table td {
+  padding: 3mm 4mm;
+  border-bottom: 1px solid var(--rp-hair);
+}
+.rp-cost-table td.rp-num { padding-right: 4mm; }
+.rp-cost-td-name { color: var(--rp-navy); font-weight: 700; }
+.rp-cost-td-val  { color: var(--rp-navy); font-weight: 700; }
+.rp-cost-td-muted { color: var(--rp-muted); }
+.rp-cost-empty {
+  padding: 8mm 0 !important;
+  color: var(--rp-muted);
+  font-style: italic;
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.rp-cost-batch-row td {
+  padding: 5mm 4mm 4mm;
+  border-bottom: none;
+  border-top: 1.5px solid var(--rp-navy);
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-rust);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.20em;
+  padding-left: calc(4mm + 0.20em);
+  padding-top: 5mm;
+}
+.rp-cost-batch-row td.rp-cost-batch-val {
+  color: var(--rp-rust);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  padding-left: 4mm;
+  padding-top: 3mm;
+  line-height: 1;
+}
+
+.rp-cost-caution {
+  position: relative; z-index: 2;
+  margin-top: 8mm;
+  background: var(--rp-navy);
+  color: var(--rp-cream-on-color);
+  padding: 6mm 8mm;
+  font-family: var(--rp-sans);
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.rp-cost-caution strong {
+  color: var(--rp-rust);
+  font-weight: 800;
+}
+
+.rp-cost-footer-wrap {
+  position: relative; z-index: 2;
+  margin-top: auto;
+  padding-top: 8mm;
+}
+
+
+/* =============================================================================
+   03 — CARE CARD  (A6 portrait, 105×148mm)
+   ============================================================================= */
+.rp-tpl.rp-care {
+  width: 105mm;
+  height: 148mm;
+  flex-direction: column;
+  align-items: stretch;
+  display: flex;
+  padding: 10mm 10mm 9mm;
+  position: relative;
+  background: var(--rp-paper);
+}
+.rp-care-corner-navy {
+  position: absolute;
+  top: -8mm; right: -8mm;
+  width: 22mm; height: 22mm;
+  background: var(--rp-navy);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+.rp-care-corner-rust {
+  position: absolute;
+  bottom: -22mm; left: -22mm;
+  width: 55mm; height: 55mm;
+  background: var(--rp-rust);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+.rp-care-header {
+  position: relative; z-index: 2;
+}
+.rp-care-header .rp-brand-name    { font-size: 14px; }
+.rp-care-header .rp-brand-tagline { font-size: 8.5px; }
+
+.rp-care-eyebrow-thanks {
+  position: relative; z-index: 2;
+  margin-top: 6mm;
+  font-size: 9px; letter-spacing: 0.24em;
+}
+.rp-care-title-block {
+  position: relative; z-index: 2;
+  margin-top: 3mm;
+}
+.rp-care-title-block .rp-offset-title {
+  font-size: 24px;
+  max-width: 80mm;
+}
+.rp-care-body {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; gap: 4mm;
+  padding-top: 5mm;
+  flex: 1;
+  min-height: 0;
+}
+.rp-care-section > .rp-eyebrow { margin-bottom: 2mm; font-size: 9px; letter-spacing: 0.24em; }
+.rp-care-text {
+  font-family: var(--rp-sans);
+  color: var(--rp-navy);
+  font-size: 10.5px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 400;
+}
+.rp-care-allergens {
+  display: flex; flex-wrap: wrap; gap: 1.5mm;
+  margin-top: 1mm;
+}
+.rp-care-allergen-chip {
+  background: var(--rp-navy);
+  color: var(--rp-cream-on-color);
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  padding: 1.4mm 2.5mm 1.2mm;
+  padding-left: calc(2.5mm + 0.14em);
+  text-transform: uppercase;
+}
+.rp-care-footer-wrap {
+  position: relative; z-index: 2;
+  margin-top: auto;
+  padding-top: 4mm;
+}
+.rp-care-footer-wrap .rp-footer { font-size: 8px; }
+.rp-care-footer-wrap .rp-footer-line { font-size: 8px; line-height: 1.5; }
+
+
+/* =============================================================================
+   04 — PRODUCT LABEL  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.rp-tpl.rp-label {
+  width: 74mm;
+  height: 105mm;
+  flex-direction: column;
+  align-items: stretch;
+  display: flex;
+  padding: 7mm 7mm 6mm;
+  position: relative;
+  background: var(--rp-paper);
+}
+.rp-label-corner-rust {
+  position: absolute;
+  top: -10mm; right: -10mm;
+  width: 28mm; height: 28mm;
+  background: var(--rp-rust);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+.rp-label-header {
+  position: relative; z-index: 2;
+}
+.rp-label-header .rp-brand-name    { font-size: 12px; }
+.rp-label-header .rp-brand-tagline { font-size: 8px; letter-spacing: 0.20em; }
+
+.rp-label-title-block {
+  position: relative; z-index: 2;
+  margin-top: 5mm;
+}
+.rp-label-title-block .rp-offset-title {
+  font-size: 18px;
+  max-width: 50mm;
+}
+.rp-label-title-block .rp-offset-title-shadow { top: 3px; left: 3px; }
+
+.rp-label-section {
+  position: relative; z-index: 2;
+  margin-top: 4mm;
+}
+.rp-label-section > .rp-eyebrow { margin-bottom: 1.5mm; font-size: 8.5px; letter-spacing: 0.22em; }
+.rp-label-body {
+  font-family: var(--rp-sans);
+  color: var(--rp-navy);
+  font-size: 9px;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 400;
+}
+.rp-label-notice {
+  position: relative; z-index: 2;
+  margin-top: auto;
+  background: var(--rp-navy);
+  color: var(--rp-cream-on-color);
+  padding: 3mm 3.5mm;
+  border-radius: 1.5mm;
+  display: flex; flex-direction: column; gap: 1.5mm;
+}
+.rp-label-notice-eyebrow {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-rust);
+  font-size: 8.5px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+.rp-label-notice-body {
+  font-family: var(--rp-sans);
+  color: var(--rp-cream-on-color);
+  font-size: 8.5px;
+  line-height: 1.4;
+  font-weight: 400;
+  margin: 0;
+}
+
+
+/* =============================================================================
+   05 — MENU INSERT  (A5 portrait, 148×210mm)
+   ============================================================================= */
+.rp-tpl.rp-menu {
+  width: 148mm;
+  height: 210mm;
+  flex-direction: column;
+  align-items: stretch;
+  display: flex;
+  padding: 12mm 12mm 10mm;
+  position: relative;
+  background: var(--rp-paper);
+  overflow: hidden;
+}
+.rp-menu-shapes-top {
+  position: absolute;
+  top: 0; left: 0;
+  width: 90mm; height: 60mm;
+  pointer-events: none;
+  z-index: 0;
+}
+.rp-menu-shapes-top .rp-circle-rust {
+  width: 42mm; height: 42mm;
+  top: -20mm; left: -14mm;
+}
+.rp-menu-shapes-top .rp-circle-navy {
+  width: 38mm; height: 38mm;
+  top: -14mm; left: 14mm;
+}
+.rp-menu-shapes-bottom {
+  position: absolute;
+  right: -30mm; top: 105mm;
+  width: 80mm; height: 80mm;
+  pointer-events: none;
+  z-index: 0;
+}
+.rp-menu-shapes-bottom .rp-circle-rust {
+  width: 80mm; height: 80mm;
+  top: 0; right: 0;
+  position: absolute;
+}
+.rp-menu-header {
+  position: relative; z-index: 2;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 8mm;
+  padding-top: 4mm;
+}
+.rp-menu-brand-block {
+  display: flex; flex-direction: column; gap: 1mm;
+}
+.rp-menu-brand-block .rp-offset-title {
+  font-size: 38px;
+}
+.rp-menu-header-right {
+  text-align: right;
+  padding-top: 4mm;
+}
+.rp-menu-header-eyebrow-rust { font-size: 9px; letter-spacing: 0.22em; }
+.rp-menu-header-eyebrow-tag  { font-size: 8.5px; letter-spacing: 0.22em; margin-top: 1.5mm; }
+
+.rp-menu-rule {
+  position: relative; z-index: 2;
+  margin-top: 12mm;
+}
+
+.rp-menu-body {
+  position: relative; z-index: 2;
+  padding-top: 6mm;
+  flex: 1;
+  min-height: 0;
+}
+.rp-menu-empty {
+  text-align: center; color: var(--rp-muted);
+  font-style: italic;
+  margin-top: 20mm;
+}
+.rp-menu-cat-block { margin-bottom: 8mm; }
+.rp-menu-cat-label {
+  display: inline-block;
+  background: var(--rp-navy);
+  color: var(--rp-cream-on-color);
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  padding: 1.8mm 3.5mm 1.6mm;
+  padding-left: calc(3.5mm + 0.18em);
+  text-transform: uppercase;
+  margin-bottom: 4mm;
+}
+.rp-menu-cat-items {
+  display: flex; flex-direction: column; gap: 4mm;
+}
+.rp-menu-item {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 8mm;
+}
+.rp-menu-item-body { flex: 1; min-width: 0; }
+.rp-menu-item-name {
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  color: var(--rp-navy);
+  font-size: 14px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.rp-menu-item-desc {
+  font-family: var(--rp-sans);
+  color: var(--rp-muted);
+  font-size: 10.5px;
+  margin-top: 1mm;
+  line-height: 1.4;
+  font-weight: 400;
+  font-style: italic;
+}
+.rp-menu-item-price {
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  color: var(--rp-rust);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+
+.rp-menu-footer-wrap {
+  position: relative; z-index: 2;
+  margin-top: auto;
+  padding-top: 6mm;
+}
+.rp-menu-footer-rule { margin-bottom: 3mm; }
+.rp-menu-footer-wrap .rp-footer { font-size: 8.5px; }
+.rp-menu-footer-wrap .rp-footer-line { font-size: 8.5px; }
+
+
+/* =============================================================================
+   06 — WHOLESALE PRICE LIST  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.rp-tpl.rp-wholesale {
+  width: 210mm;
+  height: 297mm;
+  flex-direction: column;
+  align-items: stretch;
+  display: flex;
+  padding: 16mm 18mm 14mm;
+  position: relative;
+  background: var(--rp-paper);
+}
+.rp-wholesale-corner {
+  position: absolute;
+  top: 50mm; left: -30mm;
+  width: 90mm; height: 90mm;
+  background: var(--rp-rust);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+.rp-wholesale-header {
+  position: relative; z-index: 2;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12mm;
+}
+.rp-wholesale-chip {
+  background: var(--rp-rust);
+  color: var(--rp-cream-on-color);
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  padding: 2mm 4mm 1.8mm;
+  padding-left: calc(4mm + 0.20em);
+  text-transform: uppercase;
+  border-radius: 1mm;
+  align-self: flex-start;
+}
+.rp-wholesale-rule { position: relative; z-index: 2; margin-top: 6mm; }
+
+.rp-wholesale-title-row {
+  position: relative; z-index: 2;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 10mm;
+  padding: 10mm 0 6mm;
+}
+.rp-wholesale-title-block { flex: 1; min-width: 0; padding-top: 2mm; }
+.rp-wholesale-title-block .rp-offset-title {
+  font-size: 44px;
+  max-width: 130mm;
+}
+.rp-wholesale-desc {
+  font-family: var(--rp-sans);
+  color: var(--rp-body);
+  font-size: 11px;
+  margin: 4mm 0 0;
+  max-width: 110mm;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.rp-wholesale-terms-card {
+  flex-shrink: 0;
+  width: 60mm;
+  background: var(--rp-navy);
+  color: var(--rp-cream-on-color);
+  padding: 6mm 7mm 6mm;
+  display: flex; flex-direction: column; gap: 2mm;
+}
+.rp-wholesale-terms-card .rp-eyebrow {
+  color: var(--rp-rust);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+}
+.rp-wholesale-terms-card p {
+  font-family: var(--rp-sans);
+  color: var(--rp-cream-on-color);
+  font-size: 10.5px;
+  line-height: 1.4;
+  margin: 0;
+  font-weight: 400;
+}
+.rp-wholesale-terms-card strong { font-weight: 800; }
+
+.rp-wholesale-table {
+  position: relative; z-index: 2;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6mm;
+  font-family: var(--rp-sans);
+  font-size: 11px;
+  color: var(--rp-body);
+  font-weight: 400;
+}
+.rp-wholesale-table thead tr { background: var(--rp-navy); }
+.rp-wholesale-table thead th {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-cream-on-color);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 3.5mm 4mm;
+  font-size: 10px;
+  text-align: left;
+}
+.rp-wholesale-table thead th.rp-num { text-align: right; }
+.rp-wholesale-table thead th.rp-wholesale-th-price {
+  background: var(--rp-rust);
+  color: var(--rp-cream-on-color);
+}
+.rp-wholesale-table td {
+  padding: 3mm 4mm;
+  border-bottom: 1px solid var(--rp-hair);
+}
+.rp-wholesale-table tbody tr:last-child td { border-bottom: 1.5px solid var(--rp-navy); }
+.rp-wholesale-td-name { color: var(--rp-navy); font-weight: 700; }
+.rp-wholesale-td-price { color: var(--rp-rust); font-weight: 800; }
+
+.rp-wholesale-terms-row {
+  position: relative; z-index: 2;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16mm;
+  margin-top: 8mm;
+}
+.rp-wholesale-terms-col > .rp-eyebrow { margin-bottom: 3mm; font-size: 10px; letter-spacing: 0.24em; }
+.rp-wholesale-terms-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 2.5mm;
+  font-family: var(--rp-sans);
+  color: var(--rp-navy);
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.rp-wholesale-order-lines {
+  display: flex; flex-direction: column; gap: 2mm;
+  font-family: var(--rp-sans);
+  color: var(--rp-navy);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.rp-wholesale-sig-row {
+  position: relative; z-index: 2;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16mm;
+  margin-top: 8mm;
+}
+.rp-wholesale-sig-cell { display: flex; flex-direction: column; gap: 2mm; }
+.rp-wholesale-sig-line { height: 1.2px; background: var(--rp-navy); margin-bottom: 2mm; width: 100%; }
+.rp-wholesale-sig-cell .rp-eyebrow { font-size: 9px; letter-spacing: 0.22em; }
+
+.rp-wholesale-footer-wrap {
+  position: relative; z-index: 2;
+  margin-top: auto;
+  padding-top: 6mm;
+}
+.rp-wholesale-footer-rule { margin-bottom: 3mm; }
+
+
+/* =============================================================================
+   07 — DELIVERY TAG  (A7 portrait, 74×105mm)
+   ============================================================================= */
+.rp-tpl.rp-delivery {
+  width: 74mm;
+  height: 105mm;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  padding: 4mm 6mm 5mm;
+  background: var(--rp-paper);
+  text-align: center;
+  position: relative;
+}
+.rp-delivery-hole {
+  width: 4mm; height: 4mm;
+  border: 1px solid var(--rp-navy);
+  border-radius: 50%;
+  margin: 1mm 0 3mm;
+  opacity: 0.65;
+}
+.rp-delivery-brand {
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  color: var(--rp-navy);
+  font-size: 12px;
+  letter-spacing: -0.015em;
+  margin-bottom: 1mm;
+}
+.rp-delivery-city {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-rust);
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 4mm;
+}
+.rp-delivery-circle {
+  width: 62mm; height: 62mm;
+  background: var(--rp-rust);
+  border-radius: 50%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 6mm 5mm;
+  gap: 2mm;
+  flex-shrink: 0;
+}
+.rp-delivery-circle-eyebrow {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-cream-on-color);
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+.rp-delivery-circle-title {
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  color: var(--rp-cream-on-color);
+  font-size: 18px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0;
+  max-width: 50mm;
+}
+.rp-delivery-care {
+  font-family: var(--rp-sans);
+  color: var(--rp-navy);
+  font-size: 9px;
+  line-height: 1.5;
+  margin: 4mm 0 0;
+  font-weight: 400;
+  max-width: 62mm;
+}
+.rp-delivery-footer {
+  margin-top: auto;
+  width: 100%;
+}
+.rp-delivery-footer-rule {
+  height: 1px;
+  background: var(--rp-navy);
+  margin: 3mm 0 2mm;
+  opacity: 0.5;
+}
+.rp-delivery-footer-social {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-rust);
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  padding-left: 0.16em;
+  line-height: 1.4;
+}
+.rp-delivery-footer-line {
+  font-family: var(--rp-sans);
+  color: var(--rp-body);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  font-weight: 400;
+  padding-left: 0.14em;
+  text-transform: uppercase;
+}
+
+
+/* =============================================================================
+   08 — SOCIAL MEDIA CARD  (1080×1080 = 148×148mm)
+   ============================================================================= */
+.rp-tpl.rp-social {
+  width: 148mm;
+  height: 148mm;
+  flex-direction: column;
+  align-items: stretch;
+  display: flex;
+  padding: 12mm 12mm 10mm;
+  background: var(--rp-rust);
+  color: var(--rp-cream-on-color);
+  position: relative;
+}
+.rp-social-corner {
+  position: absolute;
+  bottom: -30mm; right: -30mm;
+  width: 90mm; height: 90mm;
+  background: var(--rp-brown);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+.rp-social-corner-ring {
+  position: absolute;
+  top: 8mm; right: 10mm;
+  width: 18mm; height: 18mm;
+  border: 1.5px solid var(--rp-cream-on-color);
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+}
+.rp-social-header {
+  position: relative; z-index: 2;
+}
+.rp-social-header .rp-brand-name    { color: var(--rp-cream-on-color); font-size: 15px; }
+.rp-social-header .rp-brand-tagline { color: var(--rp-cream-on-color); opacity: 0.85; }
+
+.rp-social-body {
+  position: relative; z-index: 2;
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 6mm 0;
+  min-height: 0;
+}
+.rp-social-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  padding-left: 0.26em;
+  margin-bottom: 5mm;
+  color: var(--rp-cream-on-color);
+}
+.rp-social-title {
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  color: var(--rp-cream-on-color);
+  font-size: 52px;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0 0 5mm;
+  max-width: 120mm;
+}
+.rp-social-desc {
+  font-family: var(--rp-sans);
+  color: var(--rp-cream-on-color);
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin: 0 0 6mm;
+  max-width: 110mm;
+  opacity: 0.95;
+  font-weight: 400;
+}
+.rp-social-cta {
+  display: inline-block;
+  background: var(--rp-cream-on-color);
+  color: var(--rp-rust);
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  font-size: 15px;
+  padding: 3mm 6mm;
+  letter-spacing: -0.01em;
+  align-self: flex-start;
+  border-radius: 1mm;
+}
+.rp-social-footer {
+  position: relative; z-index: 2;
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-top: 4mm;
+  font-family: var(--rp-sans);
+  font-size: 10px;
+  color: var(--rp-cream-on-color);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  padding-left: 0.16em;
+}
+.rp-social-website { opacity: 0.85; }
+
+
+/* =============================================================================
+   09 — RECIPE BINDER PAGE  (A4 portrait, 210×297mm)
+   ============================================================================= */
+.rp-tpl.rp-binder {
+  width: 210mm;
+  height: 297mm;
+  flex-direction: row;
+  align-items: stretch;
+  display: flex;
+  background: var(--rp-paper);
+  position: relative;
+}
+.rp-binder-stripe {
+  width: 8mm;
+  background: var(--rp-rust);
+  flex-shrink: 0;
+}
+.rp-binder-content {
+  flex: 1;
+  padding: 14mm 16mm 12mm;
+  display: flex; flex-direction: column;
+  min-width: 0;
+}
+.rp-binder-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12mm;
+}
+.rp-binder-header .rp-brand-name    { font-size: 14px; }
+.rp-binder-header .rp-brand-tagline { font-size: 9px; }
+.rp-binder-header-right {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-rust);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
+  text-transform: uppercase;
+  text-align: right;
+}
+.rp-binder-rule { margin-top: 4mm; }
+
+.rp-binder-title-row {
+  display: flex; gap: 10mm; align-items: flex-start;
+  padding: 10mm 0 4mm;
+}
+.rp-binder-title-left { flex: 1; min-width: 0; }
+.rp-binder-title-left .rp-offset-title {
+  font-size: 34px;
+  max-width: 130mm;
+}
+.rp-binder-desc {
+  font-family: var(--rp-sans);
+  color: var(--rp-muted);
+  font-size: 11px;
+  margin: 4mm 0 0;
+  line-height: 1.5;
+  font-weight: 400;
+  font-style: italic;
+}
+.rp-binder-photo {
+  width: 50mm; height: 50mm; flex-shrink: 0;
+  background: var(--rp-navy);
+  color: var(--rp-cream-on-color);
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 4mm;
+}
+.rp-binder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.rp-binder-photo-placeholder {
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-cream-on-color);
+  font-size: 9px;
+  letter-spacing: 0.20em;
+  padding-left: 0.20em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+
+.rp-binder-meta-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 4mm;
+  padding: 6mm 0 4mm;
+}
+.rp-binder-meta-cell {
+  border: 1px solid var(--rp-navy);
+  padding: 3.5mm 4mm;
+  display: flex; flex-direction: column; gap: 2mm;
+}
+.rp-binder-meta-cell-accent {
+  background: var(--rp-rust);
+  border-color: var(--rp-rust);
+}
+.rp-binder-meta-cell > .rp-eyebrow { font-size: 8.5px; letter-spacing: 0.20em; }
+.rp-binder-meta-cell-accent > .rp-eyebrow { color: var(--rp-cream-on-color); }
+.rp-binder-meta-val {
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  color: var(--rp-navy);
+  font-size: 15px;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+.rp-binder-meta-cell-accent .rp-binder-meta-val {
+  color: var(--rp-cream-on-color);
+}
+
+.rp-binder-body {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10mm;
+  flex: 1;
+  min-height: 0;
+  padding-top: 4mm;
+}
+.rp-binder-section > .rp-eyebrow { margin-bottom: 4mm; font-size: 10px; letter-spacing: 0.22em; }
+
+.rp-binder-ing-list { display: flex; flex-direction: column; }
+.rp-binder-ing-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 5mm;
+  padding: 2.2mm 0;
+  border-bottom: 1px solid var(--rp-hair);
+  font-family: var(--rp-sans);
+  font-size: 10.5px;
+  color: var(--rp-body);
+  font-weight: 400;
+  align-items: baseline;
+}
+.rp-binder-ing-name { color: var(--rp-navy); font-weight: 700; }
+.rp-binder-ing-qty {
+  color: var(--rp-body);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+}
+.rp-binder-ing-cost {
+  color: var(--rp-navy);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  min-width: 12mm;
+  font-weight: 700;
+}
+.rp-binder-batch-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 5mm;
+  padding: 3mm 0 2mm;
+  border-top: 1.5px solid var(--rp-navy);
+  font-family: var(--rp-sans);
+  font-size: 11px;
+  color: var(--rp-rust);
+  font-weight: 800;
+  margin-top: 2mm;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+}
+.rp-binder-batch-row > span:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  padding-left: 0;
+  letter-spacing: -0.02em;
+  font-size: 14px;
+}
+
+.rp-binder-method {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 3mm;
+  font-family: var(--rp-sans);
+  font-size: 10.5px;
+  color: var(--rp-body);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.rp-binder-method li {
+  display: grid;
+  grid-template-columns: 8mm 1fr;
+  gap: 3mm;
+  align-items: start;
+}
+.rp-binder-method-step { padding-top: 1mm; }
+.rp-binder-method-step-final { color: var(--rp-navy); }
+.rp-binder-method-step-final strong { font-weight: 800; color: var(--rp-navy); }
+
+.rp-binder-notes { margin-top: 6mm; }
+.rp-binder-notes > .rp-eyebrow { margin-bottom: 3mm; font-size: 10px; letter-spacing: 0.22em; }
+.rp-binder-notes-lines { display: flex; flex-direction: column; gap: 6px; }
+.rp-binder-notes-line { border-bottom: 1px solid var(--rp-hair); height: 5mm; }
+
+.rp-binder-footer-wrap { margin-top: auto; padding-top: 6mm; }
+.rp-binder-footer-rule { margin-bottom: 3mm; }
+
+
+/* =============================================================================
+   10 — CERTIFICATE OF CRAFT  (A4 landscape, 297×210mm)
+   ============================================================================= */
+.rp-tpl.rp-cert {
+  width: 297mm;
+  height: 210mm;
+  flex-direction: column;
+  align-items: stretch;
+  display: flex;
+  position: relative;
+  background: var(--rp-paper);
+  padding: 7mm;
+}
+.rp-cert-corner-rust {
+  position: absolute;
+  top: -22mm; left: -22mm;
+  width: 65mm; height: 65mm;
+  background: var(--rp-rust);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+.rp-cert-corner-navy {
+  position: absolute;
+  bottom: -22mm; right: -22mm;
+  width: 65mm; height: 65mm;
+  background: var(--rp-navy);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+.rp-cert-border {
+  flex: 1;
+  border: 1.5px solid var(--rp-navy);
+  padding: 12mm 20mm 10mm;
+  display: flex; flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  min-height: 0;
+}
+.rp-cert-eyebrow-top {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  padding-left: 0.32em;
+  margin-top: 2mm;
+}
+.rp-cert-body {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 5mm;
+  max-width: 240mm;
+  min-height: 0;
+}
+.rp-cert-intro {
+  font-family: var(--rp-sans);
+  color: var(--rp-muted);
+  font-size: 13px;
+  margin: 0;
+  font-weight: 400;
+  font-style: italic;
+}
+.rp-cert-body .rp-offset-title {
+  margin: 2mm 0;
+  max-width: 250mm;
+}
+.rp-cert-divider {
+  width: 40mm;
+  height: 1.2px;
+  background: var(--rp-navy);
+  margin: 3mm 0 1mm;
+}
+.rp-cert-outro {
+  font-family: var(--rp-sans);
+  color: var(--rp-muted);
+  font-size: 12.5px;
+  margin: 0;
+  font-weight: 400;
+  font-style: italic;
+}
+.rp-cert-brand-name {
+  font-family: var(--rp-sans);
+  font-weight: 800;
+  color: var(--rp-navy);
+  font-size: 22px;
+  letter-spacing: -0.015em;
+  margin: 1mm 0 0;
+  line-height: 1.1;
+}
+.rp-cert-tagline { font-size: 10px; letter-spacing: 0.26em; padding-left: 0.26em; }
+
+.rp-cert-signature-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20mm;
+  width: 100%;
+  align-items: flex-end;
+  padding: 4mm 8mm 4mm;
+  max-width: 260mm;
+}
+.rp-cert-sig-cell {
+  display: flex; flex-direction: column; gap: 2mm;
+  align-items: flex-start;
+  min-width: 0;
+}
+.rp-cert-sig-cell-right { align-items: flex-end; text-align: right; }
+.rp-cert-sig-line { height: 1.2px; background: var(--rp-navy); margin-bottom: 2mm; width: 100%; }
+.rp-cert-sig-cell .rp-eyebrow { font-size: 9.5px; letter-spacing: 0.22em; }
+.rp-cert-sig-img {
+  display: block;
+  max-width: 44mm; max-height: 14mm;
+  margin: 0 0 1mm;
+  object-fit: contain;
+}
+.rp-cert-seal-wrap {
+  display: flex; justify-content: center; align-items: center;
+  padding-bottom: 1mm;
+}
+.rp-cert-seal {
+  width: 26mm; height: 26mm;
+  background: var(--rp-rust);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.rp-cert-seal-inner {
+  display: flex; flex-direction: column; align-items: center;
+  font-family: var(--rp-sans);
+  font-weight: 700;
+  color: var(--rp-cream-on-color);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  font-size: 8px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.rp-cert-footer {
+  padding-top: 4mm;
+  font-family: var(--rp-sans);
+  color: var(--rp-muted);
+  font-size: 9.5px;
+  line-height: 1.5;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  text-transform: uppercase;
+  font-weight: 400;
+  text-align: center;
+}
+.rp-cert-footer-line { color: var(--rp-muted); }

@@ -25,6 +25,7 @@ import { TESSELLATE_TEMPLATES } from './variants/tessellate/index.js'
 import { AURORA_TEMPLATES } from './variants/aurora/index.js'
 import { BAUHAUS_TEMPLATES } from './variants/bauhaus/index.js'
 import { PATISSERIE_TEMPLATES } from './variants/patisserie/index.js'
+import { RISO_POP_TEMPLATES } from './variants/riso-pop/index.js'
 
 /**
  * Registry of the 10 shared templates. Each entry is the DEFAULT (non-variant)
@@ -62,6 +63,7 @@ const VARIANT_MAP = {
   aurora: AURORA_TEMPLATES,
   bauhaus: BAUHAUS_TEMPLATES,
   patisserie: PATISSERIE_TEMPLATES,
+  'riso-pop': RISO_POP_TEMPLATES,
 }
 
 export function getTemplate(key) {

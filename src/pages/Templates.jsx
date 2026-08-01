@@ -58,6 +58,8 @@ const STYLE_VARIANTS = [
     description: 'Primary blue / yellow / red geometric shapes on cream. Archivo Black caps titles, solid filled chips, sharp modernist grid.' },
   { key: 'patisserie',  name: 'Patisserie',
     description: 'Dusty pink and deep burgundy on ivory. Cormorant serif titles, Roman-numeral method steps, thin gold hairline frames — refined and romantic.' },
+  { key: 'riso-pop',    name: 'Riso Pop',
+    description: 'Warm cream, navy and rust with the signature offset title effect (rust copy nudged behind navy front). Overlapping solid circles with multiply-blend overprint — layered print-shop confidence.' },
 ]
 
 export default function Templates() {

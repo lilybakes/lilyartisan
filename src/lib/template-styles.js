@@ -85,6 +85,12 @@ export const STYLE_VARIANTS = [
     description: 'Dusty pink and deep burgundy on ivory. Cormorant Garamond serif titles, mauve section eyebrows, Roman-numeral method steps (I · II · III), thin gold hairline frames on every portrait. Care Card and Delivery Tag on soft pink; Social Card on deep burgundy. Refined, romantic, restrained.',
     accent: '#7A2E3B',
   },
+  {
+    key: 'riso-pop',
+    name: 'Riso Pop',
+    description: 'Risograph-inspired warm cream, deep navy and rust. Signature offset title effect (rust copy nudged down-right behind the navy front) on every product name, overlapping solid circles with a multiply-blend brown overprint, solid navy and rust chips, cream-on-rust Social Card. Bold, layered, print-shop confident.',
+    accent: '#E84C22',
+  },
 ]
 
 export function getStyleVariant(key) {

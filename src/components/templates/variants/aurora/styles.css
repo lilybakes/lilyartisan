@@ -399,6 +399,14 @@
   padding: 0;
   display: flex; flex-direction: column;
 }
+/* Fixed height lock — prevents content overflow from elongating the sheet.
+   Per EDITORIAL_ELONGATION_FIX_CONTEXT round 3: min-height allows growth;
+   height + inherited overflow:hidden guarantees the A4 aspect ratio. */
+.au-tpl.au-cost {
+  height: 297mm;
+  flex-direction: column;
+  align-items: stretch;
+}
 .au-cost-header {
   background: var(--au-gradient);
   color: #ffffff;
@@ -1178,11 +1186,20 @@
   display: flex;
   position: relative;
 }
+/* Row layout + fixed height at (0,2,0) specificity to beat base .tpl
+   (which sets flex-direction: column). Per EDITORIAL_ELONGATION_FIX_CONTEXT
+   rounds 1-3: without this, the gradient stripe stacks vertically at 297mm
+   AND the container grows past A4 when content is long. */
+.au-tpl.au-binder {
+  height: 297mm;
+  flex-direction: row;
+  align-items: stretch;
+}
 .au-binder-stripe {
   width: 8mm;
-  min-height: 297mm;
   background: var(--au-gradient);
   flex-shrink: 0;
+  /* min-height removed — align-items:stretch on parent handles full-height */
 }
 .au-binder-inner {
   flex: 1;
