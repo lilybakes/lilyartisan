@@ -17,7 +17,10 @@ import { useSettings } from '../lib/settings.jsx'
 export default function TemplateCustomization() {
   const settingsCtx = useSettings() || {}
   const settings = settingsCtx.settings || {}
-  const updateSettings = settingsCtx.update || (async () => {})
+  // The SettingsProvider exposes this as `updateSettings`, not `update`.
+  // Using the wrong key silently fell back to a no-op — every "save" flashed
+  // success but nothing reached Supabase (wholesale discount / MOQ / etc.).
+  const updateSettings = settingsCtx.updateSettings || (async () => {})
 
   const [customs, setCustoms]           = useState({})
   const [loading, setLoading]           = useState(true)
