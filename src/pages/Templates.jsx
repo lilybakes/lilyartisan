@@ -60,6 +60,8 @@ const STYLE_VARIANTS = [
     description: 'Dusty pink and deep burgundy on ivory. Cormorant serif titles, Roman-numeral method steps, thin gold hairline frames — refined and romantic.' },
   { key: 'riso-pop',    name: 'Riso Pop',
     description: 'Warm cream, navy and rust with the signature offset title effect (rust copy nudged behind navy front). Overlapping solid circles with multiply-blend overprint — layered print-shop confidence.' },
+  { key: 'terminal',    name: 'Terminal',
+    description: 'Dark CLI theme — deep navy with a subtle teal grid, JetBrains Mono meta everywhere, teal + amber accents. Code-style naming (RECIPE_01, COST_ANALYSIS / CAKES, ISO dates). First dark-mode set.' },
 ]
 
 export default function Templates() {

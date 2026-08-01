@@ -91,6 +91,12 @@ export const STYLE_VARIANTS = [
     description: 'Risograph-inspired warm cream, deep navy and rust. Signature offset title effect (rust copy nudged down-right behind the navy front) on every product name, overlapping solid circles with a multiply-blend brown overprint, solid navy and rust chips, cream-on-rust Social Card. Bold, layered, print-shop confident.',
     accent: '#E84C22',
   },
+  {
+    key: 'terminal',
+    name: 'Terminal',
+    description: 'Dark CLI aesthetic — deep navy paper with a subtle teal grid overlay, JetBrains Mono for every label, price, date and status chip. Bright teal accents (RECIPE_01, • ACTIVE, price cards, table headers) and amber warnings (ALLERGENS, final method step, RESTRICTED / INTERNAL). Code-style naming throughout (COST_ANALYSIS / CAKES, target_food_cost: 30%, BINDER / CAKES / REV_04, ISO dates). First dark-mode set — clinical, technical, high-contrast.',
+    accent: '#4EE0BE',
+  },
 ]
 
 export function getStyleVariant(key) {
