@@ -420,7 +420,7 @@
   width: 210mm; height: 297mm;
   flex-direction: column;
   align-items: stretch;
-  padding: 14mm 16mm 12mm;
+  padding: 10mm 16mm 8mm;
   background-color: var(--tr-bg);
   background-image:
     linear-gradient(to right, var(--tr-grid) 1px, transparent 1px),
@@ -437,9 +437,19 @@
 .tr-cost-top-row {
   display: grid; grid-template-columns: 1fr 78mm;
   gap: 10mm;
-  margin-bottom: 8mm;
+  margin-bottom: 5mm;
+  /* Editorial Elongation Fix, round 4: in a fixed-height flex-column parent
+     with overflow:hidden, a flex item's default `flex-shrink: 1` +
+     `min-height: auto` collapses this grid row way below its content
+     height while its grid-item children's own `min-height: auto` inflates
+     them past the row bounds — the price-card content then overlaps the
+     table below it. `flex: none` pins the row at its natural grid height,
+     and `min-height: 0` on the grid items prevents their auto-min from
+     inflating to viewport height. */
+  flex: none;
 }
-.tr-cost-top-left { min-width: 0; }
+.tr-cost-top-left { min-width: 0; min-height: 0; }
+.tr-cost-price-card { min-height: 0; }
 .tr-cost-eyebrow {
   font-size: 10px;
   letter-spacing: 0.18em;
@@ -466,8 +476,8 @@
 .tr-cost-price-card {
   border: 1px solid var(--tr-teal);
   background: var(--tr-bg-elev);
-  padding: 6mm 6mm 5mm;
-  display: flex; flex-direction: column; gap: 3mm;
+  padding: 5mm 5mm 4mm;
+  display: flex; flex-direction: column; gap: 2mm;
 }
 .tr-cost-price-card-eyebrow {
   font-family: var(--tr-mono);
@@ -570,13 +580,13 @@
 .tr-cost-stats-row {
   display: grid; grid-template-columns: 1fr 1fr 1fr;
   gap: 5mm;
-  margin-top: 8mm;
+  margin-top: 5mm;
 }
 .tr-cost-stat {
   border: 1px solid var(--tr-line-strong);
   background: transparent;
-  padding: 6mm 6mm;
-  display: flex; flex-direction: column; gap: 3mm;
+  padding: 4mm 5mm;
+  display: flex; flex-direction: column; gap: 2mm;
 }
 .tr-cost-stat-label {
   font-family: var(--tr-mono);
@@ -609,7 +619,7 @@
 }
 
 .tr-cost-caution {
-  margin-top: 6mm;
+  margin-top: 4mm;
 }
 .tr-cost-caution-title {
   font-family: var(--tr-sans);
@@ -626,7 +636,7 @@
   line-height: 1.5;
 }
 
-.tr-cost-footer-wrap { margin-top: auto; padding-top: 6mm; }
+.tr-cost-footer-wrap { margin-top: auto; padding-top: 4mm; }
 
 
 /* =============================================================================
@@ -939,8 +949,11 @@
   display: grid; grid-template-columns: 1fr 65mm;
   gap: 10mm;
   padding: 4mm 0 6mm;
+  /* Same elongation defense as .tr-cost-top-row. */
+  flex: none;
 }
-.tr-wholesale-title-left { min-width: 0; }
+.tr-wholesale-title-left { min-width: 0; min-height: 0; }
+.tr-wholesale-discount-card { min-height: 0; }
 .tr-wholesale-eyebrow {
   font-size: 10px;
   letter-spacing: 0.18em;
