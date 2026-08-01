@@ -511,8 +511,12 @@
   color: var(--rp-body);
   font-weight: 400;
 }
-.rp-cost-table thead tr { background: var(--rp-navy); }
+/* Root styles.css sets `th { background: #fafaff }` globally at (0,0,1) —
+   putting navy on the <tr> at (0,2,0) LOSES because the th's own background
+   paints on top of the row background. Set background directly on the th
+   to actually beat that global rule. */
 .rp-cost-table thead th {
+  background: var(--rp-navy);
   font-family: var(--rp-sans);
   font-weight: 700;
   color: var(--rp-cream-on-color);
@@ -989,8 +993,11 @@
   color: var(--rp-body);
   font-weight: 400;
 }
-.rp-wholesale-table thead tr { background: var(--rp-navy); }
+/* Root styles.css sets `th { background: #fafaff }` globally at (0,0,1) —
+   putting navy on the <tr> at (0,2,0) LOSES because the th's own background
+   paints on top of the row background. Set background directly on the th. */
 .rp-wholesale-table thead th {
+  background: var(--rp-navy);
   font-family: var(--rp-sans);
   font-weight: 700;
   color: var(--rp-cream-on-color);
